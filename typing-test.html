@@ -90,6 +90,8 @@
         padding: 0 16px;
         font-size: 15px;
         line-height: 1.5;
+        max-height: 35vh;
+        overflow-y: auto;
       }
       .result {
         padding: 10px 16px;
@@ -97,13 +99,13 @@
       }
       .controls {
         padding: 12px 16px;
+        margin-bottom: env(safe-area-inset-bottom, 10px);
       }
       .download-result {
         height: 36px;
       }
     }
 
-    /* ✅ Защита от сдвига на iOS */
     @supports (-webkit-touch-callout: none) {
       html {
         height: -webkit-fill-available;
