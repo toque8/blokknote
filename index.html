@@ -92,28 +92,53 @@
       flex-shrink: 0;
     }
     .action-icon {
-      height: 53px;
+      height: 42px;
       cursor: pointer;
       opacity: 0.7;
     }
-    .action-icon:hover { opacity: 1; }
-
-    .hourglass-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      margin-right: 12px;
-      height: 20px;
-      display: inline-flex;
-      align-items: center;
-    }
-    .hourglass-btn img {
-      height: 20px;
-      opacity: 0.7;
-    }
-    .hourglass-btn:hover img {
+    .action-icon:hover {
       opacity: 1;
+    }
+    .cancel-btn {
+      position: absolute;
+      bottom: 18px;
+      left: 20px;
+      height: 38px; /* ещё меньше, чем action-icon */
+      cursor: pointer;
+      opacity: 0.7;
+    }
+    .cancel-btn:hover {
+      opacity: 1;
+    }
+
+    @media (max-width: 500px) {
+      .top-bar { padding: 14px 16px; }
+      .pencil-icon { height: 44px; }
+      .format-tools { font-size: 15px; gap: 10px; }
+      #editor { padding: 20px 16px; font-size: 16px; }
+      .controls { padding: 16px; gap: 36px; }
+      .action-icon { height: 35px; }
+      .cancel-btn { bottom: 16px; left: 16px; height: 32px; }
+    }
+
+    @media (max-width: 360px) {
+      .top-bar { padding: 12px 12px; }
+      .format-tools { gap: 8px; }
+      #editor { padding: 18px 12px; font-size: 15px; }
+      .controls { gap: 32px; padding: 14px 12px; }
+      .cancel-btn { bottom: 14px; left: 12px; }
+    }
+
+    @supports (padding-top: env(safe-area-inset-top)) {
+      .top-bar {
+        padding-top: calc(16px + env(safe-area-inset-top));
+      }
+      .controls {
+        padding-bottom: calc(18px + env(safe-area-inset-bottom));
+      }
+      .cancel-btn {
+        bottom: calc(18px + env(safe-area-inset-bottom));
+      }
     }
   </style>
 </head>
@@ -136,8 +161,8 @@
       <span id="btn-list">i-j-k</span>
     </div>
     <div>
-      <button id="typing-test-btn" class="hourglass-btn">
-        <img src="ui/hourglass.png" alt="Typing Test" onerror="this.style.display='none'">
+      <button id="typing-test-btn" style="background:none;border:none;cursor:pointer;padding:0;margin-right:12px;height:20px;display:inline-flex;align-items:center;">
+        <img src="ui/hourglass.png" alt="" onerror="this.style.display='none'" style="height:20px;opacity:0.7;">
       </button>
       <div class="lang-switch">
         <span id="lang-ru" class="active">RU</span>
@@ -151,7 +176,10 @@
   <div class="controls">
     <img src="ui/erase.png" class="action-icon" id="clear-btn" onerror="this.style.display='none'">
     <img src="ui/download.png" class="action-icon" id="download-btn" onerror="this.style.display='none'">
+    <img src="ui/share.png" class="action-icon" id="share-btn" onerror="this.style.display='none'">
   </div>
+
+  <img src="ui/cancel.png" class="cancel-btn" id="cancel-btn" onerror="this.style.display='none'">
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
@@ -163,18 +191,28 @@
     const editor = document.getElementById('editor');
     const translations = { ru: 'Пиши…', en: 'Typing…' };
     let currentLang = 'ru';
+    let history = [];
 
     const saved = localStorage.getItem('blokknote-html');
-    if (saved) editor.innerHTML = saved;
+    if (saved) {
+      editor.innerHTML = saved;
+      history.push(saved);
+    }
     editor.setAttribute('data-placeholder', translations[currentLang]);
 
+    function saveState() {
+      history.push(editor.innerHTML);
+    }
+
     editor.addEventListener('input', () => {
+      saveState();
       localStorage.setItem('blokknote-html', editor.innerHTML);
       const sound = new Audio('audio/typing.mp3');
       sound.play().catch(() => {});
     });
 
     function exec(cmd, value = null) {
+      saveState();
       document.execCommand(cmd, false, value);
       editor.focus();
     }
@@ -189,11 +227,10 @@
       const container = sel.getRangeAt(0).commonAncestorContainer;
       const inHeading = container.nodeType === 1 ? container.closest('h3') : container.parentElement?.closest('h3');
       if (inHeading) {
-        document.execCommand('formatBlock', false, '<p>');
+        exec('formatBlock', '<p>');
       } else {
-        document.execCommand('formatBlock', false, '<h3>');
+        exec('formatBlock', '<h3>');
       }
-      editor.focus();
     };
 
     document.getElementById('btn-list').onclick = () => exec('insertUnorderedList');
@@ -210,6 +247,7 @@
     document.getElementById('lang-en').onclick = () => setLang('en');
 
     document.getElementById('clear-btn').onclick = () => {
+      saveState();
       editor.innerHTML = '';
       localStorage.removeItem('blokknote-html');
       editor.setAttribute('data-placeholder', translations[currentLang]);
@@ -230,6 +268,33 @@
       sound.play().catch(() => {});
     };
 
+    document.getElementById('share-btn').onclick = () => {
+      const sound = new Audio('audio/download.mp3');
+      sound.play().catch(() => {});
+
+      const content = editor.innerHTML;
+      try {
+        const encoded = btoa(unescape(encodeURIComponent(content)));
+        const url = `${window.location.origin}/view#${encoded}`;
+        window.open(url, '_blank');
+      } catch (e) {}
+    };
+
+    document.getElementById('cancel-btn').onclick = () => {
+      if (history.length <= 1) {
+        editor.innerHTML = '';
+        localStorage.removeItem('blokknote-html');
+        editor.setAttribute('data-placeholder', translations[currentLang]);
+      } else {
+        history.pop();
+        const prevState = history[history.length - 1];
+        editor.innerHTML = prevState || '';
+        localStorage.setItem('blokknote-html', editor.innerHTML);
+      }
+      const sound = new Audio('audio/erase.mp3');
+      sound.play().catch(() => {});
+    };
+
     document.getElementById('typing-test-btn').onclick = (e) => {
       e.preventDefault();
       window.location.href = 'typing-test.html';
@@ -237,5 +302,3 @@
   </script>
 </body>
 </html>
-
-
