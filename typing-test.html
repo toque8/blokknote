@@ -75,34 +75,35 @@
     }
     .download-result:hover { opacity: 1; }
 
-    /* ✅ Только для мобильных */
+    /* ✅ Строгая мобильная оптимизация */
     @media (max-width: 768px) {
       .top-bar {
-        padding: 12px 16px;
-        font-size: 15px;
+        padding: 8px 12px;
+        font-size: 14px;
       }
       .prompt-container {
-        padding: 0 16px 12px;
-        font-size: 15px;
-        line-height: 1.5;
+        padding: 0 12px 8px;
+        font-size: 14px;
+        line-height: 1.3;
       }
       #editor {
-        padding: 0 16px;
-        font-size: 15px;
-        line-height: 1.5;
-        max-height: 35vh;
-        overflow-y: auto;
+        padding: 0 12px;
+        font-size: 14px;
+        line-height: 1.3;
+        max-height: 30vh;
+        min-height: 100px;
       }
       .result {
-        padding: 10px 16px;
-        font-size: 15px;
+        padding: 8px 12px;
+        font-size: 14px;
+        line-height: 1.3;
       }
       .controls {
-        padding: 12px 16px;
-        margin-bottom: env(safe-area-inset-bottom, 10px);
+        padding: 8px 12px;
+        margin-bottom: env(safe-area-inset-bottom, 8px);
       }
       .download-result {
-        height: 36px;
+        height: 32px;
       }
     }
 
@@ -119,7 +120,7 @@
 <body>
 
   <div class="top-bar">
-    <a id="back-btn" href="index.html?from=test" style="font-size:16px;text-decoration:none;color:#000;opacity:0.7;">← Blokknote</a>
+    <a id="back-btn" href="index.html?from=test" style="font-size:14px;text-decoration:none;color:#000;opacity:0.7;">← Blokknote</a>
     <div class="timer" id="timer">—</div>
     <div class="lang-switch">
       <span id="lang-ru" class="active">RU</span>
@@ -251,10 +252,9 @@
       const typedText = editor.innerText;
       const resultText = resultEl.textContent;
       
-      function splitText(text, maxWidth = 80) {
+      function splitText(text, maxWidth = 70) {
         const lines = [];
         const sourceLines = text.split('\n');
-        
         for (const line of sourceLines) {
           if (line.length <= maxWidth) {
             lines.push(line);
@@ -273,9 +273,9 @@
       const sampleLines = splitText(sampleText);
       const typedLines = splitText(typedText);
       
-      const lineHeight = 24;
-      const margin = 20;
-      const sectionGap = 30;
+      const lineHeight = 20;
+      const margin = 12;
+      const sectionGap = 20;
       
       let height = margin;
       height += sampleLines.length * lineHeight;
@@ -285,14 +285,14 @@
       height += lineHeight;
       height += margin;
       
-      const width = 800;
+      const width = 600;
       canvas.width = width;
-      canvas.height = Math.max(height, 400);
+      canvas.height = Math.max(height, 300);
       
       ctx.fillStyle = '#f9f9f7';
       ctx.fillRect(0, 0, width, canvas.height);
       
-      ctx.font = '17px system-ui, -apple-system, sans-serif';
+      ctx.font = '14px system-ui, -apple-system, sans-serif';
       ctx.textBaseline = 'top';
       
       ctx.fillStyle = '#555';
@@ -311,7 +311,6 @@
       
       y += sectionGap;
       ctx.fillStyle = '#d0021b';
-      ctx.font = 'bold 18px system-ui';
       ctx.fillText(resultText || '', margin, y);
       
       const a = document.createElement('a');
