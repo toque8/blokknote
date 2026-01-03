@@ -96,6 +96,11 @@
   </div>
 
   <script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const sound = new Audio('audio/lang.mp3');
+    sound.play().catch(() => {});
+  });
+    
     const texts = {
       ru: "Когда я был в Петербурге, я часто вспоминал нашу кавказскую ночь и нашу умную, но такую несчастную Бэлу. Всё в том доме напоминало мне её: каждая вещь будто говорила мне: «Она здесь жила, здесь ходила, здесь сидела». Однажды я нашёл в её шкатулке маленький портрет меня, сделанный её рукой — и слёзы брызнули из глаз моих. Да, я любил её по-своему; быть может, я и теперь люблю. Но что было с нею после? Старый князь умер через год, и Янко уехал в Петербург. А Бэла?.. Говорят, она вышла замуж за какого-то татарского купца и живёт где-то в степи. Не знаю. Не хочу знать.",
       en: "The old lady stood perplexed for a moment, then said to herself: \"Well, I never! That boy can't ever seem to do what I ask him. But if he's not in mischief, he's probably daydreaming again. Goodness, how that child loves to dream! Still, he's clever — too clever for his own good, I sometimes think. And kind-hearted, too, deep down. If only he'd apply himself to something useful, instead of chasing after adventures and glory that don't exist outside of storybooks.\" She sighed, closed the door, and went back inside."
@@ -279,4 +284,5 @@
     editor.focus();
   </script>
 </body>
+
 </html>
