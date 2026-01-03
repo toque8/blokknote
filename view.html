@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blokknote — View</title>
+  <style>
+    body {
+      background: #f9f9f7;
+      color: black;
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 24px;
+      margin: 0;
+      line-height: 1.6;
+    }
+    @media (max-width: 500px) {
+      body { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+      try {
+        const decoded = decodeURIComponent(escape(atob(hash)));
+        document.body.innerHTML = decoded;
+      } catch (e) {
+        document.body.textContent = 'Document not found';
+      }
+    } else {
+      location.href = '/';
+    }
+  </script>
+</body>
+</html>
