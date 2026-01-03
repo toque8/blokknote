@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
@@ -7,18 +7,13 @@
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body {
-      height: 100%;
-      overflow: hidden;
-    }
+    html, body { height: 100%; overflow: hidden; }
     body {
       background: #f9f9f7;
       color: black;
       font-family: system-ui, -apple-system, sans-serif;
       display: flex;
       flex-direction: column;
-      -webkit-text-size-adjust: 100%;
-      text-size-adjust: 100%;
     }
     .top-bar {
       padding: 16px 20px;
@@ -27,34 +22,49 @@
       align-items: center;
       flex-shrink: 0;
     }
-    .pencil-icon {
-      height: 53px;
-      opacity: 0.8;
+    .top-bar > div:first-child,
+    .top-bar > div:last-child {
+      width: 120px;
+      display: flex;
+      justify-content: flex-start;
     }
-    .format-tools, .lang-switch {
+    .top-bar > div:last-child {
+      justify-content: flex-end;
+    }
+    .top-bar > div:nth-child(2) {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+    .pencil-icon { height: 53px; opacity: 0.8; }
+    .format-tools {
       font-size: 16px;
-      letter-spacing: 0.6px;
       display: flex;
       align-items: center;
       gap: 12px;
     }
-    .format-tools span, .lang-switch span {
+    .format-tools span {
       cursor: pointer;
       opacity: 0.7;
       user-select: none;
     }
-    .format-tools span:hover, .lang-switch span:hover {
-      opacity: 1;
+    .format-tools span:hover { opacity: 1; }
+    .lang-switch {
+      font-size: 16px;
+      display: flex;
+      gap: 6px;
+    }
+    .lang-switch span {
+      cursor: pointer;
+      opacity: 0.5;
+      user-select: none;
     }
     .lang-switch span.active { opacity: 1; }
-
-    /* Чёткое подчёркивание для g */
     .underline-hint {
       border-bottom: 2px solid currentColor;
       padding-bottom: 2px;
       display: inline-block;
     }
-
     #editor {
       flex: 1;
       padding: 24px;
@@ -67,7 +77,6 @@
       font-family: inherit;
       min-height: 200px;
       overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
     }
     #editor:focus { outline: none; }
     #editor:empty::before {
@@ -75,7 +84,6 @@
       color: #999;
       opacity: 0.6;
     }
-
     .controls {
       padding: 18px 20px;
       display: flex;
@@ -87,50 +95,39 @@
       height: 53px;
       cursor: pointer;
       opacity: 0.7;
-      transition: opacity 0.2s, transform 0.15s;
     }
-    .action-icon:hover {
+    .action-icon:hover { opacity: 1; }
+
+    .hourglass-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      margin-right: 12px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+    }
+    .hourglass-btn img {
+      height: 20px;
+      opacity: 0.7;
+    }
+    .hourglass-btn:hover img {
       opacity: 1;
-      transform: scale(1.08);
-    }
-
-    @media (max-width: 500px) {
-      .top-bar { padding: 14px 16px; }
-      .pencil-icon { height: 44px; }
-      .format-tools, .lang-switch { font-size: 15px; gap: 10px; }
-      #editor { padding: 20px 16px; font-size: 16px; }
-      .controls { padding: 16px; gap: 36px; }
-      .action-icon { height: 44px; }
-    }
-
-    @media (max-width: 360px) {
-      .top-bar { padding: 12px 12px; }
-      .format-tools, .lang-switch { gap: 8px; }
-      #editor { padding: 18px 12px; font-size: 15px; }
-      .controls { gap: 32px; padding: 14px 12px; }
-    }
-
-    @supports (padding-top: env(safe-area-inset-top)) {
-      .top-bar {
-        padding-top: calc(16px + env(safe-area-inset-top));
-      }
-      .controls {
-        padding-bottom: calc(18px + env(safe-area-inset-bottom));
-      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Аудио -->
   <audio id="sound-typing" src="audio/typing.mp3" preload="auto"></audio>
   <audio id="sound-erase" src="audio/erase.mp3" preload="auto"></audio>
   <audio id="sound-download" src="audio/download.mp3" preload="auto"></audio>
   <audio id="sound-lang" src="audio/lang.mp3" preload="auto"></audio>
 
   <div class="top-bar">
-    <img src="ui/pencil.png" class="pencil-icon" alt="" onerror="this.style.display='none'">
-    
+    <div>
+      <img src="ui/pencil.png" class="pencil-icon" alt="" onerror="this.style.display='none'">
+    </div>
     <div class="format-tools">
       <span id="btn-bold"><b>e</b></span>
       <span id="btn-italic"><i>f</i></span>
@@ -138,10 +135,14 @@
       <span id="btn-heading">h3</span>
       <span id="btn-list">i-j-k</span>
     </div>
-    
-    <div class="lang-switch">
-      <span id="lang-ru" class="active">RU</span>
-      <span id="lang-en">EN</span>
+    <div>
+      <button id="typing-test-btn" class="hourglass-btn">
+        <img src="ui/hourglass.png" alt="Typing Test" onerror="this.style.display='none'">
+      </button>
+      <div class="lang-switch">
+        <span id="lang-ru" class="active">RU</span>
+        <span id="lang-en">EN</span>
+      </div>
     </div>
   </div>
 
@@ -153,18 +154,12 @@
   </div>
 
   <script>
-    // === Аудио ===
-    const soundTyping = document.getElementById('sound-typing');
-    const soundErase = document.getElementById('sound-erase');
-    const soundDownload = document.getElementById('sound-download');
-    const soundLang = document.getElementById('sound-lang');
-
-    function playSound(audioEl) {
-      audioEl.currentTime = 0;
-      audioEl.play().catch(e => {});
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('from') === 'test') {
+      const sound = new Audio('audio/lang.mp3');
+      sound.play().catch(() => {});
     }
 
-    // === Редактор ===
     const editor = document.getElementById('editor');
     const translations = { ru: 'Пиши…', en: 'Typing…' };
     let currentLang = 'ru';
@@ -175,10 +170,10 @@
 
     editor.addEventListener('input', () => {
       localStorage.setItem('blokknote-html', editor.innerHTML);
-      playSound(soundTyping);
+      const sound = new Audio('audio/typing.mp3');
+      sound.play().catch(() => {});
     });
 
-    // === Форматирование ===
     function exec(cmd, value = null) {
       document.execCommand(cmd, false, value);
       editor.focus();
@@ -188,16 +183,11 @@
     document.getElementById('btn-italic').onclick = () => exec('italic');
     document.getElementById('btn-underline').onclick = () => exec('underline');
 
-    // h3 с переключением
     document.getElementById('btn-heading').onclick = () => {
-      const selection = window.getSelection();
-      if (selection.rangeCount === 0) return;
-
-      const container = selection.getRangeAt(0).commonAncestorContainer;
-      const inHeading = container.nodeType === 1 
-        ? container.closest('h3') 
-        : container.parentElement?.closest('h3');
-
+      const sel = window.getSelection();
+      if (sel.rangeCount === 0) return;
+      const container = sel.getRangeAt(0).commonAncestorContainer;
+      const inHeading = container.nodeType === 1 ? container.closest('h3') : container.parentElement?.closest('h3');
       if (inHeading) {
         document.execCommand('formatBlock', false, '<p>');
       } else {
@@ -208,49 +198,47 @@
 
     document.getElementById('btn-list').onclick = () => exec('insertUnorderedList');
 
-    // === Язык ===
     function setLang(lang) {
       currentLang = lang;
       editor.setAttribute('data-placeholder', translations[lang]);
       document.getElementById('lang-ru').classList.toggle('active', lang === 'ru');
       document.getElementById('lang-en').classList.toggle('active', lang === 'en');
-      playSound(soundLang);
+      const sound = new Audio('audio/lang.mp3');
+      sound.play().catch(() => {});
     }
     document.getElementById('lang-ru').onclick = () => setLang('ru');
     document.getElementById('lang-en').onclick = () => setLang('en');
 
-    // === Очистка ===
     document.getElementById('clear-btn').onclick = () => {
       editor.innerHTML = '';
       localStorage.removeItem('blokknote-html');
       editor.setAttribute('data-placeholder', translations[currentLang]);
-      playSound(soundErase);
+      const sound = new Audio('audio/erase.mp3');
+      sound.play().catch(() => {});
     };
 
-    // === Скачивание как .doc (HTML внутри) + звук ===
     document.getElementById('download-btn').onclick = () => {
-      const innerHtml = editor.innerHTML || '<p></p>';
-      const html = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <title>blokknote</title>
-        </head>
-        <body>
-          ${innerHtml}
-        </body>
-        </html>
-      `;
-
-      const blob = new Blob([html], { type: 'application/msword' });
+      const html = editor.innerHTML || '<p></p>';
+      const blob = new Blob([`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Blokknote</title></head><body>${html}</body></html>`], { type: 'application/msword' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = 'blokknote.doc';
       a.click();
       URL.revokeObjectURL(url);
-      playSound(soundDownload); // ✅ звук при скачивании
+      const sound = new Audio('audio/download.mp3');
+      sound.play().catch(() => {});
+    };
+
+    document.getElementById('typing-test-btn').onclick = (e) => {
+      e.preventDefault();
+      const sound = document.getElementById('sound-lang');
+      sound.currentTime = 0;
+      sound.play().catch(() => {
+        const fallback = new Audio('audio/lang.mp3');
+        fallback.play().catch(() => {});
+      });
+      window.location.href = 'typing-test.html';
     };
   </script>
 </body>
