@@ -1,0 +1,282 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Typing Test — Blokknote</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      background: #f9f9f7;
+      color: black;
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+    }
+    .top-bar {
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .timer { font-size: 16px; opacity: 0.6; }
+    .lang-switch {
+      font-size: 16px;
+      display: flex;
+      gap: 6px;
+    }
+    .lang-switch span {
+      cursor: pointer;
+      opacity: 0.5;
+      user-select: none;
+    }
+    .lang-switch span.active { opacity: 1; }
+    .prompt-container {
+      padding: 0 24px 16px;
+      font-size: 17px;
+      line-height: 1.6;
+      color: #555;
+      white-space: pre-wrap;
+    }
+    #editor {
+      flex: 1;
+      padding: 0 24px;
+      background: transparent;
+      color: black;
+      border: none;
+      outline: none;
+      font-size: 17px;
+      line-height: 1.6;
+      font-family: inherit;
+      min-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    #editor:focus { outline: none; }
+    #editor:disabled { opacity: 0.8; }
+    .result {
+      padding: 12px 24px;
+      font-size: 16px;
+      color: #333;
+      display: none;
+    }
+    .controls {
+      padding: 16px 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .download-result {
+      height: 40px;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+    .download-result:hover { opacity: 1; }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <a id="back-btn" href="index.html?from=test" style="font-size:16px;text-decoration:none;color:#000;opacity:0.7;">← Blokknote</a>
+    <div class="timer" id="timer">—</div>
+    <div class="lang-switch">
+      <span id="lang-ru" class="active">RU</span>
+      <span id="lang-en">EN</span>
+    </div>
+  </div>
+
+  <div class="prompt-container" id="prompt"></div>
+  <div id="editor" contenteditable="true" spellcheck="false"></div>
+  <div class="result" id="result"></div>
+
+  <div class="controls">
+    <img src="ui/download.png" class="download-result" id="download-result" onerror="this.style.display='none'">
+  </div>
+
+  <script>
+    const texts = {
+      ru: "Когда я был в Петербурге, я часто вспоминал нашу кавказскую ночь и нашу умную, но такую несчастную Бэлу. Всё в том доме напоминало мне её: каждая вещь будто говорила мне: «Она здесь жила, здесь ходила, здесь сидела». Однажды я нашёл в её шкатулке маленький портрет меня, сделанный её рукой — и слёзы брызнули из глаз моих. Да, я любил её по-своему; быть может, я и теперь люблю. Но что было с нею после? Старый князь умер через год, и Янко уехал в Петербург. А Бэла?.. Говорят, она вышла замуж за какого-то татарского купца и живёт где-то в степи. Не знаю. Не хочу знать.",
+      en: "The old lady stood perplexed for a moment, then said to herself: \"Well, I never! That boy can't ever seem to do what I ask him. But if he's not in mischief, he's probably daydreaming again. Goodness, how that child loves to dream! Still, he's clever — too clever for his own good, I sometimes think. And kind-hearted, too, deep down. If only he'd apply himself to something useful, instead of chasing after adventures and glory that don't exist outside of storybooks.\" She sighed, closed the door, and went back inside."
+    };
+
+    const translations = {
+      ru: { result: "симв/мин" },
+      en: { result: "symb/min" }
+    };
+
+    let currentLang = 'ru';
+    let startTime = null;
+    let testActive = false;
+    let timerInterval = null;
+
+    const promptEl = document.getElementById('prompt');
+    const editor = document.getElementById('editor');
+    const resultEl = document.getElementById('result');
+    const timerEl = document.getElementById('timer');
+
+    function renderPrompt() {
+      promptEl.textContent = texts[currentLang];
+    }
+
+    function startTimer() {
+      if (testActive) return;
+      testActive = true;
+      startTime = Date.now();
+      timerEl.textContent = '01:00';
+      let timeLeft = 60;
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        const min = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+        const sec = String(timeLeft % 60).padStart(2, '0');
+        timerEl.textContent = `${min}:${sec}`;
+        if (timeLeft <= 0) finishTest();
+      }, 1000);
+    }
+
+    function finishTest() {
+      if (!testActive) return;
+      testActive = false;
+      editor.setAttribute('contenteditable', 'false');
+      if (timerInterval) clearInterval(timerInterval);
+
+      const timeSpent = (Date.now() - startTime) / 1000;
+      const typed = editor.innerText;
+      const target = texts[currentLang];
+      let correct = 0;
+      for (let i = 0; i < typed.length && i < target.length; i++) {
+        if (typed[i] === target[i]) correct++;
+      }
+      const cpm = Math.round((correct / timeSpent) * 60);
+      resultEl.textContent = `${cpm} ${translations[currentLang].result}`;
+      resultEl.style.display = 'block';
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      renderPrompt();
+      document.getElementById('lang-ru').classList.toggle('active', lang === 'ru');
+      document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+      const sound = new Audio('audio/lang.mp3');
+      sound.play().catch(() => {});
+      if (!testActive) {
+        editor.innerText = '';
+        editor.setAttribute('contenteditable', 'true');
+        resultEl.style.display = 'none';
+        timerEl.textContent = '—';
+        if (timerInterval) clearInterval(timerInterval);
+      }
+    }
+
+    editor.addEventListener('input', () => {
+      if (!testActive) startTimer();
+      const sound = new Audio('audio/typing.mp3');
+      sound.play().catch(() => {});
+
+      const typed = editor.innerText;
+      const target = texts[currentLang];
+      let html = '';
+      for (let i = 0; i < target.length; i++) {
+        const char = target[i];
+        if (i < typed.length) {
+          if (typed[i] === char) {
+            html += `<span style="color:#555">${char}</span>`;
+          } else {
+            html += `<span style="color:#d0021b">${char}</span>`;
+          }
+        } else {
+          html += `<span style="color:#555">${char}</span>`;
+        }
+      }
+      promptEl.innerHTML = html.replace(/\n/g, '<br>');
+    });
+
+    document.getElementById('lang-ru').onclick = () => setLang('ru');
+    document.getElementById('lang-en').onclick = () => setLang('en');
+
+    document.getElementById('download-result').onclick = () => {
+      const sound = new Audio('audio/download.mp3');
+      sound.play().catch(() => {});
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      const sampleText = texts[currentLang];
+      const typedText = editor.innerText;
+      const resultText = resultEl.textContent;
+      
+      function splitText(text, maxWidth = 80) {
+        const lines = [];
+        const sourceLines = text.split('\n');
+        
+        for (const line of sourceLines) {
+          if (line.length <= maxWidth) {
+            lines.push(line);
+          } else {
+            let start = 0;
+            while (start < line.length) {
+              const end = Math.min(start + maxWidth, line.length);
+              lines.push(line.substring(start, end));
+              start = end;
+            }
+          }
+        }
+        return lines;
+      }
+      
+      const sampleLines = splitText(sampleText);
+      const typedLines = splitText(typedText);
+      
+      const lineHeight = 24;
+      const margin = 20;
+      const sectionGap = 30;
+      
+      let height = margin;
+      height += sampleLines.length * lineHeight;
+      height += sectionGap;
+      height += typedLines.length * lineHeight;
+      height += sectionGap;
+      height += lineHeight;
+      height += margin;
+      
+      const width = 800;
+      canvas.width = width;
+      canvas.height = Math.max(height, 400);
+      
+      ctx.fillStyle = '#f9f9f7';
+      ctx.fillRect(0, 0, width, canvas.height);
+      
+      ctx.font = '17px system-ui, -apple-system, sans-serif';
+      ctx.textBaseline = 'top';
+      
+      ctx.fillStyle = '#555';
+      let y = margin;
+      for (const line of sampleLines) {
+        ctx.fillText(line, margin, y);
+        y += lineHeight;
+      }
+      
+      y += sectionGap;
+      ctx.fillStyle = '#000';
+      for (const line of typedLines) {
+        ctx.fillText(line, margin, y);
+        y += lineHeight;
+      }
+      
+      y += sectionGap;
+      ctx.fillStyle = '#d0021b';
+      ctx.font = 'bold 18px system-ui';
+      ctx.fillText(resultText || '', margin, y);
+      
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/png');
+      a.download = 'typing-test-result.png';
+      a.click();
+    };
+
+    renderPrompt();
+    editor.focus();
+  </script>
+</body>
+</html>
