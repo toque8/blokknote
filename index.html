@@ -232,13 +232,10 @@
 
     document.getElementById('typing-test-btn').onclick = (e) => {
       e.preventDefault();
-      const sound = document.getElementById('sound-lang');
-      sound.pause();
-      sound.currentTime = 0;
-      sound.play().catch(() => {});
       window.location.href = 'typing-test.html';
     };
   </script>
 </body>
 </html>
+
 
