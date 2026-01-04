@@ -1,5 +1,5 @@
-export default async function handler(req, context) {
-  const id = context.params.id;
+export default async function handler(request, { params }) {
+  const id = params.id;
 
   const res = await fetch(`${process.env.KV_REST_API_URL}/get/${id}`, {
     headers: { 'Authorization': `Bearer ${process.env.KV_REST_API_TOKEN}` }
@@ -30,4 +30,3 @@ export default async function handler(req, context) {
     headers: { 'Content-Type': 'text/html; charset=utf-8' }
   });
 }
-
