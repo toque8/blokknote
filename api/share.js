@@ -10,10 +10,10 @@ export default async function handler(req) {
 
   const id = Math.random().toString(36).substring(2, 10);
 
-  const res = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/${id}`, {
+  const res = await fetch(`${process.env.KV_REST_API_URL}/set/${id}`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
+      'Authorization': `Bearer ${process.env.KV_REST_API_TOKEN}`,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -30,3 +30,4 @@ export default async function handler(req) {
     headers: { 'Content-Type': 'application/json' }
   });
 }
+
