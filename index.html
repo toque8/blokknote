@@ -269,65 +269,41 @@
     };
 
     document.getElementById('share-btn').onclick = async () => {
-      console.log('Share button clicked');
-  
       const content = editor.innerHTML;
-  
-      if (!content || content.trim() === '' || content === '<p></p>' || content === '<p><br></p>') {
-      alert('Добавьте текст для публикации');
-      return;
+
+      if (!content.trim()) {
+        alert('Добавьте текст');
+        return;
       }
-  
+
+      const btn = document.getElementById('share-btn');
+      btn.style.opacity = '0.5';
+
       try {
-      // Звук
-      const sound = new Audio('audio/download.mp3');
-      sound.play().catch(() => {});
-    
-      // Индикатор загрузки
-      const shareBtn = document.getElementById('share-btn');
-      shareBtn.style.opacity = '0.5';
-    
-      // Отправка
-      const response = await fetch('/api/share', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ 
-        content: content
-      })
-      });
-    
-      console.log('Response status:', response.status);
-    
-      const data = await response.json();
-      console.log('Response data:', data);
-    
-      if (!response.ok) {
-      throw new Error(data.error || `Ошибка: ${response.status}`);
+      const res = await fetch('/api/share', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                content: content
+            })
+        });
+
+      const data = await res.json();
+
+      if (res.ok) {
+      const fullUrl = window.location.origin + data.url;
+      window.open(fullUrl, '_blank');
+        } else {
+            alert('Ошибка: ' + (data.error || res.status));
+        }
+      } catch {
+        alert('Ошибка сети');
       }
-    
-      if (data.url) {
-      // Открываем ссылку
-      window.open(data.url, '_blank');
-      
-      // Уведомление
-      setTimeout(() => {
-        alert(`✅ Документ опубликован!\n\nСсылка: ${data.url}\n\nСсылка действительна 7 дней.`);
-      }, 500);
-      } else {
-      throw new Error('Не получена ссылка от сервера');
-      }
-    
-      } catch (error) {
-      console.error('Share error:', error);
-      alert('❌ Ошибка публикации: ' + error.message);
-      } finally {
-      // Восстанавливаем кнопку
-      const shareBtn = document.getElementById('share-btn');
-      shareBtn.style.opacity = '1';
-      }
-  };
+
+      btn.style.opacity = '1';
+    };
 
     document.getElementById('cancel-btn').onclick = () => {
       if (history.length <= 1) {
@@ -351,6 +327,7 @@
   </script>
 </body>
 </html>
+
 
 
 
