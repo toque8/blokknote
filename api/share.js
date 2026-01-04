@@ -23,16 +23,14 @@ module.exports = async (req, res) => {
 
   const id = Math.random().toString(36).substring(2, 10);
 
-  const url = `${process.env.KV_REST_API_URL}/set/${id}`;
-  const auth = `Bearer ${process.env.KV_REST_API_TOKEN}`;
-
-  const apiRes = await fetch(url, {
+  // Отправляем ТЕКСТ НАПРЯМУЮ, без { value: ... }
+  const apiRes = await fetch(`${process.env.KV_REST_API_URL}/set/${id}`, {
     method: 'POST',
     headers: {
-      'Authorization': auth,
-      'Content-Type': 'application/json'
+      'Authorization': `Bearer ${process.env.KV_REST_API_TOKEN}`,
+      'Content-Type': 'text/plain'
     },
-    body: JSON.stringify({ value: content, ex: 604800 })
+    body: content // ← просто строка
   });
 
   if (!apiRes.ok) {
