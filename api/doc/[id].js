@@ -1,12 +1,11 @@
 // api/doc/[id].js
-export default async function handler(req, { params }) {
+export default async function handler(request, { params }) {
   try {
     const id = params.id;
-    const url = `${process.env.UPSTASH_REDIS_REST_URL}/get/${id}`;
-    const auth = `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`;
-
-    const res = await fetch(url, {
-      headers: { 'Authorization': auth }
+    const res = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+      }
     });
 
     if (!res.ok) {
