@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "api/share/route.js": {
+      "runtime": "edge"
+    },
+    "api/doc.js": {
+      "runtime": "edge"
+    }
+  }
+}
