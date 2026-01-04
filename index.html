@@ -269,8 +269,7 @@
     };
 
     document.getElementById('share-btn').onclick = async () => {
-      const sound = new Audio('audio/download.mp3');
-      sound.play().catch(() => {});
+      console.log('Share button clicked');
   
       const content = editor.innerHTML;
   
@@ -280,40 +279,55 @@
       }
   
       try {
+      // Звук
+      const sound = new Audio('audio/download.mp3');
+      sound.play().catch(() => {});
+    
+      // Индикатор загрузки
       const shareBtn = document.getElementById('share-btn');
-      const originalSrc = shareBtn.src;
       shareBtn.style.opacity = '0.5';
     
+      // Отправка
       const response = await fetch('/api/share', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ content: content })
+      body: JSON.stringify({ 
+        content: content
+      })
       });
     
-      if (!response.ok) {
-      throw new Error(`Ошибка: ${response.status}`);
-      }
+      console.log('Response status:', response.status);
     
       const data = await response.json();
+      console.log('Response data:', data);
+    
+      if (!response.ok) {
+      throw new Error(data.error || `Ошибка: ${response.status}`);
+      }
     
       if (data.url) {
+      // Открываем ссылку
       window.open(data.url, '_blank');
-      alert(`Документ опубликован!\nСсылка: ${data.url}\nСсылка действительна 7 дней.`);
+      
+      // Уведомление
+      setTimeout(() => {
+        alert(`✅ Документ опубликован!\n\nСсылка: ${data.url}\n\nСсылка действительна 7 дней.`);
+      }, 500);
       } else {
-      throw new Error('Не получена ссылка');
+      throw new Error('Не получена ссылка от сервера');
       }
     
       } catch (error) {
-      console.error('Ошибка публикации:', error);
-      alert('Не удалось опубликовать документ. Попробуйте снова.');
+      console.error('Share error:', error);
+      alert('❌ Ошибка публикации: ' + error.message);
       } finally {
+      // Восстанавливаем кнопку
       const shareBtn = document.getElementById('share-btn');
-      shareBtn.src = originalSrc;
       shareBtn.style.opacity = '1';
       }
-};
+  };
 
     document.getElementById('cancel-btn').onclick = () => {
       if (history.length <= 1) {
@@ -337,6 +351,7 @@
   </script>
 </body>
 </html>
+
 
 
 
