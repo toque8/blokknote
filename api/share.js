@@ -1,9 +1,9 @@
-export default async function handler(req) {
-  if (req.method !== 'POST') {
+export default async function handler(request) {
+  if (request.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 });
   }
 
-  const { content } = await req.json();
+  const { content } = await request.json();
   if (!content) {
     return new Response('Invalid content', { status: 400 });
   }
@@ -30,4 +30,3 @@ export default async function handler(req) {
     headers: { 'Content-Type': 'application/json' }
   });
 }
-
