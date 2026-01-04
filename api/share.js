@@ -1,29 +1,44 @@
-export default async function handler(request) {
-  if (request.method !== 'POST') {
-    return new Response('Method not allowed', { status: 405 });
+// @ts-nocheck
+module.exports = async (req, res) => {
+  if (req.method !== 'POST') {
+    return res.status(405).end('Method not allowed');
   }
 
-  const { content } = await request.json();
+  let content;
+  try {
+    const buffers = [];
+    for await (const chunk of req) {
+      buffers.push(chunk);
+    }
+    const body = Buffer.concat(buffers).toString();
+    const json = JSON.parse(body);
+    content = json.content;
+  } catch (e) {
+    return res.status(400).end('Invalid JSON');
+  }
+
   if (!content) {
-    return new Response('Invalid content', { status: 400 });
+    return res.status(400).end('Invalid content');
   }
 
   const id = Math.random().toString(36).substring(2, 10);
 
-  const res = await fetch(`${process.env.KV_REST_API_URL}/set/${id}`, {
+  const url = `${process.env.KV_REST_API_URL}/set/${id}`;
+  const auth = `Bearer ${process.env.KV_REST_API_TOKEN}`;
+
+  const apiRes = await fetch(url, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${process.env.KV_REST_API_TOKEN}`,
+      'Authorization': auth,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ value: content, ex: 604800 })
   });
 
-  if (!res.ok) {
-    return new Response('Failed to save', { status: 500 });
+  if (!apiRes.ok) {
+    return res.status(500).end('Upstash error');
   }
 
-  return new Response(JSON.stringify({ id }), {
-    headers: { 'Content-Type': 'application/json' }
-  });
-}
+  res.setHeader('Content-Type', 'application/json');
+  res.end(JSON.stringify({ id }));
+};
