@@ -268,21 +268,52 @@
       sound.play().catch(() => {});
     };
 
-  document.getElementById('share-btn').onclick = async () => {
-    const sound = new Audio('audio/download.mp3');
-    sound.play().catch(() => {});
-
-    const content = editor.innerHTML;
-    try {
-      const res = await fetch('/api/share', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content })
+    document.getElementById('share-btn').onclick = async () => {
+      const sound = new Audio('audio/download.mp3');
+      sound.play().catch(() => {});
+  
+      const content = editor.innerHTML;
+  
+      if (!content || content.trim() === '' || content === '<p></p>' || content === '<p><br></p>') {
+      alert('Добавьте текст для публикации');
+      return;
+      }
+  
+      try {
+      const shareBtn = document.getElementById('share-btn');
+      const originalSrc = shareBtn.src;
+      shareBtn.style.opacity = '0.5';
+    
+      const response = await fetch('/api/share', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ content: content })
       });
-      const { url } = await res.json();
-      window.open(window.location.origin + url, '_blank');
-    } catch (e) {}
-  };
+    
+      if (!response.ok) {
+      throw new Error(`Ошибка: ${response.status}`);
+      }
+    
+      const data = await response.json();
+    
+      if (data.url) {
+      window.open(data.url, '_blank');
+      alert(`Документ опубликован!\nСсылка: ${data.url}\nСсылка действительна 7 дней.`);
+      } else {
+      throw new Error('Не получена ссылка');
+      }
+    
+      } catch (error) {
+      console.error('Ошибка публикации:', error);
+      alert('Не удалось опубликовать документ. Попробуйте снова.');
+      } finally {
+      const shareBtn = document.getElementById('share-btn');
+      shareBtn.src = originalSrc;
+      shareBtn.style.opacity = '1';
+      }
+};
 
     document.getElementById('cancel-btn').onclick = () => {
       if (history.length <= 1) {
@@ -306,5 +337,6 @@
   </script>
 </body>
 </html>
+
 
 
