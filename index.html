@@ -268,17 +268,21 @@
       sound.play().catch(() => {});
     };
 
-    document.getElementById('share-btn').onclick = () => {
-      const sound = new Audio('audio/download.mp3');
-      sound.play().catch(() => {});
+  document.getElementById('share-btn').onclick = async () => {
+    const sound = new Audio('audio/download.mp3');
+    sound.play().catch(() => {});
 
-      const content = editor.innerHTML;
-      try {
-        const encoded = btoa(unescape(encodeURIComponent(content)));
-        const url = `${window.location.origin}/view.html#${encoded}`;
-        window.open(url, '_blank');
-      } catch (e) {}
-    };
+    const content = editor.innerHTML;
+    try {
+      const res = await fetch('/api/share', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content })
+      });
+      const { url } = await res.json();
+      window.open(window.location.origin + url, '_blank');
+    } catch (e) {}
+  };
 
     document.getElementById('cancel-btn').onclick = () => {
       if (history.length <= 1) {
@@ -302,4 +306,5 @@
   </script>
 </body>
 </html>
+
 
