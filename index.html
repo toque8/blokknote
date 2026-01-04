@@ -269,6 +269,9 @@
     };
 
     document.getElementById('share-btn').onclick = async () => {
+      const sound = new Audio('audio/download.mp3');
+      sound.play().catch(() => {});
+      
       const content = editor.innerHTML;
 
       if (!content.trim()) {
@@ -327,6 +330,7 @@
   </script>
 </body>
 </html>
+
 
 
 
