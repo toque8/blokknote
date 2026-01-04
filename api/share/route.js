@@ -1,4 +1,4 @@
-﻿export async function POST(request) {
+export async function POST(request) {
   const { content } = await request.json();
   if (!content) {
     return new Response('Invalid content', { status: 400 });
@@ -20,7 +20,6 @@
   }
 
   return new Response(JSON.stringify({ id }), {
-  headers: { 'Content-Type': 'application/json' }
+    headers: { 'Content-Type': 'application/json' }
   });
-
 }
