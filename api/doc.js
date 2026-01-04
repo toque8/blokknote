@@ -1,24 +1,16 @@
-// api/doc.js
-export async function GET(request) {
+export default async function handler(request) {
   const url = new URL(request.url);
   const id = url.searchParams.get('id');
-
-  if (!id) {
-    return new Response('ID required', { status: 400 });
-  }
+  if (!id) return new Response('Missing id', { status: 400 });
 
   const res = await fetch(`${process.env.KV_REST_API_URL}/get/${id}`, {
     headers: { 'Authorization': `Bearer ${process.env.KV_REST_API_TOKEN}` }
   });
 
-  if (!res.ok) {
-    return new Response('Not found', { status: 404 });
-  }
+  if (!res.ok) return new Response('Not found', { status: 404 });
 
   const content = await res.text();
-  if (content === 'null') {
-    return new Response('Not found', { status: 404 });
-  }
+  if (content === 'null') return new Response('Not found', { status: 404 });
 
   return new Response(`
     <!DOCTYPE html>
