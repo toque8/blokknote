@@ -19,11 +19,22 @@ module.exports = async (req, res) => {
     return res.end('Not found');
   }
 
-  const content = await apiRes.text();
-  if (content === 'null') {
-    res.statusCode = 404;
-    return res.end('Not found');
+  let content = '';
+  try {
+    const data = await apiRes.json();
+    content = data.result || '';
+  } catch (e) {
+    // fallback: если вдруг вернулась чистая строка
+    content = await apiRes.text();
+    if (content === 'null') content = '';
   }
+
+  const escapeHtml = (str) => str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.end(`
