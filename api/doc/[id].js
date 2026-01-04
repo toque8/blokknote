@@ -1,7 +1,7 @@
-export default async function handler(req, { params }) {
-  const id = params.id;
+export default async function handler(req, context) {
+  const id = context.params.id;
 
-  const res = await fetch(process.env.UPSTASH_REDIS_REST_URL + '/get/' + id, {
+  const res = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/${id}`, {
     headers: { 'Authorization': `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}` }
   });
 
