@@ -2,7 +2,8 @@
 export default async function handler(request, { params }) {
   try {
     const id = params.id;
-    const res = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/${id}`, {
+    const url = `${process.env.UPSTASH_REDIS_REST_URL}/get/${id}`;
+    const res = await fetch(url, {
       headers: {
         'Authorization': `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
       }
@@ -28,7 +29,7 @@ export default async function handler(request, { params }) {
           body {
             background: #f9f9f7;
             color: black;
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: system-ui, sans-serif;
             padding: 24px;
             margin: 0;
             line-height: 1.6;
