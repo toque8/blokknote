@@ -19,13 +19,10 @@ module.exports = async (req, res) => {
     return res.end('Not found');
   }
 
-  let content = '';
-  try {
-    const json = await apiRes.json();
-    content = json.value || '';
-  } catch (e) {
-    content = await apiRes.text();
-    if (content === 'null') content = '';
+  const content = await apiRes.text();
+  if (content === 'null') {
+    res.statusCode = 404;
+    return res.end('Not found');
   }
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
