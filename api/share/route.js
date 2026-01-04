@@ -19,7 +19,8 @@
     return new Response('Failed to save', { status: 500 });
   }
 
-  return new Response(JSON.stringify({ url: `/doc/${id}` }), {
-    headers: { 'Content-Type': 'application/json' }
+  return new Response(JSON.stringify({ id }), {
+  headers: { 'Content-Type': 'application/json' }
   });
+
 }
