@@ -293,7 +293,7 @@
       const data = await res.json();
 
       if (res.ok) {
-      const fullUrl = window.location.origin + data.url;
+      const fullUrl = `${window.location.origin}/api/doc?id=${data.id}`;
       window.open(fullUrl, '_blank');
         } else {
             alert('Ошибка: ' + (data.error || res.status));
@@ -327,6 +327,7 @@
   </script>
 </body>
 </html>
+
 
 
 
