@@ -1,18 +1,32 @@
-export default async function handler(request) {
-  const url = new URL(request.url);
+// @ts-nocheck
+module.exports = async (req, res) => {
+  const url = new URL(req.url, `https://${req.headers.host}`);
   const id = url.searchParams.get('id');
-  if (!id) return new Response('Missing id', { status: 400 });
 
-  const res = await fetch(`${process.env.KV_REST_API_URL}/get/${id}`, {
-    headers: { 'Authorization': `Bearer ${process.env.KV_REST_API_TOKEN}` }
+  if (!id) {
+    res.statusCode = 400;
+    return res.end('Missing id');
+  }
+
+  const apiRes = await fetch(`${process.env.KV_REST_API_URL}/get/${id}`, {
+    headers: {
+      'Authorization': `Bearer ${process.env.KV_REST_API_TOKEN}`
+    }
   });
 
-  if (!res.ok) return new Response('Not found', { status: 404 });
+  if (!apiRes.ok) {
+    res.statusCode = 404;
+    return res.end('Not found');
+  }
 
-  const content = await res.text();
-  if (content === 'null') return new Response('Not found', { status: 404 });
+  const content = await apiRes.text();
+  if (content === 'null') {
+    res.statusCode = 404;
+    return res.end('Not found');
+  }
 
-  return new Response(`
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.end(`
     <!DOCTYPE html>
     <html>
     <head>
@@ -23,7 +37,5 @@ export default async function handler(request) {
     </head>
     <body>${content}</body>
     </html>
-  `, {
-    headers: { 'Content-Type': 'text/html; charset=utf-8' }
-  });
-}
+  `);
+};
