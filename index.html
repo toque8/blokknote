@@ -363,17 +363,25 @@
       sound.play().catch(() => {});
     };
 
-document.getElementById('download-btn').onclick = () => {
+document.getElementById('share-btn').onclick = async () => {
+  const sound = new Audio('audio/download.mp3');
+  sound.play().catch(() => {});
+  
+  const computedStyle = window.getComputedStyle(editor);
+  const fontSize = editor.style.fontSize || computedStyle.fontSize;
+  const fontFamily = editor.style.fontFamily || computedStyle.fontFamily;
+  
+  const style = `
+    body {
+      font-family: ${fontFamily} !important;
+      font-size: ${fontSize} !important;
+      line-height: 1.6;
+      padding: 24px;
+      margin: 0;
+    }
+  `;
+  
   const html = editor.innerHTML || '<p></p>';
-  
-  let style = '';
-  if (editor.style.fontFamily) {
-    style += `body { font-family: ${editor.style.fontFamily}; }`;
-  }
-  if (editor.style.fontSize) {
-    style += `body { font-size: ${editor.style.fontSize}; }`;
-  }
-  
   const fullHtml = `<!DOCTYPE html>
     <html>
       <head>
@@ -383,35 +391,10 @@ document.getElementById('download-btn').onclick = () => {
       </head>
       <body>${html}</body>
     </html>`;
-    
-  const blob = new Blob([fullHtml], { type: 'application/msword' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'blokknote.doc';
-  a.click();
-  URL.revokeObjectURL(url);
-  const sound = new Audio('audio/download.mp3');
-  sound.play().catch(() => {});
-};
 
-document.getElementById('share-btn').onclick = async () => {
-  const sound = new Audio('audio/download.mp3');
-  sound.play().catch(() => {});
-  
-  let sharedContent = editor.innerHTML;
-  const fontSize = editor.style.fontSize;
-  const fontFamily = editor.style.fontFamily;
-
-  if (fontSize || fontFamily) {
-    let style = '';
-    if (fontSize) style += `font-size: ${fontSize}; `;
-    if (fontFamily) style += `font-family: ${fontFamily}; `;
-    sharedContent = `<div style="${style}">${sharedContent}</div>`;
-  }
-
-  if (!sharedContent.trim().replace(/<[^>]*>/g, '')) {
-    alert('Добавьте текст');
+  const textContent = html.replace(/<[^>]*>/g, '').trim();
+  if (!textContent) {
+    alert('Add text');
     return;
   }
 
@@ -422,7 +405,7 @@ document.getElementById('share-btn').onclick = async () => {
     const res = await fetch('/api/share', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content: sharedContent })
+      body: JSON.stringify({ content: fullHtml })
     });
 
     const data = await res.json();
@@ -431,10 +414,10 @@ document.getElementById('share-btn').onclick = async () => {
       const fullUrl = `${window.location.origin}/api/doc?id=${data.id}`;
       window.open(fullUrl, '_blank');
     } else {
-      alert('Ошибка: ' + (data.error || res.status));
+      alert('Error: ' + (data.error || res.status));
     }
   } catch {
-    alert('Ошибка сети');
+    alert('Network error');
   }
 
   btn.style.opacity = '1';
@@ -649,4 +632,5 @@ document.getElementById('share-btn').onclick = async () => {
   </script>
 </body>
 </html>
+
 
