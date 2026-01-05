@@ -379,6 +379,10 @@
     };
 
     document.getElementById('download-btn').onclick = () => {
+      const sound = document.getElementById('sound-download');
+      sound.currentTime = 0;
+      sound.play().catch(() => {});
+      
       const textContent = editor.innerText.trim();
       if (!textContent) {
         alert(currentLang === 'ru' ? 'Добавьте текст' : 'Add text');
@@ -412,12 +416,11 @@
       a.download = 'blokknote.doc';
       a.click();
       URL.revokeObjectURL(url);
-      const sound = new Audio('audio/download.mp3');
-      sound.play().catch(() => {});
     };
 
     document.getElementById('share-btn').onclick = async () => {
-      const sound = new Audio('audio/download.mp3');
+      const sound = document.getElementById('sound-download');
+      sound.currentTime = 0;
       sound.play().catch(() => {});
       
       const computedStyle = window.getComputedStyle(editor);
@@ -685,6 +688,7 @@
   </script>
 </body>
 </html>
+
 
 
 
