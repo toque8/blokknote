@@ -85,6 +85,12 @@
       color: #999;
       opacity: 0.6;
     }
+    #editor ul {
+      padding-left: 20px;
+    }
+    #editor ol {
+      padding-left: 20px;
+    }
     .controls {
       padding: 18px 20px;
       display: flex;
@@ -186,6 +192,7 @@
       .action-icon { height: 34px; }
       .cancel-btn { bottom: 16px; left: 16px; height: 30px; }
       .font-size-group { gap: 6px; font-size: 15px; }
+      #typing-test-btn { margin-right: 8px; }
     }
 
     @media (max-width: 400px) {
@@ -193,6 +200,7 @@
       .font-size-group { gap: 5px; font-size: 14px; }
       .typewriter-icon { margin-right: 20px; }
       .format-tools { font-size: 14px; gap: 8px; }
+      #typing-test-btn { margin-right: 6px; }
     }
 
     @media (max-width: 360px) {
@@ -206,6 +214,7 @@
       .action-icon { height: 32px; }
       .cancel-btn { bottom: 14px; left: 12px; height: 28px; }
       .font-size-group { gap: 4px; font-size: 13px; }
+      #typing-test-btn { margin-right: 4px; }
     }
 
     @media (max-width: 320px) {
@@ -213,6 +222,7 @@
       .typewriter-icon { margin-right: 12px; }
       .font-size-group { gap: 3px; font-size: 12px; }
       .format-tools { gap: 5px; font-size: 12px; }
+      #typing-test-btn { margin-right: 3px; }
     }
 
     @supports (padding-top: env(safe-area-inset-top)) {
@@ -380,6 +390,12 @@
     };
 
     document.getElementById('download-btn').onclick = () => {
+      const textContent = editor.innerText.trim();
+      if (!textContent) {
+        alert(currentLang === 'ru' ? 'Добавьте текст' : 'Add text');
+        return;
+      }
+
       const html = editor.innerHTML || '<p></p>';
       const currentFontFamily = editor.style.fontFamily || 'system-ui, -apple-system, sans-serif';
       const currentFontSize = editor.style.fontSize || '17px';
