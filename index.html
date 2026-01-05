@@ -394,7 +394,7 @@ document.getElementById('share-btn').onclick = async () => {
 
   const textContent = html.replace(/<[^>]*>/g, '').trim();
   if (!textContent) {
-    alert('Add text');
+    alert(currentLang === 'ru' ? 'Добавьте текст' : 'Add text');
     return;
   }
 
@@ -414,10 +414,10 @@ document.getElementById('share-btn').onclick = async () => {
       const fullUrl = `${window.location.origin}/api/doc?id=${data.id}`;
       window.open(fullUrl, '_blank');
     } else {
-      alert('Error: ' + (data.error || res.status));
+      alert((currentLang === 'ru' ? 'Ошибка: ' : 'Error: ') + (data.error || res.status));
     }
   } catch {
-    alert('Network error');
+    alert(currentLang === 'ru' ? 'Ошибка сети' : 'Network error');
   }
 
   btn.style.opacity = '1';
@@ -632,5 +632,6 @@ document.getElementById('share-btn').onclick = async () => {
   </script>
 </body>
 </html>
+
 
 
