@@ -229,16 +229,16 @@
 </head>
 <body>
 
-  <audio id="sound-typing" src="audio/typing.mp3" preload="auto"></audio>
-  <audio id="sound-erase" src="audio/erase.mp3" preload="auto"></audio>
-  <audio id="sound-download" src="audio/download.mp3" preload="auto"></audio>
-  <audio id="sound-lang" src="audio/lang.mp3" preload="auto"></audio>
+  <audio id="sound-typing" src="https://blokknote.vercel.app/audio/typing.mp3" preload="auto"></audio>
+  <audio id="sound-erase" src="https://blokknote.vercel.app/audio/erase.mp3" preload="auto"></audio>
+  <audio id="sound-download" src="https://blokknote.vercel.app/audio/download.mp3" preload="auto"></audio>
+  <audio id="sound-lang" src="https://blokknote.vercel.app/audio/lang.mp3" preload="auto"></audio>
 
   <div class="top-bar">
     <div>
-      <img src="ui/pencil.png" class="pencil-icon" alt="" onerror="this.style.display='none'">
+      <img src="https://blokknote.vercel.app/ui/pencil.png" class="pencil-icon" alt="" onerror="this.style.display='none'">
       <div class="fonts-area">
-        <img src="ui/typewriter.png" class="typewriter-icon" id="fonts-trigger" alt="fonts" onerror="this.style.display='none'">
+        <img src="https://blokknote.vercel.app/ui/typewriter.png" class="typewriter-icon" id="fonts-trigger" alt="fonts" onerror="this.style.display='none'">
         <div class="font-size-group">
           <span class="size-btn" id="size-12">12</span>
           <span class="size-btn" id="size-14">14</span>
@@ -266,7 +266,7 @@
     </div>
     <div>
       <button id="typing-test-btn" style="background:none;border:none;cursor:pointer;padding:0;margin-right:12px;height:19px;display:inline-flex;align-items:center;">
-        <img src="ui/hourglass.png" alt="" onerror="this.style.display='none'" style="height:19px;opacity:0.7;">
+        <img src="https://blokknote.vercel.app/ui/hourglass.png" alt="" onerror="this.style.display='none'" style="height:19px;opacity:0.7;">
       </button>
       <div class="lang-switch">
         <span id="lang-ru" class="active">RU</span>
@@ -278,12 +278,12 @@
   <div id="editor" contenteditable="true" data-placeholder="Пиши…"></div>
 
   <div class="controls">
-    <img src="ui/erase.png" class="action-icon" id="clear-btn" onerror="this.style.display='none'">
-    <img src="ui/download.png" class="action-icon" id="download-btn" onerror="this.style.display='none'">
-    <img src="ui/share.png" class="action-icon" id="share-btn" onerror="this.style.display='none'">
+    <img src="https://blokknote.vercel.app/ui/erase.png" class="action-icon" id="clear-btn" onerror="this.style.display='none'">
+    <img src="https://blokknote.vercel.app/ui/download.png" class="action-icon" id="download-btn" onerror="this.style.display='none'">
+    <img src="https://blokknote.vercel.app/ui/share.png" class="action-icon" id="share-btn" onerror="this.style.display='none'">
   </div>
 
-  <img src="ui/cancel.png" class="cancel-btn" id="cancel-btn" onerror="this.style.display='none'">
+  <img src="https://blokknote.vercel.app/ui/cancel.png" class="cancel-btn" id="cancel-btn" onerror="this.style.display='none'">
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
@@ -688,6 +688,7 @@
   </script>
 </body>
 </html>
+
 
 
 
