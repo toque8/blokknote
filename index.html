@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Blokknote</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="https://blokknote.vercel.app/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="https://blokknote.vercel.app/favicon.ico" type="image/x-icon">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; overflow: hidden; }
@@ -288,7 +289,7 @@
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('from') === 'test') {
-      const sound = new Audio('audio/lang.mp3');
+      const sound = new Audio('https://blokknote.vercel.app/audio/lang.mp3');
       sound.play().catch(() => {});
     }
 
@@ -326,7 +327,7 @@
       localStorage.setItem('blokknote-html', editor.innerHTML);
       localStorage.setItem('blokknote-fontSize', editor.style.fontSize);
       localStorage.setItem('blokknote-fontFamily', editor.style.fontFamily);
-      const sound = new Audio('audio/typing.mp3');
+      const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
       sound.play().catch(() => {});
     });
 
@@ -359,7 +360,7 @@
       editor.setAttribute('data-placeholder', translations[lang]);
       document.getElementById('lang-ru').classList.toggle('active', lang === 'ru');
       document.getElementById('lang-en').classList.toggle('active', lang === 'en');
-      const sound = new Audio('audio/lang.mp3');
+      const sound = new Audio('https://blokknote.vercel.app/audio/lang.mp3');
       sound.play().catch(() => {});
     }
     document.getElementById('lang-ru').onclick = () => setLang('ru');
@@ -374,7 +375,7 @@
       localStorage.removeItem('blokknote-fontSize');
       localStorage.removeItem('blokknote-fontFamily');
       editor.setAttribute('data-placeholder', translations[currentLang]);
-      const sound = new Audio('audio/erase.mp3');
+      const sound = new Audio('https://blokknote.vercel.app/audio/erase.mp3');
       sound.play().catch(() => {});
     };
 
@@ -498,7 +499,7 @@
         localStorage.setItem('blokknote-fontSize', editor.style.fontSize);
         localStorage.setItem('blokknote-fontFamily', editor.style.fontFamily);
       }
-      const sound = new Audio('audio/erase.mp3');
+      const sound = new Audio('https://blokknote.vercel.app/audio/erase.mp3');
       sound.play().catch(() => {});
     };
 
@@ -513,7 +514,7 @@
 
     fontsTrigger.onclick = (e) => {
       e.stopPropagation();
-      const sound = new Audio('audio/typing.mp3');
+      const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
       sound.play().catch(() => {});
       fontsDropdown.classList.toggle('active');
     };
@@ -657,25 +658,25 @@
     }
 
     document.getElementById('size-12').onclick = () => {
-      const sound = new Audio('audio/typing.mp3');
+      const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
       sound.play().catch(() => {});
       applyFontSize(12);
     };
 
     document.getElementById('size-14').onclick = () => {
-      const sound = new Audio('audio/typing.mp3');
+      const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
       sound.play().catch(() => {});
       applyFontSize(14);
     };
 
     document.getElementById('size-plus').onclick = () => {
-      const sound = new Audio('audio/typing.mp3');
+      const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
       sound.play().catch(() => {});
       adjustFontSize(1);
     };
 
     document.getElementById('size-minus').onclick = () => {
-      const sound = new Audio('audio/typing.mp3');
+      const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
       sound.play().catch(() => {});
       adjustFontSize(-1);
     };
@@ -688,8 +689,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
