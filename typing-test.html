@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Typing Test — Blokknote</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="https://blokknote.vercel.app/favicon.ico" type="image/x-icon">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; overflow: hidden; }
@@ -75,7 +75,6 @@
     }
     .download-result:hover { opacity: 1; }
 
-    /* ✅ Строгая мобильная оптимизация */
     @media (max-width: 768px) {
       .top-bar {
         padding: 8px 12px;
@@ -133,12 +132,12 @@
   <div class="result" id="result"></div>
 
   <div class="controls">
-    <img src="ui/download.png" class="download-result" id="download-result" onerror="this.style.display='none'">
+    <img src="https://blokknote.vercel.app/ui/download.png" class="download-result" id="download-result" onerror="this.style.display='none'">
   </div>
 
   <script>
     window.addEventListener('DOMContentLoaded', () => {
-      const sound = new Audio('audio/lang.mp3');
+      const sound = new Audio('https://blokknote.vercel.app/audio/lang.mp3');
       sound.play().catch(() => {});
     });
 
@@ -204,7 +203,7 @@
       renderPrompt();
       document.getElementById('lang-ru').classList.toggle('active', lang === 'ru');
       document.getElementById('lang-en').classList.toggle('active', lang === 'en');
-      const sound = new Audio('audio/lang.mp3');
+      const sound = new Audio('https://blokknote.vercel.app/audio/lang.mp3');
       sound.play().catch(() => {});
       if (!testActive) {
         editor.innerText = '';
@@ -217,7 +216,7 @@
 
     editor.addEventListener('input', () => {
       if (!testActive) startTimer();
-      const sound = new Audio('audio/typing.mp3');
+      const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
       sound.play().catch(() => {});
 
       const typed = editor.innerText;
@@ -242,7 +241,7 @@
     document.getElementById('lang-en').onclick = () => setLang('en');
 
     document.getElementById('download-result').onclick = () => {
-      const sound = new Audio('audio/download.mp3');
+      const sound = new Audio('https://blokknote.vercel.app/audio/download.mp3');
       sound.play().catch(() => {});
 
       const canvas = document.createElement('canvas');
@@ -324,5 +323,3 @@
   </script>
 </body>
 </html>
-
-
