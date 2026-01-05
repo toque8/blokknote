@@ -395,41 +395,50 @@ document.getElementById('download-btn').onclick = () => {
   sound.play().catch(() => {});
 };
 
-    document.getElementById('share-btn').onclick = async () => {
-      const sound = new Audio('audio/download.mp3');
-      sound.play().catch(() => {});
-      
-      const content = editor.innerHTML;
+document.getElementById('share-btn').onclick = async () => {
+  const sound = new Audio('audio/download.mp3');
+  sound.play().catch(() => {});
+  
+  let sharedContent = editor.innerHTML;
+  const fontSize = editor.style.fontSize;
+  const fontFamily = editor.style.fontFamily;
 
-      if (!content.trim()) {
-        alert('Добавьте текст');
-        return;
-      }
+  if (fontSize || fontFamily) {
+    let style = '';
+    if (fontSize) style += `font-size: ${fontSize}; `;
+    if (fontFamily) style += `font-family: ${fontFamily}; `;
+    sharedContent = `<div style="${style}">${sharedContent}</div>`;
+  }
 
-      const btn = document.getElementById('share-btn');
-      btn.style.opacity = '0.5';
+  if (!sharedContent.trim().replace(/<[^>]*>/g, '')) {
+    alert('Добавьте текст');
+    return;
+  }
 
-      try {
-        const res = await fetch('/api/share', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content: content })
-        });
+  const btn = document.getElementById('share-btn');
+  btn.style.opacity = '0.5';
 
-        const data = await res.json();
+  try {
+    const res = await fetch('/api/share', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: sharedContent })
+    });
 
-        if (res.ok) {
-          const fullUrl = `${window.location.origin}/api/doc?id=${data.id}`;
-          window.open(fullUrl, '_blank');
-        } else {
-          alert('Ошибка: ' + (data.error || res.status));
-        }
-      } catch {
-        alert('Ошибка сети');
-      }
+    const data = await res.json();
 
-      btn.style.opacity = '1';
-    };
+    if (res.ok) {
+      const fullUrl = `${window.location.origin}/api/doc?id=${data.id}`;
+      window.open(fullUrl, '_blank');
+    } else {
+      alert('Ошибка: ' + (data.error || res.status));
+    }
+  } catch {
+    alert('Ошибка сети');
+  }
+
+  btn.style.opacity = '1';
+};
 
     document.getElementById('cancel-btn').onclick = () => {
       if (history.length <= 1) {
@@ -640,3 +649,4 @@ document.getElementById('download-btn').onclick = () => {
   </script>
 </body>
 </html>
+
