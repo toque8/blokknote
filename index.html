@@ -185,18 +185,34 @@
       .controls { padding: 16px; gap: 36px; }
       .action-icon { height: 34px; }
       .cancel-btn { bottom: 16px; left: 16px; height: 30px; }
+      .font-size-group { gap: 6px; font-size: 15px; }
+    }
+
+    @media (max-width: 400px) {
+      .fonts-area { left: 60px; }
+      .font-size-group { gap: 5px; font-size: 14px; }
+      .typewriter-icon { margin-right: 20px; }
+      .format-tools { font-size: 14px; gap: 8px; }
     }
 
     @media (max-width: 360px) {
       .top-bar { padding: 12px 12px; }
       .pencil-icon { height: 38px; }
-      .typewriter-icon { height: 34px; margin-right: 20px; }
-      .fonts-area { left: 55px; }
-      .format-tools { gap: 8px; font-size: 14px; }
+      .typewriter-icon { height: 34px; margin-right: 16px; }
+      .fonts-area { left: 50px; }
+      .format-tools { gap: 6px; font-size: 13px; }
       #editor { padding: 18px 12px; font-size: 15px; }
       .controls { gap: 32px; padding: 14px 12px; }
       .action-icon { height: 32px; }
       .cancel-btn { bottom: 14px; left: 12px; height: 28px; }
+      .font-size-group { gap: 4px; font-size: 13px; }
+    }
+
+    @media (max-width: 320px) {
+      .fonts-area { left: 45px; }
+      .typewriter-icon { margin-right: 12px; }
+      .font-size-group { gap: 3px; font-size: 12px; }
+      .format-tools { gap: 5px; font-size: 12px; }
     }
 
     @supports (padding-top: env(safe-area-inset-top)) {
@@ -363,26 +379,58 @@
       sound.play().catch(() => {});
     };
 
-document.getElementById('share-btn').onclick = async () => {
-  const sound = new Audio('audio/download.mp3');
-  sound.play().catch(() => {});
-  
-  const computedStyle = window.getComputedStyle(editor);
-  const fontSize = editor.style.fontSize || computedStyle.fontSize;
-  const fontFamily = editor.style.fontFamily || computedStyle.fontFamily;
-  
-  const style = `
-    body {
-      font-family: ${fontFamily} !important;
-      font-size: ${fontSize} !important;
-      line-height: 1.6;
-      padding: 24px;
-      margin: 0;
-    }
-  `;
-  
-  const html = editor.innerHTML || '<p></p>';
-  const fullHtml = `<!DOCTYPE html>
+    document.getElementById('download-btn').onclick = () => {
+      const html = editor.innerHTML || '<p></p>';
+      const currentFontFamily = editor.style.fontFamily || 'system-ui, -apple-system, sans-serif';
+      const currentFontSize = editor.style.fontSize || '17px';
+      
+      const fullHtml = `<!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Blokknote</title>
+        <style>
+          body {
+            font-family: ${currentFontFamily};
+            font-size: ${currentFontSize};
+            line-height: 1.6;
+          }
+        </style>
+      </head>
+      <body>${html}</body>
+    </html>`;
+      
+      const blob = new Blob([fullHtml], { type: 'application/msword' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'blokknote.doc';
+      a.click();
+      URL.revokeObjectURL(url);
+      const sound = new Audio('audio/download.mp3');
+      sound.play().catch(() => {});
+    };
+
+    document.getElementById('share-btn').onclick = async () => {
+      const sound = new Audio('audio/download.mp3');
+      sound.play().catch(() => {});
+      
+      const computedStyle = window.getComputedStyle(editor);
+      const fontSize = editor.style.fontSize || computedStyle.fontSize;
+      const fontFamily = editor.style.fontFamily || computedStyle.fontFamily;
+      
+      const style = `
+        body {
+          font-family: ${fontFamily} !important;
+          font-size: ${fontSize} !important;
+          line-height: 1.6;
+          padding: 24px;
+          margin: 0;
+        }
+      `;
+      
+      const html = editor.innerHTML || '<p></p>';
+      const fullHtml = `<!DOCTYPE html>
     <html>
       <head>
         <meta charset="utf-8">
@@ -392,36 +440,36 @@ document.getElementById('share-btn').onclick = async () => {
       <body>${html}</body>
     </html>`;
 
-  const textContent = html.replace(/<[^>]*>/g, '').trim();
-  if (!textContent) {
-    alert(currentLang === 'ru' ? 'Добавьте текст' : 'Add text');
-    return;
-  }
+      const textContent = html.replace(/<[^>]*>/g, '').trim();
+      if (!textContent) {
+        alert(currentLang === 'ru' ? 'Добавьте текст' : 'Add text');
+        return;
+      }
 
-  const btn = document.getElementById('share-btn');
-  btn.style.opacity = '0.5';
+      const btn = document.getElementById('share-btn');
+      btn.style.opacity = '0.5';
 
-  try {
-    const res = await fetch('/api/share', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content: fullHtml })
-    });
+      try {
+        const res = await fetch('/api/share', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: fullHtml })
+        });
 
-    const data = await res.json();
+        const data = await res.json();
 
-    if (res.ok) {
-      const fullUrl = `${window.location.origin}/api/doc?id=${data.id}`;
-      window.open(fullUrl, '_blank');
-    } else {
-      alert((currentLang === 'ru' ? 'Ошибка: ' : 'Error: ') + (data.error || res.status));
-    }
-  } catch {
-    alert(currentLang === 'ru' ? 'Ошибка сети' : 'Network error');
-  }
+        if (res.ok) {
+          const fullUrl = `${window.location.origin}/api/doc?id=${data.id}`;
+          window.open(fullUrl, '_blank');
+        } else {
+          alert((currentLang === 'ru' ? 'Ошибка: ' : 'Error: ') + (data.error || res.status));
+        }
+      } catch {
+        alert(currentLang === 'ru' ? 'Ошибка сети' : 'Network error');
+      }
 
-  btn.style.opacity = '1';
-};
+      btn.style.opacity = '1';
+    };
 
     document.getElementById('cancel-btn').onclick = () => {
       if (history.length <= 1) {
@@ -632,6 +680,3 @@ document.getElementById('share-btn').onclick = async () => {
   </script>
 </body>
 </html>
-
-
-
