@@ -333,9 +333,29 @@
 
     renderPrompt();
     editor.focus();
+    
+    const backBtn = document.getElementById('back-btn');
+    backBtn.addEventListener('mousedown', () => {
+        backBtn.style.opacity = '0.4';
+    });
+    backBtn.addEventListener('mouseup', () => {
+        backBtn.style.opacity = '0.7';
+    });
+    backBtn.addEventListener('click', () => {
+        setTimeout(() => {
+            backBtn.style.opacity = '0.4';
+        }, 20);
+    });
+    
+    if (performance.getEntriesByType('navigation')[0].type === 'back_forward') {
+        setTimeout(() => {
+            window.location.href = 'index.html?from=test';
+        }, 10);
+    }
   </script>
 </body>
 </html>
+
 
 
 
