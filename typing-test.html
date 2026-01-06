@@ -163,23 +163,6 @@
     const resultEl = document.getElementById('result');
     const timerEl = document.getElementById('timer');
 
-    backBtn.onclick = (e) => {
-      e.preventDefault();
-      const btn = e.currentTarget;
-      
-      if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-      }
-      
-      btn.style.opacity = '0.5';
-      btn.style.pointerEvents = 'none';
-      
-      setTimeout(() => {
-        window.location.href = 'index.html?from=test';
-      }, 30);
-    };
-
     function renderPrompt() {
       promptEl.textContent = texts[currentLang];
     }
@@ -342,5 +325,6 @@
   </script>
 </body>
 </html>
+
 
 
