@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
@@ -6,6 +6,15 @@
   <title>Blokknote</title>
   <link rel="icon" href="https://blokknote.vercel.app/favicon.ico" type="image/x-icon">
   <link rel="shortcut icon" href="https://blokknote.vercel.app/favicon.ico" type="image/x-icon">
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VJCRSE7S6X"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VJCRSE7S6X');
+  </script>
+  
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; overflow: hidden; }
@@ -182,6 +191,114 @@
       background: #f5f5f5;
     }
 
+    #donate-btn {
+      position: fixed;
+      bottom: 18px;
+      right: 20px;
+      width: 45px;
+      height: 45px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      z-index: 100;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      opacity: 0.7;
+    }
+
+    #donate-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    #donate-sidebar {
+      position: fixed;
+      top: 50%;
+      right: 20px;
+      width: 220px;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 101;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border: 1px solid rgba(0,0,0,0.1);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s, visibility 0.2s;
+    }
+
+    #donate-sidebar.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    #donate-sidebar h3 {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #333;
+      line-height: 1.3;
+    }
+
+    #donate-sidebar p {
+      font-size: 11px;
+      color: #555;
+      line-height: 1.2;
+      margin-bottom: 10px;
+      text-transform: lowercase;
+    }
+
+    #donate-address {
+      background: #f5f5f5;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      padding: 8px;
+      font-size: 11px;
+      font-family: monospace;
+      word-break: break-all;
+      color: #222;
+      line-height: 1.2;
+    }
+
+    .donate-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 99;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .donate-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    @media (max-width: 768px) {
+      #donate-btn {
+        width: 34px;
+        height: 34px;
+        bottom: 16px;
+        right: 16px;
+      }
+      
+      #donate-sidebar {
+        top: auto;
+        bottom: 70px;
+        left: 20px;
+        right: auto;
+        width: 200px;
+        transform: none;
+        padding: 12px;
+      }
+    }
+
     @media (max-width: 500px) {
       .top-bar { padding: 14px 16px; }
       .pencil-icon { height: 42px; }
@@ -192,6 +309,13 @@
       .action-icon { height: 34px; }
       .cancel-btn { bottom: 16px; left: 16px; height: 30px; }
       #typing-test-btn { margin-right: 8px; }
+      
+      #donate-btn {
+        width: 34px;
+        height: 34px;
+        bottom: 16px;
+        right: 16px;
+      }
     }
 
     @media (max-width: 400px) {
@@ -208,6 +332,13 @@
       .action-icon { height: 32px; }
       .cancel-btn { bottom: 14px; left: 12px; height: 28px; }
       #typing-test-btn { margin-right: 4px; }
+      
+      #donate-btn {
+        width: 32px;
+        height: 32px;
+        bottom: 14px;
+        right: 12px;
+      }
     }
 
     @media (max-width: 320px) {
@@ -285,6 +416,18 @@
   </div>
 
   <img src="https://blokknote.vercel.app/ui/cancel.png" class="cancel-btn" id="cancel-btn" onerror="this.style.display='none'">
+
+  <button id="donate-btn" onclick="toggleDonateSidebar()">
+    <img src="https://blokknote.vercel.app/ui/cup.png" alt="" decoding="async" loading="lazy">
+  </button>
+  
+  <div class="donate-overlay" id="donateOverlay" onclick="toggleDonateSidebar()"></div>
+  
+  <div id="donate-sidebar">
+    <h3>if you like<br>buy me a coffee?</h3>
+    <p>usdt trc20</p>
+    <div id="donate-address">TQuARR37qSt59am1R8aosCk2R1sgwwHwxT</div>
+  </div>
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
@@ -686,6 +829,28 @@
         fontsDropdown.classList.remove('active');
       }
     };
+
+    function toggleDonateSidebar() {
+      const sidebar = document.getElementById('donate-sidebar');
+      const overlay = document.getElementById('donateOverlay');
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+      
+      if (typeof gtag !== 'undefined') {
+        gtag('event', sidebar.classList.contains('active') ? 'donate_open' : 'donate_close', {
+          'event_category': 'donate'
+        });
+      }
+    }
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const sidebar = document.getElementById('donate-sidebar');
+        if (sidebar.classList.contains('active')) {
+          toggleDonateSidebar();
+        }
+      }
+    });
   </script>
 </body>
 </html>
