@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
     'use strict';
     
     const CONFIG = {
@@ -176,32 +176,40 @@
         }
         
         analyzeSensitivity() {
-            if (this.text.length === 0) return 'not defined';
+            if (this.text.length === 0) return 'neutral';
+            
             const textLower = this.text.toLowerCase();
             let warmCount = 0;
             let darkCount = 0;
+            
             ['ru', 'en'].forEach(lang => {
                 if (CONFIG.SENSITIVITY.warmWords[lang]) {
                     CONFIG.SENSITIVITY.warmWords[lang].forEach(word => {
-                        const regex = new RegExp('\\b' + word + '\\b', 'gi');
+                        const regex = new RegExp(`(^|[^\\p{L}])${this.escapeRegExp(word)}([^\\p{L}]|$)`, 'giu');
                         const matches = textLower.match(regex);
                         if (matches) warmCount += matches.length;
                     });
                 }
+                
                 if (CONFIG.SENSITIVITY.darkWords[lang]) {
                     CONFIG.SENSITIVITY.darkWords[lang].forEach(word => {
-                        const regex = new RegExp('\\b' + word + '\\b', 'gi');
+                        const regex = new RegExp(`(^|[^\\p{L}])${this.escapeRegExp(word)}([^\\p{L}]|$)`, 'giu');
                         const matches = textLower.match(regex);
                         if (matches) darkCount += matches.length;
                     });
                 }
             });
+            
             if (warmCount === 0 && darkCount === 0) return 'neutral';
             if (warmCount > darkCount * 1.5) return 'warm';
             if (darkCount > warmCount * 1.5) return 'dark';
             if (warmCount > darkCount) return 'warmish';
             if (darkCount > warmCount) return 'darkish';
             return 'balanced';
+        }
+        
+        escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
         
         getColorPalette() {
@@ -246,7 +254,7 @@
                         '#727272', '#939393', '#B4B4B4', '#D5D5D5', '#F6F6F6', '#767676', '#979797', '#B8B8B8',
                         '#D9D9D9', '#FAFAFA', '#7A7A7A', '#9B9B9B', '#BCBCBC', '#DDDDDD', '#FEFEFE', '#7E7E7E'
                     ];
-                case 'neutral':
+                case 'balanced':
                     return [
                         '#667eea', '#764ba2', '#6B8DD6', '#8E37D7', '#00d2ff', '#3a7bd5', '#834d9b', '#d04ed6',
                         '#FF416C', '#FF4B2B', '#5A67D8', '#9F7AEA', '#4299E1', '#0BC5EA', '#00B5D8', '#00CCBB',
