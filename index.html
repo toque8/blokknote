@@ -914,3 +914,224 @@
 
     document.getElementById('typing-test-btn').onclick = (e) => {
       e.preventDefault();
+      window.location.href = 'typing-test.html';
+    };
+
+    const fontsDropdown = document.getElementById('fonts-dropdown');
+    const fontsTrigger = document.getElementById('fonts-trigger');
+    const fontItems = document.querySelectorAll('#fonts-dropdown .font-item');
+
+    fontsTrigger.onclick = (e) => {
+      e.stopPropagation();
+      const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
+      sound.play().catch(() => {});
+      fontsDropdown.classList.toggle('active');
+    };
+
+    function getSelectedFontFamily() {
+      const sel = window.getSelection();
+      if (sel.rangeCount === 0 || sel.isCollapsed) return null;
+      const range = sel.getRangeAt(0);
+      const node = range.startContainer;
+      const element = node.nodeType === 3 ? node.parentElement : node;
+      return element ? window.getComputedStyle(element).fontFamily : null;
+    }
+
+    function applyFontToSelection(font) {
+      const selection = window.getSelection();
+      if (selection.rangeCount === 0 || selection.isCollapsed) return;
+      
+      const range = selection.getRangeAt(0);
+      const span = document.createElement('span');
+      span.style.fontFamily = font;
+      range.surroundContents(span);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+
+    function removeFontFromSelection() {
+      const selection = window.getSelection();
+      if (selection.rangeCount === 0 || selection.isCollapsed) return;
+      
+      const range = selection.getRangeAt(0);
+      const container = range.commonAncestorContainer;
+      const fontSpan = container.nodeType === 1 ? 
+        container.closest('span[style*="font-family"]') : 
+        container.parentElement.closest('span[style*="font-family"]');
+      
+      if (fontSpan) {
+        const parent = fontSpan.parentNode;
+        while (fontSpan.firstChild) {
+          parent.insertBefore(fontSpan.firstChild, fontSpan);
+        }
+        parent.removeChild(fontSpan);
+      }
+    }
+
+    fontItems.forEach(item => {
+      item.onclick = () => {
+        const font = item.getAttribute('data-font');
+        const selection = window.getSelection();
+        saveState();
+        
+        if (selection.rangeCount > 0 && !selection.getRangeAt(0).collapsed) {
+          const currentFont = getSelectedFontFamily();
+          if (currentFont && currentFont.replace(/"/g, '') === font.replace(/"/g, '')) {
+            removeFontFromSelection();
+          } else {
+            document.execCommand('fontName', false, font);
+          }
+        } else {
+          if (editor.style.fontFamily === font) {
+            editor.style.fontFamily = '';
+          } else {
+            editor.style.fontFamily = font;
+          }
+        }
+        
+        editor.focus();
+        localStorage.setItem('blokknote-html', editor.innerHTML);
+        localStorage.setItem('blokknote-fontFamily', editor.style.fontFamily);
+        fontsDropdown.classList.remove('active');
+      };
+    });
+
+    function getSelectedFontSize() {
+      const sel = window.getSelection();
+      if (sel.rangeCount === 0 || sel.isCollapsed) return null;
+      const range = sel.getRangeAt(0);
+      const node = range.startContainer;
+      const element = node.nodeType === 3 ? node.parentElement : node;
+      return element ? window.getComputedStyle(element).fontSize : null;
+    }
+
+    function applyFontSizeToSelection(size) {
+      document.execCommand('fontSize', false, 7);
+      const fontElements = editor.querySelectorAll('font[size="7"]');
+      fontElements.forEach(el => {
+        if (el.style.fontSize === '' || !el.style.fontSize) {
+          el.style.fontSize = size + 'px';
+        }
+      });
+    }
+
+    function applyFontSize(size) {
+      const selection = window.getSelection();
+      saveState();
+      
+      if (selection.rangeCount > 0 && !selection.getRangeAt(0).collapsed) {
+        const currentSize = getSelectedFontSize();
+        if (currentSize === size + 'px') {
+          document.execCommand('removeFormat');
+        } else {
+          applyFontSizeToSelection(size);
+        }
+      } else {
+        if (editor.style.fontSize === size + 'px') {
+          editor.style.fontSize = '';
+        } else {
+          editor.style.fontSize = size + 'px';
+        }
+      }
+      
+      editor.focus();
+      localStorage.setItem('blokknote-html', editor.innerHTML);
+      localStorage.setItem('blokknote-fontSize', editor.style.fontSize);
+    }
+
+    function adjustFontSize(delta) {
+      const selection = window.getSelection();
+      saveState();
+      
+      if (selection.rangeCount > 0 && !selection.getRangeAt(0).collapsed) {
+        const currentSize = getSelectedFontSize();
+        let current = currentSize ? parseInt(currentSize) : BASE_FONT_SIZE;
+        current = Math.max(MIN_FONT_SIZE, Math.min(MAX_FONT_SIZE, current + delta));
+        
+        document.execCommand('fontSize', false, 7);
+        const fontElements = editor.querySelectorAll('font[size="7"]');
+        fontElements.forEach(el => {
+          if (!el.style.fontSize || el.style.fontSize === currentSize) {
+            el.style.fontSize = current + 'px';
+          }
+        });
+      } else {
+        let current = parseInt(window.getComputedStyle(editor).fontSize) || BASE_FONT_SIZE;
+        current = Math.max(MIN_FONT_SIZE, Math.min(MAX_FONT_SIZE, current + delta));
+        editor.style.fontSize = current + 'px';
+      }
+      
+      editor.focus();
+      localStorage.setItem('blokknote-html', editor.innerHTML);
+      localStorage.setItem('blokknote-fontSize', editor.style.fontSize);
+    }
+
+    document.getElementById('size-12').onclick = () => {
+      const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
+      sound.play().catch(() => {});
+      applyFontSize(12);
+    };
+
+    document.getElementById('size-14').onclick = () => {
+      const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
+      sound.play().catch(() => {});
+      applyFontSize(14);
+    };
+
+    document.getElementById('size-plus').onclick = () => {
+      const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
+      sound.play().catch(() => {});
+      adjustFontSize(1);
+    };
+
+    document.getElementById('size-minus').onclick = () => {
+      const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
+      sound.play().catch(() => {});
+      adjustFontSize(-1);
+    };
+
+    document.onclick = (e) => {
+      if (!fontsTrigger.contains(e.target) && !fontsDropdown.contains(e.target)) {
+        fontsDropdown.classList.remove('active');
+      }
+    };
+
+    function toggleDonateSidebar() {
+      const sidebar = document.getElementById('donate-sidebar');
+      const overlay = document.getElementById('donateOverlay');
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+      
+      if (typeof gtag !== 'undefined') {
+        gtag('event', sidebar.classList.contains('active') ? 'donate_open' : 'donate_close', {
+          'event_category': 'donate'
+        });
+      }
+    }
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const sidebar = document.getElementById('donate-sidebar');
+        if (sidebar.classList.contains('active')) {
+          toggleDonateSidebar();
+        }
+      }
+    });
+
+    const chaosBtn = document.getElementById('chaos-btn');
+    if (chaosBtn) {
+      chaosBtn.addEventListener('mouseenter', () => {
+        chaosBtn.style.transform = 'rotate(15deg) scale(1.1)';
+        chaosBtn.style.filter = 'drop-shadow(0 0 8px rgba(102, 126, 234, 0.5))';
+      });
+      
+      chaosBtn.addEventListener('mouseleave', () => {
+        chaosBtn.style.transform = '';
+        chaosBtn.style.filter = '';
+      });
+    }
+  </script>
+  
+  <script src="chaos.js" defer></script>
+</body>
+</html>
