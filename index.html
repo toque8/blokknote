@@ -349,8 +349,8 @@
       #copyright-btn {
         width: 35px;
         height: 35px;
-        bottom: 15px;
-        right: 18px;
+        bottom: 18px;
+        right: 22px;
       }
       
       #donate-sidebar {
@@ -393,7 +393,7 @@
         width: 35px;
         height: 35px;
         bottom: 15px;
-        right: 16px;
+        right: 18px;
       }
     }
 
@@ -458,6 +458,106 @@
         bottom: calc(18px + env(safe-area-inset-bottom));
       }
     }
+
+    #chaos-btn { opacity: 0.7; }
+    #chaos-btn:hover { opacity: 1; }
+    @media (max-width: 768px) {
+      #chaos-btn { height: 34px; }
+    }
+    @media (max-width: 500px) {
+      #chaos-btn { height: 32px; }
+    }
+    @media (max-width: 360px) {
+      #chaos-btn { height: 30px; }
+    }
+
+    @media (max-width: 768px) {
+      #chaos-canvas-container {
+        height: 70vh !important;
+        max-height: 70vh !important;
+      }
+      
+      #chaos-caption {
+        font-size: 13px !important;
+        padding: 0 10px !important;
+        bottom: 10px !important;
+      }
+      
+      #chaos-close-btn {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 16px !important;
+        top: 10px !important;
+        right: 10px !important;
+      }
+    }
+
+    @media (max-width: 500px) {
+      #chaos-canvas-container {
+        height: 65vh !important;
+        max-height: 65vh !important;
+        border-radius: 15px 15px 0 0 !important;
+      }
+      
+      #chaos-caption {
+        font-size: 12px !important;
+        bottom: 8px !important;
+      }
+    }
+
+    #chaos-btn {
+      transition: all 0.3s ease !important;
+    }
+
+    #chaos-btn:hover {
+      transform: rotate(15deg) scale(1.1) !important;
+      filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.5)) !important;
+    }
+
+    #chaos-canvas-container {
+      will-change: transform, opacity;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
+
+    #chaos-canvas {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    @keyframes chaosSlideIn {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    
+    @keyframes chaosSlideOut {
+      from { transform: translateY(0); }
+      to { transform: translateY(100%); }
+    }
+    
+    @keyframes chaosFadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    #chaos-canvas-container {
+      animation: chaosSlideIn 0.3s ease-out;
+    }
+    
+    #chaos-canvas-container.closing {
+      animation: chaosSlideOut 0.3s ease-in;
+    }
+    
+    #chaos-caption {
+      animation: chaosFadeIn 0.5s ease-out 0.2s both;
+    }
+
+    .chaos-universe * {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
   </style>
 </head>
 <body>
@@ -511,9 +611,66 @@
   <div id="editor" contenteditable="true" data-placeholder="Пиши…"></div>
 
   <div class="controls">
+    <img src="ui/chaos.png" class="action-icon" id="chaos-btn" onerror="this.style.display='none'">
     <img src="https://blokknote.vercel.app/ui/erase.png" class="action-icon" id="clear-btn" onerror="this.style.display='none'">
     <img src="https://blokknote.vercel.app/ui/download.png" class="action-icon" id="download-btn" onerror="this.style.display='none'">
     <img src="https://blokknote.vercel.app/ui/share.png" class="action-icon" id="share-btn" onerror="this.style.display='none'">
+  </div>
+
+  <div id="chaos-canvas-container" style="
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 300px;
+    max-height: 50vh;
+    background: rgba(8, 12, 25, 0.95);
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -5px 30px rgba(0,0,0,0.5);
+    display: none;
+    z-index: 10000;
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.05);
+    touch-action: none;
+  ">
+    <canvas id="chaos-canvas" style="width:100%;height:100%;display:block;"></canvas>
+    <div id="chaos-caption" style="
+      position: absolute;
+      bottom: 15px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      color: rgba(220, 230, 255, 0.85);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      pointer-events: none;
+      text-shadow: 0 0 8px rgba(0, 8, 20, 1);
+      padding: 0 15px;
+      line-height: 1.4;
+    "></div>
+    <button id="chaos-close-btn" style="
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(30, 40, 70, 0.7);
+      border: 1px solid rgba(100, 150, 255, 0.3);
+      color: rgba(200, 220, 255, 0.9);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      z-index: 10001;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      transition: all 0.2s ease;
+    ">&times;</button>
   </div>
 
   <img src="https://blokknote.vercel.app/ui/cancel.png" class="cancel-btn" id="cancel-btn" onerror="this.style.display='none'">
@@ -960,17 +1117,21 @@
         }
       }
     });
+
+    const chaosBtn = document.getElementById('chaos-btn');
+    if (chaosBtn) {
+      chaosBtn.addEventListener('mouseenter', () => {
+        chaosBtn.style.transform = 'rotate(15deg) scale(1.1)';
+        chaosBtn.style.filter = 'drop-shadow(0 0 8px rgba(102, 126, 234, 0.5))';
+      });
+      
+      chaosBtn.addEventListener('mouseleave', () => {
+        chaosBtn.style.transform = '';
+        chaosBtn.style.filter = '';
+      });
+    }
   </script>
-</body
-
-
-
-
-
-
-
-
-
-
-
-
+  
+  <script src="chaos.js" defer></script>
+</body>
+</html>
