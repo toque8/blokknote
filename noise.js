@@ -60,21 +60,86 @@ const NOISE_CONFIG = {
                 'радость', 'счастье', 'надежда', 'мечта', 'свет', 'тепло', 'улыбка', 'друг', 'семья', 'солнце',
                 'праздник', 'успех', 'победа', 'красота', 'гармония', 'доброта', 'добро', 'щедрость', 'верность',
                 'честность', 'мудрость', 'свобода', 'приключение', 'открытие', 'вдохновение', 'творчество',
-                'энергия', 'жизнь', 'здоровье', 'благодарность', 'спокойствие', 'уют', 'комфорт', 'ласка',
+                'энергия', 'жизнь', 'здравие', 'благодарность', 'спокойствие', 'уют', 'комфорт', 'ласка',
                 'нежность', 'страсть', 'восторг', 'ликование', 'триумф', 'согласие', 'единство', 'дружба',
                 'поддержка', 'забота', 'опека', 'восхищение', 'признание', 'почет', 'уважение', 'доверие',
                 'понимание', 'сочувствие', 'созидание', 'благополучие', 'радушие', 'приветствие', 'ободрение',
-                'воодушевление', 'оптимизм', 'чистота', 'невинность', 'веселье', 'бодрость', 'сияние', 'процветание'
+                'воодушевление', 'оптимизм', 'благочестие', 'чистота', 'невинность', 'целомудрие', 'кротость',
+                'усердие', 'старание', 'трудолюбие', 'упорство', 'терпение', 'выдержка', 'мужество', 'отвага',
+                'храбрость', 'героизм', 'самоотверженность', 'трепет', 'благословение', 'веселье', 'бодрость',
+                'сияние', 'просветление', 'процветание', 'свежесть', 'безмятежность', 'простодушие', 'искренность',
+                'открытость', 'теплота', 'радостный', 'счастливый', 'надежный', 'светлый', 'теплый', 'дружелюбный',
+                'родной', 'солнечный', 'праздничный', 'успешный', 'красивый', 'гармоничный', 'добрый', 'щедрый',
+                'верный', 'честный', 'мудрый', 'свободный', 'вдохновляющий', 'творческий', 'энергичный', 'здоровый',
+                'благодарный', 'спокойный', 'уютный', 'комфортный', 'ласковый', 'нежный', 'страстный', 'восторженный',
+                'единодушный', 'дружеский', 'заботливый', 'восхищающий', 'уважаемый', 'доверчивый', 'понимающий',
+                'сочувствующий', 'благополучный', 'радушный', 'приветливый', 'ободряющий',
+                'воодушевленный', 'оптимистичный', 'благочестивый', 'чистый', 'невинный', 'целомудренный', 'кроткий',
+                'смиренный', 'усердный', 'прилежный', 'трудолюбивый', 'упорный', 'терпеливый', 'выдержанный',
+                'мужественный', 'отважный', 'храбрый', 'героический', 'самоотверженный', 'трепетный', 'веселый',
+                'бодрый', 'благоговейный', 'сияющий', 'процветающий', 'безмятежный', 'благодушный', 'искренний',
+                'открытый', 'непорочный', 'незапятнанный', 'безупречный', 'безгрешный', 'добродетельный', 'благородный',
+                'великодушный', 'гостеприимный', 'приветный', 'радоваться', 'наслаждаться', 'надеяться', 'мечтать',
+                'светить', 'греть', 'улыбаться', 'дружить', 'любить', 'праздновать', 'побеждать', 'украшать', 'дарить',
+                'верить', 'постигать', 'освобождать', 'открывать', 'вдохновлять', 'творить', 'жить', 'благодарить',
+                'успокаивать', 'утешать', 'ласкать', 'нежиться', 'восхищаться', 'соглашаться', 'объединять',
+                'поддерживать', 'заботиться', 'опекать', 'признавать', 'почитать', 'уважать', 'доверять', 'понимать',
+                'принимать', 'сочувствовать', 'благословлять', 'веселиться', 'воодушевлять', 'просветлять', 'сиять',
+                'процветать', 'веселить', 'прощать', 'теплеть', 'светлеть', 'благородствовать', 'приветствовать',
+                'возвышать', 'воспарять', 'расцветать', 'оживать', 'оживлять', 'окрылять', 'облагораживать',
+                'покровительствовать', 'прославлять', 'прочувствовать', 'чувствовать', 'радостно', 'счастливо',
+                'надежно', 'светло', 'дружелюбно', 'солнечно', 'весело', 'празднично', 'успешно', 'красиво',
+                'гармонично', 'щедро', 'верно', 'честно', 'мудро', 'свободно', 'вдохновенно', 'творчески', 'энергично',
+                'благодарно', 'спокойно', 'уютно', 'комфортно', 'ласково', 'нежно', 'страстно', 'восторженно',
+                'единогласно', 'дружески', 'заботливо', 'восхищенно', 'уважительно', 'доверчиво', 'понимающе',
+                'сочувственно', 'благополучно', 'радушно', 'приветливо', 'ободряюще', 'воодушевляюще', 'оптимистично',
+                'чисто', 'невинно', 'целомудренно', 'кротко', 'смиренне', 'усердно', 'прилежно', 'трудолюбиво',
+                'упорно', 'терпеливо', 'выдержанно', 'мужественно', 'отважно', 'храбро', 'героически', 'самоотверженно',
+                'трепетно', 'бодро', 'безмятежно', 'искренне', 'открыто', 'непорочно', 'безупречно', 'безгрешно',
+                'благородно', 'великодушно', 'гостеприимно', 'возвышенно', 'любовь', 'мир', 'весна'
             ],
             en: [
                 'joy', 'happiness', 'hope', 'dream', 'light', 'warmth', 'smile', 'friend', 'family', 'sun',
                 'celebration', 'success', 'victory', 'beauty', 'harmony', 'kindness', 'generosity', 'loyalty',
                 'honesty', 'wisdom', 'freedom', 'adventure', 'discovery', 'inspiration', 'creativity', 'energy',
                 'life', 'health', 'gratitude', 'calm', 'coziness', 'comfort', 'affection', 'tenderness', 'passion',
-                'delight', 'triumph', 'agreement', 'unity', 'friendship', 'support', 'care', 'admiration',
-                'recognition', 'honor', 'respect', 'trust', 'understanding', 'compassion', 'prosperity', 'welcome',
-                'encouragement', 'enthusiasm', 'optimism', 'purity', 'innocence', 'merriment', 'vigor', 'radiance',
-                'flourishing'
+                'delight', 'triumph', 'agreement', 'unity', 'friendship', 'support', 'care', 'guardianship',
+                'admiration', 'recognition', 'honor', 'respect', 'trust', 'understanding', 'compassion',
+                'peacemaking', 'prosperity', 'grace', 'blessing', 'welcome', 'greeting', 'encouragement',
+                'enthusiasm', 'optimism', 'piety', 'purity', 'innocence', 'chastity', 'meekness', 'humility',
+                'zeal', 'diligence', 'assiduity', 'industriousness', 'perseverance', 'patience', 'endurance',
+                'courage', 'valor', 'bravery', 'heroism', 'selflessness', 'reverence', 'merriment', 'vigor',
+                'buoyancy', 'radiance', 'enlightenment', 'flourishing', 'wellbeing', 'freshness', 'tranquility',
+                'glee', 'joyfulness', 'goodwill', 'trustfulness', 'naivety', 'sincerity', 'openness', 'joyful',
+                'happy', 'hopeful', 'bright', 'warm', 'friendly', 'dear', 'sunny', 'festive', 'successful',
+                'beautiful', 'harmonious', 'kind', 'generous', 'loyal', 'honest', 'wise', 'free', 'inspiring',
+                'creative', 'energetic', 'healthy', 'grateful', 'calm', 'cozy', 'comfortable', 'affectionate',
+                'tender', 'passionate', 'delighted', 'unanimous', 'caring', 'admiring', 'respected', 'trusting',
+                'understanding', 'compassionate', 'peacemaking', 'prosperous', 'gracious', 'welcoming',
+                'encouraging', 'enthusiastic', 'optimistic', 'pious', 'pure', 'innocent', 'chaste', 'meek',
+                'humble', 'zealous', 'diligent', 'assiduous', 'industrious', 'persevering', 'patient', 'enduring',
+                'courageous', 'valiant', 'brave', 'heroic', 'selfless', 'reverent', 'merry', 'vibrant', 'radiant',
+                'flourishing', 'tranquil', 'trusting', 'naive', 'sincere', 'open', 'immaculate', 'unblemished',
+                'impeccable', 'sinless', 'virtuous', 'noble', 'magnanimous', 'cordial', 'enjoy', 'hope', 'dream',
+                'shine', 'warm', 'smile', 'befriend', 'love', 'celebrate', 'win', 'decorate', 'harmonize', 'give',
+                'believe', 'think', 'comprehend', 'free', 'discover', 'inspire', 'create', 'live', 'thank', 'calm',
+                'caress', 'cherish', 'admire', 'agree', 'unite', 'support', 'care', 'protect', 'recognize',
+                'respect', 'trust', 'understand', 'sympathize', 'bless', 'merrymake', 'delight', 'optimize',
+                'enlighten', 'purify', 'radiate', 'flourish', 'prosper', 'cheer', 'forgive', 'brighten', 'greet',
+                'elevate', 'soar', 'blossom', 'revive', 'inspire', 'ennoble', 'proclaim', 'expect', 'patronize',
+                'praise', 'deeply feel', 'joyfully', 'happily', 'hopefully', 'brightly', 'warmly', 'friendly',
+                'dearly', 'sunnily', 'cheerfully', 'festively', 'successfully', 'beautifully', 'harmoniously',
+                'kindly', 'generously', 'loyally', 'honestly', 'wisely', 'freely', 'inspiringly', 'creatively',
+                'healthily', 'gratefully', 'calmly', 'cozily', 'comfortably', 'affectionately', 'tenderly',
+                'passionately', 'delightedly', 'unanimously', 'caringly', 'admiringly', 'respectfully',
+                'trustingly', 'understandingly', 'compassionately', 'peacemakingly', 'prosperously', 'graciously',
+                'welcomingly', 'encouragingly', 'enthusiastically', 'optimistically', 'piously', 'purely',
+                'innocently', 'chastely', 'meekly', 'humbly', 'zealously', 'diligently', 'assiduously',
+                'industriously', 'perseveringly', 'patiently', 'enduringly', 'courageously', 'valiantly',
+                'bravely', 'heroically', 'selflessly', 'reverently', 'merrily', 'vibrantly', 'radiantly',
+                'flourishingly', 'tranquilly', 'good-naturedly', 'trustingly', 'sincerely', 'openly', 'warmly',
+                'immaculately', 'impeccably', 'sinlessly', 'virtuously', 'nobly', 'magnanimously', 'cordially',
+                'sublimely', 'love', 'peace', 'spring'
             ]
         },
         darkWords: {
@@ -85,16 +150,110 @@ const NOISE_CONFIG = {
                 'ярость', 'гнев', 'ревность', 'зависть', 'жадность', 'скупость', 'эгоизм', 'равнодушие', 'холод',
                 'лед', 'мороз', 'туман', 'туча', 'гроза', 'ураган', 'разрушение', 'крах', 'провал', 'поражение',
                 'позор', 'стыд', 'вина', 'раскаяние', 'сожаление', 'отчаяние', 'безысходность', 'мрак', 'уныние',
-                'тлен', 'немощь', 'несправедливость', 'зло', 'жестокость', 'беспощадность'
+                'тлен', 'немощь', 'несправедливость', 'зло', 'коварство', 'вероломство', 'подлость', 'жестокость',
+                'беспощадность', 'безжалостность', 'бездушность', 'безразличие', 'неумолимость', 'беспросветность',
+                'безрадостность', 'безнадежность', 'безволие', 'бессилие', 'беззащитность', 'беспомощность',
+                'безвыходность', 'скорбь', 'горечь', 'ожесточение', 'безутешность', 'мрачность', 'угрюмость',
+                'тоскливость', 'хмурость', 'пессимизм', 'угроза', 'опасность', 'риск', 'бедствие', 'страдание',
+                'мука', 'плач', 'слезы', 'рыдание', 'вопль', 'неприятность', 'трагизм', 'гнет', 'угнетение',
+                'мученичество', 'неволя', 'принуждение', 'насилие', 'притеснение', 'изгнание', 'изоляция',
+                'отверженность', 'забвение', 'заброшенность', 'небрежность', 'пренебрежение', 'презрение',
+                'грустный', 'болезненный', 'смертный', 'темный', 'страшный', 'одинокий', 'тоскливый', 'печальный',
+                'разочарованный', 'потерянный', 'горестный', 'бедственный', 'несчастный', 'трагический',
+                'катастрофический', 'мучительный', 'истязующий', 'унизительный', 'предательский', 'лживый',
+                'обманчивый', 'ненавистный', 'злобный', 'яростный', 'гневный', 'ревнивый', 'завистливый', 'жадный',
+                'скупой', 'эгоистичный', 'равнодушный', 'холодный', 'ледяной', 'морозный', 'туманный', 'грозовой',
+                'ураганный', 'разрушительный', 'краховый', 'провальный', 'пораженческий', 'позорный', 'стыдный',
+                'виновный', 'раскаявшийся', 'сожалеющий', 'отчаявшийся', 'безысходный', 'мрачный', 'унылый',
+                'тленный', 'немощный', 'несправедливый', 'злой', 'коварный', 'вероломный', 'подлый', 'жестокий',
+                'беспощадный', 'безжалостный', 'бездушный', 'бесчувственный', 'безразличный', 'немилосердный',
+                'неумолимый', 'беспросветный', 'безрадостный', 'безнадежный', 'безвольный', 'бессильный',
+                'беззащитный', 'беспомощный', 'безвыходный', 'скорбный', 'горький', 'ожесточенный', 'безутешный',
+                'мрачный', 'хмурый', 'угрюмый', 'тоскливый', 'пессимистический', 'угрожающий', 'опасный',
+                'рискованный', 'бедственный', 'страдальческий', 'мучительный', 'плачевный', 'слезливый',
+                'рыдающий', 'вопиющий', 'неприятный', 'трагический', 'гнетущий', 'угнетающий', 'мученический',
+                'невольный', 'принудительный', 'насильственный', 'притеснительный', 'изгнанный', 'изолированный',
+                'отвергнутый', 'забытый', 'заброшенный', 'небрежный', 'пренебрежительный', 'презрительный',
+                'грустить', 'болеть', 'умирать', 'темнеть', 'страшиться', 'тосковать', 'печалиться',
+                'разочаровываться', 'терять', 'горевать', 'бедствовать', 'несчастливить', 'страдать', 'мучиться',
+                'пытать', 'истязать', 'унижать', 'предавать', 'изменять', 'лгать', 'обманывать', 'ненавидеть',
+                'злобствовать', 'яриться', 'гневаться', 'ревновать', 'завидовать', 'жадничать', 'скупиться',
+                'эгоистить', 'равнодушествовать', 'холодеть', 'леденеть', 'морозить', 'туманиться', 'тучнеть',
+                'грозить', 'ураганить', 'разрушать', 'краховать', 'проваливаться', 'терпеть поражение', 'позорить',
+                'стыдиться', 'чувствовать вину', 'раскаиваться', 'сожалеть', 'отчаиваться', 'чувствовать безысходность',
+                'мрачнеть', 'унывать', 'тлеть', 'немоществовать', 'несправедливить', 'злобствовать', 'коварничать',
+                'вероломствовать', 'подличать', 'жесточить', 'беспощадствовать', 'безжалостничать', 'бездушничать',
+                'бесчувствовать', 'безразличествовать', 'немилосердствовать', 'неумолимствовать', 'беспросветничать',
+                'безрадостничать', 'безнадежничать', 'безвольничать', 'бессиличать', 'беззащитничать',
+                'беспомоществовать', 'безвыходничать', 'скорбеть', 'горчить', 'ожесточаться', 'безутешествовать',
+                'мрачнеть', 'хмуриться', 'угрюмничать', 'тосковать', 'пессимизировать', 'угрожать', 'опасаться',
+                'рисковать', 'бедствовать', 'страдать', 'мучиться', 'плакать', 'слезиться', 'рыдать', 'вопить',
+                'неприятничать', 'трагедировать', 'гнетить', 'угнетать', 'мученичествовать', 'неволить',
+                'принуждать', 'насиловать', 'притеснять', 'изгонять', 'изолировать', 'отвергать', 'забывать',
+                'забрасывать', 'небрежничать', 'пренебрегать', 'презирать', 'зима', 'дождь', 'дождливо'
             ],
             en: [
                 'sadness', 'pain', 'death', 'darkness', 'fear', 'loneliness', 'longing', 'sorrow', 'disappointment',
-                'loss', 'night', 'grief', 'trouble', 'misfortune', 'tragedy', 'disaster', 'agony', 'torment',
-                'torture', 'humiliation', 'betrayal', 'treason', 'lie', 'deception', 'hatred', 'malice', 'fury',
-                'anger', 'jealousy', 'envy', 'greed', 'stinginess', 'selfishness', 'indifference', 'cold', 'ice',
-                'frost', 'fog', 'cloud', 'storm', 'hurricane', 'destruction', 'collapse', 'failure', 'defeat',
+                'loss', 'night', 'winter', 'rain', 'grief', 'trouble', 'misfortune', 'tragedy', 'disaster', 'agony',
+                'torment', 'torture', 'humiliation', 'betrayal', 'treason', 'lie', 'deception', 'hatred', 'malice',
+                'fury', 'anger', 'jealousy', 'envy', 'greed', 'stinginess', 'selfishness', 'indifference', 'cold',
+                'ice', 'frost', 'fog', 'cloud', 'storm', 'hurricane', 'destruction', 'collapse', 'failure', 'defeat',
                 'shame', 'guilt', 'remorse', 'regret', 'despair', 'hopelessness', 'gloom', 'desolation', 'decay',
-                'weakness', 'injustice', 'cruelty', 'mercilessness'
+                'weakness', 'injustice', 'treachery', 'perfidy', 'baseness', 'cruelty', 'mercilessness',
+                'ruthlessness', 'insensitivity', 'heartlessness', 'callousness', 'pitilessness', 'implacability',
+                'bleakness', 'futility', 'embitterment', 'hardening', 'melancholy', 'mourning', 'menace', 'peril',
+                'risk', 'calamity', 'injustice', 'suffering', 'affliction', 'misery', 'woe', 'weeping', 'tears',
+                'sobbing', 'screaming', 'groaning', 'adversity', 'affliction', 'tragicism', 'bitterness', 'oppression',
+                'tyranny', 'martyrdom', 'bondage', 'constraint', 'violence', 'persecution', 'exile', 'isolation',
+                'rejection', 'oblivion', 'neglect', 'abandonment', 'indifference', 'disregard', 'contempt', 'disdain',
+                'sad', 'painful', 'mortal', 'dark', 'fearful', 'lonely', 'melancholy', 'sorrowful', 'disappointed',
+                'lost', 'nocturnal', 'wintry', 'rainy', 'grievous', 'troubled', 'unfortunate', 'tragic', 'disastrous',
+                'agonizing', 'tormenting', 'torturous', 'humiliating', 'treacherous', 'treasonous', 'lying',
+                'deceptive', 'hateful', 'malicious', 'furious', 'angry', 'jealous', 'envious', 'greedy', 'stingy',
+                'selfish', 'indifferent', 'cold', 'icy', 'frosty', 'foggy', 'cloudy', 'stormy', 'hurricane-like',
+                'destructive', 'collapsing', 'failing', 'defeated', 'shameful', 'guilty', 'remorseful', 'regretful',
+                'desperate', 'hopeless', 'gloomy', 'desolate', 'decaying', 'weak', 'unjust', 'treacherous',
+                'perfidious', 'base', 'cruel', 'merciless', 'ruthless', 'insensitive', 'heartless', 'callous',
+                'pitiless', 'implacable', 'bleak', 'dreadful', 'futile', 'powerless', 'helpless', 'hopeless',
+                'willless', 'defenseless', 'inevitable', 'mournful', 'bitter', 'embittered', 'hardened', 'dreary',
+                'gloomy', 'melancholic', 'sorrowful', 'grieving', 'sad', 'cheerless', 'menacing', 'perilous',
+                'risky', 'calamitous', 'unfortunate', 'disastrous', 'unfavorable', 'unpleasant', 'offensive',
+                'distressing', 'annoying', 'disappointing', 'dissatisfied', 'displeased', 'contemptuous', 'careless',
+                'abandoned', 'forgotten', 'despised', 'neglected', 'contemptible', 'humiliated', 'insulted',
+                'offended', 'undervalued', 'unrecognized', 'abandoned', 'forsaken', 'rejected', 'cursed', 'cursing',
+                'sadden', 'hurt', 'die', 'darken', 'fear', 'be lonely', 'long', 'grieve', 'disappoint', 'lose',
+                'mourn', 'trouble', 'agonize', 'torment', 'torture', 'humiliate', 'betray', 'commit treason', 'lie',
+                'deceive', 'hate', 'be malicious', 'fume', 'be angry', 'be jealous', 'envy', 'be greedy', 'be stingy',
+                'be selfish', 'be indifferent', 'grow cold', 'freeze', 'frost', 'fog', 'cloud', 'storm', 'hurricane',
+                'destroy', 'collapse', 'fail', 'be defeated', 'be ashamed', 'feel guilty', 'feel remorse', 'regret',
+                'despair', 'be hopeless', 'gloom', 'be desolate', 'decay', 'weaken', 'be unjust', 'be treacherous',
+                'be perfidious', 'be base', 'be cruel', 'be merciless', 'be ruthless', 'be insensitive', 'be heartless',
+                'be callous', 'be pitiless', 'be implacable', 'be bleak', 'be dreadful', 'be futile', 'be powerless',
+                'be helpless', 'be hopeless', 'be willless', 'be defenseless', 'be inevitable', 'mourn', 'be bitter',
+                'be embittered', 'harden', 'be dreary', 'be gloomy', 'be melancholic', 'be sorrowful', 'grieve',
+                'be sad', 'be cheerless', 'menace', 'endanger', 'risk', 'be unfortunate', 'be disastrous',
+                'be unfavorable', 'be unpleasant', 'offend', 'distress', 'annoy', 'disappoint', 'dissatisfy',
+                'displease', 'contemn', 'neglect', 'disregard', 'abandon', 'forget', 'despise', 'humiliate',
+                'insult', 'offend', 'undervalue', 'fail to recognize', 'abandon', 'forsake', 'reject', 'curse',
+                'condemn', 'sadly', 'painfully', 'mortally', 'darkly', 'fearfully', 'lonelily', 'longingly',
+                'sorrowfully', 'disappointedly', 'lostly', 'nocturnally', 'wintrily', 'rainily', 'grievously',
+                'troubledly', 'unfortunately', 'tragically', 'disastrously', 'agonizingly', 'tormentingly',
+                'torturously', 'humiliatingly', 'treacherously', 'treasonously', 'lyingly', 'deceptively',
+                'hatefully', 'maliciously', 'furiously', 'angrily', 'jealously', 'enviously', 'greedily', 'stingily',
+                'selfishly', 'indifferently', 'coldly', 'icily', 'frostily', 'foggily', 'cloudily', 'stormily',
+                'hurricane-like', 'destructively', 'collapsingly', 'failingly', 'defeatedly', 'shamefully',
+                'guiltily', 'remorsefully', 'regretfully', 'desperately', 'hopelessly', 'gloomily', 'desolately',
+                'decayingly', 'weakly', 'unjustly', 'treacherously', 'perfidiously', 'basely', 'cruelly',
+                'mercilessly', 'ruthlessly', 'insensitively', 'heartlessly', 'callously', 'pitilessly',
+                'implacably', 'bleakly', 'dreadfully', 'futilely', 'powerlessly', 'helplessly', 'hopelessly',
+                'willlessly', 'defenselessly', 'inevitably', 'mournfully', 'bitterly', 'embitteredly', 'hardenedly',
+                'drearily', 'gloomily', 'melancholically', 'sorrowfully', 'grievingly', 'sadly', 'cheerlessly',
+                'menacingly', 'perilously', 'riskily', 'calamitously', 'unfortunately', 'disastrously',
+                'unfavorably', 'unpleasantly', 'offensively', 'distressingly', 'annoyingly', 'disappointingly',
+                'dissatisfyingly', 'displeasingly', 'contemptuously', 'carelessly', 'abandonedly', 'forgottenly',
+                'despisely', 'neglectingly', 'contemptibly', 'humiliatingly', 'insultingly', 'offensively',
+                'undervaluingly', 'unrecognizably', 'abandonedly', 'forsakenly', 'rejectingly', 'cursedly',
+                'condemningly', 'winter', 'rain', 'rainy'
             ]
         }
     }
@@ -164,7 +323,7 @@ class SonicSession {
     }
 
     generateBehaviors() {
-        const allBehaviors = ['orbit', 'swarm', 'wave', 'chaos', 'spiral', 'magnetic', 'pulse', 'harmony'];
+        const allBehaviors = ['orbit', 'swarm', 'wave', 'chaos', 'spiral', 'magnetic', 'pulse', 'harmony', 'resonance'];
         const selected = [];
         const count = Math.floor(Math.random() * 3) + 2;
         const rng = this.createRNG();
@@ -382,6 +541,7 @@ class WaveSystem {
         this.interactionPoint = { x: 0, y: 0, active: false };
         this.lastFrameTime = 0;
         this.audioData = null;
+        this.animationId = null;
         this.init();
     }
 
@@ -394,18 +554,19 @@ class WaveSystem {
 
     resize() {
         const dpr = window.devicePixelRatio || 1;
-        this.canvas.width = window.innerWidth * dpr;
-        this.canvas.height = window.innerHeight * dpr;
+        const rect = this.canvas.getBoundingClientRect();
+        this.canvas.width = rect.width * dpr;
+        this.canvas.height = rect.height * dpr;
         this.ctx.scale(dpr, dpr);
-        this.interactionPoint.x = window.innerWidth / 2;
-        this.interactionPoint.y = window.innerHeight / 2;
+        this.interactionPoint.x = this.canvas.width / 2 / dpr;
+        this.interactionPoint.y = this.canvas.height / 2 / dpr;
     }
 
     generateParticles() {
         this.particles = [];
         const colors = this.session.getColorPalette();
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
+        const centerX = this.canvas.width / 2 / (window.devicePixelRatio || 1);
+        const centerY = this.canvas.height / 2 / (window.devicePixelRatio || 1);
         const sizeMultiplier = this.session.intensityMultipliers.size;
         const amplitudeMultiplier = this.session.intensityMultipliers.amplitude;
         const speedMultiplier = this.session.intensityMultipliers.speed;
@@ -413,10 +574,10 @@ class WaveSystem {
 
         for (let i = 0; i < particleCount; i++) {
             const angle = (i / particleCount) * Math.PI * 2;
-            const baseRadius = 150 + Math.random() * 100;
-            const spiralFactor = i / particleCount * 5;
-            const x = centerX + Math.cos(angle * 2) * baseRadius * spiralFactor;
-            const y = centerY + Math.sin(angle * 2) * baseRadius * spiralFactor;
+            const baseRadius = 80 + Math.random() * 200;
+            const spiralFactor = 1 + (i / particleCount) * 3;
+            const x = centerX + Math.cos(angle * 3) * baseRadius * spiralFactor;
+            const y = centerY + Math.sin(angle * 3) * baseRadius * spiralFactor;
             
             const particleSize = Math.min(1.5 + Math.random() * 2.5 * sizeMultiplier, 6);
             const colorIndex = Math.floor(Math.random() * colors.length);
@@ -464,15 +625,17 @@ class WaveSystem {
         
         this.canvas.addEventListener('mousemove', (e) => {
             const rect = this.canvas.getBoundingClientRect();
-            this.interactionPoint.x = e.clientX - rect.left;
-            this.interactionPoint.y = e.clientY - rect.top;
+            const dpr = window.devicePixelRatio || 1;
+            this.interactionPoint.x = (e.clientX - rect.left) * (this.canvas.width / rect.width) / dpr;
+            this.interactionPoint.y = (e.clientY - rect.top) * (this.canvas.height / rect.height) / dpr;
             this.interactionPoint.active = true;
         });
 
         this.canvas.addEventListener('mouseleave', () => {
             this.interactionPoint.active = false;
-            this.interactionPoint.x = window.innerWidth / 2;
-            this.interactionPoint.y = window.innerHeight / 2;
+            const dpr = window.devicePixelRatio || 1;
+            this.interactionPoint.x = this.canvas.width / 2 / dpr;
+            this.interactionPoint.y = this.canvas.height / 2 / dpr;
         });
 
         this.canvas.addEventListener('touchstart', (e) => {
@@ -480,8 +643,9 @@ class WaveSystem {
             if (e.touches.length === 1) {
                 const rect = this.canvas.getBoundingClientRect();
                 const touch = e.touches[0];
-                this.interactionPoint.x = touch.clientX - rect.left;
-                this.interactionPoint.y = touch.clientY - rect.top;
+                const dpr = window.devicePixelRatio || 1;
+                this.interactionPoint.x = (touch.clientX - rect.left) * (this.canvas.width / rect.width) / dpr;
+                this.interactionPoint.y = (touch.clientY - rect.top) * (this.canvas.height / rect.height) / dpr;
                 this.interactionPoint.active = true;
             }
         });
@@ -491,16 +655,18 @@ class WaveSystem {
             if (e.touches.length === 1) {
                 const rect = this.canvas.getBoundingClientRect();
                 const touch = e.touches[0];
-                this.interactionPoint.x = touch.clientX - rect.left;
-                this.interactionPoint.y = touch.clientY - rect.top;
+                const dpr = window.devicePixelRatio || 1;
+                this.interactionPoint.x = (touch.clientX - rect.left) * (this.canvas.width / rect.width) / dpr;
+                this.interactionPoint.y = (touch.clientY - rect.top) * (this.canvas.height / rect.height) / dpr;
                 this.interactionPoint.active = true;
             }
         });
 
         this.canvas.addEventListener('touchend', () => {
             this.interactionPoint.active = false;
-            this.interactionPoint.x = window.innerWidth / 2;
-            this.interactionPoint.y = window.innerHeight / 2;
+            const dpr = window.devicePixelRatio || 1;
+            this.interactionPoint.x = this.canvas.width / 2 / dpr;
+            this.interactionPoint.y = this.canvas.height / 2 / dpr;
         });
     }
 
@@ -516,7 +682,7 @@ class WaveSystem {
         this.update(deltaTime);
         this.render();
         
-        requestAnimationFrame((t) => this.animate(t));
+        this.animationId = requestAnimationFrame((t) => this.animate(t));
     }
 
     update(deltaTime) {
@@ -531,8 +697,36 @@ class WaveSystem {
             particle.trail.push({ x: particle.x, y: particle.y });
             
             this.applyWaveBehavior(particle, multipliers);
-            this.applyOrbitBehavior(particle, multipliers);
-            this.applySpiralMotion(particle, multipliers);
+            
+            switch(particle.behavior) {
+                case 'orbit':
+                    this.applyOrbitBehavior(particle, multipliers);
+                    break;
+                case 'swarm':
+                    this.applySwarmBehavior(particle, multipliers);
+                    break;
+                case 'spiral':
+                    this.applySpiralBehavior(particle, multipliers);
+                    break;
+                case 'wave':
+                    this.applyWaveMotion(particle, multipliers);
+                    break;
+                case 'chaos':
+                    this.applyChaosBehavior(particle, multipliers);
+                    break;
+                case 'magnetic':
+                    this.applyMagneticBehavior(particle, multipliers);
+                    break;
+                case 'pulse':
+                    this.applyPulseBehavior(particle, multipliers);
+                    break;
+                case 'harmony':
+                    this.applyHarmonyBehavior(particle, multipliers);
+                    break;
+                case 'resonance':
+                    this.applyResonanceBehavior(particle, multipliers);
+                    break;
+            }
             
             if (this.interactionPoint.active) {
                 this.applyInteraction(particle);
@@ -572,7 +766,7 @@ class WaveSystem {
                 break;
             case 'deep':
                 displacementX = Math.sin(t * particle.frequency * 0.3 + particle.phase) * particle.amplitude;
-                displacementY = 0;
+                displacementY = Math.cos(t * particle.frequency * 0.3 + particle.phase) * particle.amplitude * 0.2;
                 break;
         }
         
@@ -581,8 +775,8 @@ class WaveSystem {
     }
 
     applyOrbitBehavior(particle, multipliers) {
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
+        const centerX = this.canvas.width / 2 / (window.devicePixelRatio || 1);
+        const centerY = this.canvas.height / 2 / (window.devicePixelRatio || 1);
         
         particle.spiralAngle += particle.orbitSpeed * multipliers.speed;
         const targetX = centerX + Math.cos(particle.spiralAngle) * particle.spiralRadius;
@@ -592,17 +786,83 @@ class WaveSystem {
         particle.vy += (targetY - particle.y) * 0.02 * multipliers.amplitude;
     }
 
-    applySpiralMotion(particle, multipliers) {
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
+    applySwarmBehavior(particle, multipliers) {
+        const centerX = this.canvas.width / 2 / (window.devicePixelRatio || 1);
+        const centerY = this.canvas.height / 2 / (window.devicePixelRatio || 1);
+        const dx = centerX - particle.x;
+        const dy = centerY - particle.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance > 50) {
+            const force = 0.002 * multipliers.amplitude;
+            particle.vx += dx * force;
+            particle.vy += dy * force;
+        }
+    }
+
+    applySpiralBehavior(particle, multipliers) {
+        const centerX = this.canvas.width / 2 / (window.devicePixelRatio || 1);
+        const centerY = this.canvas.height / 2 / (window.devicePixelRatio || 1);
         const dx = particle.x - centerX;
         const dy = particle.y - centerY;
         const distance = Math.sqrt(dx * dx + dy * dy);
         
-        if (distance > 50) {
+        if (distance > 30) {
             const angle = Math.atan2(dy, dx);
             particle.vx += Math.cos(angle + Math.PI / 2) * 0.03 * multipliers.amplitude;
             particle.vy += Math.sin(angle + Math.PI / 2) * 0.03 * multipliers.amplitude;
+        }
+    }
+
+    applyWaveMotion(particle, multipliers) {
+        const t = this.time;
+        particle.vx += Math.sin(t + particle.x * 0.01) * 0.1 * multipliers.amplitude;
+        particle.vy += Math.cos(t + particle.y * 0.01) * 0.1 * multipliers.amplitude;
+    }
+
+    applyChaosBehavior(particle, multipliers) {
+        particle.vx += (Math.random() - 0.5) * 0.3 * multipliers.amplitude;
+        particle.vy += (Math.random() - 0.5) * 0.3 * multipliers.amplitude;
+    }
+
+    applyMagneticBehavior(particle, multipliers) {
+        const dx = this.interactionPoint.x - particle.x;
+        const dy = this.interactionPoint.y - particle.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance > 10 && distance < 150) {
+            const force = 0.001 / distance * multipliers.amplitude;
+            particle.vx += dx * force;
+            particle.vy += dy * force;
+        }
+    }
+
+    applyPulseBehavior(particle, multipliers) {
+        const pulse = Math.sin(this.time * 3 + particle.phase) * 0.5 + 0.5;
+        const newRadius = particle.radius + pulse * 0.3 * multipliers.amplitude;
+        particle.radius = Math.min(newRadius, 6);
+    }
+
+    applyHarmonyBehavior(particle, multipliers) {
+        const harmonyFactor = Math.sin(this.time * (0.5 + particle.harmonic * 0.2) + particle.phase);
+        particle.vx += harmonyFactor * 0.1 * multipliers.amplitude;
+        particle.vy += harmonyFactor * 0.1 * multipliers.amplitude;
+    }
+
+    applyResonanceBehavior(particle, multipliers) {
+        for (let j = 0; j < this.particles.length; j++) {
+            const other = this.particles[j];
+            if (other === particle) continue;
+            
+            const dx = other.x - particle.x;
+            const dy = other.y - particle.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < 40) {
+                const force = (40 - distance) * 0.001 * multipliers.amplitude;
+                particle.vx += dx * force;
+                particle.vy += dy * force;
+            }
         }
     }
 
@@ -625,21 +885,23 @@ class WaveSystem {
     }
 
     handleBoundaries(particle) {
+        const width = this.canvas.width / (window.devicePixelRatio || 1);
+        const height = this.canvas.height / (window.devicePixelRatio || 1);
         const margin = particle.radius * 3;
         
         if (particle.x < margin) {
             particle.x = margin;
             particle.vx *= -0.7;
-        } else if (particle.x > window.innerWidth - margin) {
-            particle.x = window.innerWidth - margin;
+        } else if (particle.x > width - margin) {
+            particle.x = width - margin;
             particle.vx *= -0.7;
         }
         
         if (particle.y < margin) {
             particle.y = margin;
             particle.vy *= -0.7;
-        } else if (particle.y > window.innerHeight - margin) {
-            particle.y = window.innerHeight - margin;
+        } else if (particle.y > height - margin) {
+            particle.y = height - margin;
             particle.vy *= -0.7;
         }
     }
@@ -647,14 +909,16 @@ class WaveSystem {
     render() {
         const ctx = this.ctx;
         const dpr = window.devicePixelRatio || 1;
+        const width = this.canvas.width / dpr;
+        const height = this.canvas.height / dpr;
         
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
         ctx.fillStyle = 'rgba(8, 12, 25, 0.1)';
-        ctx.fillRect(0, 0, this.canvas.width / dpr, this.canvas.height / dpr);
+        ctx.fillRect(0, 0, width, height);
         
         if (!this.isMobile) {
-            this.drawGrid(ctx);
+            this.drawGrid(ctx, width, height);
         }
         
         this.particles.forEach(particle => {
@@ -662,26 +926,26 @@ class WaveSystem {
         });
         
         this.drawInteractionPoint(ctx);
-        this.drawInfoText(ctx);
-        this.drawAudioVisualization(ctx);
+        this.drawInfoText(ctx, width, height);
+        this.drawAudioVisualization(ctx, width, height);
     }
 
-    drawGrid(ctx) {
+    drawGrid(ctx, width, height) {
         ctx.strokeStyle = 'rgba(100, 100, 100, 0.1)';
         ctx.lineWidth = 0.5;
         const gridSize = 40;
         
-        for (let x = 0; x < window.innerWidth; x += gridSize) {
+        for (let x = 0; x < width; x += gridSize) {
             ctx.beginPath();
             ctx.moveTo(x, 0);
-            ctx.lineTo(x, window.innerHeight);
+            ctx.lineTo(x, height);
             ctx.stroke();
         }
         
-        for (let y = 0; y < window.innerHeight; y += gridSize) {
+        for (let y = 0; y < height; y += gridSize) {
             ctx.beginPath();
             ctx.moveTo(0, y);
-            ctx.lineTo(window.innerWidth, y);
+            ctx.lineTo(width, y);
             ctx.stroke();
         }
     }
@@ -737,7 +1001,7 @@ class WaveSystem {
         ctx.fill();
     }
 
-    drawInfoText(ctx) {
+    drawInfoText(ctx, width, height) {
         const infoText = this.session.getInfoText();
         const lines = infoText.split('\n');
         
@@ -751,11 +1015,11 @@ class WaveSystem {
         });
     }
 
-    drawAudioVisualization(ctx) {
+    drawAudioVisualization(ctx, width, height) {
         if (!this.audioData || !this.audioData.frequencyData) return;
         
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
+        const centerX = width / 2;
+        const centerY = height / 2;
         const maxRadius = Math.min(centerX, centerY) * 0.8;
         const barCount = 64;
         const barWidth = Math.PI * 2 / barCount;
@@ -784,6 +1048,9 @@ class WaveSystem {
     }
 
     destroy() {
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+        }
         this.particles = [];
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
@@ -808,14 +1075,16 @@ class AudioEngine {
     initialize() {
         try {
             window.AudioContext = window.AudioContext || window.webkitAudioContext;
-            this.audioContext = new AudioContext();
-            this.masterGain = this.audioContext.createGain();
-            this.masterGain.gain.value = this.volume;
-            this.analyser = this.audioContext.createAnalyser();
-            this.analyser.fftSize = 2048;
-            this.frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
-            this.masterGain.connect(this.analyser);
-            this.analyser.connect(this.audioContext.destination);
+            if (window.AudioContext) {
+                this.audioContext = new window.AudioContext();
+                this.masterGain = this.audioContext.createGain();
+                this.masterGain.gain.value = this.volume;
+                this.analyser = this.audioContext.createAnalyser();
+                this.analyser.fftSize = 2048;
+                this.frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
+                this.masterGain.connect(this.analyser);
+                this.analyser.connect(this.audioContext.destination);
+            }
         } catch (e) {
             console.error('Audio context initialization failed:', e);
         }
@@ -973,9 +1242,9 @@ class AudioEngine {
             
             const startTime = this.audioContext.currentTime;
             melody.forEach((note, i) => {
-                instrument.playNote(note, noteDuration * 0.9, i * noteDuration);
+                instrument.playNote(note, noteDuration * 0.9, i * noteDuration * 0.5);
             });
-        }, noteDuration * melody.length * 1000));
+        }, noteDuration * melody.length * 1000 * 0.5));
     }
 
     stopMusic() {
@@ -1006,7 +1275,8 @@ class AudioEngine {
     }
 }
 
-class NoiseUniverse {
+// Исправленный класс NoiseController вместо NoiseUniverse
+class NoiseController {
     constructor() {
         this.canvas = null;
         this.session = null;
@@ -1015,21 +1285,28 @@ class NoiseUniverse {
         this.textArea = null;
         this.submitButton = null;
         this.closeButton = null;
+        this.isInitialized = false;
         this.init();
     }
 
     init() {
-        this.setupDOM();
-        this.setupEventListeners();
-        this.setupAudio();
+        document.addEventListener('DOMContentLoaded', () => {
+            this.setupDOM();
+            this.setupEventListeners();
+            this.setupAudio();
+            this.isInitialized = true;
+            console.log('NoiseController successfully initialized');
+        });
     }
 
     setupDOM() {
+        // Ищем canvas и кнопки
         this.canvas = document.getElementById('noise-canvas');
         this.textArea = document.querySelector('.text-input');
         this.submitButton = document.querySelector('.submit-btn');
         this.closeButton = document.querySelector('.close-btn');
         
+        // Если canvas не существует, создаем его
         if (!this.canvas) {
             this.createCanvas();
         }
@@ -1048,8 +1325,12 @@ class NoiseUniverse {
     }
 
     setupEventListeners() {
+        // Добавляем обработчики событий с проверкой на существование элементов
         if (this.submitButton) {
             this.submitButton.addEventListener('click', () => this.startVisualization());
+            console.log('Submit button event listener added');
+        } else {
+            console.warn('Submit button not found');
         }
         
         if (this.textArea) {
@@ -1059,11 +1340,30 @@ class NoiseUniverse {
                     this.startVisualization();
                 }
             });
+            console.log('Text area event listener added');
+        } else {
+            console.warn('Text area not found');
         }
         
         if (this.closeButton) {
             this.closeButton.addEventListener('click', () => this.stopVisualization());
+            console.log('Close button event listener added');
+        } else {
+            console.warn('Close button not found');
         }
+        
+        // Добавляем обработчик для кнопок, которые могут появиться позже
+        document.addEventListener('click', (e) => {
+            if (!this.isInitialized) return;
+            
+            if (e.target.classList.contains('submit-btn') && !this.submitButton) {
+                this.startVisualization();
+            }
+            
+            if (e.target.classList.contains('close-btn') && !this.closeButton) {
+                this.stopVisualization();
+            }
+        });
     }
 
     setupAudio() {
@@ -1086,12 +1386,19 @@ class NoiseUniverse {
     }
 
     startVisualization() {
+        if (!this.textArea) {
+            console.error('Text area not found. Cannot start visualization.');
+            return;
+        }
+        
         const text = this.textArea.value.trim();
         
         if (!text) {
             alert('Please enter some text to visualize');
             return;
         }
+        
+        console.log('Starting visualization with text:', text.substring(0, 50) + (text.length > 50 ? '...' : ''));
         
         this.session = new SonicSession(text);
         this.audioEngine.setMood(this.session.mood, this.session.tempo);
@@ -1101,13 +1408,21 @@ class NoiseUniverse {
             this.waveSystem.destroy();
         }
         
+        if (!this.canvas) {
+            this.createCanvas();
+        }
+        
         this.waveSystem = new WaveSystem(this.canvas, this.session);
         
         document.body.classList.add('visualization-active');
         this.textArea.blur();
+        
+        console.log('Visualization started successfully');
     }
 
     stopVisualization() {
+        console.log('Stopping visualization');
+        
         if (this.waveSystem) {
             this.waveSystem.destroy();
             this.waveSystem = null;
@@ -1128,21 +1443,22 @@ class NoiseUniverse {
     }
 }
 
+// Инициализация контроллера
 document.addEventListener('DOMContentLoaded', () => {
-    window.noiseUniverse = new NoiseUniverse();
+    console.log('DOM loaded, initializing noise...');
+    window.noiseController = new NoiseController();
+    // Убираем эту проверку отсюда, так как она уже есть внутри класса
 });
 
 document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') {
-        if (window.noiseUniverse && window.noiseUniverse.audioEngine) {
-            window.noiseUniverse.audioEngine.stopMusic();
-        }
+    if (document.visibilityState === 'hidden' && window.noiseController && window.noiseController.audioEngine) {
+        window.noiseController.audioEngine.stopMusic();
     }
 });
 
 window.addEventListener('beforeunload', () => {
-    if (window.noiseUniverse) {
-        window.noiseUniverse.destroy();
+    if (window.noiseController) {
+        window.noiseController.destroy();
     }
 });
 
