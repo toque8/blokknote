@@ -12,210 +12,280 @@
             desktop: { trailLength: 5, fps: 60 }
         },
         SENSITIVITY: {
-            warmWords: {
-                ru: [
-                    'радость', 'счастье', 'надежда', 'мечта', 'свет', 'тепло', 'улыбка', 'друг', 'семья', 'солнце', 
-                    'праздник', 'успех', 'победа', 'красота', 'гармония', 'доброта', 'добро', 'щедрость', 'верность', 
-                    'честность', 'мудрость', 'свобода', 'приключение', 'открытие', 'вдохновение', 'творчество', 
-                    'энергия', 'жизнь', 'здововье', 'благодарность', 'спокойствие', 'уют', 'комфорт', 'ласка', 
-                    'нежность', 'страсть', 'восторг', 'ликование', 'триумф', 'согласие', 'единство', 'дружба', 
-                    'поддержка', 'забота', 'опека', 'восхищение', 'признание', 'почет', 'уважение', 'доверие', 
-                    'понимание', 'сочувствие', 'созидание', 'благополучие', 'радушие', 'приветствие', 'ободрение', 
-                    'воодушевление', 'оптимизм', 'благочестие', 'чистота', 'невинность', 'целомудрие', 'кротость', 
-                    'усердие', 'старание', 'трудолюбие', 'упорство', 'терпение', 'выдержка', 'мужество', 'отвага', 
-                    'храбрость', 'героизм', 'самоотверженность', 'трепет', 'благословение', 'веселье', 'бодрость', 
-                    'сияние', 'просветление', 'процветание', 'свежесть', 'безмятежность', 'простодушие', 'искренность', 
-                    'открытость', 'теплота', 'радостный', 'счастливый', 'надежный', 'светлый', 'теплый', 'дружелюбный', 
-                    'родной', 'солнечный', 'праздничный', 'успешный', 'красивый', 'гармоничный', 'добрый', 'щедрый', 
-                    'верный', 'честный', 'мудрый', 'свободный', 'вдохновляющий', 'творческий', 'энергичный', 'здоровый', 
-                    'благодарный', 'спокойный', 'уютный', 'комфортный', 'ласковый', 'нежный', 'страстный', 'восторженный', 
-                    'единодушный', 'дружеский', 'заботливый', 'восхищающий', 'уважаемый', 'доверчивый', 'понимающий', 
-                    'сочувствующий', 'благополучный', 'благодатный', 'радушный', 'приветливый', 'ободряющий', 
-                    'воодушевленный', 'оптимистичный', 'благочестивый', 'чистый', 'невинный', 'целомудренный', 'кроткий', 
-                    'смиренный', 'усердный', 'прилежный', 'трудолюбивый', 'упорный', 'терпеливый', 'выдержанный', 
-                    'мужественный', 'отважный', 'храбрый', 'героический', 'самоотверженный', 'трепетный', 'веселый', 
-                    'бодрый', 'благоговейный', 'сияющий', 'процветающий', 'безмятежный', 'благодушный', 'искренний', 
-                    'открытый', 'непорочный', 'незапятнанный', 'безупречный', 'безгрешный', 'добродетельный', 'благородный', 
-                    'великодушный', 'гостеприимный', 'приветный', 'радоваться', 'наслаждаться', 'надеяться', 'мечтать', 
-                    'светить', 'греть', 'улыбаться', 'дружить', 'любить', 'праздновать', 'побеждать', 'украшать', 'дарить', 
-                    'верить', 'постигать', 'освобождать', 'открывать', 'вдохновлять', 'творить', 'жить', 'благодарить', 
-                    'успокаивать', 'утешать', 'ласкать', 'нежиться', 'восхищаться', 'соглашаться', 'объединять', 
-                    'поддерживать', 'заботиться', 'опекать', 'признавать', 'почитать', 'уважать', 'доверять', 'понимать', 
-                    'принимать', 'сочувствовать', 'благословлять', 'веселиться', 'воодушевлять', 'просветлять', 'сиять', 
-                    'процветать', 'веселить', 'прощать', 'теплеть', 'светлеть', 'благородствовать', 'приветствовать', 
-                    'возвышать', 'воспарять', 'расцветать', 'оживать', 'оживлять', 'окрылять', 'облагораживать', 
-                    'покровительствовать', 'прославлять', 'прочувствовать', 'чувствовать', 'радостно', 'счастливо', 
-                    'надежно', 'светло', 'дружелюбно', 'солнечно', 'весело', 'празднично', 'успешно', 'красиво', 
-                    'гармонично', 'щедро', 'верно', 'честно', 'мудро', 'свободно', 'вдохновенно', 'творчески', 'энергично', 
-                    'благодарно', 'спокойно', 'уютно', 'комфортно', 'ласково', 'нежно', 'страстно', 'восторженно', 
-                    'единогласно', 'дружески', 'заботливо', 'восхищенно', 'уважительно', 'доверчиво', 'понимающе', 
-                    'сочувственно', 'благополучно', 'радушно', 'приветливо', 'ободряюще', 'воодушевляюще', 'оптимистично', 
-                    'чисто', 'невинно', 'целомудренно', 'кротко', 'смиренне', 'усердно', 'прилежно', 'трудолюбиво', 
-                    'упорно', 'терпеливо', 'выдержанно', 'мужественно', 'отважно', 'храбро', 'героически', 'самоотверженно', 
-                    'трепетно', 'бодро', 'безмятежно', 'искренне', 'открыто', 'непорочно', 'безупречно', 'безгрешно', 
-                    'благородно', 'великодушно', 'гостеприимно', 'возвышенно', 'любовь', 'мир', 'весна'
-                ],
-                en: [
-                    'joy', 'happiness', 'hope', 'dream', 'light', 'warmth', 'smile', 'friend', 'family', 'sun', 
-                    'celebration', 'success', 'victory', 'beauty', 'harmony', 'kindness', 'generosity', 'loyalty', 
-                    'honesty', 'wisdom', 'freedom', 'adventure', 'discovery', 'inspiration', 'creativity', 'energy', 
-                    'life', 'health', 'gratitude', 'calm', 'coziness', 'comfort', 'affection', 'tenderness', 'passion', 
-                    'delight', 'triumph', 'agreement', 'unity', 'friendship', 'support', 'care', 'guardianship', 
-                    'admiration', 'recognition', 'honor', 'respect', 'trust', 'understanding', 'compassion', 
-                    'peacemaking', 'prosperity', 'grace', 'blessing', 'welcome', 'greeting', 'encouragement', 
-                    'enthusiasm', 'optimism', 'piety', 'purity', 'innocence', 'chastity', 'meekness', 'humility', 
-                    'zeal', 'diligence', 'assiduity', 'industriousness', 'perseverance', 'patience', 'endurance', 
-                    'courage', 'valor', 'bravery', 'heroism', 'selflessness', 'reverence', 'merriment', 'vigor', 
-                    'buoyancy', 'radiance', 'enlightenment', 'flourishing', 'wellbeing', 'freshness', 'tranquility', 
-                    'glee', 'joyfulness', 'goodwill', 'trustfulness', 'naivety', 'sincerity', 'openness', 'joyful', 
-                    'happy', 'hopeful', 'bright', 'warm', 'friendly', 'dear', 'sunny', 'festive', 'successful', 
-                    'beautiful', 'harmonious', 'kind', 'generous', 'loyal', 'honest', 'wise', 'free', 'inspiring', 
-                    'creative', 'energetic', 'healthy', 'grateful', 'calm', 'cozy', 'comfortable', 'affectionate', 
-                    'tender', 'passionate', 'delighted', 'unanimous', 'caring', 'admiring', 'respected', 'trusting', 
-                    'understanding', 'compassionate', 'peacemaking', 'prosperous', 'gracious', 'welcoming', 
-                    'encouraging', 'enthusiastic', 'optimistic', 'pious', 'pure', 'innocent', 'chaste', 'meek', 
-                    'humble', 'zealous', 'diligent', 'assiduous', 'industrious', 'persevering', 'patient', 'enduring', 
-                    'courageous', 'valiant', 'brave', 'heroic', 'selfless', 'reverent', 'merry', 'vibrant', 'radiant', 
-                    'flourishing', 'tranquil', 'trusting', 'naive', 'sincere', 'open', 'immaculate', 'unblemished', 
-                    'impeccable', 'sinless', 'virtuous', 'noble', 'magnanimous', 'cordial', 'enjoy', 'hope', 'dream', 
-                    'shine', 'warm', 'smile', 'befriend', 'love', 'celebrate', 'win', 'decorate', 'harmonize', 'give', 
-                    'believe', 'think', 'comprehend', 'free', 'discover', 'inspire', 'create', 'live', 'thank', 'calm', 
-                    'caress', 'cherish', 'admire', 'agree', 'unite', 'support', 'care', 'protect', 'recognize', 
-                    'respect', 'trust', 'understand', 'sympathize', 'bless', 'merrymake', 'delight', 'optimize', 
-                    'enlighten', 'purify', 'radiate', 'flourish', 'prosper', 'cheer', 'forgive', 'brighten', 'greet', 
-                    'elevate', 'soar', 'blossom', 'revive', 'inspire', 'ennoble', 'proclaim', 'expect', 'patronize', 
-                    'praise', 'deeply feel', 'joyfully', 'happily', 'hopefully', 'brightly', 'warmly', 'friendly', 
-                    'dearly', 'sunnily', 'cheerfully', 'festively', 'successfully', 'beautifully', 'harmoniously', 
-                    'kindly', 'generously', 'loyally', 'honestly', 'wisely', 'freely', 'inspiringly', 'creatively', 
-                    'healthily', 'gratefully', 'calmly', 'cozily', 'comfortably', 'affectionately', 'tenderly', 
-                    'passionately', 'delightedly', 'unanimously', 'caringly', 'admiringly', 'respectfully', 
-                    'trustingly', 'understandingly', 'compassionately', 'peacemakingly', 'prosperously', 'graciously', 
-                    'welcomingly', 'encouragingly', 'enthusiastically', 'optimistically', 'piously', 'purely', 
-                    'innocently', 'chastely', 'meekly', 'humbly', 'zealously', 'diligently', 'assiduously', 
-                    'industriously', 'perseveringly', 'patiently', 'enduringly', 'courageously', 'valiantly', 
-                    'bravely', 'heroically', 'selflessly', 'reverently', 'merrily', 'vibrantly', 'radiantly', 
-                    'flourishingly', 'tranquilly', 'good-naturedly', 'trustingly', 'sincerely', 'openly', 'warmly', 
-                    'immaculately', 'impeccably', 'sinlessly', 'virtuously', 'nobly', 'magnanimously', 'cordially', 
-                    'sublimely', 'love', 'peace', 'spring'
-                ]
-            },
-            darkWords: {
-                ru: [
-                    'грусть', 'боль', 'смерть', 'тьма', 'страх', 'одиночество', 'тоска', 'печаль', 'разочарование', 
-                    'потеря', 'ночь', 'горе', 'беда', 'несчастье', 'трагедия', 'катастрофа', 'агония', 'мучение', 
-                    'пытка', 'истязание', 'унижение', 'предательство', 'измена', 'ложь', 'обман', 'ненависть', 'злоба', 
-                    'ярость', 'гнев', 'ревность', 'зависть', 'жадность', 'скупость', 'эгоизм', 'равнодушие', 'холод', 
-                    'лед', 'мороз', 'туман', 'туча', 'гроза', 'ураган', 'разрушение', 'крах', 'провал', 'поражение', 
-                    'позор', 'стыд', 'вина', 'раскаяние', 'сожаление', 'отчаяние', 'безысходность', 'мрак', 'уныние', 
-                    'тлен', 'немощь', 'несправедливость', 'зло', 'коварство', 'вероломство', 'подлость', 'жестокость', 
-                    'беспощадность', 'безжалостность', 'бездушность', 'безразличие', 'неумолимость', 'беспросветность', 
-                    'безрадостность', 'безнадежность', 'безволие', 'бессилие', 'беззащитность', 'беспомощность', 
-                    'безвыходность', 'скорбь', 'горечь', 'ожесточение', 'безутешность', 'мрачность', 'угрюмость', 
-                    'тоскливость', 'хмурость', 'пессимизм', 'угроза', 'опасность', 'риск', 'бедствие', 'страдание', 
-                    'мука', 'плач', 'слезы', 'рыдание', 'вопль', 'неприятность', 'трагизм', 'гнет', 'угнетение', 
-                    'мученичество', 'неволя', 'принуждение', 'насилие', 'притеснение', 'изгнание', 'изоляция', 
-                    'отверженность', 'забвение', 'заброшенность', 'небрежность', 'пренебрежение', 'презрение', 
-                    'грустный', 'болезненный', 'смертный', 'темный', 'страшный', 'одинокий', 'тоскливый', 'печальный', 
-                    'разочарованный', 'потерянный', 'горестный', 'бедственный', 'несчастный', 'трагический', 
-                    'катастрофический', 'мучительный', 'истязующий', 'унизительный', 'предательский', 'лживый', 
-                    'обманчивый', 'ненавистный', 'злобный', 'яростный', 'гневный', 'ревнивый', 'завистливый', 'жадный', 
-                    'скупой', 'эгоистичный', 'равнодушный', 'холодный', 'ледяной', 'морозный', 'туманный', 'грозовой', 
-                    'ураганный', 'разрушительный', 'провальный', 'позорный', 'стыдный', 'виновный', 'сожалеющий', 
-                    'отчаянный', 'безысходный', 'мрачный', 'унылый', 'тленный', 'немощный', 'несправедливый', 'коварный', 
-                    'вероломный', 'подлый', 'жестокий', 'беспощадный', 'безжалостный', 'бездушный', 'бесчувственный', 
-                    'безразличный', 'немилосердный', 'неумолимый', 'беспросветный', 'безрадостный', 'безнадежный', 
-                    'безвольный', 'бессильный', 'беззащитный', 'беспомощный', 'безвыходный', 'скорбный', 'горький', 
-                    'озлобленный', 'ожесточенный', 'безутешный', 'хмурый', 'угрюмый', 'угрожающий', 'опасный', 
-                    'рискованный', 'неблагоприятный', 'неприятный', 'обидный', 'огорчающий', 'раздражающий', 
-                    'разочаровывающий', 'недовольный', 'неудовлетворенный', 'пренебрежительный', 'небрежный', 
-                    'заброшенный', 'забытый', 'презренный', 'униженный', 'оскорбленный', 'обиженный', 'недооцененный', 
-                    'непризнанный', 'покинутый', 'брошенный', 'отвергнутый', 'проклятый', 'грустить', 'болеть', 
-                    'умирать', 'темнеть', 'страшиться', 'тосковать', 'печалиться', 'разочаровываться', 'терять', 
-                    'горевать', 'бедствовать', 'мучиться', 'пытать', 'истязать', 'унижать', 'предавать', 'изменять', 
-                    'лгать', 'обманывать', 'ненавидеть', 'гневаться', 'ревновать', 'завидовать', 'жадничать', 'скупиться', 
-                    'холодеть', 'леденеть', 'морозить', 'грозить', 'разрушать', 'проваливаться', 'позориться', 'стыдиться', 
-                    'сожалеть', 'отчаиваться', 'унывать', 'тлеть', 'злорадствовать', 'коварствовать', 'вероломствовать', 
-                    'жесточить', 'бездушничать', 'скорбеть', 'горчить', 'ожесточать', 'мрачнеть', 'хмуриться', 
-                    'угрюмничать', 'горевать', 'угрожать', 'опасаться', 'рисковать', 'бедствовать', 'обижать', 'огорчать', 
-                    'раздражать', 'разочаровывать', 'пренебрегать', 'забрасывать', 'забывать', 'презирать', 'унижать', 
-                    'оскорблять', 'недооценивать', 'покидать', 'бросать', 'отвергать', 'проклинать', 'грустно', 
-                    'болезненно', 'темно', 'страшно', 'одиноко', 'тоскливо', 'печально', 'разочарованно', 'потерянно', 
-                    'горестно', 'бедственно', 'несчастно', 'трагически', 'катастрофически', 'мучительно', 'унизительно', 
-                    'предательски', 'изменнически', 'лживо', 'обманчиво', 'ненавистно', 'злобно', 'яростно', 'гневно', 
-                    'ревниво', 'завистливо', 'жадно', 'скупо', 'эгоистично', 'равнодушно', 'холодно', 'морозно', 
-                    'туманно', 'ураганно', 'разрушительно', 'провально', 'позорно', 'стыдно', 'отчаянно', 'мрачно', 
-                    'уныло', 'тленно', 'немощно', 'несправедливо', 'злорадно', 'коварно', 'вероломно', 'подло', 
-                    'жестоко', 'жестко', 'беспощадно', 'безжалостно', 'бездушно', 'бесчувственно', 'безразлично', 
-                    'немилосердно', 'неумолимо', 'беспросветно', 'безрадостно', 'безнадежно', 'безвольно', 'бессильно', 
-                    'беззащитно', 'беспомощно', 'безвыходно', 'скорбно', 'горько', 'озлобленно', 'ожесточенно', 
-                    'безутешно', 'хмуро', 'угрюмо', 'безотрадно', 'угрожающе', 'опасно', 'рискованно', 'бедственно', 
-                    'неблагоприятно', 'неприятно', 'обидно', 'огорчающе', 'раздражающе', 'разочаровывающе', 'недовольно', 
-                    'неудовлетворенно', 'неудовлетворительно', 'пренебрежительно', 'небрежно', 'заброшенно', 'забыто', 
-                    'презрительно', 'уничижительно', 'оскорбительно', 'обидчиво', 'покинуто', 'брошенно', 'отверженно', 
-                    'проклято', 'зима', 'дождь', 'дождливо'
-                ],
-                en: [
-                    'sadness', 'pain', 'death', 'darkness', 'fear', 'loneliness', 'longing', 'sorrow', 'disappointment', 
-                    'loss', 'night', 'winter', 'rain', 'grief', 'trouble', 'misfortune', 'tragedy', 'disaster', 'agony', 
-                    'torment', 'torture', 'humiliation', 'betrayal', 'treason', 'lie', 'deception', 'hatred', 'malice', 
-                    'fury', 'anger', 'jealousy', 'envy', 'greed', 'stinginess', 'selfishness', 'indifference', 'cold', 
-                    'ice', 'frost', 'fog', 'cloud', 'storm', 'hurricane', 'destruction', 'collapse', 'failure', 'defeat', 
-                    'shame', 'guilt', 'remorse', 'regret', 'despair', 'hopelessness', 'gloom', 'desolation', 'decay', 
-                    'weakness', 'injustice', 'treachery', 'perfidy', 'baseness', 'cruelty', 'mercilessness', 
-                    'ruthlessness', 'insensitivity', 'heartlessness', 'callousness', 'pitilessness', 'implacability', 
-                    'bleakness', 'futility', 'embitterment', 'hardening', 'melancholy', 'mourning', 'menace', 'peril', 
-                    'risk', 'calamity', 'injustice', 'suffering', 'affliction', 'misery', 'woe', 'weeping', 'tears', 
-                    'sobbing', 'screaming', 'groaning', 'adversity', 'affliction', 'tragicism', 'bitterness', 'oppression', 
-                    'tyranny', 'martyrdom', 'bondage', 'constraint', 'violence', 'persecution', 'exile', 'isolation', 
-                    'rejection', 'oblivion', 'neglect', 'abandonment', 'indifference', 'disregard', 'contempt', 'disdain', 
-                    'sad', 'painful', 'mortal', 'dark', 'fearful', 'lonely', 'melancholy', 'sorrowful', 'disappointed', 
-                    'lost', 'nocturnal', 'wintry', 'rainy', 'grievous', 'troubled', 'unfortunate', 'tragic', 'disastrous', 
-                    'agonizing', 'tormenting', 'torturous', 'humiliating', 'treacherous', 'treasonous', 'lying', 
-                    'deceptive', 'hateful', 'malicious', 'furious', 'angry', 'jealous', 'envious', 'greedy', 'stingy', 
-                    'selfish', 'indifferent', 'cold', 'icy', 'frosty', 'foggy', 'stormy', 'destructive', 'collapsing', 
-                    'failing', 'defeated', 'shameful', 'guilty', 'remorseful', 'regretful', 'desperate', 'hopeless', 
-                    'gloomy', 'desolate', 'decaying', 'weak', 'unjust', 'treacherous', 'perfidious', 'base', 'cruel', 
-                    'merciless', 'ruthless', 'insensitive', 'heartless', 'callous', 'pitiless', 'implacable', 'bleak', 
-                    'dreadful', 'futile', 'powerless', 'helpless', 'hopeless', 'willless', 'defenseless', 'inevitable', 
-                    'mournful', 'bitter', 'embittered', 'hardened', 'dreary', 'gloomy', 'melancholic', 'sorrowful', 
-                    'grieving', 'sad', 'cheerless', 'menacing', 'perilous', 'risky', 'calamitous', 'unfortunate', 
-                    'disastrous', 'unfavorable', 'unpleasant', 'offensive', 'distressing', 'annoying', 'disappointing', 
-                    'dissatisfied', 'displeased', 'contemptuous', 'careless', 'abandoned', 'forgotten', 'despised', 
-                    'neglected', 'contemptible', 'humiliated', 'insulted', 'offended', 'undervalued', 'unrecognized', 
-                    'abandoned', 'forsaken', 'rejected', 'cursed', 'sadden', 'hurt', 'die', 'darken', 'fear', 'be lonely', 
-                    'long', 'grieve', 'disappoint', 'lose', 'mourn', 'trouble', 'agonize', 'torment', 'torture', 
-                    'humiliate', 'betray', 'commit treason', 'lie', 'deceive', 'hate', 'be malicious', 'fume', 'be angry', 
-                    'be jealous', 'envy', 'be greedy', 'be stingy', 'be selfish', 'be indifferent', 'grow cold', 
-                    'freeze', 'storm', 'destroy', 'collapse', 'fail', 'be defeated', 'be ashamed', 'feel guilty', 
-                    'feel remorse', 'regret', 'despair', 'be hopeless', 'gloom', 'be desolate', 'decay', 'weaken', 
-                    'be unjust', 'be treacherous', 'be perfidious', 'be base', 'be cruel', 'be merciless', 'be ruthless', 
-                    'be insensitive', 'be heartless', 'be callous', 'be pitiless', 'be implacable', 'be bleak', 
-                    'be dreadful', 'be futile', 'be powerless', 'be helpless', 'be hopeless', 'be willless', 
-                    'be defenseless', 'be inevitable', 'mourn', 'be bitter', 'be embittered', 'harden', 'be dreary', 
-                    'be gloomy', 'be melancholic', 'be sorrowful', 'grieve', 'be sad', 'be cheerless', 'menace', 
-                    'endanger', 'risk', 'be unfortunate', 'be disastrous', 'be unfavorable', 'be unpleasant', 'offend', 
-                    'distress', 'annoy', 'disappoint', 'dissatisfy', 'displease', 'contemn', 'neglect', 'disregard', 
-                    'abandon', 'forget', 'despise', 'humiliate', 'insult', 'offend', 'undervalue', 'fail to recognize', 
-                    'abandon', 'forsake', 'reject', 'curse', 'condemn', 'sadly', 'painfully', 'mortally', 'darkly', 
-                    'fearfully', 'lonelily', 'longingly', 'sorrowfully', 'disappointedly', 'lostly', 'nocturnally', 
-                    'wintrily', 'rainily', 'grievously', 'troubledly', 'unfortunately', 'tragically', 'disastrously', 
-                    'agonizingly', 'tormentingly', 'torturously', 'humiliatingly', 'treacherously', 'treasonously', 
-                    'deceptively', 'hatefully', 'maliciously', 'furiously', 'angrily', 'jealously', 'enviously', 
-                    'greedily', 'stingily', 'selfishly', 'indifferently', 'coldly', 'icily', 'frostily', 'foggily', 
-                    'stormily', 'destructively', 'collapsingly', 'failingly', 'defeatedly', 'shamefully', 'guiltily', 
-                    'remorsefully', 'regretfully', 'desperately', 'hopelessly', 'gloomily', 'desolately', 'decayingly', 
-                    'weakly', 'unjustly', 'treacherously', 'perfidiously', 'basely', 'cruelly', 'mercilessly', 
-                    'ruthlessly', 'insensitively', 'heartlessly', 'callously', 'pitilessly', 'implacably', 'bleakly', 
-                    'dreadfully', 'futilely', 'powerlessly', 'helplessly', 'hopelessly', 'willlessly', 'defenselessly', 
-                    'inevitably', 'mournfully', 'bitterly', 'embitteredly', 'hardenedly', 'drearily', 'gloomily', 
-                    'melancholically', 'sorrowfully', 'grievingly', 'sadly', 'cheerlessly', 'menacingly', 'perilously', 
-                    'riskily', 'calamitously', 'unfortunately', 'disastrously', 'unfavorably', 'unpleasantly', 
-                    'offensively', 'distressingly', 'annoyingly', 'disappointingly', 'dissatisfyingly', 'displeasingly', 
-                    'contemptuously', 'carelessly', 'abandonedly', 'forgottenly', 'despisely', 'neglectingly', 
-                    'contemptibly', 'humiliatingly', 'insultingly', 'offensively', 'undervaluingly', 'unrecognizably', 
-                    'abandonedly', 'forsakenly', 'rejectingly', 'cursedly'
-                ]
-            }
+            warmWords: { ru: [], en: [] },
+            darkWords: { ru: [], en: [] }
+        }
+    };
+    
+    const SensitivityDictionaries = {
+        loaded: false,
+        loading: false,
+        dictionaries: {
+            warmWords: { ru: [], en: [] },
+            darkWords: { ru: [], en: [] }
+        },
+        
+        initBasicWords() {
+            const basicWarmRu = [
+                'любовь', 'радость', 'счастье', 'добро', 'мир', 'надежда', 'мечта', 'свет', 'тепло', 
+                'улыбка', 'друг', 'семья', 'солнце', 'весна', 'праздник', 'успех', 'победа', 'красота', 
+                'гармония', 'благополучие', 'щедрость', 'верность', 'честность', 'мудрость', 'свобода'
+            ];
+            
+            const basicWarmEn = [
+                'love', 'joy', 'happy', 'peace', 'hope', 'dream', 'light', 'warm', 'smile', 'friend', 
+                'family', 'sun', 'spring', 'celebration', 'success', 'victory', 'beauty', 'harmony', 
+                'wellbeing', 'generosity', 'loyalty', 'honesty', 'wisdom', 'freedom', 'adventure'
+            ];
+            
+            const basicDarkRu = [
+                'грусть', 'боль', 'смерть', 'тьма', 'страх', 'одиночество', 'тоска', 'печаль', 
+                'разочарование', 'потеря', 'ночь', 'зима', 'дождь', 'горе', 'беда', 'несчастье', 
+                'трагедия', 'катастрофа', 'агония', 'мучение', 'пытка', 'истязание', 'унижение'
+            ];
+            
+            const basicDarkEn = [
+                'sad', 'pain', 'death', 'dark', 'fear', 'lonely', 'sorrow', 'disappointment', 
+                'loss', 'night', 'winter', 'rain', 'grief', 'trouble', 'misfortune', 'tragedy', 
+                'disaster', 'agony', 'torment', 'torture', 'humiliation', 'betrayal'
+            ];
+            
+            this.dictionaries.warmWords.ru = basicWarmRu;
+            this.dictionaries.warmWords.en = basicWarmEn;
+            this.dictionaries.darkWords.ru = basicDarkRu;
+            this.dictionaries.darkWords.en = basicDarkEn;
+            
+            CONFIG.SENSITIVITY.warmWords.ru = basicWarmRu;
+            CONFIG.SENSITIVITY.warmWords.en = basicWarmEn;
+            CONFIG.SENSITIVITY.darkWords.ru = basicDarkRu;
+            CONFIG.SENSITIVITY.darkWords.en = basicDarkEn;
+        },
+        
+        async loadFullDictionaries() {
+            if (this.loading || this.loaded) return;
+            
+            this.loading = true;
+            
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const fullWarmRu = [
+                        'радость', 'счастье', 'надежда', 'мечта', 'свет', 'тепло', 'улыбка', 'друг', 'семья', 'солнце',
+                        'праздник', 'успех', 'победа', 'красота', 'гармония', 'доброта', 'добро', 'щедрость', 'верность',
+                        'честность', 'мудрость', 'свобода', 'приключение', 'открытие', 'вдохновение', 'творчество',
+                        'энергия', 'жизнь', 'здоровье', 'благодарность', 'спокойствие', 'уют', 'комфорт', 'ласка',
+                        'нежность', 'страсть', 'восторг', 'ликование', 'триумф', 'согласие', 'единство', 'дружба',
+                        'поддержка', 'забота', 'опека', 'восхищение', 'признание', 'почет', 'уважение', 'доверие',
+                        'понимание', 'сочувствие', 'созидание', 'благополучие', 'радушие', 'приветствие', 'ободрение',
+                        'воодушевление', 'оптимизм', 'благочестие', 'чистота', 'невинность', 'целомудрие', 'кротость',
+                        'усердие', 'старание', 'трудолюбие', 'упорство', 'терпение', 'выдержка', 'мужество', 'отвага',
+                        'храбрость', 'героизм', 'самоотверженность', 'трепет', 'благословение', 'веселье', 'бодрость',
+                        'сияние', 'просветление', 'процветание', 'свежесть', 'безмятежность', 'простодушие', 'искренность',
+                        'открытость', 'теплота', 'радостный', 'счастливый', 'надежный', 'светлый', 'теплый', 'дружелюбный',
+                        'родной', 'солнечный', 'праздничный', 'успешный', 'красивый', 'гармоничный', 'добрый', 'щедрый',
+                        'верный', 'честный', 'мудрый', 'свободный', 'вдохновляющий', 'творческий', 'энергичный', 'здоровый',
+                        'благодарный', 'спокойный', 'уютный', 'комфортный', 'ласковый', 'нежный', 'страстный', 'восторженный',
+                        'единодушный', 'дружеский', 'заботливый', 'восхищающий', 'уважаемый', 'доверчивый', 'понимающий',
+                        'сочувствующий', 'благополучный', 'благодатный', 'радушный', 'приветливый', 'ободряющий',
+                        'воодушевленный', 'оптимистичный', 'благочестивый', 'чистый', 'невинный', 'целомудренный', 'кроткий',
+                        'смиренный', 'усердный', 'прилежный', 'трудолюбивый', 'упорный', 'терпеливый', 'выдержанный',
+                        'мужественный', 'отважный', 'храбрый', 'героический', 'самоотверженный', 'трепетный', 'веселый',
+                        'бодрый', 'благоговейный', 'сияющий', 'процветающий', 'безмятежный', 'благодушный', 'искренний',
+                        'открытый', 'непорочный', 'незапятнанный', 'безупречный', 'безгрешный', 'добродетельный', 'благородный',
+                        'великодушный', 'гостеприимный', 'приветный', 'радоваться', 'наслаждаться', 'надеяться', 'мечтать',
+                        'светить', 'греть', 'улыбаться', 'дружить', 'любить', 'праздновать', 'побеждать', 'украшать', 'дарить',
+                        'верить', 'постигать', 'освобождать', 'открывать', 'вдохновлять', 'творить', 'жить', 'благодарить',
+                        'успокаивать', 'утешать', 'ласкать', 'нежиться', 'восхищаться', 'соглашаться', 'объединять',
+                        'поддерживать', 'заботиться', 'опекать', 'признавать', 'почитать', 'уважать', 'доверять', 'понимать',
+                        'принимать', 'сочувствовать', 'благословлять', 'веселиться', 'воодушевлять', 'просветлять', 'сиять',
+                        'процветать', 'веселить', 'прощать', 'теплеть', 'светлеть', 'благородствовать', 'приветствовать',
+                        'возвышать', 'воспарять', 'расцветать', 'оживать', 'оживлять', 'окрылять', 'облагораживать',
+                        'покровительствовать', 'прославлять', 'прочувствовать', 'чувствовать', 'радостно', 'счастливо',
+                        'надежно', 'светло', 'дружелюбно', 'солнечно', 'весело', 'празднично', 'успешно', 'красиво',
+                        'гармонично', 'щедро', 'верно', 'честно', 'мудро', 'свободно', 'вдохновенно', 'творчески', 'энергично',
+                        'благодарно', 'спокойно', 'уютно', 'комфортно', 'ласково', 'нежно', 'страстно', 'восторженно',
+                        'единогласно', 'дружески', 'заботливо', 'восхищенно', 'уважительно', 'доверчиво', 'понимающе',
+                        'сочувственно', 'благополучно', 'радушно', 'приветливо', 'ободряюще', 'воодушевляюще', 'оптимистично',
+                        'чисто', 'невинно', 'целомудренно', 'кротко', 'смиренне', 'усердно', 'прилежно', 'трудолюбиво',
+                        'упорно', 'терпеливо', 'выдержанно', 'мужественно', 'отважно', 'храбро', 'героически', 'самоотверженно',
+                        'трепетно', 'бодро', 'безмятежно', 'искренне', 'открыто', 'непорочно', 'безупречно', 'безгрешно',
+                        'благородно', 'великодушно', 'гостеприимно', 'возвышенно'
+                    ];
+                    
+                    const fullWarmEn = [
+                        'joy', 'happiness', 'hope', 'dream', 'light', 'warmth', 'smile', 'friend', 'family', 'sun',
+                        'celebration', 'success', 'victory', 'beauty', 'harmony', 'kindness', 'generosity', 'loyalty',
+                        'honesty', 'wisdom', 'freedom', 'adventure', 'discovery', 'inspiration', 'creativity', 'energy',
+                        'life', 'health', 'gratitude', 'calm', 'coziness', 'comfort', 'affection', 'tenderness', 'passion',
+                        'delight', 'triumph', 'agreement', 'unity', 'friendship', 'support', 'care', 'guardianship',
+                        'admiration', 'recognition', 'honor', 'respect', 'trust', 'understanding', 'compassion',
+                        'peacemaking', 'prosperity', 'grace', 'blessing', 'welcome', 'greeting', 'encouragement', 'enthusiasm',
+                        'optimism', 'piety', 'purity', 'innocence', 'chastity', 'meekness', 'humility', 'zeal', 'diligence',
+                        'assiduity', 'industriousness', 'perseverance', 'patience', 'endurance', 'courage', 'valor', 'bravery',
+                        'heroism', 'selflessness', 'reverence', 'merriment', 'vigor', 'buoyancy', 'radiance', 'enlightenment',
+                        'flourishing', 'wellbeing', 'freshness', 'tranquility', 'glee', 'joyfulness', 'goodwill', 'trustfulness',
+                        'naivety', 'sincerity', 'openness', 'joyful', 'happy', 'hopeful', 'bright', 'warm', 'friendly', 'dear',
+                        'sunny', 'festive', 'successful', 'beautiful', 'harmonious', 'kind', 'generous', 'loyal', 'honest',
+                        'wise', 'free', 'inspiring', 'creative', 'energetic', 'healthy', 'grateful', 'calm', 'cozy', 'comfortable',
+                        'affectionate', 'tender', 'passionate', 'delighted', 'unanimous', 'caring', 'admiring', 'respected',
+                        'trusting', 'understanding', 'compassionate', 'peacemaking', 'prosperous', 'gracious', 'welcoming',
+                        'encouraging', 'enthusiastic', 'optimistic', 'pious', 'pure', 'innocent', 'chaste', 'meek', 'humble',
+                        'zealous', 'diligent', 'assiduous', 'industrious', 'persevering', 'patient', 'enduring', 'courageous',
+                        'valiant', 'brave', 'heroic', 'selfless', 'reverent', 'merry', 'vibrant', 'radiant', 'flourishing',
+                        'tranquil', 'trusting', 'naive', 'sincere', 'open', 'immaculate', 'unblemished', 'impeccable', 'sinless',
+                        'virtuous', 'noble', 'magnanimous', 'cordial', 'enjoy', 'hope', 'dream', 'shine', 'warm', 'smile',
+                        'befriend', 'love', 'celebrate', 'win', 'decorate', 'harmonize', 'give', 'believe', 'think', 'comprehend',
+                        'free', 'discover', 'inspire', 'create', 'live', 'thank', 'calm', 'caress', 'cherish', 'admire', 'agree',
+                        'unite', 'support', 'care', 'protect', 'recognize', 'respect', 'trust', 'understand', 'sympathize',
+                        'bless', 'merrymake', 'delight', 'optimize', 'enlighten', 'purify', 'radiate', 'flourish', 'prosper',
+                        'cheer', 'forgive', 'brighten', 'greet', 'elevate', 'soar', 'blossom', 'revive', 'inspire', 'ennoble',
+                        'proclaim', 'expect', 'patronize', 'praise', 'deeply feel', 'joyfully', 'happily', 'hopefully', 'brightly',
+                        'warmly', 'friendly', 'dearly', 'sunnily', 'cheerfully', 'festively', 'successfully', 'beautifully',
+                        'harmoniously', 'kindly', 'generously', 'loyally', 'honestly', 'wisely', 'freely', 'inspiringly',
+                        'creatively', 'healthily', 'gratefully', 'calmly', 'cozily', 'comfortably', 'affectionately', 'tenderly',
+                        'passionately', 'delightedly', 'unanimously', 'caringly', 'admiringly', 'respectfully', 'trustingly',
+                        'understandingly', 'compassionately', 'peacemakingly', 'prosperously', 'graciously', 'welcomingly',
+                        'encouragingly', 'enthusiastically', 'optimistically', 'piously', 'purely', 'innocently', 'chastely',
+                        'meekly', 'humbly', 'zealously', 'diligently', 'assiduously', 'industriously', 'perseveringly', 'patiently',
+                        'enduringly', 'courageously', 'valiantly', 'bravely', 'heroically', 'selflessly', 'reverently', 'merrily',
+                        'vibrantly', 'radiantly', 'flourishingly', 'tranquilly', 'good-naturedly', 'trustingly', 'sincerely',
+                        'openly', 'warmly', 'immaculately', 'impeccably', 'sinlessly', 'virtuously', 'nobly', 'magnanimously',
+                        'cordially', 'sublimely'
+                    ];
+                    
+                    const fullDarkRu = [
+                        'грусть', 'боль', 'смерть', 'тьма', 'страх', 'одиночество', 'тоска', 'печаль', 'разочарование',
+                        'потеря', 'ночь', 'горе', 'беда', 'несчастье', 'трагедия', 'катастрофа', 'агония', 'мучение',
+                        'пытка', 'истязание', 'унижение', 'предательство', 'измена', 'ложь', 'обман', 'ненависть', 'злоба',
+                        'ярость', 'гнев', 'ревность', 'зависть', 'жадность', 'скупость', 'эгоизм', 'равнодушие', 'холод',
+                        'лед', 'мороз', 'туман', 'туча', 'гроза', 'ураган', 'разрушение', 'крах', 'провал', 'поражение',
+                        'позор', 'стыд', 'вина', 'раскаяние', 'сожаление', 'отчаяние', 'безысходность', 'мрак', 'уныние',
+                        'тлен', 'немощь', 'несправедливость', 'зло', 'коварство', 'вероломство', 'подлость', 'жестокость',
+                        'беспощадность', 'безжалостность', 'бездушность', 'безразличие', 'неумолимость', 'беспросветность',
+                        'безрадостность', 'безнадежность', 'безволие', 'бессилие', 'беззащитность', 'беспомощность',
+                        'безвыходность', 'скорбь', 'горечь', 'ожесточение', 'безутешность', 'мрачность', 'угрюмость',
+                        'тоскливость', 'хмурость', 'пессимизм', 'угроза', 'опасность', 'риск', 'бедствие', 'страдание',
+                        'мука', 'плач', 'слезы', 'рыдание', 'вопль', 'неприятность', 'трагизм', 'гнет', 'угнетение',
+                        'мученичество', 'неволя', 'принуждение', 'насилие', 'притеснение', 'изгнание', 'изоляция',
+                        'отверженность', 'забвение', 'заброшенность', 'небрежность', 'пренебрежение', 'презрение',
+                        'грустный', 'болезненный', 'смертный', 'темный', 'страшный', 'одинокий', 'тоскливый', 'печальный',
+                        'разочарованный', 'потерянный', 'горестный', 'бедственный', 'несчастный', 'трагический',
+                        'катастрофический', 'мучительный', 'истязующий', 'унизительный', 'предательский', 'лживый',
+                        'обманчивый', 'ненавистный', 'злобный', 'яростный', 'гневный', 'ревнивый', 'завистливый', 'жадный',
+                        'скупой', 'эгоистичный', 'равнодушный', 'холодный', 'ледяной', 'морозный', 'туманный', 'грозовой',
+                        'ураганный', 'разрушительный', 'провальный', 'позорный', 'стыдный', 'виновный', 'сожалеющий',
+                        'отчаянный', 'безысходный', 'мрачный', 'унылый', 'тленный', 'немощный', 'несправедливый', 'коварный',
+                        'вероломный', 'подлый', 'жестокий', 'беспощадный', 'безжалостный', 'бездушный', 'бесчувственный',
+                        'безразличный', 'немилосердный', 'неумолимый', 'беспросветный', 'безрадостный', 'безнадежный',
+                        'безвольный', 'бессильный', 'беззащитный', 'беспомощный', 'безвыходный', 'скорбный', 'горький',
+                        'озлобленный', 'ожесточенный', 'безутешный', 'хмурый', 'угрюмый', 'угрожающий', 'опасный',
+                        'рискованный', 'неблагоприятный', 'неприятный', 'обидный', 'огорчающий', 'раздражающий',
+                        'разочаровывающий', 'недовольный', 'неудовлетворенный', 'пренебрежительный', 'небрежный',
+                        'заброшенный', 'забытый', 'презренный', 'униженный', 'оскорбленный', 'обиженный', 'недооцененный',
+                        'непризнанный', 'покинутый', 'брошенный', 'отвергнутый', 'проклятый', 'грустить', 'болеть',
+                        'умирать', 'темнеть', 'страшиться', 'тосковать', 'печалиться', 'разочаровываться', 'терять',
+                        'горевать', 'бедствовать', 'мучиться', 'пытать', 'истязать', 'унижать', 'предавать', 'изменять',
+                        'лгать', 'обманывать', 'ненавидеть', 'гневаться', 'ревновать', 'завидовать', 'жадничать', 'скупиться',
+                        'холодеть', 'леденеть', 'морозить', 'грозить', 'разрушать', 'проваливаться', 'позориться', 'стыдиться',
+                        'сожалеть', 'отчаиваться', 'унывать', 'тлеть', 'злорадствовать', 'коварствовать', 'вероломствовать',
+                        'жесточить', 'бездушничать', 'скорбеть', 'горчить', 'ожесточать', 'мрачнеть', 'хмуриться',
+                        'угрюмничать', 'горевать', 'угрожать', 'опасаться', 'рисковать', 'бедствовать', 'обижать', 'огорчать',
+                        'раздражать', 'разочаровывать', 'пренебрегать', 'забрасывать', 'забывать', 'презирать', 'унижать',
+                        'оскорблять', 'недооценивать', 'покидать', 'бросать', 'отвергать', 'проклинать', 'грустно',
+                        'болезненно', 'темно', 'страшно', 'одиноко', 'тоскливо', 'печально', 'разочарованно', 'потерянно',
+                        'горестно', 'бедственно', 'несчастно', 'трагически', 'катастрофически', 'мучительно', 'унизительно',
+                        'предательски', 'изменнически', 'лживо', 'обманчиво', 'ненавистно', 'злобно', 'яростно', 'гневно',
+                        'ревниво', 'завистливо', 'жадно', 'скупо', 'эгоистично', 'равнодушно', 'холодно', 'морозно',
+                        'туманно', 'ураганно', 'разрушительно', 'провально', 'позорно', 'стыдно', 'отчаянно', 'мрачно',
+                        'уныло', 'тленно', 'немощно', 'несправедливо', 'злорадно', 'коварно', 'вероломно', 'подло',
+                        'жестоко', 'жестко', 'беспощадно', 'безжалостно', 'бездушно', 'бесчувственно', 'безразлично', 'немилосердно',
+                        'неумолимо', 'беспросветно', 'безрадостно', 'безнадежно', 'безвольно', 'бессильно', 'беззащитно',
+                        'беспомощно', 'безвыходно', 'скорбно', 'горько', 'озлобленно', 'ожесточенно', 'безутешно', 'хмуро',
+                        'угрюмо', 'безотрадно', 'угрожающе', 'опасно', 'рискованно', 'бедственно', 'неблагоприятно', 'неприятно',
+                        'обидно', 'огорчающе', 'раздражающе', 'разочаровывающе', 'недовольно', 'неудовлетворенно', 'неудовлетворительно',
+                        'пренебрежительно', 'небрежно', 'заброшенно', 'забыто', 'презрительно', 'уничижительно', 'оскорбительно',
+                        'обидчиво', 'покинуто', 'брошенно', 'отверженно', 'проклято'
+                    ];
+                    
+                    const fullDarkEn = [
+                        'sadness', 'pain', 'death', 'darkness', 'fear', 'loneliness', 'longing', 'sorrow', 'disappointment',
+                        'loss', 'night', 'winter', 'rain', 'grief', 'trouble', 'misfortune', 'tragedy', 'disaster', 'agony',
+                        'torment', 'torture', 'humiliation', 'betrayal', 'treason', 'lie', 'deception', 'hatred', 'malice',
+                        'fury', 'anger', 'jealousy', 'envy', 'greed', 'stinginess', 'selfishness', 'indifference', 'cold',
+                        'ice', 'frost', 'fog', 'cloud', 'storm', 'hurricane', 'destruction', 'collapse', 'failure', 'defeat',
+                        'shame', 'guilt', 'remorse', 'regret', 'despair', 'hopelessness', 'gloom', 'desolation', 'decay',
+                        'weakness', 'injustice', 'treachery', 'perfidy', 'baseness', 'cruelty', 'mercilessness', 'ruthlessness',
+                        'insensitivity', 'heartlessness', 'callousness', 'pitilessness', 'implacability', 'bleakness',
+                        'futility', 'embitterment', 'hardening', 'melancholy', 'mourning', 'menace', 'peril', 'risk', 'calamity',
+                        'injustice', 'suffering', 'affliction', 'misery', 'woe', 'weeping', 'tears', 'sobbing', 'screaming',
+                        'groaning', 'adversity', 'affliction', 'tragicism', 'bitterness', 'oppression', 'tyranny', 'martyrdom',
+                        'bondage', 'constraint', 'violence', 'persecution', 'exile', 'isolation', 'rejection', 'oblivion',
+                        'neglect', 'abandonment', 'indifference', 'disregard', 'contempt', 'disdain', 'sad', 'painful',
+                        'mortal', 'dark', 'fearful', 'lonely', 'melancholy', 'sorrowful', 'disappointed', 'lost', 'nocturnal',
+                        'wintry', 'rainy', 'grievous', 'troubled', 'unfortunate', 'tragic', 'disastrous', 'agonizing',
+                        'tormenting', 'torturous', 'humiliating', 'treacherous', 'treasonous', 'lying', 'deceptive', 'hateful',
+                        'malicious', 'furious', 'angry', 'jealous', 'envious', 'greedy', 'stingy', 'selfish', 'indifferent',
+                        'cold', 'icy', 'frosty', 'foggy', 'stormy', 'destructive', 'collapsing', 'failing', 'defeated',
+                        'shameful', 'guilty', 'remorseful', 'regretful', 'desperate', 'hopeless', 'gloomy', 'desolate',
+                        'decaying', 'weak', 'unjust', 'treacherous', 'perfidious', 'base', 'cruel', 'merciless', 'ruthless',
+                        'insensitive', 'heartless', 'callous', 'pitiless', 'implacable', 'bleak', 'dreadful', 'futile',
+                        'powerless', 'helpless', 'hopeless', 'willless', 'defenseless', 'inevitable', 'mournful', 'bitter',
+                        'embittered', 'hardened', 'dreary', 'gloomy', 'melancholic', 'sorrowful', 'grieving', 'sad', 'cheerless',
+                        'menacing', 'perilous', 'risky', 'calamitous', 'unfortunate', 'disastrous', 'unfavorable', 'unpleasant',
+                        'offensive', 'distressing', 'annoying', 'disappointing', 'dissatisfied', 'displeased', 'contemptuous',
+                        'careless', 'abandoned', 'forgotten', 'despised', 'neglected', 'contemptible', 'humiliated', 'insulted',
+                        'offended', 'undervalued', 'unrecognized', 'abandoned', 'forsaken', 'rejected', 'cursed', 'sadden',
+                        'hurt', 'die', 'darken', 'fear', 'be lonely', 'long', 'grieve', 'disappoint', 'lose', 'mourn',
+                        'trouble', 'agonize', 'torment', 'torture', 'humiliate', 'betray', 'commit treason', 'lie', 'deceive',
+                        'hate', 'be malicious', 'fume', 'be angry', 'be jealous', 'envy', 'be greedy', 'be stingy', 'be selfish',
+                        'be indifferent', 'grow cold', 'freeze', 'storm', 'destroy', 'collapse', 'fail', 'be defeated',
+                        'be ashamed', 'feel guilty', 'feel remorse', 'regret', 'despair', 'be hopeless', 'gloom', 'be desolate',
+                        'decay', 'weaken', 'be unjust', 'be treacherous', 'be perfidious', 'be base', 'be cruel', 'be merciless',
+                        'be ruthless', 'be insensitive', 'be heartless', 'be callous', 'be pitiless', 'be implacable', 'be bleak',
+                        'be dreadful', 'be futile', 'be powerless', 'be helpless', 'be hopeless', 'be willless', 'be defenseless',
+                        'be inevitable', 'mourn', 'be bitter', 'be embittered', 'harden', 'be dreary', 'be gloomy', 'be melancholic',
+                        'be sorrowful', 'grieve', 'be sad', 'be cheerless', 'menace', 'endanger', 'risk', 'be unfortunate',
+                        'be disastrous', 'be unfavorable', 'be unpleasant', 'offend', 'distress', 'annoy', 'disappoint',
+                        'dissatisfy', 'displease', 'contemn', 'neglect', 'disregard', 'abandon', 'forget', 'despise', 'humiliate',
+                        'insult', 'offend', 'undervalue', 'fail to recognize', 'abandon', 'forsake', 'reject', 'curse', 'condemn',
+                        'sadly', 'painfully', 'mortally', 'darkly', 'fearfully', 'lonelily', 'longingly', 'sorrowfully',
+                        'disappointedly', 'lostly', 'nocturnally', 'wintrily', 'rainily', 'grievously', 'troubledly',
+                        'unfortunately', 'tragically', 'disastrously', 'agonizingly', 'tormentingly', 'torturously',
+                        'humiliatingly', 'treacherously', 'treasonously', 'deceptively', 'hatefully', 'maliciously', 'furiously',
+                        'angrily', 'jealously', 'enviously', 'greedily', 'stingily', 'selfishly', 'indifferently', 'coldly',
+                        'icily', 'frostily', 'foggily', 'stormily', 'destructively', 'collapsingly', 'failingly', 'defeatedly',
+                        'shamefully', 'guiltily', 'remorsefully', 'regretfully', 'desperately', 'hopelessly', 'gloomily',
+                        'desolately', 'decayingly', 'weakly', 'unjustly', 'treacherously', 'perfidiously', 'basely', 'cruelly',
+                        'mercilessly', 'ruthlessly', 'insensitively', 'heartlessly', 'callously', 'pitilessly', 'implacably',
+                        'bleakly', 'dreadfully', 'futilely', 'powerlessly', 'helplessly', 'hopelessly', 'willlessly',
+                        'defenselessly', 'inevitably', 'mournfully', 'bitterly', 'embitteredly', 'hardenedly', 'drearily',
+                        'gloomily', 'melancholically', 'sorrowfully', 'grievingly', 'sadly', 'cheerlessly', 'menacingly',
+                        'perilously', 'riskily', 'calamitously', 'unfortunately', 'disastrously', 'unfavorably', 'unpleasantly',
+                        'offensively', 'distressingly', 'annoyingly', 'disappointingly', 'dissatisfyingly', 'displeasingly',
+                        'contemptuously', 'carelessly', 'abandonedly', 'forgottenly', 'despisely', 'neglectingly', 'contemptibly',
+                        'humiliatingly', 'insultingly', 'offensively', 'undervaluingly', 'unrecognizably', 'abandonedly',
+                        'forsakenly', 'rejectingly', 'cursedly'
+                    ];
+                    
+                    this.dictionaries.warmWords.ru = fullWarmRu;
+                    this.dictionaries.warmWords.en = fullWarmEn;
+                    this.dictionaries.darkWords.ru = fullDarkRu;
+                    this.dictionaries.darkWords.en = fullDarkEn;
+                    
+                    CONFIG.SENSITIVITY.warmWords.ru = fullWarmRu;
+                    CONFIG.SENSITIVITY.warmWords.en = fullWarmEn;
+                    CONFIG.SENSITIVITY.darkWords.ru = fullDarkRu;
+                    CONFIG.SENSITIVITY.darkWords.en = fullDarkEn;
+                    
+                    this.loaded = true;
+                    this.loading = false;
+                    
+                    resolve();
+                }, 100);
+            });
+        },
+        
+        getWord(lang, type) {
+            return this.dictionaries[type + 'Words'][lang] || [];
         }
     };
     
@@ -349,21 +419,20 @@
             let darkCount = 0;
             
             ['ru', 'en'].forEach(lang => {
-                if (CONFIG.SENSITIVITY.warmWords[lang]) {
-                    CONFIG.SENSITIVITY.warmWords[lang].forEach(word => {
-                        const regex = new RegExp(`(^|[^\\p{L}])${this.escapeRegExp(word)}([^\\p{L}]|$)`, 'giu');
-                        const matches = textLower.match(regex);
-                        if (matches) warmCount += matches.length;
-                    });
-                }
+                const warmWords = CONFIG.SENSITIVITY.warmWords[lang] || [];
+                const darkWords = CONFIG.SENSITIVITY.darkWords[lang] || [];
                 
-                if (CONFIG.SENSITIVITY.darkWords[lang]) {
-                    CONFIG.SENSITIVITY.darkWords[lang].forEach(word => {
-                        const regex = new RegExp(`(^|[^\\p{L}])${this.escapeRegExp(word)}([^\\p{L}]|$)`, 'giu');
-                        const matches = textLower.match(regex);
-                        if (matches) darkCount += matches.length;
-                    });
-                }
+                warmWords.forEach(word => {
+                    const regex = new RegExp(`\\b${this.escapeRegExp(word)}\\b`, 'giu');
+                    const matches = textLower.match(regex);
+                    if (matches) warmCount += matches.length;
+                });
+                
+                darkWords.forEach(word => {
+                    const regex = new RegExp(`\\b${this.escapeRegExp(word)}\\b`, 'giu');
+                    const matches = textLower.match(regex);
+                    if (matches) darkCount += matches.length;
+                });
             });
             
             if (warmCount === 0 && darkCount === 0) return 'neutral';
@@ -1110,12 +1179,30 @@
     
     function initializeChaos() {
         try {
+            SensitivityDictionaries.initBasicWords();
+            
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', () => {
                     chaosController = new ChaosController();
+                    
+                    setTimeout(() => {
+                        SensitivityDictionaries.loadFullDictionaries().then(() => {
+                            console.log('🌌 Full sensitivity dictionaries loaded');
+                        }).catch(err => {
+                            console.warn('🌌 Failed to load full dictionaries:', err);
+                        });
+                    }, 1000);
                 });
             } else {
                 chaosController = new ChaosController();
+                
+                setTimeout(() => {
+                    SensitivityDictionaries.loadFullDictionaries().then(() => {
+                        console.log('🌌 Full sensitivity dictionaries loaded');
+                    }).catch(err => {
+                        console.warn('🌌 Failed to load full dictionaries:', err);
+                    });
+                }, 1000);
             }
         } catch (error) {
             console.error('ChaOS initialization failed:', error);
