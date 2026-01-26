@@ -1,37 +1,6 @@
-﻿(function() {
+(function() {
   'use strict';
   console.log('=== NOISE ENGINE START ===');
-    
-    // Проверяем наличие контейнера, создаем если отсутствует
-    let container = document.getElementById('noise-canvas-container');
-    if (!container) {
-      container = createNoiseContainer();
-      document.body.appendChild(container);
-      console.log('✅ Created missing noise container');
-    }
-    
-    // Проверяем наличие canvas, создаем если отсутствует
-    let canvas = document.getElementById('noise-canvas');
-    if (!canvas) {
-      canvas = document.createElement('canvas');
-      canvas.id = 'noise-canvas';
-      canvas.style.cssText = 'width:100%;height:100%;display:block;';
-      container.appendChild(canvas);
-      console.log('✅ Created missing noise canvas');
-    }
-    
-    // Инициализируем контроллер после полной проверки элементов
-    setTimeout(() => {
-      try {
-        const noiseController = new NoiseController();
-        window.noiseController = noiseController; // для отладки
-        console.log('✅ Noise Controller fully initialized');
-      } catch (error) {
-        console.error('❌ Failed to initialize Noise Controller:', error);
-        console.error(error.stack);
-      }
-    }, 100);
-  });
   
   // КОНФИГУРАЦИЯ
   const NOISE_CONFIG = {
