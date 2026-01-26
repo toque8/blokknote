@@ -1210,5 +1210,40 @@
   
   <script src="chaos.js" defer></script>
   <script src="noise.js" defer></script>
+  
+  <script>
+    // Инициализируем noise только после полной загрузки страницы
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM loaded, initializing noise...');
+      
+      // Даем немного времени noise.js для загрузки
+      setTimeout(function() {
+        if (typeof NoiseController !== 'undefined') {
+          try {
+            console.log('Creating NoiseController...');
+            window.noiseController = new NoiseController();
+            console.log('NoiseController created successfully');
+            
+            // Добавляем обработчик для кнопки noise вручную, если noise.js не сделал этого
+            const noiseBtn = document.getElementById('noise-btn');
+            if (noiseBtn && !noiseBtn.hasEventListener) {
+              noiseBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                console.log('Noise button clicked (manual handler)');
+                if (window.noiseController && window.noiseController.toggle) {
+                  window.noiseController.toggle();
+                }
+              });
+              noiseBtn.hasEventListener = true;
+            }
+          } catch (error) {
+            console.error('Failed to create NoiseController:', error);
+          }
+        } else {
+          console.warn('NoiseController not found in noise.js');
+        }
+      }, 500);
+    });
+  </script>
 </body>
 </html>
