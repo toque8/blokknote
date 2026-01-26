@@ -2,7 +2,7 @@
     'use strict';
     
     const CONFIG = {
-        VERSION: '4.3',
+        VERSION: '1.0',
         PARTICLES: {
             desktop: { min: 50, max: 100 },
             mobile: { min: 25, max: 50 }
@@ -14,42 +14,206 @@
         SENSITIVITY: {
             warmWords: {
                 ru: [
-                    'любовь', 'радость', 'счастье', 'добро', 'мир', 'надежда', 'мечта', 'свет', 'тепло', 
-                    'улыбка', 'друг', 'семья', 'солнце', 'весна', 'праздник', 'успех', 'победа', 'красота', 
-                    'гармония', 'благополучие', 'щедрость', 'верность', 'честность', 'мудрость', 'свобода', 
-                    'приключение', 'открытие', 'вдохновение', 'творчество', 'энергия', 'жизнь', 'здоровье', 
-                    'благодарность', 'спокойствие', 'уют', 'комфорт', 'ласка', 'нежность', 'страсть', 'восторг',
-                    'ликование', 'триумф', 'согласие', 'единство', 'дружба', 'поддержка', 'забота', 'опека',
-                    'восхищение', 'признание', 'почет', 'уважение', 'доверие', 'понимание', 'сочувствие'
+                    'радость', 'счастье', 'надежда', 'мечта', 'свет', 'тепло', 'улыбка', 'друг', 'семья', 'солнце', 
+                    'праздник', 'успех', 'победа', 'красота', 'гармония', 'доброта', 'добро', 'щедрость', 'верность', 
+                    'честность', 'мудрость', 'свобода', 'приключение', 'открытие', 'вдохновение', 'творчество', 
+                    'энергия', 'жизнь', 'здововье', 'благодарность', 'спокойствие', 'уют', 'комфорт', 'ласка', 
+                    'нежность', 'страсть', 'восторг', 'ликование', 'триумф', 'согласие', 'единство', 'дружба', 
+                    'поддержка', 'забота', 'опека', 'восхищение', 'признание', 'почет', 'уважение', 'доверие', 
+                    'понимание', 'сочувствие', 'созидание', 'благополучие', 'радушие', 'приветствие', 'ободрение', 
+                    'воодушевление', 'оптимизм', 'благочестие', 'чистота', 'невинность', 'целомудрие', 'кротость', 
+                    'усердие', 'старание', 'трудолюбие', 'упорство', 'терпение', 'выдержка', 'мужество', 'отвага', 
+                    'храбрость', 'героизм', 'самоотверженность', 'трепет', 'благословение', 'веселье', 'бодрость', 
+                    'сияние', 'просветление', 'процветание', 'свежесть', 'безмятежность', 'простодушие', 'искренность', 
+                    'открытость', 'теплота', 'радостный', 'счастливый', 'надежный', 'светлый', 'теплый', 'дружелюбный', 
+                    'родной', 'солнечный', 'праздничный', 'успешный', 'красивый', 'гармоничный', 'добрый', 'щедрый', 
+                    'верный', 'честный', 'мудрый', 'свободный', 'вдохновляющий', 'творческий', 'энергичный', 'здоровый', 
+                    'благодарный', 'спокойный', 'уютный', 'комфортный', 'ласковый', 'нежный', 'страстный', 'восторженный', 
+                    'единодушный', 'дружеский', 'заботливый', 'восхищающий', 'уважаемый', 'доверчивый', 'понимающий', 
+                    'сочувствующий', 'благополучный', 'благодатный', 'радушный', 'приветливый', 'ободряющий', 
+                    'воодушевленный', 'оптимистичный', 'благочестивый', 'чистый', 'невинный', 'целомудренный', 'кроткий', 
+                    'смиренный', 'усердный', 'прилежный', 'трудолюбивый', 'упорный', 'терпеливый', 'выдержанный', 
+                    'мужественный', 'отважный', 'храбрый', 'героический', 'самоотверженный', 'трепетный', 'веселый', 
+                    'бодрый', 'благоговейный', 'сияющий', 'процветающий', 'безмятежный', 'благодушный', 'искренний', 
+                    'открытый', 'непорочный', 'незапятнанный', 'безупречный', 'безгрешный', 'добродетельный', 'благородный', 
+                    'великодушный', 'гостеприимный', 'приветный', 'радоваться', 'наслаждаться', 'надеяться', 'мечтать', 
+                    'светить', 'греть', 'улыбаться', 'дружить', 'любить', 'праздновать', 'побеждать', 'украшать', 'дарить', 
+                    'верить', 'постигать', 'освобождать', 'открывать', 'вдохновлять', 'творить', 'жить', 'благодарить', 
+                    'успокаивать', 'утешать', 'ласкать', 'нежиться', 'восхищаться', 'соглашаться', 'объединять', 
+                    'поддерживать', 'заботиться', 'опекать', 'признавать', 'почитать', 'уважать', 'доверять', 'понимать', 
+                    'принимать', 'сочувствовать', 'благословлять', 'веселиться', 'воодушевлять', 'просветлять', 'сиять', 
+                    'процветать', 'веселить', 'прощать', 'теплеть', 'светлеть', 'благородствовать', 'приветствовать', 
+                    'возвышать', 'воспарять', 'расцветать', 'оживать', 'оживлять', 'окрылять', 'облагораживать', 
+                    'покровительствовать', 'прославлять', 'прочувствовать', 'чувствовать', 'радостно', 'счастливо', 
+                    'надежно', 'светло', 'дружелюбно', 'солнечно', 'весело', 'празднично', 'успешно', 'красиво', 
+                    'гармонично', 'щедро', 'верно', 'честно', 'мудро', 'свободно', 'вдохновенно', 'творчески', 'энергично', 
+                    'благодарно', 'спокойно', 'уютно', 'комфортно', 'ласково', 'нежно', 'страстно', 'восторженно', 
+                    'единогласно', 'дружески', 'заботливо', 'восхищенно', 'уважительно', 'доверчиво', 'понимающе', 
+                    'сочувственно', 'благополучно', 'радушно', 'приветливо', 'ободряюще', 'воодушевляюще', 'оптимистично', 
+                    'чисто', 'невинно', 'целомудренно', 'кротко', 'смиренне', 'усердно', 'прилежно', 'трудолюбиво', 
+                    'упорно', 'терпеливо', 'выдержанно', 'мужественно', 'отважно', 'храбро', 'героически', 'самоотверженно', 
+                    'трепетно', 'бодро', 'безмятежно', 'искренне', 'открыто', 'непорочно', 'безупречно', 'безгрешно', 
+                    'благородно', 'великодушно', 'гостеприимно', 'возвышенно', 'любовь', 'мир', 'весна'
                 ],
                 en: [
-                    'love', 'joy', 'happy', 'peace', 'hope', 'dream', 'light', 'warm', 'smile', 'friend', 
-                    'family', 'sun', 'spring', 'celebration', 'success', 'victory', 'beauty', 'harmony', 
-                    'wellbeing', 'generosity', 'loyalty', 'honesty', 'wisdom', 'freedom', 'adventure', 
-                    'discovery', 'inspiration', 'creativity', 'energy', 'life', 'health', 'gratitude', 
-                    'calm', 'cozy', 'comfort', 'affection', 'tenderness', 'passion', 'delight', 'ecstasy',
-                    'triumph', 'agreement', 'unity', 'friendship', 'support', 'care', 'guardianship',
-                    'admiration', 'recognition', 'honor', 'respect', 'trust', 'understanding', 'compassion'
+                    'joy', 'happiness', 'hope', 'dream', 'light', 'warmth', 'smile', 'friend', 'family', 'sun', 
+                    'celebration', 'success', 'victory', 'beauty', 'harmony', 'kindness', 'generosity', 'loyalty', 
+                    'honesty', 'wisdom', 'freedom', 'adventure', 'discovery', 'inspiration', 'creativity', 'energy', 
+                    'life', 'health', 'gratitude', 'calm', 'coziness', 'comfort', 'affection', 'tenderness', 'passion', 
+                    'delight', 'triumph', 'agreement', 'unity', 'friendship', 'support', 'care', 'guardianship', 
+                    'admiration', 'recognition', 'honor', 'respect', 'trust', 'understanding', 'compassion', 
+                    'peacemaking', 'prosperity', 'grace', 'blessing', 'welcome', 'greeting', 'encouragement', 
+                    'enthusiasm', 'optimism', 'piety', 'purity', 'innocence', 'chastity', 'meekness', 'humility', 
+                    'zeal', 'diligence', 'assiduity', 'industriousness', 'perseverance', 'patience', 'endurance', 
+                    'courage', 'valor', 'bravery', 'heroism', 'selflessness', 'reverence', 'merriment', 'vigor', 
+                    'buoyancy', 'radiance', 'enlightenment', 'flourishing', 'wellbeing', 'freshness', 'tranquility', 
+                    'glee', 'joyfulness', 'goodwill', 'trustfulness', 'naivety', 'sincerity', 'openness', 'joyful', 
+                    'happy', 'hopeful', 'bright', 'warm', 'friendly', 'dear', 'sunny', 'festive', 'successful', 
+                    'beautiful', 'harmonious', 'kind', 'generous', 'loyal', 'honest', 'wise', 'free', 'inspiring', 
+                    'creative', 'energetic', 'healthy', 'grateful', 'calm', 'cozy', 'comfortable', 'affectionate', 
+                    'tender', 'passionate', 'delighted', 'unanimous', 'caring', 'admiring', 'respected', 'trusting', 
+                    'understanding', 'compassionate', 'peacemaking', 'prosperous', 'gracious', 'welcoming', 
+                    'encouraging', 'enthusiastic', 'optimistic', 'pious', 'pure', 'innocent', 'chaste', 'meek', 
+                    'humble', 'zealous', 'diligent', 'assiduous', 'industrious', 'persevering', 'patient', 'enduring', 
+                    'courageous', 'valiant', 'brave', 'heroic', 'selfless', 'reverent', 'merry', 'vibrant', 'radiant', 
+                    'flourishing', 'tranquil', 'trusting', 'naive', 'sincere', 'open', 'immaculate', 'unblemished', 
+                    'impeccable', 'sinless', 'virtuous', 'noble', 'magnanimous', 'cordial', 'enjoy', 'hope', 'dream', 
+                    'shine', 'warm', 'smile', 'befriend', 'love', 'celebrate', 'win', 'decorate', 'harmonize', 'give', 
+                    'believe', 'think', 'comprehend', 'free', 'discover', 'inspire', 'create', 'live', 'thank', 'calm', 
+                    'caress', 'cherish', 'admire', 'agree', 'unite', 'support', 'care', 'protect', 'recognize', 
+                    'respect', 'trust', 'understand', 'sympathize', 'bless', 'merrymake', 'delight', 'optimize', 
+                    'enlighten', 'purify', 'radiate', 'flourish', 'prosper', 'cheer', 'forgive', 'brighten', 'greet', 
+                    'elevate', 'soar', 'blossom', 'revive', 'inspire', 'ennoble', 'proclaim', 'expect', 'patronize', 
+                    'praise', 'deeply feel', 'joyfully', 'happily', 'hopefully', 'brightly', 'warmly', 'friendly', 
+                    'dearly', 'sunnily', 'cheerfully', 'festively', 'successfully', 'beautifully', 'harmoniously', 
+                    'kindly', 'generously', 'loyally', 'honestly', 'wisely', 'freely', 'inspiringly', 'creatively', 
+                    'healthily', 'gratefully', 'calmly', 'cozily', 'comfortably', 'affectionately', 'tenderly', 
+                    'passionately', 'delightedly', 'unanimously', 'caringly', 'admiringly', 'respectfully', 
+                    'trustingly', 'understandingly', 'compassionately', 'peacemakingly', 'prosperously', 'graciously', 
+                    'welcomingly', 'encouragingly', 'enthusiastically', 'optimistically', 'piously', 'purely', 
+                    'innocently', 'chastely', 'meekly', 'humbly', 'zealously', 'diligently', 'assiduously', 
+                    'industriously', 'perseveringly', 'patiently', 'enduringly', 'courageously', 'valiantly', 
+                    'bravely', 'heroically', 'selflessly', 'reverently', 'merrily', 'vibrantly', 'radiantly', 
+                    'flourishingly', 'tranquilly', 'good-naturedly', 'trustingly', 'sincerely', 'openly', 'warmly', 
+                    'immaculately', 'impeccably', 'sinlessly', 'virtuously', 'nobly', 'magnanimously', 'cordially', 
+                    'sublimely', 'love', 'peace', 'spring'
                 ]
             },
             darkWords: {
                 ru: [
-                    'грусть', 'боль', 'смерть', 'тьма', 'страх', 'одиночество', 'тоска', 'печаль', 
-                    'разочарование', 'потеря', 'ночь', 'зима', 'дождь', 'горе', 'беда', 'несчастье', 
-                    'трагедия', 'катастрофа', 'агония', 'мучение', 'пытка', 'истязание', 'унижение', 
-                    'предательство', 'измена', 'ложь', 'обман', 'ненависть', 'злоба', 'ярость', 'гнев', 
-                    'ревность', 'зависть', 'жадность', 'скупость', 'эгоизм', 'равнодушие', 'холод', 
-                    'лед', 'мороз', 'туман', 'туча', 'гроза', 'ураган', 'разрушение', 'крах', 'провал',
-                    'поражение', 'позор', 'стыд', 'вина', 'раскаяние', 'сожаление', 'отчаяние', 'безысходность'
+                    'грусть', 'боль', 'смерть', 'тьма', 'страх', 'одиночество', 'тоска', 'печаль', 'разочарование', 
+                    'потеря', 'ночь', 'горе', 'беда', 'несчастье', 'трагедия', 'катастрофа', 'агония', 'мучение', 
+                    'пытка', 'истязание', 'унижение', 'предательство', 'измена', 'ложь', 'обман', 'ненависть', 'злоба', 
+                    'ярость', 'гнев', 'ревность', 'зависть', 'жадность', 'скупость', 'эгоизм', 'равнодушие', 'холод', 
+                    'лед', 'мороз', 'туман', 'туча', 'гроза', 'ураган', 'разрушение', 'крах', 'провал', 'поражение', 
+                    'позор', 'стыд', 'вина', 'раскаяние', 'сожаление', 'отчаяние', 'безысходность', 'мрак', 'уныние', 
+                    'тлен', 'немощь', 'несправедливость', 'зло', 'коварство', 'вероломство', 'подлость', 'жестокость', 
+                    'беспощадность', 'безжалостность', 'бездушность', 'безразличие', 'неумолимость', 'беспросветность', 
+                    'безрадостность', 'безнадежность', 'безволие', 'бессилие', 'беззащитность', 'беспомощность', 
+                    'безвыходность', 'скорбь', 'горечь', 'ожесточение', 'безутешность', 'мрачность', 'угрюмость', 
+                    'тоскливость', 'хмурость', 'пессимизм', 'угроза', 'опасность', 'риск', 'бедствие', 'страдание', 
+                    'мука', 'плач', 'слезы', 'рыдание', 'вопль', 'неприятность', 'трагизм', 'гнет', 'угнетение', 
+                    'мученичество', 'неволя', 'принуждение', 'насилие', 'притеснение', 'изгнание', 'изоляция', 
+                    'отверженность', 'забвение', 'заброшенность', 'небрежность', 'пренебрежение', 'презрение', 
+                    'грустный', 'болезненный', 'смертный', 'темный', 'страшный', 'одинокий', 'тоскливый', 'печальный', 
+                    'разочарованный', 'потерянный', 'горестный', 'бедственный', 'несчастный', 'трагический', 
+                    'катастрофический', 'мучительный', 'истязующий', 'унизительный', 'предательский', 'лживый', 
+                    'обманчивый', 'ненавистный', 'злобный', 'яростный', 'гневный', 'ревнивый', 'завистливый', 'жадный', 
+                    'скупой', 'эгоистичный', 'равнодушный', 'холодный', 'ледяной', 'морозный', 'туманный', 'грозовой', 
+                    'ураганный', 'разрушительный', 'провальный', 'позорный', 'стыдный', 'виновный', 'сожалеющий', 
+                    'отчаянный', 'безысходный', 'мрачный', 'унылый', 'тленный', 'немощный', 'несправедливый', 'коварный', 
+                    'вероломный', 'подлый', 'жестокий', 'беспощадный', 'безжалостный', 'бездушный', 'бесчувственный', 
+                    'безразличный', 'немилосердный', 'неумолимый', 'беспросветный', 'безрадостный', 'безнадежный', 
+                    'безвольный', 'бессильный', 'беззащитный', 'беспомощный', 'безвыходный', 'скорбный', 'горький', 
+                    'озлобленный', 'ожесточенный', 'безутешный', 'хмурый', 'угрюмый', 'угрожающий', 'опасный', 
+                    'рискованный', 'неблагоприятный', 'неприятный', 'обидный', 'огорчающий', 'раздражающий', 
+                    'разочаровывающий', 'недовольный', 'неудовлетворенный', 'пренебрежительный', 'небрежный', 
+                    'заброшенный', 'забытый', 'презренный', 'униженный', 'оскорбленный', 'обиженный', 'недооцененный', 
+                    'непризнанный', 'покинутый', 'брошенный', 'отвергнутый', 'проклятый', 'грустить', 'болеть', 
+                    'умирать', 'темнеть', 'страшиться', 'тосковать', 'печалиться', 'разочаровываться', 'терять', 
+                    'горевать', 'бедствовать', 'мучиться', 'пытать', 'истязать', 'унижать', 'предавать', 'изменять', 
+                    'лгать', 'обманывать', 'ненавидеть', 'гневаться', 'ревновать', 'завидовать', 'жадничать', 'скупиться', 
+                    'холодеть', 'леденеть', 'морозить', 'грозить', 'разрушать', 'проваливаться', 'позориться', 'стыдиться', 
+                    'сожалеть', 'отчаиваться', 'унывать', 'тлеть', 'злорадствовать', 'коварствовать', 'вероломствовать', 
+                    'жесточить', 'бездушничать', 'скорбеть', 'горчить', 'ожесточать', 'мрачнеть', 'хмуриться', 
+                    'угрюмничать', 'горевать', 'угрожать', 'опасаться', 'рисковать', 'бедствовать', 'обижать', 'огорчать', 
+                    'раздражать', 'разочаровывать', 'пренебрегать', 'забрасывать', 'забывать', 'презирать', 'унижать', 
+                    'оскорблять', 'недооценивать', 'покидать', 'бросать', 'отвергать', 'проклинать', 'грустно', 
+                    'болезненно', 'темно', 'страшно', 'одиноко', 'тоскливо', 'печально', 'разочарованно', 'потерянно', 
+                    'горестно', 'бедственно', 'несчастно', 'трагически', 'катастрофически', 'мучительно', 'унизительно', 
+                    'предательски', 'изменнически', 'лживо', 'обманчиво', 'ненавистно', 'злобно', 'яростно', 'гневно', 
+                    'ревниво', 'завистливо', 'жадно', 'скупо', 'эгоистично', 'равнодушно', 'холодно', 'морозно', 
+                    'туманно', 'ураганно', 'разрушительно', 'провально', 'позорно', 'стыдно', 'отчаянно', 'мрачно', 
+                    'уныло', 'тленно', 'немощно', 'несправедливо', 'злорадно', 'коварно', 'вероломно', 'подло', 
+                    'жестоко', 'жестко', 'беспощадно', 'безжалостно', 'бездушно', 'бесчувственно', 'безразлично', 
+                    'немилосердно', 'неумолимо', 'беспросветно', 'безрадостно', 'безнадежно', 'безвольно', 'бессильно', 
+                    'беззащитно', 'беспомощно', 'безвыходно', 'скорбно', 'горько', 'озлобленно', 'ожесточенно', 
+                    'безутешно', 'хмуро', 'угрюмо', 'безотрадно', 'угрожающе', 'опасно', 'рискованно', 'бедственно', 
+                    'неблагоприятно', 'неприятно', 'обидно', 'огорчающе', 'раздражающе', 'разочаровывающе', 'недовольно', 
+                    'неудовлетворенно', 'неудовлетворительно', 'пренебрежительно', 'небрежно', 'заброшенно', 'забыто', 
+                    'презрительно', 'уничижительно', 'оскорбительно', 'обидчиво', 'покинуто', 'брошенно', 'отверженно', 
+                    'проклято', 'зима', 'дождь', 'дождливо'
                 ],
                 en: [
-                    'sad', 'pain', 'death', 'dark', 'fear', 'lonely', 'sorrow', 'disappointment', 
-                    'loss', 'night', 'winter', 'rain', 'grief', 'trouble', 'misfortune', 'tragedy', 
-                    'disaster', 'agony', 'torment', 'torture', 'humiliation', 'betrayal', 'treason', 
-                    'lie', 'deception', 'hatred', 'malice', 'rage', 'anger', 'jealousy', 'envy', 
-                    'greed', 'stinginess', 'selfishness', 'indifference', 'cold', 'ice', 'frost', 
-                    'fog', 'cloud', 'storm', 'hurricane', 'destruction', 'collapse', 'failure',
-                    'defeat', 'shame', 'guilt', 'remorse', 'regret', 'despair', 'hopelessness'
+                    'sadness', 'pain', 'death', 'darkness', 'fear', 'loneliness', 'longing', 'sorrow', 'disappointment', 
+                    'loss', 'night', 'winter', 'rain', 'grief', 'trouble', 'misfortune', 'tragedy', 'disaster', 'agony', 
+                    'torment', 'torture', 'humiliation', 'betrayal', 'treason', 'lie', 'deception', 'hatred', 'malice', 
+                    'fury', 'anger', 'jealousy', 'envy', 'greed', 'stinginess', 'selfishness', 'indifference', 'cold', 
+                    'ice', 'frost', 'fog', 'cloud', 'storm', 'hurricane', 'destruction', 'collapse', 'failure', 'defeat', 
+                    'shame', 'guilt', 'remorse', 'regret', 'despair', 'hopelessness', 'gloom', 'desolation', 'decay', 
+                    'weakness', 'injustice', 'treachery', 'perfidy', 'baseness', 'cruelty', 'mercilessness', 
+                    'ruthlessness', 'insensitivity', 'heartlessness', 'callousness', 'pitilessness', 'implacability', 
+                    'bleakness', 'futility', 'embitterment', 'hardening', 'melancholy', 'mourning', 'menace', 'peril', 
+                    'risk', 'calamity', 'injustice', 'suffering', 'affliction', 'misery', 'woe', 'weeping', 'tears', 
+                    'sobbing', 'screaming', 'groaning', 'adversity', 'affliction', 'tragicism', 'bitterness', 'oppression', 
+                    'tyranny', 'martyrdom', 'bondage', 'constraint', 'violence', 'persecution', 'exile', 'isolation', 
+                    'rejection', 'oblivion', 'neglect', 'abandonment', 'indifference', 'disregard', 'contempt', 'disdain', 
+                    'sad', 'painful', 'mortal', 'dark', 'fearful', 'lonely', 'melancholy', 'sorrowful', 'disappointed', 
+                    'lost', 'nocturnal', 'wintry', 'rainy', 'grievous', 'troubled', 'unfortunate', 'tragic', 'disastrous', 
+                    'agonizing', 'tormenting', 'torturous', 'humiliating', 'treacherous', 'treasonous', 'lying', 
+                    'deceptive', 'hateful', 'malicious', 'furious', 'angry', 'jealous', 'envious', 'greedy', 'stingy', 
+                    'selfish', 'indifferent', 'cold', 'icy', 'frosty', 'foggy', 'stormy', 'destructive', 'collapsing', 
+                    'failing', 'defeated', 'shameful', 'guilty', 'remorseful', 'regretful', 'desperate', 'hopeless', 
+                    'gloomy', 'desolate', 'decaying', 'weak', 'unjust', 'treacherous', 'perfidious', 'base', 'cruel', 
+                    'merciless', 'ruthless', 'insensitive', 'heartless', 'callous', 'pitiless', 'implacable', 'bleak', 
+                    'dreadful', 'futile', 'powerless', 'helpless', 'hopeless', 'willless', 'defenseless', 'inevitable', 
+                    'mournful', 'bitter', 'embittered', 'hardened', 'dreary', 'gloomy', 'melancholic', 'sorrowful', 
+                    'grieving', 'sad', 'cheerless', 'menacing', 'perilous', 'risky', 'calamitous', 'unfortunate', 
+                    'disastrous', 'unfavorable', 'unpleasant', 'offensive', 'distressing', 'annoying', 'disappointing', 
+                    'dissatisfied', 'displeased', 'contemptuous', 'careless', 'abandoned', 'forgotten', 'despised', 
+                    'neglected', 'contemptible', 'humiliated', 'insulted', 'offended', 'undervalued', 'unrecognized', 
+                    'abandoned', 'forsaken', 'rejected', 'cursed', 'sadden', 'hurt', 'die', 'darken', 'fear', 'be lonely', 
+                    'long', 'grieve', 'disappoint', 'lose', 'mourn', 'trouble', 'agonize', 'torment', 'torture', 
+                    'humiliate', 'betray', 'commit treason', 'lie', 'deceive', 'hate', 'be malicious', 'fume', 'be angry', 
+                    'be jealous', 'envy', 'be greedy', 'be stingy', 'be selfish', 'be indifferent', 'grow cold', 
+                    'freeze', 'storm', 'destroy', 'collapse', 'fail', 'be defeated', 'be ashamed', 'feel guilty', 
+                    'feel remorse', 'regret', 'despair', 'be hopeless', 'gloom', 'be desolate', 'decay', 'weaken', 
+                    'be unjust', 'be treacherous', 'be perfidious', 'be base', 'be cruel', 'be merciless', 'be ruthless', 
+                    'be insensitive', 'be heartless', 'be callous', 'be pitiless', 'be implacable', 'be bleak', 
+                    'be dreadful', 'be futile', 'be powerless', 'be helpless', 'be hopeless', 'be willless', 
+                    'be defenseless', 'be inevitable', 'mourn', 'be bitter', 'be embittered', 'harden', 'be dreary', 
+                    'be gloomy', 'be melancholic', 'be sorrowful', 'grieve', 'be sad', 'be cheerless', 'menace', 
+                    'endanger', 'risk', 'be unfortunate', 'be disastrous', 'be unfavorable', 'be unpleasant', 'offend', 
+                    'distress', 'annoy', 'disappoint', 'dissatisfy', 'displease', 'contemn', 'neglect', 'disregard', 
+                    'abandon', 'forget', 'despise', 'humiliate', 'insult', 'offend', 'undervalue', 'fail to recognize', 
+                    'abandon', 'forsake', 'reject', 'curse', 'condemn', 'sadly', 'painfully', 'mortally', 'darkly', 
+                    'fearfully', 'lonelily', 'longingly', 'sorrowfully', 'disappointedly', 'lostly', 'nocturnally', 
+                    'wintrily', 'rainily', 'grievously', 'troubledly', 'unfortunately', 'tragically', 'disastrously', 
+                    'agonizingly', 'tormentingly', 'torturously', 'humiliatingly', 'treacherously', 'treasonously', 
+                    'deceptively', 'hatefully', 'maliciously', 'furiously', 'angrily', 'jealously', 'enviously', 
+                    'greedily', 'stingily', 'selfishly', 'indifferently', 'coldly', 'icily', 'frostily', 'foggily', 
+                    'stormily', 'destructively', 'collapsingly', 'failingly', 'defeatedly', 'shamefully', 'guiltily', 
+                    'remorsefully', 'regretfully', 'desperately', 'hopelessly', 'gloomily', 'desolately', 'decayingly', 
+                    'weakly', 'unjustly', 'treacherously', 'perfidiously', 'basely', 'cruelly', 'mercilessly', 
+                    'ruthlessly', 'insensitively', 'heartlessly', 'callously', 'pitilessly', 'implacably', 'bleakly', 
+                    'dreadfully', 'futilely', 'powerlessly', 'helplessly', 'hopelessly', 'willlessly', 'defenselessly', 
+                    'inevitably', 'mournfully', 'bitterly', 'embitteredly', 'hardenedly', 'drearily', 'gloomily', 
+                    'melancholically', 'sorrowfully', 'grievingly', 'sadly', 'cheerlessly', 'menacingly', 'perilously', 
+                    'riskily', 'calamitously', 'unfortunately', 'disastrously', 'unfavorably', 'unpleasantly', 
+                    'offensively', 'distressingly', 'annoyingly', 'disappointingly', 'dissatisfyingly', 'displeasingly', 
+                    'contemptuously', 'carelessly', 'abandonedly', 'forgottenly', 'despisely', 'neglectingly', 
+                    'contemptibly', 'humiliatingly', 'insultingly', 'offensively', 'undervaluingly', 'unrecognizably', 
+                    'abandonedly', 'forsakenly', 'rejectingly', 'cursedly'
                 ]
             }
         }
@@ -76,6 +240,8 @@
             this.stats = this.calculateTextStats();
             this.sensitivity = this.analyzeSensitivity();
             this.particleCount = this.generateParticleCount();
+            this.intensityMultipliers = this.generateIntensityMultipliers();
+            this.colorPalette = this.generateColorPalette(100);
         }
         
         generateSeed() {
@@ -201,80 +367,123 @@
             });
             
             if (warmCount === 0 && darkCount === 0) return 'neutral';
-            if (warmCount > darkCount * 1.5) return 'warm';
-            if (darkCount > warmCount * 1.5) return 'dark';
-            if (warmCount > darkCount) return 'warmish';
-            if (darkCount > warmCount) return 'darkish';
-            return 'balanced';
+            
+            const totalWords = this.stats.words || 1;
+            const warmRatio = warmCount / totalWords;
+            const darkRatio = darkCount / totalWords;
+            
+            if (warmRatio > 0.7 && darkRatio < 0.15) return 'hot';
+            if (warmRatio > 0.55) return 'warm';
+            if (darkRatio > 0.7 && warmRatio < 0.15) return 'haze';
+            if (darkRatio > 0.55) return 'dark';
+            if (Math.abs(warmRatio - darkRatio) < 0.15) return 'neutral';
+            
+            return warmRatio > darkRatio ? 'warm' : 'dark';
         }
         
         escapeRegExp(string) {
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
         
-        getColorPalette() {
+        generateIntensityMultipliers() {
             switch(this.sensitivity) {
+                case 'hot':
+                    return { speed: 1.5, amplitude: 1.5, size: 1.2 };
                 case 'warm':
-                    return [
-                        '#FF6B6B', '#FF8E53', '#FFD166', '#06D6A0', '#118AB2', '#EF476F', '#FF9A76', '#FFD97D',
-                        '#83D483', '#4ECDC4', '#FF6B8B', '#FF9F68', '#FFE277', '#2DD4BF', '#0EA5E9', '#F43F5E',
-                        '#FF8A65', '#FFCA3A', '#8AC926', '#1982C4', '#FF595E', '#FF924C', '#FFCA3A', '#8AC926',
-                        '#6A4C93', '#1982C4', '#FF5D8F', '#FF9E6D', '#FFE156', '#38B000', '#00BBF9', '#F72585',
-                        '#FF7D00', '#FFBD00', '#3A86FF', '#8338EC', '#FF006E', '#FB5607', '#FFBE0B', '#3A86FF',
-                        '#FF5A8C', '#FF9670', '#FFE045', '#52B788', '#0096C7', '#E63946', '#FF8C42', '#F9C74F',
-                        '#43AA8B', '#577590', '#FF6B8B', '#FF9F68', '#FFE277', '#2DD4BF', '#0EA5E9', '#F43F5E'
-                    ];
-                case 'warmish':
-                    return [
-                        '#FF9A76', '#FFB997', '#FFD6A5', '#CAFFBF', '#9BF6FF', '#A0C4FF', '#BDB2FF', '#FFC6FF',
-                        '#FFADAD', '#FFD6A5', '#FFB5A7', '#FFC8A2', '#FFE4B5', '#D8F3DC', '#B5EAD7', '#C7F9CC',
-                        '#A2D2FF', '#BDE0FE', '#CDB4DB', '#FFAFCC', '#FFC8DD', '#FFD7BA', '#FFE5D9', '#FEC89A',
-                        '#FFB4A2', '#E5989B', '#B5838D', '#6D6875', '#FFB7C3', '#FFDAC1', '#E2F0CB', '#B5EAD7',
-                        '#C7CEEA', '#FFD6E0', '#FF9AA2', '#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7', '#C7CEEA',
-                        '#FF9AA2', '#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7', '#C7CEEA', '#FF9AA2', '#FFB7B2',
-                        '#FFDAC1', '#E2F0CB', '#B5EAD7', '#C7CEEA', '#FF9AA2', '#FFB7B2', '#FFDAC1', '#E2F0CB'
-                    ];
+                    return { speed: 1.2, amplitude: 1.2, size: 1.1 };
+                case 'neutral':
+                    return { speed: 1.0, amplitude: 1.0, size: 1.0 };
                 case 'dark':
-                    return [
-                        '#2F2F2F', '#4A4A4A', '#696969', '#808080', '#A9A9A9', '#36454F', '#4F5D6A', '#65737E',
-                        '#7B8793', '#919BA6', '#1C1C1C', '#363636', '#525252', '#6E6E6E', '#8A8A8A', '#2C3E50',
-                        '#34495E', '#5D6D7E', '#7F8C8D', '#95A5A6', '#0D0D0D', '#262626', '#404040', '#5C5C5C',
-                        '#787878', '#212121', '#424242', '#616161', '#757575', '#9E9E9E', '#121212', '#2D2D2D',
-                        '#484848', '#636363', '#7E7E7E', '#17202A', '#2C3E50', '#566573', '#7B7D7D', '#99A3A4',
-                        '#0A0A0A', '#1F1F1F', '#343434', '#4F4F4F', '#6A6A6A', '#141414', '#2E2E2E', '#494949',
-                        '#646464', '#7F7F7F', '#191919', '#333333', '#4E4E4E', '#696969', '#848484', '#1E1E1E'
-                    ];
-                case 'darkish':
-                    return [
-                        '#555555', '#777777', '#999999', '#BBBBBB', '#DDDDDD', '#6B6B6B', '#8C8C8C', '#ADADAD',
-                        '#CECECE', '#EFEFEF', '#666666', '#888888', '#AAAAAA', '#CCCCCC', '#EEEEEE', '#5E5E5E',
-                        '#7F7F7F', '#A0A0A0', '#C1C1C1', '#E2E2E2', '#707070', '#919191', '#B2B2B2', '#D3D3D3',
-                        '#F4F4F4', '#626262', '#838383', '#A4A4A4', '#C5C5C5', '#E6E6E6', '#747474', '#959595',
-                        '#B6B6B6', '#D7D7D7', '#F8F8F8', '#686868', '#898989', '#AAAAAA', '#CBCBCB', '#ECECEC',
-                        '#727272', '#939393', '#B4B4B4', '#D5D5D5', '#F6F6F6', '#767676', '#979797', '#B8B8B8',
-                        '#D9D9D9', '#FAFAFA', '#7A7A7A', '#9B9B9B', '#BCBCBC', '#DDDDDD', '#FEFEFE', '#7E7E7E'
-                    ];
-                case 'balanced':
-                    return [
-                        '#667eea', '#764ba2', '#6B8DD6', '#8E37D7', '#00d2ff', '#3a7bd5', '#834d9b', '#d04ed6',
-                        '#FF416C', '#FF4B2B', '#5A67D8', '#9F7AEA', '#4299E1', '#0BC5EA', '#00B5D8', '#00CCBB',
-                        '#38B2AC', '#319795', '#4FD1C5', '#81E6D9', '#D53F8C', '#ED64A6', '#F687B3', '#FC8181',
-                        '#F56565', '#E53E3E', '#DD6B20', '#ED8936', '#F6AD55', '#FBD38D', '#68D391', '#48BB78',
-                        '#38A169', '#2F855A', '#276749', '#805AD5', '#6B46C1', '#553C9A', '#44337A', '#322659',
-                        '#4C51BF', '#434190', '#3C366B', '#2D3748', '#1A202C', '#718096', '#A0AEC0', '#CBD5E0',
-                        '#E2E8F0', '#EDF2F7', '#F7FAFC', '#FFFFFF', '#000000', '#1A365D', '#2D3748', '#4A5568'
-                    ];
+                    return { speed: 0.8, amplitude: 0.8, size: 0.9 };
+                case 'haze':
+                    return { speed: 0.6, amplitude: 0.6, size: 0.8 };
                 default:
-                    return [
-                        '#667eea', '#764ba2', '#6B8DD6', '#8E37D7', '#00d2ff', '#3a7bd5', '#834d9b', '#d04ed6',
-                        '#FF416C', '#FF4B2B', '#5A67D8', '#9F7AEA', '#4299E1', '#0BC5EA', '#00B5D8', '#00CCBB',
-                        '#38B2AC', '#319795', '#4FD1C5', '#81E6D9', '#D53F8C', '#ED64A6', '#F687B3', '#FC8181',
-                        '#F56565', '#E53E3E', '#DD6B20', '#ED8936', '#F6AD55', '#FBD38D', '#68D391', '#48BB78',
-                        '#38A169', '#2F855A', '#276749', '#805AD5', '#6B46C1', '#553C9A', '#44337A', '#322659',
-                        '#4C51BF', '#434190', '#3C366B', '#2D3748', '#1A202C', '#718096', '#A0AEC0', '#CBD5E0',
-                        '#E2E8F0', '#EDF2F7', '#F7FAFC', '#FFFFFF', '#000000', '#1A365D', '#2D3748', '#4A5568'
-                    ];
+                    return { speed: 1.0, amplitude: 1.0, size: 1.0 };
             }
+        }
+        
+        generateColorPalette(count) {
+            const palette = [];
+            const rng = this.createRNG();
+            
+            for (let i = 0; i < count; i++) {
+                let h, s, l;
+                
+                switch(this.sensitivity) {
+                    case 'hot':
+                        h = rng(0, 60) + (Math.random() > 0.5 ? 300 : 0);
+                        s = rng(70, 100);
+                        l = rng(40, 60);
+                        break;
+                    case 'warm':
+                        h = rng(20, 80);
+                        s = rng(50, 80);
+                        l = rng(50, 70);
+                        break;
+                    case 'neutral':
+                        h = rng(0, 360);
+                        s = rng(40, 70);
+                        l = rng(40, 60);
+                        break;
+                    case 'dark':
+                        h = rng(0, 360);
+                        s = rng(20, 50);
+                        l = rng(20, 40);
+                        break;
+                    case 'haze':
+                        h = rng(180, 300);
+                        s = rng(10, 30);
+                        l = rng(10, 25);
+                        break;
+                    default:
+                        h = rng(0, 360);
+                        s = rng(30, 70);
+                        l = rng(40, 60);
+                }
+                
+                palette.push(this.hslToHex(h, s, l));
+            }
+            
+            return palette;
+        }
+        
+        hslToHex(h, s, l) {
+            h /= 360;
+            s /= 100;
+            l /= 100;
+            
+            let r, g, b;
+            
+            if (s === 0) {
+                r = g = b = l;
+            } else {
+                const hue2rgb = (p, q, t) => {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1/6) return p + (q - p) * 6 * t;
+                    if (t < 1/2) return q;
+                    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                    return p;
+                };
+                
+                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                const p = 2 * l - q;
+                
+                r = hue2rgb(p, q, h + 1/3);
+                g = hue2rgb(p, q, h);
+                b = hue2rgb(p, q, h - 1/3);
+            }
+            
+            const toHex = x => {
+                const hex = Math.round(x * 255).toString(16);
+                return hex.length === 1 ? '0' + hex : hex;
+            };
+            
+            return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+        }
+        
+        getColorPalette() {
+            return this.colorPalette;
         }
         
         createRNG() {
@@ -348,10 +557,12 @@
             const centerX = this.canvas.width / 2 / (window.devicePixelRatio || 1);
             const centerY = this.canvas.height / 2 / (window.devicePixelRatio || 1);
             const maxRadius = Math.min(centerX, centerY) * 0.7;
+            const sizeMultiplier = this.session.intensityMultipliers.size;
             for (let i = 0; i < count; i++) {
                 const angle = (i / count) * Math.PI * 2;
                 const radius = (i % 5 + 1) * (maxRadius / 5);
-                const particleSize = 1 + Math.random() * 3;
+                const baseSize = 1 + Math.random() * 3;
+                const particleSize = Math.min(baseSize * sizeMultiplier, 6);
                 this.particles.push({
                     type: 'abstract',
                     x: centerX + Math.cos(angle) * radius,
@@ -375,11 +586,12 @@
             const centerX = this.canvas.width / 2 / (window.devicePixelRatio || 1);
             const centerY = this.canvas.height / 2 / (window.devicePixelRatio || 1);
             const words = this.extractRandomWords(text, count * 2);
+            const sizeMultiplier = this.session.intensityMultipliers.size;
             for (let i = 0; i < count; i++) {
                 const angle = (i / count) * Math.PI * 2;
                 const distance = 30 + (i % 5) * 15;
                 const baseSize = 1.5 + Math.random() * 3;
-                const particleSize = Math.min(baseSize, 4.5);
+                const particleSize = Math.min(baseSize * sizeMultiplier, 6);
                 const colorIndex = Math.floor(Math.random() * colors.length);
                 const color = colors[colorIndex];
                 this.particles.push({
@@ -462,38 +674,39 @@
         update(deltaTime) {
             this.time += deltaTime * 0.001;
             const physics = this.session.physics;
+            const multipliers = this.session.intensityMultipliers;
             this.particles.forEach((particle, index) => {
                 if (particle.trail.length > this.performance.trailLength) {
                     particle.trail.shift();
                 }
                 particle.trail.push({ x: particle.x, y: particle.y });
-                this.applyBehavior(particle, index);
-                this.applyPhysics(particle, physics);
+                this.applyBehavior(particle, index, multipliers);
+                this.applyPhysics(particle, physics, multipliers);
                 if (this.interactionPoint.active) {
-                    this.applyInteraction(particle);
+                    this.applyInteraction(particle, multipliers);
                 }
-                particle.x += particle.vx * physics.timeScale;
-                particle.y += particle.vy * physics.timeScale;
+                particle.x += particle.vx * physics.timeScale * multipliers.speed;
+                particle.y += particle.vy * physics.timeScale * multipliers.speed;
                 particle.vx *= physics.viscosity;
                 particle.vy *= physics.viscosity;
                 this.handleBoundaries(particle);
             });
         }
         
-        applyBehavior(particle, index) {
+        applyBehavior(particle, index, multipliers) {
             const behaviors = this.session.behaviors;
             const time = this.time;
             behaviors.forEach(behavior => {
                 switch(behavior) {
                     case 'orbit':
                         if (particle.orbitRadius) {
-                            particle.orbitAngle += particle.orbitSpeed;
+                            particle.orbitAngle += particle.orbitSpeed * multipliers.speed;
                             const centerX = this.canvas.width / 2 / (window.devicePixelRatio || 1);
                             const centerY = this.canvas.height / 2 / (window.devicePixelRatio || 1);
                             const targetX = centerX + Math.cos(particle.orbitAngle) * particle.orbitRadius;
                             const targetY = centerY + Math.sin(particle.orbitAngle) * particle.orbitRadius;
-                            particle.vx += (targetX - particle.x) * 0.02;
-                            particle.vy += (targetY - particle.y) * 0.02;
+                            particle.vx += (targetX - particle.x) * 0.02 * multipliers.amplitude;
+                            particle.vy += (targetY - particle.y) * 0.02 * multipliers.amplitude;
                         }
                         break;
                     case 'swarm':
@@ -504,74 +717,74 @@
                             const dy = centerY - particle.y;
                             const distance = Math.sqrt(dx * dx + dy * dy);
                             if (distance > 30) {
-                                particle.vx += dx * 0.002;
-                                particle.vy += dy * 0.002;
+                                particle.vx += dx * 0.002 * multipliers.amplitude;
+                                particle.vy += dy * 0.002 * multipliers.amplitude;
                             }
                         }
                         break;
                     case 'wave':
-                        particle.vy += Math.sin(time + particle.x * 0.02) * 0.15;
-                        particle.vx += Math.cos(time + particle.y * 0.02) * 0.15;
+                        particle.vy += Math.sin(time + particle.x * 0.02) * 0.15 * multipliers.amplitude;
+                        particle.vx += Math.cos(time + particle.y * 0.02) * 0.15 * multipliers.amplitude;
                         break;
                     case 'chaos':
-                        particle.vx += (Math.random() - 0.5) * 0.3;
-                        particle.vy += (Math.random() - 0.5) * 0.3;
+                        particle.vx += (Math.random() - 0.5) * 0.3 * multipliers.amplitude;
+                        particle.vy += (Math.random() - 0.5) * 0.3 * multipliers.amplitude;
                         break;
                     case 'spiral':
                         const centerX = this.canvas.width / 2 / (window.devicePixelRatio || 1);
                         const centerY = this.canvas.height / 2 / (window.devicePixelRatio || 1);
                         const angle = Math.atan2(particle.y - centerY, particle.x - centerX);
-                        particle.vx += Math.cos(angle + Math.PI / 2) * 0.03;
-                        particle.vy += Math.sin(angle + Math.PI / 2) * 0.03;
+                        particle.vx += Math.cos(angle + Math.PI / 2) * 0.03 * multipliers.amplitude;
+                        particle.vy += Math.sin(angle + Math.PI / 2) * 0.03 * multipliers.amplitude;
                         break;
                     case 'magnetic':
                         const dx = this.interactionPoint.x - particle.x;
                         const dy = this.interactionPoint.y - particle.y;
                         const distance = Math.sqrt(dx * dx + dy * dy);
                         if (distance > 10) {
-                            const force = 0.001 / distance;
+                            const force = 0.001 / distance * multipliers.amplitude;
                             particle.vx += dx * force;
                             particle.vy += dy * force;
                         }
                         break;
                     case 'pulse':
                         const pulse = Math.sin(time * 2 + index) * 0.5 + 0.5;
-                        const newRadius = particle.radius + pulse * 0.3;
-                        particle.radius = Math.min(newRadius, 5);
+                        const newRadius = particle.radius + pulse * 0.3 * multipliers.amplitude;
+                        particle.radius = Math.min(newRadius, 6);
                         break;
                 }
             });
         }
         
-        applyPhysics(particle, physics) {
+        applyPhysics(particle, physics, multipliers) {
             const centerX = this.canvas.width / 2 / (window.devicePixelRatio || 1);
             const centerY = this.canvas.height / 2 / (window.devicePixelRatio || 1);
             const dx = centerX - particle.x;
             const dy = centerY - particle.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             if (distance > 20) {
-                const force = physics.attraction / distance;
+                const force = physics.attraction / distance * multipliers.amplitude;
                 particle.vx += dx * force;
                 particle.vy += dy * force;
             }
-            particle.vy += physics.gravity * 0.08;
+            particle.vy += physics.gravity * 0.08 * multipliers.amplitude;
             if (physics.turbulence > 0) {
-                particle.vx += (Math.random() - 0.5) * physics.turbulence * 0.5;
-                particle.vy += (Math.random() - 0.5) * physics.turbulence * 0.5;
+                particle.vx += (Math.random() - 0.5) * physics.turbulence * 0.5 * multipliers.amplitude;
+                particle.vy += (Math.random() - 0.5) * physics.turbulence * 0.5 * multipliers.amplitude;
             }
         }
         
-        applyInteraction(particle) {
+        applyInteraction(particle, multipliers) {
             const dx = this.interactionPoint.x - particle.x;
             const dy = this.interactionPoint.y - particle.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             if (distance < 80) {
                 if (distance < 15) {
-                    const force = 0.8 / distance;
+                    const force = 0.8 / distance * multipliers.amplitude;
                     particle.vx -= dx * force;
                     particle.vy -= dy * force;
                 } else {
-                    const force = 0.03;
+                    const force = 0.03 * multipliers.amplitude;
                     particle.vx += dx * force;
                     particle.vy += dy * force;
                 }
