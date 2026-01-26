@@ -1599,6 +1599,8 @@ window.addEventListener('beforeunload', () => {
     if (window.noiseController) {
         window.noiseController.destroy();
     }
+});
 
 })();
+
 
