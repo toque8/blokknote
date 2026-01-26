@@ -13,7 +13,7 @@ const NOISE_CONFIG = {
         desktop: { trailLength: 5, fps: 60 }
     },
     MOOD_LEVELS: {
-        'serene': {       // Очень позитивное
+        'serene': {
             color: '#FF6B6B',
             speed: 1.5,
             energy: 1.3,
@@ -21,7 +21,7 @@ const NOISE_CONFIG = {
             brightness: 1.0,
             complexity: 0.7
         },
-        'calm': {         // Умеренно позитивное
+        'calm': {
             color: '#FFA726',
             speed: 1.2,
             energy: 1.1,
@@ -29,7 +29,7 @@ const NOISE_CONFIG = {
             brightness: 0.8,
             complexity: 0.6
         },
-        'balance': {      // Нейтральное
+        'balance': {
             color: '#42A5F5',
             speed: 1.0,
             energy: 1.0,
@@ -37,7 +37,7 @@ const NOISE_CONFIG = {
             brightness: 0.6,
             complexity: 0.5
         },
-        'melancholy': {   // Умеренно негативное
+        'melancholy': {
             color: '#5C6BC0',
             speed: 0.7,
             energy: 0.8,
@@ -45,7 +45,7 @@ const NOISE_CONFIG = {
             brightness: 0.4,
             complexity: 0.3
         },
-        'gloomy': {       // Очень негативное
+        'gloomy': {
             color: '#37474F',
             speed: 0.5,
             energy: 0.6,
@@ -1205,11 +1205,11 @@ class AudioEngine {
 
     generateMelody() {
         const baseNotes = {
-            'serene': [60, 64, 67, 72, 76],      // C major - bright and happy
-            'calm': [57, 60, 64, 67, 70],        // A minor - peaceful
-            'balance': [60, 62, 65, 67, 69],     // C major pentatonic - neutral
-            'melancholy': [55, 58, 62, 65, 67],  // G minor - sad but gentle
-            'gloomy': [48, 51, 55, 58, 60]       // C minor - deep and melancholic
+            'serene': [60, 64, 67, 72, 76],
+            'calm': [57, 60, 64, 67, 70],
+            'balance': [60, 62, 65, 67, 69],
+            'melancholy': [55, 58, 62, 65, 67],
+            'gloomy': [48, 51, 55, 58, 60]
         };
         
         const notes = baseNotes[this.mood] || baseNotes['balance'];
@@ -1275,7 +1275,6 @@ class AudioEngine {
     }
 }
 
-// Исправленный класс NoiseController
 class NoiseController {
     constructor() {
         this.canvas = null;
@@ -1292,6 +1291,7 @@ class NoiseController {
         this.progressBar = null;
         this.noiseContainer = null;
         this.isInitialized = false;
+        this.isActive = false;
         this.init();
     }
 
@@ -1306,7 +1306,6 @@ class NoiseController {
     }
 
     setupDOM() {
-        // Ищем все необходимые элементы
         this.canvas = document.getElementById('noise-canvas');
         this.editor = document.getElementById('editor');
         this.noiseBtn = document.getElementById('noise-btn');
@@ -1338,7 +1337,6 @@ class NoiseController {
     }
 
     setupEventListeners() {
-        // Добавляем обработчики для основных кнопок
         if (this.noiseBtn) {
             this.noiseBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -1355,7 +1353,6 @@ class NoiseController {
             });
         }
         
-        // Клик по фону для закрытия
         if (this.noiseContainer) {
             this.noiseContainer.addEventListener('click', (e) => {
                 if (e.target === this.noiseContainer) {
@@ -1365,7 +1362,19 @@ class NoiseController {
             });
         }
         
-        // Обработчики для музыкальных кнопок
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.isActive) {
+                console.log('Escape key pressed, closing');
+                this.close();
+            }
+        });
+        
+        window.addEventListener('resize', () => {
+            if (this.isActive && this.waveSystem) {
+                this.waveSystem.resize();
+            }
+        });
+        
         if (this.playBtn) {
             this.playBtn.addEventListener('click', () => {
                 console.log('Play button clicked');
@@ -1380,7 +1389,6 @@ class NoiseController {
             });
         }
         
-        // Управление громкостью
         if (this.volumeSlider) {
             this.volumeSlider.addEventListener('input', (e) => {
                 const value = e.target.value / 100;
@@ -1398,22 +1406,6 @@ class NoiseController {
                 }
             });
         }
-        
-        // Клавиша Escape для закрытия
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.isActive) {
-                console.log('Escape key pressed, closing');
-                this.close();
-            }
-        });
-        
-        // Изменение размера окна
-        window.addEventListener('resize', () => {
-            if (this.waveSystem) {
-                this.waveSystem.resize();
-                this.waveSystem.generateParticles();
-            }
-        });
     }
 
     setupAudio() {
@@ -1471,7 +1463,6 @@ class NoiseController {
         
         this.waveSystem = new WaveSystem(this.canvas, this.session);
         
-        // Показываем контейнер
         if (this.noiseContainer) {
             this.noiseContainer.style.display = 'block';
             setTimeout(() => {
@@ -1598,17 +1589,12 @@ class NoiseController {
     }
 }
 
-// Инициализация контроллера после полной загрузки DOM
-document.addEventListener('DOMContentLoaded', () => {
+// Инициализация контроллера
+document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing noise...');
-    
-    // Создаем экземпляр контроллера
     window.noiseController = new NoiseController();
-    
-    console.log('NoiseController initialization complete');
 });
 
-// Обработчик перед выгрузкой страницы
 window.addEventListener('beforeunload', () => {
     if (window.noiseController) {
         window.noiseController.destroy();
