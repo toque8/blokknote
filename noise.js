@@ -1275,16 +1275,22 @@ class AudioEngine {
     }
 }
 
-// Исправленный класс NoiseController вместо NoiseUniverse
+// Исправленный класс NoiseController
 class NoiseController {
     constructor() {
         this.canvas = null;
         this.session = null;
         this.waveSystem = null;
         this.audioEngine = null;
-        this.textArea = null;
-        this.submitButton = null;
-        this.closeButton = null;
+        this.editor = null;
+        this.noiseBtn = null;
+        this.closeBtn = null;
+        this.playBtn = null;
+        this.stopBtn = null;
+        this.volumeSlider = null;
+        this.statusText = null;
+        this.progressBar = null;
+        this.noiseContainer = null;
         this.isInitialized = false;
         this.init();
     }
@@ -1300,68 +1306,112 @@ class NoiseController {
     }
 
     setupDOM() {
-        // Ищем canvas и кнопки
+        // Ищем все необходимые элементы
         this.canvas = document.getElementById('noise-canvas');
-        this.textArea = document.querySelector('.text-input');
-        this.submitButton = document.querySelector('.submit-btn');
-        this.closeButton = document.querySelector('.close-btn');
+        this.editor = document.getElementById('editor');
+        this.noiseBtn = document.getElementById('noise-btn');
+        this.closeBtn = document.getElementById('noise-close-btn');
+        this.playBtn = document.getElementById('noise-play-btn');
+        this.stopBtn = document.getElementById('noise-stop-btn');
+        this.volumeSlider = document.getElementById('noise-volume');
+        this.statusText = document.getElementById('noise-status');
+        this.progressBar = document.getElementById('noise-progress-bar');
+        this.noiseContainer = document.getElementById('noise-canvas-container');
         
-        // Если canvas не существует, создаем его
+        // Проверяем наличие всех элементов
         if (!this.canvas) {
-            this.createCanvas();
+            console.error('Noise canvas not found');
+            return;
         }
-    }
-
-    createCanvas() {
-        this.canvas = document.createElement('canvas');
-        this.canvas.id = 'noise-canvas';
-        this.canvas.style.position = 'fixed';
-        this.canvas.style.top = '0';
-        this.canvas.style.left = '0';
-        this.canvas.style.width = '100%';
-        this.canvas.style.height = '100%';
-        this.canvas.style.zIndex = '-1';
-        document.body.appendChild(this.canvas);
+        
+        if (!this.noiseBtn) {
+            console.error('Noise button not found');
+            return;
+        }
+        
+        if (!this.noiseContainer) {
+            console.error('Noise container not found');
+            return;
+        }
+        
+        console.log('All DOM elements found successfully');
     }
 
     setupEventListeners() {
-        // Добавляем обработчики событий с проверкой на существование элементов
-        if (this.submitButton) {
-            this.submitButton.addEventListener('click', () => this.startVisualization());
-            console.log('Submit button event listener added');
-        } else {
-            console.warn('Submit button not found');
+        // Добавляем обработчики для основных кнопок
+        if (this.noiseBtn) {
+            this.noiseBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                console.log('Noise button clicked');
+                this.toggle();
+            });
         }
         
-        if (this.textArea) {
-            this.textArea.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    this.startVisualization();
+        if (this.closeBtn) {
+            this.closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                console.log('Close button clicked');
+                this.close();
+            });
+        }
+        
+        // Клик по фону для закрытия
+        if (this.noiseContainer) {
+            this.noiseContainer.addEventListener('click', (e) => {
+                if (e.target === this.noiseContainer) {
+                    console.log('Background click detected, closing');
+                    this.close();
                 }
             });
-            console.log('Text area event listener added');
-        } else {
-            console.warn('Text area not found');
         }
         
-        if (this.closeButton) {
-            this.closeButton.addEventListener('click', () => this.stopVisualization());
-            console.log('Close button event listener added');
-        } else {
-            console.warn('Close button not found');
+        // Обработчики для музыкальных кнопок
+        if (this.playBtn) {
+            this.playBtn.addEventListener('click', () => {
+                console.log('Play button clicked');
+                this.play();
+            });
         }
         
-        // Добавляем обработчик для кнопок, которые могут появиться позже
-        document.addEventListener('click', (e) => {
-            if (!this.isInitialized) return;
-            
-            if (e.target.classList.contains('submit-btn') && !this.submitButton) {
-                this.startVisualization();
+        if (this.stopBtn) {
+            this.stopBtn.addEventListener('click', () => {
+                console.log('Stop button clicked');
+                this.stop();
+            });
+        }
+        
+        // Управление громкостью
+        if (this.volumeSlider) {
+            this.volumeSlider.addEventListener('input', (e) => {
+                const value = e.target.value / 100;
+                console.log(`Volume changed to: ${value.toFixed(2)}`);
+                if (this.audioEngine) {
+                    this.audioEngine.setVolume(value);
+                }
+                if (this.statusText) {
+                    this.statusText.textContent = `Volume: ${Math.round(value * 100)}%`;
+                    setTimeout(() => {
+                        if (this.statusText && this.statusText.textContent.includes('Volume:')) {
+                            this.updateStatus();
+                        }
+                    }, 1000);
+                }
+            });
+        }
+        
+        // Клавиша Escape для закрытия
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.isActive) {
+                console.log('Escape key pressed, closing');
+                this.close();
             }
-            
-            if (e.target.classList.contains('close-btn') && !this.closeButton) {
-                this.stopVisualization();
+        });
+        
+        // Изменение размера окна
+        window.addEventListener('resize', () => {
+            if (this.waveSystem) {
+                this.waveSystem.resize();
+                this.waveSystem.generateParticles();
             }
         });
     }
@@ -1385,13 +1435,25 @@ class NoiseController {
         requestAnimationFrame(updateAudio);
     }
 
-    startVisualization() {
-        if (!this.textArea) {
-            console.error('Text area not found. Cannot start visualization.');
+    toggle() {
+        if (this.isActive) {
+            this.close();
+        } else {
+            this.open();
+        }
+    }
+
+    open() {
+        if (this.isActive) return;
+        
+        console.log('Opening noise visualization');
+        
+        if (!this.editor) {
+            console.error('Editor not found');
             return;
         }
         
-        const text = this.textArea.value.trim();
+        const text = this.editor.innerText.trim();
         
         if (!text) {
             alert('Please enter some text to visualize');
@@ -1402,26 +1464,41 @@ class NoiseController {
         
         this.session = new SonicSession(text);
         this.audioEngine.setMood(this.session.mood, this.session.tempo);
-        this.audioEngine.startMusic();
         
         if (this.waveSystem) {
             this.waveSystem.destroy();
         }
         
-        if (!this.canvas) {
-            this.createCanvas();
-        }
-        
         this.waveSystem = new WaveSystem(this.canvas, this.session);
         
-        document.body.classList.add('visualization-active');
-        this.textArea.blur();
+        // Показываем контейнер
+        if (this.noiseContainer) {
+            this.noiseContainer.style.display = 'block';
+            setTimeout(() => {
+                this.noiseContainer.classList.remove('closing');
+            }, 10);
+        }
         
-        console.log('Visualization started successfully');
+        this.isActive = true;
+        this.updateStatus();
+        
+        console.log('Visualization opened successfully');
     }
 
-    stopVisualization() {
-        console.log('Stopping visualization');
+    close() {
+        if (!this.isActive) return;
+        
+        console.log('Closing noise visualization');
+        
+        if (this.noiseContainer) {
+            this.noiseContainer.classList.add('closing');
+            setTimeout(() => {
+                this.noiseContainer.style.display = 'none';
+                this.noiseContainer.classList.remove('closing');
+            }, 300);
+        }
+        
+        this.isActive = false;
         
         if (this.waveSystem) {
             this.waveSystem.destroy();
@@ -1431,31 +1508,107 @@ class NoiseController {
         if (this.audioEngine) {
             this.audioEngine.stopMusic();
         }
+    }
+
+    play() {
+        if (!this.isActive || !this.audioEngine) return;
         
-        document.body.classList.remove('visualization-active');
+        console.log('Starting music playback');
+        
+        this.audioEngine.startMusic();
+        
+        if (this.playBtn) this.playBtn.disabled = true;
+        if (this.stopBtn) this.stopBtn.disabled = false;
+        
+        this.updateStatus('Playing...');
+        this.startProgressBar();
+    }
+
+    stop() {
+        console.log('Stopping music playback');
+        
+        if (this.audioEngine) {
+            this.audioEngine.stopMusic();
+        }
+        
+        if (this.playBtn) this.playBtn.disabled = false;
+        if (this.stopBtn) this.stopBtn.disabled = true;
+        
+        this.updateStatus();
+        this.stopProgressBar();
+    }
+
+    updateStatus(extra = '') {
+        if (!this.statusText) return;
+        
+        if (extra) {
+            this.statusText.textContent = extra;
+        } else if (this.session) {
+            const mood = this.session.mood;
+            const waves = this.session.particleCount;
+            this.statusText.textContent = `${mood} • ${waves} waves • ready`;
+        } else {
+            this.statusText.textContent = 'Ready to play';
+        }
+    }
+
+    startProgressBar() {
+        if (!this.progressBar) return;
+        
+        let progress = 0;
+        const interval = setInterval(() => {
+            if (!this.audioEngine || !this.audioEngine.isPlaying) {
+                clearInterval(interval);
+                if (this.progressBar) {
+                    this.progressBar.style.width = '0%';
+                }
+                return;
+            }
+            
+            progress = (progress + 0.5) % 100;
+            if (this.progressBar) {
+                this.progressBar.style.width = `${progress}%`;
+            }
+        }, 50);
+        
+        this.progressInterval = interval;
+    }
+
+    stopProgressBar() {
+        if (this.progressInterval) {
+            clearInterval(this.progressInterval);
+            this.progressInterval = null;
+        }
+        
+        if (this.progressBar) {
+            this.progressBar.style.width = '0%';
+        }
     }
 
     destroy() {
-        this.stopVisualization();
+        this.stop();
+        
+        if (this.waveSystem) {
+            this.waveSystem.destroy();
+        }
+        
         if (this.audioEngine) {
             this.audioEngine.destroy();
         }
     }
 }
 
-// Инициализация контроллера
+// Инициализация контроллера после полной загрузки DOM
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded, initializing noise...');
+    
+    // Создаем экземпляр контроллера
     window.noiseController = new NoiseController();
-    // Убираем эту проверку отсюда, так как она уже есть внутри класса
+    
+    console.log('NoiseController initialization complete');
 });
 
-document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden' && window.noiseController && window.noiseController.audioEngine) {
-        window.noiseController.audioEngine.stopMusic();
-    }
-});
-
+// Обработчик перед выгрузкой страницы
 window.addEventListener('beforeunload', () => {
     if (window.noiseController) {
         window.noiseController.destroy();
