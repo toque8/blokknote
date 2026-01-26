@@ -8,14 +8,12 @@
   <link rel="shortcut icon" href="https://blokknote.vercel.app/favicon.ico" type="image/x-icon">
   <link rel="prefetch" href="typing-test.html" as="document">
   <link rel="prefetch" href="https://blokknote.vercel.app/audio/typing.mp3" as="audio">
-  
   <meta property="og:title" content="Blokknote">
   <meta property="og:description" content="Minimalistic blocknote with warm atmospheric sounds">
   <meta property="og:image" content="https://blokknote.vercel.app/preview.jpg?v=1">
   <meta property="og:url" content="https://www.blokknote.space/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Blokknote">
-  
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-VJCRSE7S6X"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -23,7 +21,6 @@
     gtag('js', new Date());
     gtag('config', 'G-VJCRSE7S6X');
   </script>
-  
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; overflow: hidden; }
@@ -136,7 +133,6 @@
     .cancel-btn:hover {
       opacity: 1;
     }
-
     .fonts-area {
       position: absolute;
       left: 80px;
@@ -170,7 +166,6 @@
     .font-size-group span.size-btn:hover {
       opacity: 1;
     }
-
     #fonts-dropdown {
       position: absolute;
       top: 100%;
@@ -199,7 +194,6 @@
       opacity: 1;
       background: #f5f5f5;
     }
-
     #donate-btn {
       position: fixed;
       bottom: 18px;
@@ -214,13 +208,11 @@
       -webkit-tap-highlight-color: transparent;
       opacity: 0.7;
     }
-
     #donate-btn img {
       width: 100%;
       height: 100%;
       object-fit: contain;
     }
-
     #apk-btn {
       position: fixed;
       bottom: 15px;
@@ -235,13 +227,11 @@
       -webkit-tap-highlight-color: transparent;
       opacity: 0.7;
     }
-
     #apk-btn img {
       width: 100%;
       height: 100%;
       object-fit: contain;
     }
-
     #copyright-btn {
       position: fixed;
       bottom: 18px;
@@ -256,13 +246,11 @@
       -webkit-tap-highlight-color: transparent;
       opacity: 0.7;
     }
-
     #copyright-btn img {
       width: 100%;
       height: 100%;
       object-fit: contain;
     }
-
     #donate-sidebar {
       position: fixed;
       top: 50%;
@@ -281,12 +269,10 @@
       visibility: hidden;
       transition: opacity 0.2s, visibility 0.2s;
     }
-
     #donate-sidebar.active {
       opacity: 1;
       visibility: visible;
     }
-
     #donate-sidebar h3 {
       font-size: 13px;
       font-weight: 500;
@@ -294,7 +280,6 @@
       color: #333;
       line-height: 1.3;
     }
-
     #donate-sidebar p {
       font-size: 11px;
       color: #555;
@@ -302,7 +287,6 @@
       margin-bottom: 10px;
       text-transform: lowercase;
     }
-
     #donate-address {
       background: #f5f5f5;
       border: 1px solid #e0e0e0;
@@ -314,7 +298,6 @@
       color: #222;
       line-height: 1.2;
     }
-
     .donate-overlay {
       position: fixed;
       top: 0;
@@ -325,12 +308,10 @@
       opacity: 0;
       visibility: hidden;
     }
-
     .donate-overlay.active {
       opacity: 1;
       visibility: visible;
     }
-
     @media (max-width: 768px) {
       #apk-btn {
         width: 36px;
@@ -338,21 +319,18 @@
         bottom: 15px;
         right: 100px;
       }
-      
       #donate-btn {
         width: 36px;
         height: 36px;
         bottom: 17px;
-        right: 55px;
+        right: 58px;
       }
-      
       #copyright-btn {
         width: 35px;
         height: 35px;
         bottom: 18px;
         right: 22px;
       }
-      
       #donate-sidebar {
         top: auto;
         bottom: 70px;
@@ -363,32 +341,28 @@
         padding: 12px;
       }
     }
-
     @media (max-width: 500px) {
       .top-bar { padding: 14px 16px; }
       .pencil-icon { height: 42px; }
       .fonts-area { display: none; }
       .format-tools { font-size: 19px; gap: 10px; }
       #editor { padding: 20px 16px; font-size: 16px; }
-      .controls { padding: 16px; gap: 36px; margin-left: -71px; }
+      .controls { padding: 16px; gap: 36px; margin-left: -63px; }
       .action-icon { height: 34px; }
       .cancel-btn { bottom: 16px; left: 16px; height: 30px; }
       #typing-test-btn { margin-right: 8px; }
-      
       #apk-btn {
         width: 36px;
         height: 36px;
         bottom: 15px;
-        right: 96px;
+        right: 100px;
       }
-      
       #donate-btn {
         width: 36px;
         height: 36px;
         bottom: 17px;
-        right: 55px;
+        right: 58px;
       }
-      
       #copyright-btn {
         width: 35px;
         height: 35px;
@@ -396,11 +370,9 @@
         right: 18px;
       }
     }
-
     @media (max-width: 400px) {
       .format-tools { font-size: 18px; gap: 8px; }
       #typing-test-btn { margin-right: 6px; }
-      
       #apk-btn {
         width: 36px;
         height: 36px;
@@ -408,32 +380,28 @@
         right: 94px;
       }
     }
-
     @media (max-width: 360px) {
       .top-bar { padding: 12px 12px; }
       .pencil-icon { height: 38px; }
       .fonts-area { display: none; }
       .format-tools { gap: 6px; font-size: 17px; }
       #editor { padding: 18px 12px; font-size: 15px; }
-      .controls { gap: 32px; padding: 14px 12px; margin-left: -71px; }
+      .controls { gap: 32px; padding: 14px 12px; margin-left: -63px; }
       .action-icon { height: 32px; }
       .cancel-btn { bottom: 14px; left: 12px; height: 28px; }
       #typing-test-btn { margin-right: 4px; }
-      
       #apk-btn {
         width: 34px;
         height: 34px;
         bottom: 15px;
         right: 90px;
       }
-      
       #donate-btn {
         width: 34px;
         height: 34px;
         bottom: 17px;
-        right: 50px;
+        right: 53px;
       }
-      
       #copyright-btn {
         width: 33px;
         height: 33px;
@@ -441,12 +409,10 @@
         right: 12px;
       }
     }
-
     @media (max-width: 320px) {
       .format-tools { gap: 5px; font-size: 16px; }
       #typing-test-btn { margin-right: 3px; }
     }
-
     @supports (padding-top: env(safe-area-inset-top)) {
       .top-bar {
         padding-top: calc(16px + env(safe-area-inset-top));
@@ -458,115 +424,159 @@
         bottom: calc(18px + env(safe-area-inset-bottom));
       }
     }
-
-    #chaos-btn { opacity: 0.7; }
-    #chaos-btn:hover { opacity: 1; }
+    #chaos-btn, #noise-btn { opacity: 0.7; }
+    #chaos-btn:hover, #noise-btn:hover { opacity: 1; }
     @media (max-width: 768px) {
-      #chaos-btn { height: 34px; }
+      #chaos-btn, #noise-btn { height: 34px; }
     }
     @media (max-width: 500px) {
-      #chaos-btn { height: 32px; }
+      #chaos-btn, #noise-btn { height: 32px; }
     }
     @media (max-width: 360px) {
-      #chaos-btn { height: 30px; }
+      #chaos-btn, #noise-btn { height: 30px; }
     }
-
+    #chaos-btn {
+      transition: all 0.3s ease !important;
+    }
+    #chaos-btn:hover {
+      transform: rotate(15deg) scale(1.1) !important;
+      filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.5)) !important;
+    }
+    #noise-btn {
+      transition: all 0.3s ease !important;
+    }
+    #noise-btn:hover {
+      transform: rotate(-5deg) scale(1.1) !important;
+      filter: drop-shadow(0 0 8px rgba(102, 234, 126, 0.5)) !important;
+    }
+    #chaos-canvas-container, #noise-canvas-container {
+      will-change: transform, opacity;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
+    #chaos-canvas, #noise-canvas {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    @keyframes modalSlideIn {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    @keyframes modalSlideOut {
+      from { transform: translateY(0); }
+      to { transform: translateY(100%); }
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    #chaos-canvas-container, #noise-canvas-container {
+      animation: modalSlideIn 0.3s ease-out;
+    }
+    #chaos-canvas-container.closing, #noise-canvas-container.closing {
+      animation: modalSlideOut 0.3s ease-in;
+    }
     @media (max-width: 768px) {
-      #chaos-canvas-container {
+      #chaos-canvas-container, #noise-canvas-container {
         height: 70vh !important;
         max-height: 70vh !important;
       }
-      
-      #chaos-caption {
-        font-size: 13px !important;
-        padding: 0 10px !important;
-        bottom: 10px !important;
-      }
-      
-      #chaos-close-btn {
+      #chaos-close-btn, #noise-close-btn {
         width: 28px !important;
         height: 28px !important;
         font-size: 16px !important;
         top: 10px !important;
         right: 10px !important;
       }
+      .noise-controls {
+        padding: 8px !important;
+        gap: 8px !important;
+      }
+      .noise-controls button {
+        padding: 6px 12px !important;
+        font-size: 12px !important;
+      }
+      #noise-status {
+        font-size: 11px !important;
+      }
     }
-
     @media (max-width: 500px) {
-      #chaos-canvas-container {
+      #chaos-canvas-container, #noise-canvas-container {
         height: 65vh !important;
         max-height: 65vh !important;
         border-radius: 15px 15px 0 0 !important;
       }
-      
-      #chaos-caption {
-        font-size: 12px !important;
-        bottom: 8px !important;
-      }
     }
-
-    #chaos-btn {
-      transition: all 0.3s ease !important;
+    .noise-controls {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      background: rgba(20, 25, 40, 0.7);
+      border-radius: 8px;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: 1px solid rgba(100, 150, 255, 0.2);
     }
-
-    #chaos-btn:hover {
-      transform: rotate(15deg) scale(1.1) !important;
-      filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.5)) !important;
+    .noise-controls button {
+      background: rgba(40, 60, 100, 0.8);
+      border: 1px solid rgba(100, 150, 255, 0.3);
+      color: rgba(220, 240, 255, 0.9);
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: monospace;
+      font-size: 13px;
+      transition: all 0.2s ease;
     }
-
-    #chaos-canvas-container {
-      will-change: transform, opacity;
-      transform: translateZ(0);
-      backface-visibility: hidden;
+    .noise-controls button:hover {
+      background: rgba(50, 80, 130, 0.9);
+      transform: translateY(-1px);
     }
-
-    #chaos-canvas {
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
+    .noise-controls button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
     }
-
-    @keyframes chaosSlideIn {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
+    #noise-volume {
+      flex: 1;
+      max-width: 120px;
+      accent-color: #667eea;
     }
-    
-    @keyframes chaosSlideOut {
-      from { transform: translateY(0); }
-      to { transform: translateY(100%); }
+    #noise-status {
+      color: rgba(180, 220, 255, 0.9);
+      font-family: monospace;
+      font-size: 12px;
+      padding: 0 8px;
+      text-align: center;
+      flex: 2;
     }
-    
-    @keyframes chaosFadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
+    #noise-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: rgba(100, 150, 255, 0.3);
     }
-    
-    #chaos-canvas-container {
-      animation: chaosSlideIn 0.3s ease-out;
-    }
-    
-    #chaos-canvas-container.closing {
-      animation: chaosSlideOut 0.3s ease-in;
-    }
-    
-    #chaos-caption {
-      animation: chaosFadeIn 0.5s ease-out 0.2s both;
-    }
-
-    .chaos-universe * {
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
+    #noise-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      width: 0%;
+      transition: width 0.1s linear;
     }
   </style>
 </head>
 <body>
-
   <audio id="sound-typing" src="https://blokknote.vercel.app/audio/typing.mp3" preload="auto"></audio>
   <audio id="sound-erase" src="https://blokknote.vercel.app/audio/erase.mp3" preload="auto"></audio>
   <audio id="sound-download" src="https://blokknote.vercel.app/audio/download.mp3" preload="auto"></audio>
   <audio id="sound-lang" src="https://blokknote.vercel.app/audio/lang.mp3" preload="auto"></audio>
-
+  
   <div class="top-bar">
     <div>
       <img src="https://blokknote.vercel.app/ui/pencil.png" class="pencil-icon" alt="" onerror="this.style.display='none'">
@@ -607,16 +617,71 @@
       </div>
     </div>
   </div>
-
+  
   <div id="editor" contenteditable="true" data-placeholder="Пиши…"></div>
-
+  
   <div class="controls">
+    <img src="https://blokknote.vercel.app/ui/noise.png" class="action-icon" id="noise-btn" onerror="this.style.display='none'">
     <img src="https://blokknote.vercel.app/ui/chaos.png" class="action-icon" id="chaos-btn" onerror="this.style.display='none'">
     <img src="https://blokknote.vercel.app/ui/erase.png" class="action-icon" id="clear-btn" onerror="this.style.display='none'">
     <img src="https://blokknote.vercel.app/ui/download.png" class="action-icon" id="download-btn" onerror="this.style.display='none'">
     <img src="https://blokknote.vercel.app/ui/share.png" class="action-icon" id="share-btn" onerror="this.style.display='none'">
   </div>
-
+  
+  <!-- Noise контейнер -->
+  <div id="noise-canvas-container" style="
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 300px;
+    max-height: 50vh;
+    background: rgba(8, 12, 25, 0.95);
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -5px 30px rgba(0,0,0,0.5);
+    display: none;
+    z-index: 10000;
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.05);
+    touch-action: none;
+  ">
+    <canvas id="noise-canvas" style="width:100%;height:100%;display:block;"></canvas>
+    <!-- Панель управления -->
+    <div class="noise-controls">
+      <button id="noise-play-btn">Play</button>
+      <button id="noise-stop-btn" disabled>Stop</button>
+      <input type="range" id="noise-volume" min="0" max="100" value="30">
+      <span id="noise-status">Ready to play</span>
+    </div>
+    <!-- Прогресс-бар -->
+    <div id="noise-progress">
+      <div id="noise-progress-bar"></div>
+    </div>
+    <button id="noise-close-btn" style="
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(30, 40, 70, 0.7);
+      border: 1px solid rgba(100, 150, 255, 0.3);
+      color: rgba(200, 220, 255, 0.9);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      z-index: 10001;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      transition: all 0.2s ease;
+    ">&times;</button>
+  </div>
+  
+  <!-- Chaos контейнер -->
   <div id="chaos-canvas-container" style="
     position: fixed;
     bottom: 0;
@@ -672,36 +737,32 @@
       transition: all 0.2s ease;
     ">&times;</button>
   </div>
-
+  
   <img src="https://blokknote.vercel.app/ui/cancel.png" class="cancel-btn" id="cancel-btn" onerror="this.style.display='none'">
-
   <button id="apk-btn" onclick="window.open('https://github.com/toque8/blokknoteapp/releases/download/v1/blokknote-release.apk', '_blank')">
     <img src="https://blokknote.vercel.app/ui/apk.png" alt="" decoding="async" loading="lazy">
   </button>
-
   <button id="donate-btn" onclick="toggleDonateSidebar()">
     <img src="https://blokknote.vercel.app/ui/cup.png" alt="" decoding="async" loading="lazy">
   </button>
-  
   <button id="copyright-btn" onclick="window.open('https://www.toquevibe.space/', '_blank')">
     <img src="https://blokknote.vercel.app/ui/copy.png" alt="" decoding="async" loading="lazy">
   </button>
   
   <div class="donate-overlay" id="donateOverlay" onclick="toggleDonateSidebar()"></div>
-  
   <div id="donate-sidebar">
     <h3>if you like<br>buy me a coffee?</h3>
     <p>usdt trc20</p>
     <div id="donate-address">TQuARR37qSt59am1R8aosCk2R1sgwwHwxT</div>
   </div>
-
+  
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('from') === 'test') {
       const sound = new Audio('https://blokknote.vercel.app/audio/lang.mp3');
       sound.play().catch(() => {});
     }
-
+    
     const editor = document.getElementById('editor');
     const translations = { ru: 'Пиши…', en: 'Typing…' };
     let currentLang = 'ru';
@@ -709,10 +770,11 @@
     const MIN_FONT_SIZE = 8;
     const MAX_FONT_SIZE = 30;
     const BASE_FONT_SIZE = 17;
-
+    
     const saved = localStorage.getItem('blokknote-html');
     const savedFontSize = localStorage.getItem('blokknote-fontSize');
     const savedFontFamily = localStorage.getItem('blokknote-fontFamily');
+    
     if (saved) {
       editor.innerHTML = saved;
       if (savedFontSize) editor.style.fontSize = savedFontSize;
@@ -721,8 +783,9 @@
     } else {
       history.push({html: editor.innerHTML, fontSize: '', fontFamily: ''});
     }
+    
     editor.setAttribute('data-placeholder', translations[currentLang]);
-
+    
     function saveState() {
       history.push({
         html: editor.innerHTML,
@@ -730,26 +793,26 @@
         fontFamily: editor.style.fontFamily
       });
     }
-
+    
     editor.addEventListener('input', () => {
       saveState();
       localStorage.setItem('blokknote-html', editor.innerHTML);
       localStorage.setItem('blokknote-fontSize', editor.style.fontSize);
       localStorage.setItem('blokknote-fontFamily', editor.style.fontFamily);
+      
       const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
       sound.play().catch(() => {});
     });
-
+    
     function exec(cmd, value = null) {
       saveState();
       document.execCommand(cmd, false, value);
       editor.focus();
     }
-
+    
     document.getElementById('btn-bold').onclick = () => exec('bold');
     document.getElementById('btn-italic').onclick = () => exec('italic');
     document.getElementById('btn-underline').onclick = () => exec('underline');
-
     document.getElementById('btn-heading').onclick = () => {
       const sel = window.getSelection();
       if (sel.rangeCount === 0) return;
@@ -761,20 +824,21 @@
         exec('formatBlock', '<h3>');
       }
     };
-
     document.getElementById('btn-list').onclick = () => exec('insertUnorderedList');
-
+    
     function setLang(lang) {
       currentLang = lang;
       editor.setAttribute('data-placeholder', translations[lang]);
       document.getElementById('lang-ru').classList.toggle('active', lang === 'ru');
       document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+      
       const sound = new Audio('https://blokknote.vercel.app/audio/lang.mp3');
       sound.play().catch(() => {});
     }
+    
     document.getElementById('lang-ru').onclick = () => setLang('ru');
     document.getElementById('lang-en').onclick = () => setLang('en');
-
+    
     document.getElementById('clear-btn').onclick = () => {
       saveState();
       editor.innerHTML = '';
@@ -784,10 +848,11 @@
       localStorage.removeItem('blokknote-fontSize');
       localStorage.removeItem('blokknote-fontFamily');
       editor.setAttribute('data-placeholder', translations[currentLang]);
+      
       const sound = new Audio('https://blokknote.vercel.app/audio/erase.mp3');
       sound.play().catch(() => {});
     };
-
+    
     document.getElementById('download-btn').onclick = () => {
       const sound = document.getElementById('sound-download');
       sound.currentTime = 0;
@@ -798,26 +863,26 @@
         alert(currentLang === 'ru' ? 'Добавьте текст' : 'Add text');
         return;
       }
-
+      
       const html = editor.innerHTML || '<p></p>';
       const currentFontFamily = editor.style.fontFamily || 'system-ui, -apple-system, sans-serif';
       const currentFontSize = editor.style.fontSize || '17px';
       
       const fullHtml = `<!DOCTYPE html>
-    <html>
+      <html>
       <head>
-        <meta charset="utf-8">
-        <title>Blokknote</title>
-        <style>
-          body {
-            font-family: ${currentFontFamily};
-            font-size: ${currentFontSize};
-            line-height: 1.6;
-          }
-        </style>
+      <meta charset="utf-8">
+      <title>Blokknote</title>
+      <style>
+      body {
+        font-family: ${currentFontFamily};
+        font-size: ${currentFontSize};
+        line-height: 1.6;
+      }
+      </style>
       </head>
       <body>${html}</body>
-    </html>`;
+      </html>`;
       
       const blob = new Blob([fullHtml], { type: 'application/msword' });
       const url = URL.createObjectURL(blob);
@@ -827,7 +892,7 @@
       a.click();
       URL.revokeObjectURL(url);
     };
-
+    
     document.getElementById('share-btn').onclick = async () => {
       const sound = document.getElementById('sound-download');
       sound.currentTime = 0;
@@ -838,44 +903,43 @@
       const fontFamily = editor.style.fontFamily || computedStyle.fontFamily;
       
       const style = `
-        body {
-          font-family: ${fontFamily} !important;
-          font-size: ${fontSize} !important;
-          line-height: 1.6;
-          padding: 24px;
-          margin: 0;
-        }
+      body {
+        font-family: ${fontFamily} !important;
+        font-size: ${fontSize} !important;
+        line-height: 1.6;
+        padding: 24px;
+        margin: 0;
+      }
       `;
       
       const html = editor.innerHTML || '<p></p>';
       const fullHtml = `<!DOCTYPE html>
-    <html>
+      <html>
       <head>
-        <meta charset="utf-8">
-        <title>Blokknote</title>
-        <style>${style}</style>
+      <meta charset="utf-8">
+      <title>Blokknote</title>
+      <style>${style}</style>
       </head>
       <body>${html}</body>
-    </html>`;
-
+      </html>`;
+      
       const textContent = html.replace(/<[^>]*>/g, '').trim();
       if (!textContent) {
         alert(currentLang === 'ru' ? 'Добавьте текст' : 'Add text');
         return;
       }
-
+      
       const btn = document.getElementById('share-btn');
       btn.style.opacity = '0.5';
-
+      
       try {
         const res = await fetch('/api/share', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ content: fullHtml })
         });
-
+        
         const data = await res.json();
-
         if (res.ok) {
           const fullUrl = `${window.location.origin}/api/doc?id=${data.id}`;
           window.open(fullUrl, '_blank');
@@ -885,10 +949,10 @@
       } catch {
         alert(currentLang === 'ru' ? 'Ошибка сети' : 'Network error');
       }
-
+      
       btn.style.opacity = '1';
     };
-
+    
     document.getElementById('cancel-btn').onclick = () => {
       if (history.length <= 1) {
         editor.innerHTML = '';
@@ -904,30 +968,32 @@
         editor.innerHTML = prevState.html || '';
         editor.style.fontSize = prevState.fontSize || '';
         editor.style.fontFamily = prevState.fontFamily || '';
+        
         localStorage.setItem('blokknote-html', editor.innerHTML);
         localStorage.setItem('blokknote-fontSize', editor.style.fontSize);
         localStorage.setItem('blokknote-fontFamily', editor.style.fontFamily);
       }
+      
       const sound = new Audio('https://blokknote.vercel.app/audio/erase.mp3');
       sound.play().catch(() => {});
     };
-
+    
     document.getElementById('typing-test-btn').onclick = (e) => {
       e.preventDefault();
       window.location.href = 'typing-test.html';
     };
-
+    
     const fontsDropdown = document.getElementById('fonts-dropdown');
     const fontsTrigger = document.getElementById('fonts-trigger');
     const fontItems = document.querySelectorAll('#fonts-dropdown .font-item');
-
+    
     fontsTrigger.onclick = (e) => {
       e.stopPropagation();
       const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
       sound.play().catch(() => {});
       fontsDropdown.classList.toggle('active');
     };
-
+    
     function getSelectedFontFamily() {
       const sel = window.getSelection();
       if (sel.rangeCount === 0 || sel.isCollapsed) return null;
@@ -936,11 +1002,10 @@
       const element = node.nodeType === 3 ? node.parentElement : node;
       return element ? window.getComputedStyle(element).fontFamily : null;
     }
-
+    
     function applyFontToSelection(font) {
       const selection = window.getSelection();
       if (selection.rangeCount === 0 || selection.isCollapsed) return;
-      
       const range = selection.getRangeAt(0);
       const span = document.createElement('span');
       span.style.fontFamily = font;
@@ -948,17 +1013,16 @@
       selection.removeAllRanges();
       selection.addRange(range);
     }
-
+    
     function removeFontFromSelection() {
       const selection = window.getSelection();
       if (selection.rangeCount === 0 || selection.isCollapsed) return;
-      
       const range = selection.getRangeAt(0);
       const container = range.commonAncestorContainer;
-      const fontSpan = container.nodeType === 1 ? 
-        container.closest('span[style*="font-family"]') : 
+      const fontSpan = container.nodeType === 1 ?
+        container.closest('span[style*="font-family"]') :
         container.parentElement.closest('span[style*="font-family"]');
-      
+        
       if (fontSpan) {
         const parent = fontSpan.parentNode;
         while (fontSpan.firstChild) {
@@ -967,7 +1031,7 @@
         parent.removeChild(fontSpan);
       }
     }
-
+    
     fontItems.forEach(item => {
       item.onclick = () => {
         const font = item.getAttribute('data-font');
@@ -995,7 +1059,7 @@
         fontsDropdown.classList.remove('active');
       };
     });
-
+    
     function getSelectedFontSize() {
       const sel = window.getSelection();
       if (sel.rangeCount === 0 || sel.isCollapsed) return null;
@@ -1004,7 +1068,7 @@
       const element = node.nodeType === 3 ? node.parentElement : node;
       return element ? window.getComputedStyle(element).fontSize : null;
     }
-
+    
     function applyFontSizeToSelection(size) {
       document.execCommand('fontSize', false, 7);
       const fontElements = editor.querySelectorAll('font[size="7"]');
@@ -1014,7 +1078,7 @@
         }
       });
     }
-
+    
     function applyFontSize(size) {
       const selection = window.getSelection();
       saveState();
@@ -1038,7 +1102,7 @@
       localStorage.setItem('blokknote-html', editor.innerHTML);
       localStorage.setItem('blokknote-fontSize', editor.style.fontSize);
     }
-
+    
     function adjustFontSize(delta) {
       const selection = window.getSelection();
       saveState();
@@ -1047,7 +1111,6 @@
         const currentSize = getSelectedFontSize();
         let current = currentSize ? parseInt(currentSize) : BASE_FONT_SIZE;
         current = Math.max(MIN_FONT_SIZE, Math.min(MAX_FONT_SIZE, current + delta));
-        
         document.execCommand('fontSize', false, 7);
         const fontElements = editor.querySelectorAll('font[size="7"]');
         fontElements.forEach(el => {
@@ -1065,37 +1128,37 @@
       localStorage.setItem('blokknote-html', editor.innerHTML);
       localStorage.setItem('blokknote-fontSize', editor.style.fontSize);
     }
-
+    
     document.getElementById('size-12').onclick = () => {
       const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
       sound.play().catch(() => {});
       applyFontSize(12);
     };
-
+    
     document.getElementById('size-14').onclick = () => {
       const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
       sound.play().catch(() => {});
       applyFontSize(14);
     };
-
+    
     document.getElementById('size-plus').onclick = () => {
       const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
       sound.play().catch(() => {});
       adjustFontSize(1);
     };
-
+    
     document.getElementById('size-minus').onclick = () => {
       const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
       sound.play().catch(() => {});
       adjustFontSize(-1);
     };
-
+    
     document.onclick = (e) => {
       if (!fontsTrigger.contains(e.target) && !fontsDropdown.contains(e.target)) {
         fontsDropdown.classList.remove('active');
       }
     };
-
+    
     function toggleDonateSidebar() {
       const sidebar = document.getElementById('donate-sidebar');
       const overlay = document.getElementById('donateOverlay');
@@ -1117,7 +1180,7 @@
         }
       }
     });
-
+    
     const chaosBtn = document.getElementById('chaos-btn');
     if (chaosBtn) {
       chaosBtn.addEventListener('mouseenter', () => {
@@ -1130,13 +1193,332 @@
         chaosBtn.style.filter = '';
       });
     }
+    
+    // Полноценная реализация NoiseController для offline-режима
+    class SimpleNoiseController {
+      constructor() {
+        this.isActive = false;
+        this.container = document.getElementById('noise-canvas-container');
+        this.canvas = document.getElementById('noise-canvas');
+        this.playBtn = document.getElementById('noise-play-btn');
+        this.stopBtn = document.getElementById('noise-stop-btn');
+        this.volumeSlider = document.getElementById('noise-volume');
+        this.statusText = document.getElementById('noise-status');
+        this.ctx = this.canvas.getContext('2d');
+        this.animationId = null;
+        this.isPlaying = false;
+        this.audioContext = null;
+        this.oscillator = null;
+        this.gainNode = null;
+        this.analyser = null;
+        this.frequencyData = null;
+        this.volume = parseFloat(this.volumeSlider.value) / 100;
+        this.setupEventListeners();
+      }
+      
+      async initAudio() {
+        try {
+          // Инициализируем AudioContext только после пользовательского взаимодействия
+          if (!this.audioContext) {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          }
+          
+          // Создаем узлы
+          this.oscillator = this.audioContext.createOscillator();
+          this.gainNode = this.audioContext.createGain();
+          this.analyser = this.audioContext.createAnalyser();
+          
+          // Настраиваем анализатор
+          this.analyser.fftSize = 256;
+          const bufferLength = this.analyser.frequencyBinCount;
+          this.frequencyData = new Uint8Array(bufferLength);
+          
+          // Подключаем узлы
+          this.oscillator.connect(this.analyser);
+          this.analyser.connect(this.gainNode);
+          this.gainNode.connect(this.audioContext.destination);
+          
+          // Настраиваем громкость
+          this.gainNode.gain.value = this.volume;
+          
+          // Запускаем генератор
+          this.oscillator.type = 'sine';
+          this.oscillator.frequency.value = 440; // Нота A4
+          this.oscillator.start(0);
+          
+          return true;
+        } catch (error) {
+          console.error('Audio initialization error:', error);
+          this.statusText.textContent = 'Audio error: ' + error.message;
+          return false;
+        }
+      }
+      
+      setupEventListeners() {
+        const self = this;
+        
+        // Кнопки Play/Stop
+        this.playBtn.addEventListener('click', async function() {
+          // При первом клике инициализируем аудио
+          if (!self.audioContext) {
+            const success = await self.initAudio();
+            if (!success) return;
+          }
+          
+          self.play();
+        });
+        
+        this.stopBtn.addEventListener('click', function() {
+          self.stop();
+        });
+        
+        // Громкость
+        this.volumeSlider.addEventListener('input', function(e) {
+          self.volume = parseInt(e.target.value) / 100;
+          self.setVolume(self.volume);
+        });
+        
+        // Кнопка закрытия
+        document.getElementById('noise-close-btn').addEventListener('click', function(e) {
+          e.stopPropagation();
+          self.close();
+        });
+        
+        // Закрытие по клику на фон
+        this.container.addEventListener('click', function(e) {
+          if (e.target === self.container) {
+            self.close();
+          }
+        });
+      }
+      
+      toggle() {
+        if (this.isActive) {
+          this.close();
+        } else {
+          this.open();
+        }
+      }
+      
+      open() {
+        this.isActive = true;
+        this.container.style.display = 'flex';
+        this.container.classList.remove('closing');
+        
+        // Показываем статус
+        if (this.statusText) {
+          this.statusText.textContent = 'Click Play to start • Simple mode';
+        }
+        
+        // Запускаем визуализацию
+        this.startVisualization();
+      }
+      
+      close() {
+        if (!this.isActive) return;
+        
+        // Останавливаем аудио
+        this.stop();
+        
+        this.container.classList.add('closing');
+        setTimeout(() => {
+          this.isActive = false;
+          this.container.style.display = 'none';
+          this.container.classList.remove('closing');
+          
+          // Останавливаем визуализацию
+          if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+            this.animationId = null;
+          }
+        }, 300);
+      }
+      
+      async play() {
+        // При первом нажатии Play инициализируем аудио
+        if (!this.audioContext) {
+          const success = await this.initAudio();
+          if (!success) return;
+        }
+        
+        this.isPlaying = true;
+        if (this.statusText) {
+          this.statusText.textContent = 'Playing • 440Hz sine wave';
+        }
+        this.stopBtn.disabled = false;
+        this.playBtn.disabled = true;
+        
+        // Эмуляция прогресса
+        let progress = 0;
+        const progressBar = document.getElementById('noise-progress-bar');
+        
+        const progressInterval = setInterval(() => {
+          progress = (progress + 1) % 100;
+          if (progressBar && this.isPlaying) {
+            progressBar.style.width = progress + '%';
+          }
+          if (!this.isPlaying) {
+            clearInterval(progressInterval);
+          }
+        }, 100);
+      }
+      
+      stop() {
+        this.isPlaying = false;
+        if (this.statusText) {
+          this.statusText.textContent = 'Ready to play • Simple mode';
+        }
+        this.stopBtn.disabled = true;
+        this.playBtn.disabled = false;
+        
+        // Сбрасываем прогресс
+        const progressBar = document.getElementById('noise-progress-bar');
+        if (progressBar) {
+          progressBar.style.width = '0%';
+        }
+        
+        // Останавливаем аудио если оно было запущено
+        if (this.oscillator && this.audioContext && this.audioContext.state !== 'closed') {
+          try {
+            this.oscillator.stop(0);
+            this.oscillator.disconnect();
+            this.oscillator = null;
+          } catch (e) {
+            console.warn('Oscillator stop error:', e);
+          }
+        }
+      }
+      
+      setVolume(value) {
+        this.volume = value;
+        if (this.gainNode) {
+          this.gainNode.gain.value = value;
+        }
+        
+        if (this.statusText) {
+          this.statusText.textContent = `Volume: ${Math.round(value * 100)}%`;
+          setTimeout(() => {
+            if (this.isActive && this.statusText.textContent.includes('Volume:')) {
+              this.statusText.textContent = this.isPlaying ? 
+                'Playing • Simple mode' : 
+                'Ready to play • Simple mode';
+            }
+          }, 1000);
+        }
+      }
+      
+      startVisualization() {
+        const self = this;
+        let time = 0;
+        const dpr = window.devicePixelRatio || 1;
+        const rect = this.canvas.getBoundingClientRect();
+        this.canvas.width = rect.width * dpr;
+        this.canvas.height = rect.height * dpr;
+        this.ctx.scale(dpr, dpr);
+        
+        function animate() {
+          if (!self.isActive) return;
+          
+          const width = self.canvas.width / dpr;
+          const height = self.canvas.height / dpr;
+          
+          // Очищаем холст
+          self.ctx.fillStyle = 'rgba(10, 14, 23, 0.15)';
+          self.ctx.fillRect(0, 0, width, height);
+          
+          // Получаем данные анализатора, если аудио активно
+          if (self.analyser && self.frequencyData && self.isPlaying) {
+            self.analyser.getByteFrequencyData(self.frequencyData);
+          }
+          
+          // Рисуем спектр
+          const barCount = Math.min(128, Math.floor(width / 4));
+          const barWidth = width / barCount;
+          
+          for (let i = 0; i < barCount; i++) {
+            let barHeight;
+            
+            if (self.analyser && self.frequencyData && self.isPlaying) {
+              // Используем данные анализатора
+              const frequencyIndex = Math.floor(i / barCount * self.frequencyData.length);
+              const freqValue = self.frequencyData[frequencyIndex] || 0;
+              barHeight = (freqValue / 255) * height * 0.8;
+            } else {
+              // Имитация музыкальной волны с анимацией
+              const offset = Math.sin((time + i * 0.1) * 0.1) * 0.5 + 0.5;
+              barHeight = (30 + Math.sin(time * 0.5 + i * 0.2) * 20) * offset * (height / 100);
+            }
+            
+            // Создаем градиентную полосу с меняющимися цветами
+            const hue = (i / barCount) * 240 + 120 + time * 20;
+            const gradient = self.ctx.createLinearGradient(0, height, 0, height - barHeight);
+            gradient.addColorStop(0, `hsla(${hue % 360}, 80%, 50%, 0.2)`);
+            gradient.addColorStop(1, `hsla(${hue % 360}, 100%, 70%, 0.8)`);
+            
+            self.ctx.fillStyle = gradient;
+            self.ctx.fillRect(i * barWidth, height - barHeight, barWidth - 1, barHeight);
+          }
+          
+          // Рисуем текст информации
+          self.ctx.fillStyle = 'rgba(220, 230, 255, 0.9)';
+          self.ctx.font = '12px monospace';
+          self.ctx.textAlign = 'left';
+          self.ctx.textBaseline = 'top';
+          self.ctx.fillText('Noise • Simple synth • 440Hz', 15, 15);
+          
+          time += 0.02;
+          self.animationId = requestAnimationFrame(animate);
+        }
+        
+        animate();
+      }
+    }
+    
+    const noiseBtn = document.getElementById('noise-btn');
+    
+    if (noiseBtn) {
+      noiseBtn.addEventListener('mouseenter', () => {
+        noiseBtn.style.transform = 'rotate(-5deg) scale(1.1)';
+        noiseBtn.style.filter = 'drop-shadow(0 0 8px rgba(102, 234, 126, 0.5))';
+      });
+      
+      noiseBtn.addEventListener('mouseleave', () => {
+        noiseBtn.style.transform = '';
+        noiseBtn.style.filter = '';
+      });
+      
+      // Обработчик клика
+      noiseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        
+        // Создаем контроллер при первом клике
+        if (!window.noiseController) {
+          window.noiseController = new SimpleNoiseController();
+          console.log('✅ Simple Noise controller initialized');
+        }
+        
+        // Переключаем видимость панели
+        window.noiseController.toggle();
+      });
+    }
   </script>
   
   <script src="chaos.js" defer></script>
+  <script> 
+    // Проверяем, есть ли файл noise.js
+    fetch('noise.js', { method: 'HEAD' })
+      .then(response => {
+        if (response.ok) {
+          // Файл существует, подключаем его
+          const script = document.createElement('script');
+          script.src = 'noise.js';
+          script.defer = true;
+          document.head.appendChild(script);
+        }
+      })
+      .catch(() => {
+        console.log('Noise.js not found, using simple mode');
+      });
+  </script>
 </body>
 </html>
-
-
-
-
-
