@@ -241,26 +241,6 @@
     
     container.appendChild(controlsDiv);
     
-    // Добавляем обработчики событий для только что созданных элементов
-    closeBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (window.noiseController) window.noiseController.close();
-    });
-    
-    playBtn.addEventListener('click', () => {
-      if (window.noiseController) window.noiseController.play();
-    });
-    
-    stopBtn.addEventListener('click', () => {
-      if (window.noiseController) window.noiseController.stop();
-    });
-    
-    volumeSlider.addEventListener('input', (e) => {
-      if (window.noiseController && window.noiseController.engine) {
-        window.noiseController.engine.setVolume(e.target.value / 100);
-      }
-    });
-    
     return container;
   }
   
@@ -843,17 +823,8 @@
         return;
       }
       
-      if (!this.container || !this.canvas) {
-        console.error('❌ Noise container or canvas not found, creating fallback');
-        this.initFallbackElements();
-      }
-      
       this.setupEventListeners();
       console.log('✅ Noise Controller initialized');
-    }
-    
-    initFallbackElements() {
-      // Уже создана в функции createNoiseContainer
     }
     
     setupEventListeners() {
@@ -1092,6 +1063,32 @@
       }
     }
   };
+  
+  // ОСНОВНАЯ ИНИЦИАЛИЗАЦИЯ
+  function initNoise() {
+    console.log('Initializing noise system...');
+    
+    // Создаем элементы если их нет
+    if (!document.getElementById('noise-canvas-container')) {
+      const container = createNoiseContainer();
+      document.body.appendChild(container);
+    }
+    
+    // Создаем контроллер
+    try {
+      window.noiseController = new NoiseController();
+      console.log('✅ Noise system initialized');
+    } catch (error) {
+      console.error('❌ Failed to initialize noise system:', error);
+    }
+  }
+  
+  // Запускаем инициализацию когда DOM готов
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNoise);
+  } else {
+    initNoise();
+  }
   
   console.log('=== NOISE ENGINE LOADED SUCCESSFULLY ===');
   console.log('💡 Tips:');
