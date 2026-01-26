@@ -14,10 +14,10 @@
         SENSITIVITY: {
             warmWords: {
                 ru: [
-                    'радость', 'счастье', 'надежда', 'любовь', 'мир', 'мечта', 'свет', 'тепло', 'улыбка', 'друг', 'семья', 'солнце', 
+                    'радость', 'любовь', 'мир', 'весна', 'счастье', 'надежда', 'мечта', 'свет', 'тепло', 'улыбка', 'друг', 'семья', 'солнце', 
                     'праздник', 'успех', 'победа', 'красота', 'гармония', 'доброта', 'добро', 'щедрость', 'верность', 
                     'честность', 'мудрость', 'свобода', 'приключение', 'открытие', 'вдохновение', 'творчество', 
-                    'энергия', 'жизнь', 'здоровье', 'благодарность', 'спокойствие', 'уют', 'комфорт', 'ласка', 
+                    'энергия', 'жизнь', 'здововье', 'благодарность', 'спокойствие', 'уют', 'комфорт', 'ласка', 
                     'нежность', 'страсть', 'восторг', 'ликование', 'триумф', 'согласие', 'единство', 'дружба', 
                     'поддержка', 'забота', 'опека', 'восхищение', 'признание', 'почет', 'уважение', 'доверие', 
                     'понимание', 'сочувствие', 'созидание', 'благополучие', 'радушие', 'приветствие', 'ободрение', 
@@ -25,29 +25,10 @@
                     'усердие', 'старание', 'трудолюбие', 'упорство', 'терпение', 'выдержка', 'мужество', 'отвага', 
                     'храбрость', 'героизм', 'самоотверженность', 'трепет', 'благословение', 'веселье', 'бодрость', 
                     'сияние', 'просветление', 'процветание', 'свежесть', 'безмятежность', 'простодушие', 'искренность', 
-                    'открытость', 'теплота', 'радостный', 'счастливый', 'надежный', 'светлый', 'теплый', 'дружелюбный', 
-                    'родной', 'солнечный', 'праздничный', 'успешный', 'красивый', 'гармоничный', 'добрый', 'щедрый', 
-                    'верный', 'честный', 'мудрый', 'свободный', 'вдохновляющий', 'творческий', 'энергичный', 'здоровый', 
-                    'благодарный', 'спокойный', 'уютный', 'комфортный', 'ласковый', 'нежный', 'страстный', 'восторженный', 
-                    'единодушный', 'дружеский', 'заботливый', 'восхищающий', 'уважаемый', 'доверчивый', 'понимающий', 
-                    'сочувствующий', 'благополучный', 'благодатный', 'радушный', 'приветливый', 'ободряющий', 
-                    'воодушевленный', 'оптимистичный', 'благочестивый', 'чистый', 'невинный', 'целомудренный', 'кроткий', 
-                    'смиренный', 'усердный', 'прилежный', 'трудолюбивый', 'упорный', 'терпеливый', 'выдержанный', 
-                    'мужественный', 'отважный', 'храбрый', 'героический', 'самоотверженный', 'трепетный', 'веселый', 
-                    'бодрый', 'благоговейный', 'сияющий', 'процветающий', 'безмятежный', 'благодушный', 'искренний', 
-                    'открытый', 'непорочный', 'незапятнанный', 'безупречный', 'безгрешный', 'добродетельный', 'благородный', 
-                    'великодушный', 'гостеприимный', 'приветный', 'радоваться', 'наслаждаться', 'надеяться', 'мечтать', 
-                    'светить', 'греть', 'улыбаться', 'дружить', 'любить', 'праздновать', 'побеждать', 'украшать', 'дарить', 
-                    'верить', 'постигать', 'освобождать', 'открывать', 'вдохновлять', 'творить', 'жить', 'благодарить', 
-                    'успокаивать', 'утешать', 'ласкать', 'нежиться', 'восхищаться', 'соглашаться', 'объединять', 
-                    'поддерживать', 'заботиться', 'опекать', 'признавать', 'почитать', 'уважать', 'доверять', 'понимать', 
-                    'принимать', 'сочувствовать', 'благословлять', 'веселиться', 'воодушевлять', 'просветлять', 'сиять', 
-                    'процветать', 'веселить', 'прощать', 'теплеть', 'светлеть', 'благородствовать', 'приветствовать', 
-                    'возвышать', 'воспарять', 'расцветать', 'оживать', 'оживлять', 'окрылять', 'облагораживать', 
-                    'покровительствовать', 'прославлять', 'чувствовать'
+                    'открытость', 'теплота' 
                 ],
                 en: [
-                    'joy', 'happiness', 'love', 'peace', 'spring', 'hope', 'dream', 'light', 'warmth', 'smile', 'friend', 'family', 'sun', 
+                    'joy', 'happiness', 'love', 'peace', 'hope', 'dream', 'light', 'warmth', 'smile', 'friend', 'family', 'sun', 
                     'celebration', 'success', 'victory', 'beauty', 'harmony', 'kindness', 'generosity', 'loyalty', 
                     'honesty', 'wisdom', 'freedom', 'adventure', 'discovery', 'inspiration', 'creativity', 'energy', 
                     'life', 'health', 'gratitude', 'calm', 'coziness', 'comfort', 'affection', 'tenderness', 'passion', 
@@ -55,27 +36,7 @@
                     'admiration', 'recognition', 'honor', 'respect', 'trust', 'understanding', 'compassion', 
                     'peacemaking', 'prosperity', 'grace', 'blessing', 'welcome', 'greeting', 'encouragement', 
                     'enthusiasm', 'optimism', 'piety', 'purity', 'innocence', 'chastity', 'meekness', 'humility', 
-                    'zeal', 'diligence', 'assiduity', 'industriousness', 'perseverance', 'patience', 'endurance', 
-                    'courage', 'valor', 'bravery', 'heroism', 'selflessness', 'reverence', 'merriment', 'vigor', 
-                    'buoyancy', 'radiance', 'enlightenment', 'flourishing', 'wellbeing', 'freshness', 'tranquility', 
-                    'glee', 'joyfulness', 'goodwill', 'trustfulness', 'naivety', 'sincerity', 'openness', 'joyful', 
-                    'happy', 'hopeful', 'bright', 'warm', 'friendly', 'dear', 'sunny', 'festive', 'successful', 
-                    'beautiful', 'harmonious', 'kind', 'generous', 'loyal', 'honest', 'wise', 'free', 'inspiring', 
-                    'creative', 'energetic', 'healthy', 'grateful', 'calm', 'cozy', 'comfortable', 'affectionate', 
-                    'tender', 'passionate', 'delighted', 'unanimous', 'caring', 'admiring', 'respected', 'trusting', 
-                    'understanding', 'compassionate', 'peacemaking', 'prosperous', 'gracious', 'welcoming', 
-                    'encouraging', 'enthusiastic', 'optimistic', 'pious', 'pure', 'innocent', 'chaste', 'meek', 
-                    'humble', 'zealous', 'diligent', 'assiduous', 'industrious', 'persevering', 'patient', 'enduring', 
-                    'courageous', 'valiant', 'brave', 'heroic', 'selfless', 'reverent', 'merry', 'vibrant', 'radiant', 
-                    'flourishing', 'tranquil', 'trusting', 'naive', 'sincere', 'open', 'immaculate', 'unblemished', 
-                    'impeccable', 'sinless', 'virtuous', 'noble', 'magnanimous', 'cordial', 'enjoy', 'hope', 'dream', 
-                    'shine', 'warm', 'smile', 'befriend', 'love', 'celebrate', 'win', 'decorate', 'harmonize', 'give', 
-                    'believe', 'think', 'comprehend', 'free', 'discover', 'inspire', 'create', 'live', 'thank', 'calm', 
-                    'caress', 'cherish', 'admire', 'agree', 'unite', 'support', 'care', 'protect', 'recognize', 
-                    'respect', 'trust', 'understand', 'sympathize', 'bless', 'merrymake', 'delight', 'optimize', 
-                    'enlighten', 'purify', 'radiate', 'flourish', 'prosper', 'cheer', 'forgive', 'brighten', 'greet', 
-                    'elevate', 'soar', 'blossom', 'revive', 'inspire', 'ennoble', 'proclaim', 'expect', 'patronize', 
-                    'praise'
+                    'zeal', 'diligence', 'assiduity', 'industriousness', 'perseverance', 'patience', 'endurance' 
                 ]
             },
             darkWords: {
@@ -93,31 +54,7 @@
                     'тоскливость', 'хмурость', 'пессимизм', 'угроза', 'опасность', 'риск', 'бедствие', 'страдание', 
                     'мука', 'плач', 'слезы', 'рыдание', 'вопль', 'неприятность', 'трагизм', 'гнет', 'угнетение', 
                     'мученичество', 'неволя', 'принуждение', 'насилие', 'притеснение', 'изгнание', 'изоляция', 
-                    'отверженность', 'забвение', 'заброшенность', 'небрежность', 'пренебрежение', 'презрение', 
-                    'грустный', 'болезненный', 'смертный', 'темный', 'страшный', 'одинокий', 'тоскливый', 'печальный', 
-                    'разочарованный', 'потерянный', 'горестный', 'бедственный', 'несчастный', 'трагический', 
-                    'катастрофический', 'мучительный', 'истязующий', 'унизительный', 'предательский', 'лживый', 
-                    'обманчивый', 'ненавистный', 'злобный', 'яростный', 'гневный', 'ревнивый', 'завистливый', 'жадный', 
-                    'скупой', 'эгоистичный', 'равнодушный', 'холодный', 'ледяной', 'морозный', 'туманный', 'грозовой', 
-                    'ураганный', 'разрушительный', 'провальный', 'позорный', 'стыдный', 'виновный', 'сожалеющий', 
-                    'отчаянный', 'безысходный', 'мрачный', 'унылый', 'тленный', 'немощный', 'несправедливый', 'коварный', 
-                    'вероломный', 'подлый', 'жестокий', 'беспощадный', 'безжалостный', 'бездушный', 'бесчувственный', 
-                    'безразличный', 'немилосердный', 'неумолимый', 'беспросветный', 'безрадостный', 'безнадежный', 
-                    'безвольный', 'бессильный', 'беззащитный', 'беспомощный', 'безвыходный', 'скорбный', 'горький', 
-                    'озлобленный', 'ожесточенный', 'безутешный', 'хмурый', 'угрюмый', 'угрожающий', 'опасный', 
-                    'рискованный', 'неблагоприятный', 'неприятный', 'обидный', 'огорчающий', 'раздражающий', 
-                    'разочаровывающий', 'недовольный', 'неудовлетворенный', 'пренебрежительный', 'небрежный', 
-                    'заброшенный', 'забытый', 'презренный', 'униженный', 'оскорбленный', 'обиженный', 'недооцененный', 
-                    'непризнанный', 'покинутый', 'брошенный', 'отвергнутый', 'проклятый', 'грустить', 'болеть', 
-                    'умирать', 'темнеть', 'страшиться', 'тосковать', 'печалиться', 'разочаровываться', 'терять', 
-                    'горевать', 'бедствовать', 'мучиться', 'пытать', 'истязать', 'унижать', 'предавать', 'изменять', 
-                    'лгать', 'обманывать', 'ненавидеть', 'гневаться', 'ревновать', 'завидовать', 'жадничать', 'скупиться', 
-                    'холодеть', 'леденеть', 'морозить', 'грозить', 'разрушать', 'проваливаться', 'позориться', 'стыдиться', 
-                    'сожалеть', 'отчаиваться', 'унывать', 'тлеть', 'злорадствовать', 'коварствовать', 'вероломствовать', 
-                    'жесточить', 'бездушничать', 'скорбеть', 'горчить', 'ожесточать', 'мрачнеть', 'хмуриться', 
-                    'угрюмничать', 'горевать', 'угрожать', 'опасаться', 'рисковать', 'бедствовать', 'обижать', 'огорчать', 
-                    'раздражать', 'разочаровывать', 'пренебрегать', 'забрасывать', 'забывать', 'презирать', 'унижать', 
-                    'оскорблять', 'недооценивать', 'покидать', 'бросать', 'отвергать', 'проклинать'
+                    'отверженность', 'забвение', 'заброшенность', 'небрежность', 'пренебрежение', 'презрение' 
                 ],
                 en: [
                     'sadness', 'pain', 'death', 'darkness', 'fear', 'loneliness', 'longing', 'sorrow', 'disappointment', 
@@ -126,42 +63,7 @@
                     'fury', 'anger', 'jealousy', 'envy', 'greed', 'stinginess', 'selfishness', 'indifference', 'cold', 
                     'ice', 'frost', 'fog', 'cloud', 'storm', 'hurricane', 'destruction', 'collapse', 'failure', 'defeat', 
                     'shame', 'guilt', 'remorse', 'regret', 'despair', 'hopelessness', 'gloom', 'desolation', 'decay', 
-                    'weakness', 'injustice', 'treachery', 'perfidy', 'baseness', 'cruelty', 'mercilessness', 
-                    'ruthlessness', 'insensitivity', 'heartlessness', 'callousness', 'pitilessness', 'implacability', 
-                    'bleakness', 'futility', 'embitterment', 'hardening', 'melancholy', 'mourning', 'menace', 'peril', 
-                    'risk', 'calamity', 'injustice', 'suffering', 'affliction', 'misery', 'woe', 'weeping', 'tears', 
-                    'sobbing', 'screaming', 'groaning', 'adversity', 'affliction', 'tragicism', 'bitterness', 'oppression', 
-                    'tyranny', 'martyrdom', 'bondage', 'constraint', 'violence', 'persecution', 'exile', 'isolation', 
-                    'rejection', 'oblivion', 'neglect', 'abandonment', 'indifference', 'disregard', 'contempt', 'disdain', 
-                    'sad', 'painful', 'mortal', 'dark', 'fearful', 'lonely', 'melancholy', 'sorrowful', 'disappointed', 
-                    'lost', 'nocturnal', 'wintry', 'rainy', 'grievous', 'troubled', 'unfortunate', 'tragic', 'disastrous', 
-                    'agonizing', 'tormenting', 'torturous', 'humiliating', 'treacherous', 'treasonous', 'lying', 
-                    'deceptive', 'hateful', 'malicious', 'furious', 'angry', 'jealous', 'envious', 'greedy', 'stingy', 
-                    'selfish', 'indifferent', 'cold', 'icy', 'frosty', 'foggy', 'stormy', 'destructive', 'collapsing', 
-                    'failing', 'defeated', 'shameful', 'guilty', 'remorseful', 'regretful', 'desperate', 'hopeless', 
-                    'gloomy', 'desolate', 'decaying', 'weak', 'unjust', 'treacherous', 'perfidious', 'base', 'cruel', 
-                    'merciless', 'ruthless', 'insensitive', 'heartless', 'callous', 'pitiless', 'implacable', 'bleak', 
-                    'dreadful', 'futile', 'powerless', 'helpless', 'hopeless', 'willless', 'defenseless', 'inevitable', 
-                    'mournful', 'bitter', 'embittered', 'hardened', 'dreary', 'gloomy', 'melancholic', 'sorrowful', 
-                    'grieving', 'sad', 'cheerless', 'menacing', 'perilous', 'risky', 'calamitous', 'unfortunate', 
-                    'disastrous', 'unfavorable', 'unpleasant', 'offensive', 'distressing', 'annoying', 'disappointing', 
-                    'dissatisfied', 'displeased', 'contemptuous', 'careless', 'abandoned', 'forgotten', 'despised', 
-                    'neglected', 'contemptible', 'humiliated', 'insulted', 'offended', 'undervalued', 'unrecognized', 
-                    'abandoned', 'forsaken', 'rejected', 'cursed', 'sadden', 'hurt', 'die', 'darken', 'fear', 'be lonely', 
-                    'long', 'grieve', 'disappoint', 'lose', 'mourn', 'trouble', 'agonize', 'torment', 'torture', 
-                    'humiliate', 'betray', 'commit treason', 'lie', 'deceive', 'hate', 'be malicious', 'fume', 'be angry', 
-                    'be jealous', 'envy', 'be greedy', 'be stingy', 'be selfish', 'be indifferent', 'grow cold', 
-                    'freeze', 'storm', 'destroy', 'collapse', 'fail', 'be defeated', 'be ashamed', 'feel guilty', 
-                    'feel remorse', 'regret', 'despair', 'be hopeless', 'gloom', 'be desolate', 'decay', 'weaken', 
-                    'be unjust', 'be treacherous', 'be perfidious', 'be base', 'be cruel', 'be merciless', 'be ruthless', 
-                    'be insensitive', 'be heartless', 'be callous', 'be pitiless', 'be implacable', 'be bleak', 
-                    'be dreadful', 'be futile', 'be powerless', 'be helpless', 'be hopeless', 'be willless', 
-                    'be defenseless', 'be inevitable', 'mourn', 'be bitter', 'be embittered', 'harden', 'be dreary', 
-                    'be gloomy', 'be melancholic', 'be sorrowful', 'grieve', 'be sad', 'be cheerless', 'menace', 
-                    'endanger', 'risk', 'be unfortunate', 'be disastrous', 'be unfavorable', 'be unpleasant', 'offend', 
-                    'distress', 'annoy', 'disappoint', 'dissatisfy', 'displease', 'contemn', 'neglect', 'disregard', 
-                    'abandon', 'forget', 'despise', 'humiliate', 'insult', 'offend', 'undervalue', 'fail to recognize', 
-                    'abandon', 'forsake', 'reject', 'curse', 'condemn'
+                    'weakness', 'injustice'
                 ]
             }
         }
@@ -299,7 +201,7 @@
             ['ru', 'en'].forEach(lang => {
                 if (CONFIG.SENSITIVITY.warmWords[lang]) {
                     CONFIG.SENSITIVITY.warmWords[lang].forEach(word => {
-                        const regex = new RegExp(`\\b${this.escapeRegExp(word)}\\b`, 'giu');
+                        const regex = new RegExp(`(^|[^\\p{L}])${this.escapeRegExp(word)}([^\\p{L}]|$)`, 'giu');
                         const matches = textLower.match(regex);
                         if (matches) warmCount += matches.length;
                     });
@@ -307,7 +209,7 @@
                 
                 if (CONFIG.SENSITIVITY.darkWords[lang]) {
                     CONFIG.SENSITIVITY.darkWords[lang].forEach(word => {
-                        const regex = new RegExp(`\\b${this.escapeRegExp(word)}\\b`, 'giu');
+                        const regex = new RegExp(`(^|[^\\p{L}])${this.escapeRegExp(word)}([^\\p{L}]|$)`, 'giu');
                         const matches = textLower.match(regex);
                         if (matches) darkCount += matches.length;
                     });
@@ -320,7 +222,6 @@
             const warmRatio = warmCount / totalWords;
             const darkRatio = darkCount / totalWords;
             
-            // НОВАЯ КЛАССИФИКАЦИЯ с hot/haze
             if (warmRatio > 0.7 && darkRatio < 0.15) return 'hot';
             if (warmRatio > 0.55) return 'warm';
             if (darkRatio > 0.7 && warmRatio < 0.15) return 'haze';
@@ -460,12 +361,6 @@
             return lines.join('\n');
         }
     }
-    
-    // Остальной код ParticleSystem и ChaosController остается ИДЕНТИЧНЫМ
-    // идеальной версии (с привязкой частиц к тексту, случайной генерацией цветов и т.д.)
-    
-    // Классы ParticleSystem и ChaosController из идеальной версии
-    // (они уже содержат привязку к sensitivity через intensityMultipliers)
     
     class ParticleSystem {
         constructor(canvas, session) {
@@ -1081,5 +976,3 @@
     
     initializeChaos();
 })();
-
-
