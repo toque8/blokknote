@@ -1275,6 +1275,7 @@ class AudioEngine {
     }
 }
 
+// Ключевое исправление: класс должен называться NoiseController, а не WaveController
 class NoiseController {
     constructor() {
         this.canvas = null;
@@ -1317,30 +1318,23 @@ class NoiseController {
         this.progressBar = document.getElementById('noise-progress-bar');
         this.noiseContainer = document.getElementById('noise-canvas-container');
         
-        // Проверяем наличие всех элементов
         if (!this.canvas) {
             console.error('Noise canvas not found');
-            return;
         }
         
         if (!this.noiseBtn) {
             console.error('Noise button not found');
-            return;
         }
         
         if (!this.noiseContainer) {
             console.error('Noise container not found');
-            return;
         }
-        
-        console.log('All DOM elements found successfully');
     }
 
     setupEventListeners() {
         if (this.noiseBtn) {
             this.noiseBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                console.log('Noise button clicked');
                 this.toggle();
             });
         }
@@ -1348,7 +1342,6 @@ class NoiseController {
         if (this.closeBtn) {
             this.closeBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                console.log('Close button clicked');
                 this.close();
             });
         }
@@ -1356,7 +1349,6 @@ class NoiseController {
         if (this.noiseContainer) {
             this.noiseContainer.addEventListener('click', (e) => {
                 if (e.target === this.noiseContainer) {
-                    console.log('Background click detected, closing');
                     this.close();
                 }
             });
@@ -1364,7 +1356,6 @@ class NoiseController {
         
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && this.isActive) {
-                console.log('Escape key pressed, closing');
                 this.close();
             }
         });
@@ -1377,14 +1368,12 @@ class NoiseController {
         
         if (this.playBtn) {
             this.playBtn.addEventListener('click', () => {
-                console.log('Play button clicked');
                 this.play();
             });
         }
         
         if (this.stopBtn) {
             this.stopBtn.addEventListener('click', () => {
-                console.log('Stop button clicked');
                 this.stop();
             });
         }
@@ -1392,7 +1381,6 @@ class NoiseController {
         if (this.volumeSlider) {
             this.volumeSlider.addEventListener('input', (e) => {
                 const value = e.target.value / 100;
-                console.log(`Volume changed to: ${value.toFixed(2)}`);
                 if (this.audioEngine) {
                     this.audioEngine.setVolume(value);
                 }
@@ -1438,10 +1426,7 @@ class NoiseController {
     open() {
         if (this.isActive) return;
         
-        console.log('Opening noise visualization');
-        
         if (!this.editor) {
-            console.error('Editor not found');
             return;
         }
         
@@ -1451,8 +1436,6 @@ class NoiseController {
             alert('Please enter some text to visualize');
             return;
         }
-        
-        console.log('Starting visualization with text:', text.substring(0, 50) + (text.length > 50 ? '...' : ''));
         
         this.session = new SonicSession(text);
         this.audioEngine.setMood(this.session.mood, this.session.tempo);
@@ -1472,14 +1455,10 @@ class NoiseController {
         
         this.isActive = true;
         this.updateStatus();
-        
-        console.log('Visualization opened successfully');
     }
 
     close() {
         if (!this.isActive) return;
-        
-        console.log('Closing noise visualization');
         
         if (this.noiseContainer) {
             this.noiseContainer.classList.add('closing');
@@ -1504,8 +1483,6 @@ class NoiseController {
     play() {
         if (!this.isActive || !this.audioEngine) return;
         
-        console.log('Starting music playback');
-        
         this.audioEngine.startMusic();
         
         if (this.playBtn) this.playBtn.disabled = true;
@@ -1516,8 +1493,6 @@ class NoiseController {
     }
 
     stop() {
-        console.log('Stopping music playback');
-        
         if (this.audioEngine) {
             this.audioEngine.stopMusic();
         }
@@ -1589,16 +1564,26 @@ class NoiseController {
     }
 }
 
-// Инициализация контроллера
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM loaded, initializing noise...');
-    window.noiseController = new NoiseController();
-});
+// Совместимость с глобальным пространством имен, как в chaos.js
+let noiseController = null;
 
-window.addEventListener('beforeunload', () => {
-    if (window.noiseController) {
-        window.noiseController.destroy();
+function initializeNoise() {
+    try {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                noiseController = new NoiseController();
+            });
+        } else {
+            noiseController = new NoiseController();
+        }
+    } catch (error) {
+        console.error('NOISE initialization failed:', error);
+        const btn = document.getElementById('noise-btn');
+        if (btn) btn.style.display = 'none';
     }
-});
+}
+
+// Автоматическая инициализация при загрузке страницы
+initializeNoise();
 
 })();
