@@ -789,33 +789,33 @@
       const channelData = audioBuffer.getChannelData(0);
       const segments = [];
       
-      const minSegmentDuration = 0.5;
-      const maxSegmentDuration = 2.0;
+      const segmentDuration = 2.0;
+      const segmentSamples = Math.floor(segmentDuration * sampleRate);
       
-      const fadePercent = 0.08;
+      const fadePercent = 0.1;
+      const fadeSamples = Math.floor(fadePercent * segmentSamples);
       
       let startSample = 0;
       
       while (startSample < channelData.length) {
-        const segmentDuration = minSegmentDuration + Math.random() * (maxSegmentDuration - minSegmentDuration);
-        const segmentSamples = Math.floor(segmentDuration * sampleRate);
-        
         if (startSample + segmentSamples >= channelData.length) break;
         
-        const fadeSamples = Math.floor(fadePercent * segmentSamples);
         const segmentData = new Float32Array(segmentSamples);
         
         let maxAmplitude = 0;
+        let sumAmplitude = 0;
         for (let i = 0; i < segmentSamples; i++) {
           const sourceIndex = startSample + i;
           if (sourceIndex < channelData.length) {
             const val = Math.abs(channelData[sourceIndex]);
+            sumAmplitude += val;
             if (val > maxAmplitude) maxAmplitude = val;
           }
         }
         
-        if (maxAmplitude < 0.02) {
-          startSample += Math.floor(segmentSamples * 0.5);
+        const avgAmplitude = sumAmplitude / segmentSamples;
+        if (maxAmplitude < 0.02 || avgAmplitude < 0.005) {
+          startSample += Math.floor(segmentSamples * 0.7);
           continue;
         }
         
@@ -841,12 +841,12 @@
         const hasDrums = this.detectDrums(segmentData, sampleRate);
         const smoothness = this.calculateSmoothness(segmentData);
         
-        if (smoothness < 0.5) {
-          startSample += Math.floor(segmentSamples * 0.5);
+        const spectralAnalysis = this.analyzeSpectrum(segmentData, sampleRate);
+        
+        if (smoothness < 0.6) {
+          startSample += Math.floor(segmentSamples * 0.7);
           continue;
         }
-        
-        const spectralAnalysis = this.analyzeSpectrum(segmentData, sampleRate);
         
         segments.push({
           buffer: segmentBuffer,
@@ -855,10 +855,11 @@
           energy: energy,
           hasDrums: hasDrums,
           smoothness: smoothness,
-          spectral: spectralAnalysis
+          spectral: spectralAnalysis,
+          avgAmplitude: avgAmplitude
         });
         
-        startSample += Math.floor(segmentSamples * 0.5);
+        startSample += Math.floor(segmentSamples * 0.7);
       }
       
       return segments;
@@ -931,27 +932,47 @@
       
       switch (mood) {
         case 'calm':
-          weight *= (1 - segment.energy) * (1 + segment.spectral.highFreq);
+          if (segment.energy > 0.03 && segment.energy < 0.25) {
+            weight *= (1 - segment.energy) * (1 + segment.spectral.highFreq);
+          } else {
+            weight *= 0.01;
+          }
           break;
         case 'comfort':
-          weight *= (1 - Math.abs(segment.energy - 0.15)) * segment.smoothness;
+          if (segment.energy > 0.05 && segment.energy < 0.3) {
+            weight *= (1 - Math.abs(segment.energy - 0.15)) * segment.smoothness;
+          } else {
+            weight *= 0.01;
+          }
           break;
         case 'balance':
-          weight *= 0.5 + segment.smoothness * 0.5;
+          if (segment.energy > 0.1 && segment.energy < 0.4) {
+            weight *= 0.5 + segment.smoothness * 0.5;
+          } else {
+            weight *= 0.01;
+          }
           break;
         case 'melancholy':
-          weight *= (segment.energy < 0.3 ? 1.2 : 0.8) * (1 + segment.spectral.lowFreq);
+          if (segment.energy > 0.03 && segment.energy < 0.35) {
+            weight *= (1 + segment.spectral.lowFreq);
+          } else {
+            weight *= 0.01;
+          }
           break;
         case 'depression':
-          weight *= (segment.energy < 0.2 ? 1.5 : 0.5) * (1 + segment.spectral.lowFreq);
+          if (segment.energy > 0.02 && segment.energy < 0.25) {
+            weight *= (1 + segment.spectral.lowFreq);
+          } else {
+            weight *= 0.01;
+          }
           break;
       }
       
       if (segment.hasDrums) {
-        weight *= 0.01;
+        weight *= 0.001;
       }
       
-      return Math.max(0.01, weight);
+      return Math.max(0.001, weight);
     }
     
     createRecombinedBuffer() {
@@ -966,32 +987,32 @@
       const outputBuffer = this.audioContext.createBuffer(1, totalSamples, sampleRate);
       const outputData = outputBuffer.getChannelData(0);
       
-      let currentSample = 0;
-      const fadeInSamples = Math.floor(2 * sampleRate);
-      const fadeOutSamples = Math.floor(3 * sampleRate);
-      const crossfadeSamples = Math.floor(0.15 * sampleRate);
+      const fadeInSamples = Math.floor(3 * sampleRate);
+      const fadeOutSamples = Math.floor(4 * sampleRate);
+      const crossfadeSamples = Math.floor(0.3 * sampleRate);
+      const overlapSamples = Math.floor(0.1 * sampleRate);
       
       const filteredSegments = segments.filter(segment => {
         if (segment.hasDrums) return false;
-        if (segment.smoothness < 0.6) return false;
+        if (segment.smoothness < 0.7) return false;
         
         switch (mood) {
           case 'calm':
-            return segment.energy > 0.03 && segment.energy < 0.25 && segment.smoothness > 0.8;
+            return segment.energy > 0.03 && segment.energy < 0.25 && segment.smoothness > 0.85;
           case 'comfort':
-            return segment.energy > 0.05 && segment.energy < 0.3 && segment.smoothness > 0.75;
+            return segment.energy > 0.05 && segment.energy < 0.3 && segment.smoothness > 0.8;
           case 'balance':
-            return segment.energy > 0.1 && segment.smoothness > 0.65;
+            return segment.energy > 0.1 && segment.energy < 0.4 && segment.smoothness > 0.75;
           case 'melancholy':
-            return segment.energy < 0.4 && segment.smoothness > 0.6;
+            return segment.energy > 0.03 && segment.energy < 0.35 && segment.smoothness > 0.7;
           case 'depression':
-            return segment.energy < 0.3 && segment.smoothness > 0.55;
+            return segment.energy > 0.02 && segment.energy < 0.25 && segment.smoothness > 0.7;
           default:
             return true;
         }
       });
       
-      const availableSegments = filteredSegments.length > 5 ? filteredSegments : segments.filter(s => !s.hasDrums && s.smoothness > 0.5);
+      const availableSegments = filteredSegments.length > 3 ? filteredSegments : segments.filter(s => !s.hasDrums && s.smoothness > 0.6);
       
       if (availableSegments.length === 0) return null;
       
@@ -1002,41 +1023,33 @@
       const totalWeight = segmentWeights.reduce((a, b) => a + b, 0);
       const normalizedWeights = segmentWeights.map(w => w / totalWeight);
       
-      let lastSegmentIndex = -1;
-      let repeatCount = 0;
-      const maxRepeats = 2;
-      
       const segmentOrder = [];
+      let lastSegmentIndex = -1;
       
-      for (let i = 0; i < moodConfig.segmentCount * 3; i++) {
-        let segmentIndex;
+      for (let i = 0; i < moodConfig.segmentCount * 4; i++) {
+        let r = Math.random();
+        let segmentIndex = 0;
         
-        if (Math.random() < 0.7 && lastSegmentIndex !== -1 && repeatCount < maxRepeats) {
-          segmentIndex = lastSegmentIndex;
-          repeatCount++;
-        } else {
-          let r = Math.random();
-          segmentIndex = 0;
-          for (let j = 0; j < normalizedWeights.length; j++) {
-            r -= normalizedWeights[j];
-            if (r <= 0) {
-              segmentIndex = j;
-              break;
-            }
-          }
-          
-          if (segmentIndex === lastSegmentIndex) {
-            repeatCount++;
-          } else {
-            repeatCount = 0;
-            lastSegmentIndex = segmentIndex;
+        for (let j = 0; j < normalizedWeights.length; j++) {
+          r -= normalizedWeights[j];
+          if (r <= 0) {
+            segmentIndex = j;
+            break;
           }
         }
         
+        if (segmentIndex === lastSegmentIndex && normalizedWeights.length > 1) {
+          i--;
+          continue;
+        }
+        
         segmentOrder.push(segmentIndex);
+        lastSegmentIndex = segmentIndex;
       }
       
+      let currentSample = 0;
       let segmentOrderIndex = 0;
+      let previousSegmentEndAmplitude = 0;
       
       while (currentSample < totalSamples) {
         const segmentIndex = segmentOrder[segmentOrderIndex % segmentOrder.length];
@@ -1044,14 +1057,21 @@
         
         const segmentData = segment.buffer.getChannelData(0);
         
-        const playbackRate = moodConfig.audioSpeed * (0.96 + Math.random() * 0.08);
-        const pitchShift = moodConfig.audioPitch * (0.97 + Math.random() * 0.06);
+        const playbackRate = moodConfig.audioSpeed * (0.97 + Math.random() * 0.06);
+        const pitchShift = moodConfig.audioPitch * (0.98 + Math.random() * 0.04);
         
         const segmentSamples = segmentData.length;
         const segmentLengthAdjusted = Math.floor(segmentSamples / playbackRate);
         
         const remainingSamples = totalSamples - currentSample;
-        const copyLength = Math.min(segmentLengthAdjusted, remainingSamples);
+        let copyLength = Math.min(segmentLengthAdjusted, remainingSamples);
+        
+        if (copyLength < segmentLengthAdjusted * 0.3 && segmentOrderIndex > 0) {
+          break;
+        }
+        
+        const startCrossfade = Math.min(crossfadeSamples, Math.floor(copyLength * 0.2));
+        const endCrossfade = Math.min(crossfadeSamples, Math.floor(copyLength * 0.2));
         
         for (let j = 0; j < copyLength; j++) {
           const sourceIndex = Math.floor(j * playbackRate);
@@ -1060,22 +1080,42 @@
             
             if (currentSample + j < fadeInSamples) {
               sample *= (currentSample + j) / fadeInSamples;
-            }
-            else if (currentSample + j > totalSamples - fadeOutSamples) {
+            } else if (currentSample + j > totalSamples - fadeOutSamples) {
               sample *= (totalSamples - (currentSample + j)) / fadeOutSamples;
             }
             
-            if (j < crossfadeSamples && currentSample > 0) {
-              const crossfade = j / crossfadeSamples;
-              outputData[currentSample + j] = outputData[currentSample + j] * (1 - crossfade) + sample * crossfade;
-            } else {
-              outputData[currentSample + j] = sample;
+            const currentPosition = currentSample + j;
+            
+            if (j < startCrossfade && currentPosition > 0) {
+              const crossfade = j / startCrossfade;
+              const targetAmplitude = segment.avgAmplitude * 0.8;
+              const amplitudeBalance = previousSegmentEndAmplitude > 0 ? targetAmplitude / previousSegmentEndAmplitude : 1;
+              
+              sample = sample * crossfade * amplitudeBalance + 
+                      outputData[currentPosition] * (1 - crossfade);
+            } else if (j > copyLength - endCrossfade - overlapSamples && 
+                      currentPosition + overlapSamples < totalSamples) {
+              const fadeOut = (copyLength - j) / endCrossfade;
+              sample *= fadeOut;
+            }
+            
+            if (currentPosition < totalSamples) {
+              outputData[currentPosition] = (outputData[currentPosition] || 0) + sample;
             }
           }
         }
         
-        currentSample += copyLength;
+        previousSegmentEndAmplitude = segment.avgAmplitude;
+        currentSample += copyLength - overlapSamples;
         segmentOrderIndex++;
+      }
+      
+      for (let i = 0; i < totalSamples; i++) {
+        if (outputData[i] > 1.0) {
+          outputData[i] = 1.0;
+        } else if (outputData[i] < -1.0) {
+          outputData[i] = -1.0;
+        }
       }
       
       return outputBuffer;
