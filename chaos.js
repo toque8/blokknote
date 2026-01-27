@@ -497,7 +497,7 @@
         
         getInfoText() {
             const lines = [];
-            lines.push('semantic visualization of your text');
+            lines.push('semantic physic visualization');
             lines.push(`id: ${this.sessionId}`);
             if (this.text.length > 0) {
                 lines.push(`symbols: ${this.stats.symbols}`);
@@ -952,7 +952,7 @@
             }
             this.setupEventListeners();
             this.updateCloseButton();
-            console.log('🌌 Chaos Universe v' + CONFIG.VERSION + ' initialized');
+            console.log('Chaos universe v' + CONFIG.VERSION + ' initialized');
         }
         
         setupEventListeners() {
@@ -1126,3 +1126,4 @@
     
     initializeChaos();
 })();
+
