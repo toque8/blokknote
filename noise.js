@@ -1389,7 +1389,7 @@
       if (typeof NoiseController !== 'undefined') {
         try {
           window.noiseController = new NoiseController();
-          console.log('noise universe loaded and ready');
+          console.log('Noise universe loaded and ready');
         } catch (error) {
           console.error('Failed to create NoiseController:', error);
         }
@@ -1401,3 +1401,4 @@
   
   console.log('Noise universe v' + NOISE_CONFIG.VERSION + ' loaded');
 })();
+
