@@ -13,7 +13,7 @@ const NOISE_CONFIG = {
         desktop: { trailLength: 5, fps: 60 }
     },
     MOOD_LEVELS: {
-        'serene': {
+        'serene': {       // Очень позитивное
             color: '#FF6B6B',
             speed: 1.5,
             energy: 1.3,
@@ -21,7 +21,7 @@ const NOISE_CONFIG = {
             brightness: 1.0,
             complexity: 0.7
         },
-        'calm': {
+        'calm': {         // Умеренно позитивное
             color: '#FFA726',
             speed: 1.2,
             energy: 1.1,
@@ -29,7 +29,7 @@ const NOISE_CONFIG = {
             brightness: 0.8,
             complexity: 0.6
         },
-        'balance': {
+        'balance': {      // Нейтральное
             color: '#42A5F5',
             speed: 1.0,
             energy: 1.0,
@@ -37,7 +37,7 @@ const NOISE_CONFIG = {
             brightness: 0.6,
             complexity: 0.5
         },
-        'melancholy': {
+        'melancholy': {   // Умеренно негативное
             color: '#5C6BC0',
             speed: 0.7,
             energy: 0.8,
@@ -45,7 +45,7 @@ const NOISE_CONFIG = {
             brightness: 0.4,
             complexity: 0.3
         },
-        'gloomy': {
+        'gloomy': {       // Очень негативное
             color: '#37474F',
             speed: 0.5,
             energy: 0.6,
@@ -1205,11 +1205,11 @@ class AudioEngine {
 
     generateMelody() {
         const baseNotes = {
-            'serene': [60, 64, 67, 72, 76],
-            'calm': [57, 60, 64, 67, 70],
-            'balance': [60, 62, 65, 67, 69],
-            'melancholy': [55, 58, 62, 65, 67],
-            'gloomy': [48, 51, 55, 58, 60]
+            'serene': [60, 64, 67, 72, 76],      // C major - bright and happy
+            'calm': [57, 60, 64, 67, 70],        // A minor - peaceful
+            'balance': [60, 62, 65, 67, 69],     // C major pentatonic - neutral
+            'melancholy': [55, 58, 62, 65, 67],  // G minor - sad but gentle
+            'gloomy': [48, 51, 55, 58, 60]       // C minor - deep and melancholic
         };
         
         const notes = baseNotes[this.mood] || baseNotes['balance'];
@@ -1590,7 +1590,7 @@ class NoiseController {
 }
 
 // Инициализация контроллера
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded, initializing noise...');
     window.noiseController = new NoiseController();
 });
@@ -1602,5 +1602,3 @@ window.addEventListener('beforeunload', () => {
 });
 
 })();
-
-
