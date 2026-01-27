@@ -929,25 +929,37 @@
         selectedSegments.push(segment);
       }
       
-      for (let i = 0; i < selectedSegments.length && currentSample < totalSamples; i++) {
-        const segment = selectedSegments[i];
+      let segmentIndex = 0;
+      let lastSegmentIndex = -1;
+      
+      while (currentSample < totalSamples) {
+        let randomIndex;
+        do {
+          randomIndex = Math.floor(Math.random() * selectedSegments.length);
+        } while (selectedSegments.length > 1 && randomIndex === lastSegmentIndex);
+        
+        const segment = selectedSegments[randomIndex];
+        lastSegmentIndex = randomIndex;
+        
         const segmentData = segment.buffer.getChannelData(0);
-        const playbackRate = moodConfig.audioSpeed * (0.95 + Math.random() * 0.1);
-        const pitchShift = moodConfig.audioPitch * (0.98 + Math.random() * 0.04);
+        const playbackRate = moodConfig.audioSpeed * (0.98 + Math.random() * 0.04);
+        const pitchShift = moodConfig.audioPitch * (0.99 + Math.random() * 0.02);
         
-        const segmentLength = Math.min(segmentData.length, totalSamples - currentSample);
-        const segmentLengthAdjusted = Math.floor(segmentLength / playbackRate);
+        const segmentSamples = segmentData.length;
+        const segmentLengthAdjusted = Math.floor(segmentSamples / playbackRate);
         
-        if (currentSample + segmentLengthAdjusted > totalSamples) break;
+        const remainingSamples = totalSamples - currentSample;
+        const copyLength = Math.min(segmentLengthAdjusted, remainingSamples);
         
-        for (let j = 0; j < segmentLengthAdjusted; j++) {
+        for (let j = 0; j < copyLength; j++) {
           const sourceIndex = Math.floor(j * playbackRate);
-          if (sourceIndex < segmentData.length && currentSample + j < totalSamples) {
+          if (sourceIndex < segmentSamples) {
             let sample = segmentData[sourceIndex] * pitchShift;
             
             if (currentSample + j < fadeInSamples) {
               sample *= (currentSample + j) / fadeInSamples;
-            } else if (currentSample + j > totalSamples - fadeOutSamples) {
+            }
+            else if (currentSample + j > totalSamples - fadeOutSamples) {
               sample *= (totalSamples - (currentSample + j)) / fadeOutSamples;
             }
             
@@ -960,7 +972,8 @@
           }
         }
         
-        currentSample += segmentLengthAdjusted;
+        currentSample += copyLength;
+        segmentIndex++;
       }
       
       return outputBuffer;
