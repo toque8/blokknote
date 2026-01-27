@@ -789,14 +789,20 @@
       const channelData = audioBuffer.getChannelData(0);
       const segments = [];
       
-      const segmentDuration = 1.0;
-      const segmentSamples = Math.floor(segmentDuration * sampleRate);
-      const fadeSamples = Math.floor(0.08 * sampleRate);
+      const minSegmentDuration = 0.5;
+      const maxSegmentDuration = 2.0;
+      
+      const fadePercent = 0.08;
       
       let startSample = 0;
       
-      while (startSample < channelData.length - segmentSamples) {
-        const endSample = startSample + segmentSamples;
+      while (startSample < channelData.length) {
+        const segmentDuration = minSegmentDuration + Math.random() * (maxSegmentDuration - minSegmentDuration);
+        const segmentSamples = Math.floor(segmentDuration * sampleRate);
+        
+        if (startSample + segmentSamples >= channelData.length) break;
+        
+        const fadeSamples = Math.floor(fadePercent * segmentSamples);
         const segmentData = new Float32Array(segmentSamples);
         
         let maxAmplitude = 0;
@@ -840,19 +846,47 @@
           continue;
         }
         
+        const spectralAnalysis = this.analyzeSpectrum(segmentData, sampleRate);
+        
         segments.push({
           buffer: segmentBuffer,
           duration: segmentBuffer.duration,
           startTime: startSample / sampleRate,
           energy: energy,
           hasDrums: hasDrums,
-          smoothness: smoothness
+          smoothness: smoothness,
+          spectral: spectralAnalysis
         });
         
         startSample += Math.floor(segmentSamples * 0.5);
       }
       
       return segments;
+    }
+    
+    analyzeSpectrum(data, sampleRate) {
+      const frequencyBins = 4;
+      const spectrum = new Float32Array(frequencyBins);
+      
+      for (let i = 0; i < data.length; i++) {
+        const val = Math.abs(data[i]);
+        const bin = Math.min(frequencyBins - 1, Math.floor((i / data.length) * frequencyBins));
+        spectrum[bin] += val;
+      }
+      
+      const max = Math.max(...spectrum);
+      if (max > 0) {
+        for (let i = 0; i < spectrum.length; i++) {
+          spectrum[i] /= max;
+        }
+      }
+      
+      return {
+        lowFreq: spectrum[0],
+        midLowFreq: spectrum[1],
+        midHighFreq: spectrum[2],
+        highFreq: spectrum[3]
+      };
     }
     
     calculateEnergy(data) {
@@ -890,9 +924,40 @@
       return 1 - (sum / data.length);
     }
     
+    getSegmentWeight(segment, mood) {
+      let weight = 1.0;
+      
+      weight *= segment.smoothness;
+      
+      switch (mood) {
+        case 'calm':
+          weight *= (1 - segment.energy) * (1 + segment.spectral.highFreq);
+          break;
+        case 'comfort':
+          weight *= (1 - Math.abs(segment.energy - 0.15)) * segment.smoothness;
+          break;
+        case 'balance':
+          weight *= 0.5 + segment.smoothness * 0.5;
+          break;
+        case 'melancholy':
+          weight *= (segment.energy < 0.3 ? 1.2 : 0.8) * (1 + segment.spectral.lowFreq);
+          break;
+        case 'depression':
+          weight *= (segment.energy < 0.2 ? 1.5 : 0.5) * (1 + segment.spectral.lowFreq);
+          break;
+      }
+      
+      if (segment.hasDrums) {
+        weight *= 0.01;
+      }
+      
+      return Math.max(0.01, weight);
+    }
+    
     createRecombinedBuffer() {
       const moodConfig = this.moodConfig;
       const segments = this.segments;
+      const mood = this.analyzer.mood;
       
       if (!segments || segments.length === 0) return null;
       
@@ -904,46 +969,83 @@
       let currentSample = 0;
       const fadeInSamples = Math.floor(2 * sampleRate);
       const fadeOutSamples = Math.floor(3 * sampleRate);
-      const crossfadeSamples = Math.floor(0.1 * sampleRate);
+      const crossfadeSamples = Math.floor(0.15 * sampleRate);
       
-      const filteredSegments = segments.filter(segment => !segment.hasDrums && segment.smoothness > 0.7);
-      const availableSegments = filteredSegments.length > 5 ? filteredSegments : segments;
+      const filteredSegments = segments.filter(segment => {
+        if (segment.hasDrums) return false;
+        if (segment.smoothness < 0.6) return false;
+        
+        switch (mood) {
+          case 'calm':
+            return segment.energy > 0.03 && segment.energy < 0.25 && segment.smoothness > 0.8;
+          case 'comfort':
+            return segment.energy > 0.05 && segment.energy < 0.3 && segment.smoothness > 0.75;
+          case 'balance':
+            return segment.energy > 0.1 && segment.smoothness > 0.65;
+          case 'melancholy':
+            return segment.energy < 0.4 && segment.smoothness > 0.6;
+          case 'depression':
+            return segment.energy < 0.3 && segment.smoothness > 0.55;
+          default:
+            return true;
+        }
+      });
+      
+      const availableSegments = filteredSegments.length > 5 ? filteredSegments : segments.filter(s => !s.hasDrums && s.smoothness > 0.5);
       
       if (availableSegments.length === 0) return null;
       
-      const segmentCount = Math.min(moodConfig.segmentCount, availableSegments.length);
-      const selectedSegments = [];
+      const segmentWeights = availableSegments.map(segment => 
+        this.getSegmentWeight(segment, mood)
+      );
       
-      for (let i = 0; i < segmentCount; i++) {
-        let segment;
+      const totalWeight = segmentWeights.reduce((a, b) => a + b, 0);
+      const normalizedWeights = segmentWeights.map(w => w / totalWeight);
+      
+      let lastSegmentIndex = -1;
+      let repeatCount = 0;
+      const maxRepeats = 2;
+      
+      const segmentOrder = [];
+      
+      for (let i = 0; i < moodConfig.segmentCount * 3; i++) {
+        let segmentIndex;
         
-        if (this.analyzer.mood === 'calm' || this.analyzer.mood === 'comfort') {
-          const suitableSegments = availableSegments.filter(s => s.energy > 0.05 && s.energy < 0.2 && s.smoothness > 0.8);
-          segment = suitableSegments.length > 0 ? 
-            suitableSegments[Math.floor(Math.random() * suitableSegments.length)] : 
-            availableSegments[Math.floor(Math.random() * availableSegments.length)];
+        if (Math.random() < 0.7 && lastSegmentIndex !== -1 && repeatCount < maxRepeats) {
+          segmentIndex = lastSegmentIndex;
+          repeatCount++;
         } else {
-          segment = availableSegments[Math.floor(Math.random() * availableSegments.length)];
+          let r = Math.random();
+          segmentIndex = 0;
+          for (let j = 0; j < normalizedWeights.length; j++) {
+            r -= normalizedWeights[j];
+            if (r <= 0) {
+              segmentIndex = j;
+              break;
+            }
+          }
+          
+          if (segmentIndex === lastSegmentIndex) {
+            repeatCount++;
+          } else {
+            repeatCount = 0;
+            lastSegmentIndex = segmentIndex;
+          }
         }
         
-        selectedSegments.push(segment);
+        segmentOrder.push(segmentIndex);
       }
       
-      let segmentIndex = 0;
-      let lastSegmentIndex = -1;
+      let segmentOrderIndex = 0;
       
       while (currentSample < totalSamples) {
-        let randomIndex;
-        do {
-          randomIndex = Math.floor(Math.random() * selectedSegments.length);
-        } while (selectedSegments.length > 1 && randomIndex === lastSegmentIndex);
-        
-        const segment = selectedSegments[randomIndex];
-        lastSegmentIndex = randomIndex;
+        const segmentIndex = segmentOrder[segmentOrderIndex % segmentOrder.length];
+        const segment = availableSegments[segmentIndex];
         
         const segmentData = segment.buffer.getChannelData(0);
-        const playbackRate = moodConfig.audioSpeed * (0.98 + Math.random() * 0.04);
-        const pitchShift = moodConfig.audioPitch * (0.99 + Math.random() * 0.02);
+        
+        const playbackRate = moodConfig.audioSpeed * (0.96 + Math.random() * 0.08);
+        const pitchShift = moodConfig.audioPitch * (0.97 + Math.random() * 0.06);
         
         const segmentSamples = segmentData.length;
         const segmentLengthAdjusted = Math.floor(segmentSamples / playbackRate);
@@ -973,7 +1075,7 @@
         }
         
         currentSample += copyLength;
-        segmentIndex++;
+        segmentOrderIndex++;
       }
       
       return outputBuffer;
@@ -1401,4 +1503,3 @@
   
   console.log('Noise universe v' + NOISE_CONFIG.VERSION + ' loaded');
 })();
-
