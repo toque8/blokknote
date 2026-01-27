@@ -1,7 +1,7 @@
 (function() {
   'use strict';
   
-  console.log('Noise universe v 1.0 initialized');
+  console.log('Noise universe v1.0 initialized');
   
   const NOISE_CONFIG = {
     VERSION: '1.0',
@@ -18,7 +18,8 @@
         energy: 1.3,
         audioSpeed: 1.2,
         audioPitch: 1.1,
-        segmentCount: 16
+        segmentCount: 16,
+        interactionStrength: 0.8
       },
       'comfort': {
         name: 'comfort',
@@ -28,7 +29,8 @@
         energy: 1.1,
         audioSpeed: 1.1,
         audioPitch: 1.05,
-        segmentCount: 14
+        segmentCount: 14,
+        interactionStrength: 0.6
       },
       'balance': {
         name: 'balance',
@@ -38,7 +40,8 @@
         energy: 1.0,
         audioSpeed: 1.0,
         audioPitch: 1.0,
-        segmentCount: 12
+        segmentCount: 12,
+        interactionStrength: 0.4
       },
       'melancholy': {
         name: 'melancholy',
@@ -48,7 +51,8 @@
         energy: 0.8,
         audioSpeed: 0.9,
         audioPitch: 0.95,
-        segmentCount: 10
+        segmentCount: 10,
+        interactionStrength: 0.3
       },
       'depression': {
         name: 'depression',
@@ -58,7 +62,8 @@
         energy: 0.6,
         audioSpeed: 0.8,
         audioPitch: 0.9,
-        segmentCount: 8
+        segmentCount: 8,
+        interactionStrength: 0.2
       }
     }
   };
@@ -481,13 +486,9 @@
     
     getInfoText() {
       const lines = [];
-      lines.push('semantic audio visualization');
       lines.push(`id: ${this.sessionId}`);
       lines.push(`waves: ${this.waveCount}`);
       lines.push(`mood: ${this.mood}`);
-      if (this.text.length > 0) {
-        lines.push(`words: ${this.stats.words}`);
-      }
       return lines.join('\n');
     }
     
@@ -507,6 +508,7 @@
       this.time = 0;
       this.isAnimating = false;
       this.animationId = null;
+      this.interactionPoint = { x: 0, y: 0, active: false };
       
       this.init();
     }
@@ -514,6 +516,7 @@
     init() {
       this.resize();
       this.generateWaves();
+      this.setupEventListeners();
     }
     
     resize() {
@@ -522,6 +525,52 @@
       this.canvas.width = rect.width * dpr;
       this.canvas.height = rect.height * dpr;
       this.ctx.scale(dpr, dpr);
+      this.interactionPoint.x = this.canvas.width / 2 / dpr;
+      this.interactionPoint.y = this.canvas.height / 2 / dpr;
+    }
+    
+    setupEventListeners() {
+      const canvas = this.canvas;
+      
+      canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        this.interactionPoint.x = (e.clientX - rect.left) * (canvas.width / canvas.offsetWidth) / dpr;
+        this.interactionPoint.y = (e.clientY - rect.top) * (canvas.height / canvas.offsetHeight) / dpr;
+        this.interactionPoint.active = true;
+      });
+      
+      canvas.addEventListener('mouseleave', () => {
+        this.interactionPoint.active = false;
+      });
+      
+      canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if (e.touches.length === 1) {
+          const rect = canvas.getBoundingClientRect();
+          const touch = e.touches[0];
+          const dpr = window.devicePixelRatio || 1;
+          this.interactionPoint.x = (touch.clientX - rect.left) * (canvas.width / canvas.offsetWidth) / dpr;
+          this.interactionPoint.y = (touch.clientY - rect.top) * (canvas.height / canvas.offsetHeight) / dpr;
+          this.interactionPoint.active = true;
+        }
+      }, { passive: false });
+      
+      canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (e.touches.length === 1) {
+          const rect = canvas.getBoundingClientRect();
+          const touch = e.touches[0];
+          const dpr = window.devicePixelRatio || 1;
+          this.interactionPoint.x = (touch.clientX - rect.left) * (canvas.width / canvas.offsetWidth) / dpr;
+          this.interactionPoint.y = (touch.clientY - rect.top) * (canvas.height / canvas.offsetHeight) / dpr;
+          this.interactionPoint.active = true;
+        }
+      }, { passive: false });
+      
+      canvas.addEventListener('touchend', () => {
+        this.interactionPoint.active = false;
+      });
     }
     
     generateWaves() {
@@ -548,8 +597,10 @@
           speed,
           thickness,
           color: this.hexToRgba(color, alpha),
+          originalColor: this.hexToRgba(color, alpha),
           yOffset: (i / waveCount) * height * 0.8 + height * 0.1,
-          seed: Math.random() * 1000
+          seed: Math.random() * 1000,
+          interactionResponse: Math.random() * 0.8 + 0.2
         });
       }
     }
@@ -561,11 +612,26 @@
       return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     }
     
-    calculateWaveY(x, wave, time) {
+    calculateWaveY(x, wave, time, interaction = false) {
       const t = time * wave.speed + wave.phase + wave.seed;
-      return Math.sin(x * wave.frequency + t) * wave.amplitude +
-             Math.sin(x * wave.frequency * 1.7 + t * 0.8) * wave.amplitude * 0.5 +
-             Math.cos(x * wave.frequency * 0.5 + t * 1.2) * wave.amplitude * 0.3;
+      
+      let y = Math.sin(x * wave.frequency + t) * wave.amplitude +
+              Math.sin(x * wave.frequency * 1.7 + t * 0.8) * wave.amplitude * 0.5 +
+              Math.cos(x * wave.frequency * 0.5 + t * 1.2) * wave.amplitude * 0.3;
+      
+      if (interaction && this.interactionPoint.active) {
+        const dx = this.interactionPoint.x - x;
+        const dy = this.interactionPoint.y - wave.yOffset;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < 150) {
+          const interactionStrength = this.moodConfig.interactionStrength * wave.interactionResponse;
+          const influence = (1 - distance / 150) * interactionStrength * 30;
+          y += Math.sin(time * 3 + x * 0.1) * influence;
+        }
+      }
+      
+      return y;
     }
     
     draw() {
@@ -578,14 +644,31 @@
       
       this.waves.forEach(wave => {
         ctx.beginPath();
-        ctx.strokeStyle = wave.color;
+        
+        if (this.interactionPoint.active) {
+          const dx = this.interactionPoint.x - width/2;
+          const dy = this.interactionPoint.y - height/2;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          
+          if (distance < 100) {
+            const intensity = (1 - distance / 100) * 0.5;
+            const color = this.hexToRgba(wave.color.replace(/rgba\(|\)/g, '').split(',')[0], 
+                                        parseFloat(wave.color.split(',')[3]) + intensity * 0.3);
+            ctx.strokeStyle = color;
+          } else {
+            ctx.strokeStyle = wave.color;
+          }
+        } else {
+          ctx.strokeStyle = wave.color;
+        }
+        
         ctx.lineWidth = wave.thickness;
         ctx.lineJoin = 'round';
         
         const step = Math.max(4, Math.floor(width / 60));
         
         for (let x = 0; x <= width; x += step) {
-          const y = wave.yOffset + this.calculateWaveY(x, wave, this.time);
+          const y = wave.yOffset + this.calculateWaveY(x, wave, this.time, true);
           if (x === 0) {
             ctx.moveTo(x, y);
           } else {
@@ -647,8 +730,11 @@
       this.audioContext = null;
       this.isPlaying = false;
       this.currentSource = null;
+      this.gainNode = null;
       this.volume = 0.5;
       this.segments = [];
+      this.totalDuration = 60;
+      this.playbackStartTime = 0;
       this.audioFiles = {
         calm: 'https://blokknote.vercel.app/audio/mood/calm.mp3',
         comfort: 'https://blokknote.vercel.app/audio/mood/comfort.mp3',
@@ -682,32 +768,47 @@
       const channelData = audioBuffer.getChannelData(0);
       const segments = [];
       
-      const segmentDuration = 1.5;
+      const segmentDuration = 2.0;
       const segmentSamples = Math.floor(segmentDuration * sampleRate);
-      const overlapSamples = Math.floor(0.2 * sampleRate);
+      const fadeSamples = Math.floor(0.1 * sampleRate);
       
       let startSample = 0;
       
-      while (startSample < channelData.length) {
-        const endSample = Math.min(startSample + segmentSamples + overlapSamples, channelData.length);
-        const segmentData = channelData.slice(startSample, endSample);
+      while (startSample < channelData.length - segmentSamples) {
+        const endSample = startSample + segmentSamples;
+        const segmentData = new Float32Array(segmentSamples);
         
-        const segmentBuffer = this.audioContext.createBuffer(
-          1,
-          segmentData.length,
-          sampleRate
-        );
+        for (let i = 0; i < segmentSamples; i++) {
+          const sourceIndex = startSample + i;
+          if (sourceIndex < channelData.length) {
+            let sample = channelData[sourceIndex];
+            
+            if (i < fadeSamples) {
+              sample *= i / fadeSamples;
+            } else if (i > segmentSamples - fadeSamples) {
+              sample *= (segmentSamples - i) / fadeSamples;
+            }
+            
+            segmentData[i] = sample;
+          }
+        }
         
+        const segmentBuffer = this.audioContext.createBuffer(1, segmentSamples, sampleRate);
         segmentBuffer.copyToChannel(segmentData, 0);
+        
+        const energy = this.calculateEnergy(segmentData);
+        const hasDrums = this.detectDrums(segmentData, sampleRate);
         
         segments.push({
           buffer: segmentBuffer,
           duration: segmentBuffer.duration,
           startTime: startSample / sampleRate,
-          energy: this.calculateEnergy(segmentData)
+          energy: energy,
+          hasDrums: hasDrums,
+          smoothness: this.calculateSmoothness(segmentData)
         });
         
-        startSample += segmentSamples;
+        startSample += Math.floor(segmentSamples * 0.7);
       }
       
       return segments;
@@ -721,6 +822,33 @@
       return Math.sqrt(sum / data.length);
     }
     
+    detectDrums(data, sampleRate) {
+      const windowSize = Math.floor(0.01 * sampleRate);
+      let maxEnergy = 0;
+      
+      for (let i = 0; i < data.length - windowSize; i += windowSize) {
+        let windowEnergy = 0;
+        for (let j = 0; j < windowSize; j++) {
+          windowEnergy += Math.abs(data[i + j]);
+        }
+        windowEnergy /= windowSize;
+        
+        if (windowEnergy > maxEnergy) {
+          maxEnergy = windowEnergy;
+        }
+      }
+      
+      return maxEnergy > 0.15;
+    }
+    
+    calculateSmoothness(data) {
+      let sum = 0;
+      for (let i = 1; i < data.length; i++) {
+        sum += Math.abs(data[i] - data[i - 1]);
+      }
+      return 1 - (sum / data.length);
+    }
+    
     createRecombinedBuffer() {
       const moodConfig = this.moodConfig;
       const segments = this.segments;
@@ -729,131 +857,151 @@
       
       const selectedSegments = [];
       const segmentCount = moodConfig.segmentCount;
+      const sampleRate = this.audioContext.sampleRate;
+      const totalSamples = Math.floor(this.totalDuration * sampleRate);
       
-      for (let i = 0; i < segmentCount; i++) {
-        let segmentIndex;
+      const outputBuffer = this.audioContext.createBuffer(1, totalSamples, sampleRate);
+      const outputData = outputBuffer.getChannelData(0);
+      
+      let currentSample = 0;
+      const fadeInSamples = Math.floor(2 * sampleRate);
+      const fadeOutSamples = Math.floor(3 * sampleRate);
+      
+      const filteredSegments = segments.filter(segment => !segment.hasDrums && segment.smoothness > 0.7);
+      const availableSegments = filteredSegments.length > 0 ? filteredSegments : segments;
+      
+      while (currentSample < totalSamples) {
+        let segment;
         
         if (this.analyzer.mood === 'calm') {
-          const highEnergySegments = segments.filter(s => s.energy > 0.15);
-          segmentIndex = Math.floor(Math.random() * highEnergySegments.length);
-          selectedSegments.push(highEnergySegments[segmentIndex]);
+          const highEnergySegments = availableSegments.filter(s => s.energy > 0.1 && s.smoothness > 0.8);
+          segment = highEnergySegments[Math.floor(Math.random() * highEnergySegments.length)];
         } else if (this.analyzer.mood === 'comfort') {
-          const midEnergySegments = segments.filter(s => s.energy > 0.08 && s.energy < 0.2);
-          segmentIndex = Math.floor(Math.random() * midEnergySegments.length);
-          selectedSegments.push(midEnergySegments[segmentIndex]);
-        } else if (this.analyzer.mood === 'depression') {
-          const lowEnergySegments = segments.filter(s => s.energy < 0.04);
-          segmentIndex = Math.floor(Math.random() * lowEnergySegments.length);
-          selectedSegments.push(lowEnergySegments[segmentIndex]);
-        } else if (this.analyzer.mood === 'melancholy') {
-          const lowEnergySegments = segments.filter(s => s.energy < 0.06);
-          segmentIndex = Math.floor(Math.random() * lowEnergySegments.length);
-          selectedSegments.push(lowEnergySegments[segmentIndex]);
+          const midEnergySegments = availableSegments.filter(s => s.energy > 0.05 && s.energy < 0.15);
+          segment = midEnergySegments[Math.floor(Math.random() * midEnergySegments.length)];
+        } else if (this.analyzer.mood === 'depression' || this.analyzer.mood === 'melancholy') {
+          const lowEnergySegments = availableSegments.filter(s => s.energy < 0.06 && s.smoothness > 0.9);
+          segment = lowEnergySegments[Math.floor(Math.random() * lowEnergySegments.length)];
         } else {
-          segmentIndex = Math.floor(Math.random() * segments.length);
-          selectedSegments.push(segments[segmentIndex]);
+          segment = availableSegments[Math.floor(Math.random() * availableSegments.length)];
         }
-      }
-      
-      let totalSamples = 0;
-      selectedSegments.forEach(segment => {
-        totalSamples += segment.buffer.length;
-      });
-      
-      const outputBuffer = this.audioContext.createBuffer(
-        1,
-        totalSamples,
-        this.audioContext.sampleRate
-      );
-      
-      const outputData = outputBuffer.getChannelData(0);
-      let currentSample = 0;
-      
-      selectedSegments.forEach((segment, index) => {
-        const segmentData = segment.buffer.getChannelData(0);
-        const playbackRate = moodConfig.audioSpeed * (0.85 + Math.random() * 0.3);
-        const pitchShift = moodConfig.audioPitch * (0.95 + Math.random() * 0.1);
         
-        for (let i = 0; i < segmentData.length; i++) {
-          const sourceIndex = Math.floor(i / playbackRate);
-          if (sourceIndex < segmentData.length) {
-            outputData[currentSample + i] = segmentData[sourceIndex] * pitchShift;
+        if (!segment) segment = availableSegments[0];
+        
+        const segmentData = segment.buffer.getChannelData(0);
+        const playbackRate = moodConfig.audioSpeed * (0.95 + Math.random() * 0.1);
+        const pitchShift = moodConfig.audioPitch * (0.98 + Math.random() * 0.04);
+        
+        const segmentLength = Math.min(segmentData.length, totalSamples - currentSample);
+        const segmentLengthAdjusted = Math.floor(segmentLength / playbackRate);
+        
+        for (let i = 0; i < segmentLengthAdjusted; i++) {
+          const sourceIndex = Math.floor(i * playbackRate);
+          if (sourceIndex < segmentData.length && currentSample + i < totalSamples) {
+            let sample = segmentData[sourceIndex] * pitchShift;
+            
+            if (currentSample + i < fadeInSamples) {
+              sample *= (currentSample + i) / fadeInSamples;
+            } else if (currentSample + i > totalSamples - fadeOutSamples) {
+              sample *= (totalSamples - (currentSample + i)) / fadeOutSamples;
+            }
+            
+            outputData[currentSample + i] += sample * 0.7;
           }
         }
         
-        currentSample += Math.floor(segmentData.length / playbackRate);
-      });
+        currentSample += segmentLengthAdjusted;
+        
+        const crossfadeSamples = Math.floor(0.05 * sampleRate);
+        for (let i = 0; i < crossfadeSamples && currentSample + i < totalSamples; i++) {
+          const fade = i / crossfadeSamples;
+          if (currentSample + i - crossfadeSamples >= 0) {
+            outputData[currentSample + i - crossfadeSamples] *= (1 - fade);
+          }
+        }
+      }
       
       return outputBuffer;
     }
     
     play() {
-      if (this.isPlaying || !this.audioContext) return;
+      if (this.isPlaying || !this.audioContext) return false;
       
       const recombinedBuffer = this.createRecombinedBuffer();
-      if (!recombinedBuffer) return;
+      if (!recombinedBuffer) return false;
       
       this.isPlaying = true;
       
       this.currentSource = this.audioContext.createBufferSource();
       this.currentSource.buffer = recombinedBuffer;
       
-      const gainNode = this.audioContext.createGain();
+      this.gainNode = this.audioContext.createGain();
+      this.gainNode.gain.value = this.volume;
+      
       const filterNode = this.audioContext.createBiquadFilter();
       
       switch(this.analyzer.mood) {
         case 'calm':
           filterNode.type = 'highpass';
-          filterNode.frequency.value = 300;
+          filterNode.frequency.value = 200;
           break;
         case 'comfort':
           filterNode.type = 'bandpass';
-          filterNode.frequency.value = 1000;
+          filterNode.frequency.value = 800;
           break;
         case 'balance':
           filterNode.type = 'lowpass';
-          filterNode.frequency.value = 5000;
+          filterNode.frequency.value = 4000;
           break;
         case 'melancholy':
           filterNode.type = 'lowpass';
-          filterNode.frequency.value = 2500;
+          filterNode.frequency.value = 2000;
           break;
         case 'depression':
           filterNode.type = 'lowpass';
-          filterNode.frequency.value = 1500;
+          filterNode.frequency.value = 1000;
           break;
       }
       
       this.currentSource.connect(filterNode);
-      filterNode.connect(gainNode);
-      gainNode.connect(this.audioContext.destination);
+      filterNode.connect(this.gainNode);
+      this.gainNode.connect(this.audioContext.destination);
       
-      gainNode.gain.value = this.volume;
+      this.playbackStartTime = Date.now();
       
       this.currentSource.start();
       
       this.currentSource.onended = () => {
         this.isPlaying = false;
         this.currentSource = null;
+        this.gainNode = null;
       };
+      
+      return true;
     }
     
     stop() {
       if (this.currentSource && this.isPlaying) {
-        this.currentSource.stop();
+        try {
+          this.currentSource.stop();
+        } catch (e) {}
         this.isPlaying = false;
         this.currentSource = null;
+        this.gainNode = null;
       }
     }
     
     setVolume(value) {
       this.volume = value;
+      if (this.gainNode) {
+        this.gainNode.gain.value = value;
+      }
     }
   }
   
   class NoiseController {
     constructor() {
-      console.log('🎵 Noise Universe v' + NOISE_CONFIG.VERSION + ' initializing');
+      console.log('Noise universe v' + NOISE_CONFIG.VERSION + ' initializing');
       
       this.btn = document.getElementById('noise-btn');
       this.container = document.getElementById('noise-canvas-container');
@@ -870,6 +1018,7 @@
       this.visualizer = null;
       this.recombinator = null;
       this.progressInterval = null;
+      this.animationFrame = null;
       
       if (!this.btn) {
         console.error('noise-btn element not found');
@@ -878,7 +1027,7 @@
       
       this.setupEventListeners();
       this.updateCloseButton();
-      console.log('✅ Noise Universe initialized successfully');
+      console.log('Noise universe initialized successfully');
     }
     
     setupEventListeners() {
@@ -926,15 +1075,6 @@
           
           if (this.recombinator) {
             this.recombinator.setVolume(value);
-          }
-          
-          if (this.statusText) {
-            this.statusText.textContent = `Volume: ${Math.round(value * 100)}%`;
-            setTimeout(() => {
-              if (this.statusText && this.statusText.textContent.includes('Volume:')) {
-                this.updateStatus();
-              }
-            }, 1000);
           }
         });
       }
@@ -1012,7 +1152,7 @@
         const audioReady = await this.recombinator.initialize();
         
         if (!audioReady) {
-          console.warn('Audio initialization failed');
+          throw new Error('Audio initialization failed');
         }
         
         this.updateStatus();
@@ -1023,10 +1163,7 @@
         
       } catch (error) {
         console.error('Error initializing noise universe:', error);
-        
-        if (this.statusText) {
-          this.statusText.textContent = 'Error initializing';
-        }
+        this.statusText.textContent = 'Initialization error';
       }
     }
     
@@ -1055,18 +1192,33 @@
     async play() {
       if (!this.isActive || !this.recombinator) return;
       
-      if (this.recombinator) {
-        this.recombinator.play();
-      }
+      const success = this.recombinator.play();
+      if (!success) return;
       
       if (this.playBtn) this.playBtn.disabled = true;
       if (this.stopBtn) this.stopBtn.disabled = false;
       
-      this.updateStatus('Playing...');
+      this.statusText.textContent = 'Playing';
       this.startProgressBar();
+      
+      this.checkPlaybackStatus();
+    }
+    
+    checkPlaybackStatus() {
+      if (!this.recombinator || !this.recombinator.isPlaying) {
+        this.stop();
+        return;
+      }
+      
+      this.animationFrame = requestAnimationFrame(() => this.checkPlaybackStatus());
     }
     
     stop() {
+      if (this.animationFrame) {
+        cancelAnimationFrame(this.animationFrame);
+        this.animationFrame = null;
+      }
+      
       if (this.recombinator) {
         this.recombinator.stop();
       }
@@ -1078,43 +1230,50 @@
       this.stopProgressBar();
     }
     
-    updateStatus(extra = '') {
+    updateStatus() {
       if (!this.statusText) return;
       
-      if (extra) {
-        this.statusText.textContent = extra;
-      } else if (this.analyzer) {
+      if (this.analyzer) {
         const mood = this.analyzer.mood;
         const waves = this.analyzer.waveCount;
-        this.statusText.textContent = `${mood} • ${waves} waves • ready`;
+        this.statusText.textContent = `${mood} • ${waves} waves`;
       } else {
-        this.statusText.textContent = 'Ready to play';
+        this.statusText.textContent = 'Noise Universe';
       }
     }
     
     startProgressBar() {
       if (!this.progressBar) return;
       
-      let progress = 0;
-      const interval = setInterval(() => {
+      this.progressBar.style.width = '0%';
+      const startTime = Date.now();
+      const duration = 60000;
+      
+      const updateProgress = () => {
         if (!this.recombinator || !this.recombinator.isPlaying) {
-          clearInterval(interval);
           this.progressBar.style.width = '0%';
           return;
         }
         
-        progress = (progress + 0.5) % 100;
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(100, (elapsed / duration) * 100);
         this.progressBar.style.width = `${progress}%`;
-      }, 50);
+        
+        if (progress < 100) {
+          requestAnimationFrame(updateProgress);
+        } else {
+          setTimeout(() => {
+            if (this.recombinator && this.recombinator.isPlaying) {
+              this.stop();
+            }
+          }, 100);
+        }
+      };
       
-      this.progressInterval = interval;
+      requestAnimationFrame(updateProgress);
     }
     
     stopProgressBar() {
-      if (this.progressInterval) {
-        clearInterval(this.progressInterval);
-        this.progressInterval = null;
-      }
       if (this.progressBar) {
         this.progressBar.style.width = '0%';
       }
@@ -1126,7 +1285,7 @@
       if (typeof NoiseController !== 'undefined') {
         try {
           window.noiseController = new NoiseController();
-          console.log('🎵 Noise Universe loaded and ready');
+          console.log('Noise universe loaded and ready');
         } catch (error) {
           console.error('Failed to create NoiseController:', error);
         }
@@ -1136,5 +1295,5 @@
   
   window.NoiseController = NoiseController;
   
-  console.log('=== NOISE UNIVERSE v' + NOISE_CONFIG.VERSION + ' LOADED ===');
+  console.log('Noise universe v' + NOISE_CONFIG.VERSION + ' loaded');
 })();
