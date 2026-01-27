@@ -1,62 +1,68 @@
-﻿(function() {
+(function() {
   'use strict';
   
-  console.log('=== WAVE UNIVERSE v2.0 INITIALIZED ===');
+  console.log('Noise universe v 1.0 initialized');
   
-  // КОНФИГУРАЦИЯ
-  const WAVE_CONFIG = {
-    VERSION: '2.0',
-    // Оптимизированная визуализация: меньше волн для производительности
+  const NOISE_CONFIG = {
+    VERSION: '1.0',
     WAVES: {
       mobile: { min: 5, max: 10 },
       desktop: { min: 10, max: 20 }
     },
-    // ПЯТЬ УРОВНЕЙ НАСТРОЕНИЯ (оптимизированные значения)
     MOOD_LEVELS: {
-      'hot': {        // Очень веселое
-        color: '#FF6B6B',
-        speed: 1.5,
-        energy: 1.3,
-        tempo: 140,
+      'calm': {
+        name: 'calm',
+        speed: 1.4,
+        amplitude: 1.3,
         brightness: 1.0,
-        complexity: 0.7
+        energy: 1.3,
+        audioSpeed: 1.2,
+        audioPitch: 1.1,
+        segmentCount: 16
       },
-      'warm': {       // Веселое
-        color: '#FFA726',
+      'comfort': {
+        name: 'comfort',
         speed: 1.2,
+        amplitude: 1.1,
+        brightness: 0.9,
         energy: 1.1,
-        tempo: 110,
-        brightness: 0.8,
-        complexity: 0.6
+        audioSpeed: 1.1,
+        audioPitch: 1.05,
+        segmentCount: 14
       },
-      'neutral': {    // Нейтральное
-        color: '#42A5F5',
+      'balance': {
+        name: 'balance',
         speed: 1.0,
+        amplitude: 1.0,
+        brightness: 0.7,
         energy: 1.0,
-        tempo: 90,
-        brightness: 0.6,
-        complexity: 0.5
+        audioSpeed: 1.0,
+        audioPitch: 1.0,
+        segmentCount: 12
       },
-      'dark': {       // Грустное
-        color: '#5C6BC0',
+      'melancholy': {
+        name: 'melancholy',
         speed: 0.7,
-        energy: 0.8,
-        tempo: 70,
+        amplitude: 0.8,
         brightness: 0.4,
-        complexity: 0.3
+        energy: 0.8,
+        audioSpeed: 0.9,
+        audioPitch: 0.95,
+        segmentCount: 10
       },
-      'haze': {       // Очень грустное
-        color: '#37474F',
+      'depression': {
+        name: 'depression',
         speed: 0.5,
-        energy: 0.6,
-        tempo: 60,
+        amplitude: 0.6,
         brightness: 0.2,
-        complexity: 0.2
+        energy: 0.6,
+        audioSpeed: 0.8,
+        audioPitch: 0.9,
+        segmentCount: 8
       }
     }
   };
   
-  // БАЗА СЛОВ (полная версия из chaos.js)
   const WORD_LISTS = {
     warmWords: {
       ru: [
@@ -264,67 +270,85 @@
     }
   };
   
-  // ОПРЕДЕЛЕНИЕ УСТРОЙСТВА
-  const DeviceDetector = {
-    isMobile: () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768,
-    getWaveCount: () => {
-      const isMobile = DeviceDetector.isMobile();
-      const range = isMobile ? WAVE_CONFIG.WAVES.mobile : WAVE_CONFIG.WAVES.desktop;
-      return Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
-    }
-  };
-  
-  // КЛАСС ДЛЯ АНАЛИЗА ТЕКСТА (исправленный порядок инициализации)
   class TextAnalyzer {
     constructor(text = '') {
       this.text = text.trim();
-      this.sessionId = 'wave-' + Math.random().toString(36).substr(2, 9);
-      this.stats = this.calculateStats(); // Сначала считаем статистику
+      this.sessionId = this.generateSessionId();
+      this.seed = this.generateSeed();
       this.language = this.detectLanguage();
-      this.mood = this.analyzeMood(); // Потом анализируем настроение
-      this.waveCount = DeviceDetector.getWaveCount();
+      this.stats = this.calculateTextStats();
+      this.mood = this.analyzeSensitivity();
+      this.waveCount = this.generateWaveCount();
+      this.colorPalette = this.generateColorPalette(100);
+      this.creationTime = Date.now();
+    }
+    
+    generateSessionId() {
+      const chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+      let id = 'textuniverse-';
+      for (let i = 0; i < 10; i++) {
+        id += chars[Math.floor(Math.random() * chars.length)];
+      }
+      return id;
+    }
+    
+    generateSeed() {
+      const sources = [
+        Date.now(),
+        performance.now(),
+        navigator.userAgent.length,
+        window.innerWidth,
+        window.innerHeight,
+        this.text.length,
+        this.text.split('').reduce((a, b) => a + b.charCodeAt(0), 0)
+      ];
+      
+      let seed = 0;
+      sources.forEach((value, i) => {
+        seed = ((seed << 5) - seed + value) >>> 0;
+      });
+      return seed;
     }
     
     detectLanguage() {
       const ruChars = this.text.match(/[а-яА-ЯёЁ]/g) || [];
       const enChars = this.text.match(/[a-zA-Z]/g) || [];
-      if (ruChars.length > enChars.length * 1.5) return 'ru';
-      if (enChars.length > ruChars.length * 1.5) return 'en';
+      if (ruChars.length > enChars.length * 1.2) return 'ru';
+      if (enChars.length > ruChars.length * 1.2) return 'en';
       return 'mixed';
     }
     
-    calculateStats() {
+    calculateTextStats() {
       const stats = {
-        characters: this.text.length,
+        symbols: this.text.length,
         words: 0,
-        sentences: 0
+        uniqueWords: 0
       };
       
       if (this.text.length > 0) {
         const words = this.text
+          .toLowerCase()
+          .replace(/[^\p{L}\s]/gu, ' ')
           .split(/\s+/)
-          .filter(w => w.length > 0);
+          .filter(w => w.length > 1);
         stats.words = words.length;
-        
-        const sentences = this.text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-        stats.sentences = sentences.length;
+        stats.uniqueWords = [...new Set(words)].length;
       }
       
       return stats;
     }
     
-    analyzeMood() {
-      if (this.text.length === 0) return 'neutral';
+    analyzeSensitivity() {
+      if (this.text.length === 0) return 'balance';
       
       const textLower = this.text.toLowerCase();
       let warmCount = 0;
       let darkCount = 0;
       
-      // Проверяем теплые слова
       ['ru', 'en'].forEach(lang => {
         if (WORD_LISTS.warmWords[lang]) {
           WORD_LISTS.warmWords[lang].forEach(word => {
-            const regex = new RegExp(`\\b${this.escapeRegExp(word)}\\b`, 'gi');
+            const regex = new RegExp(`(^|[^\\p{L}])${this.escapeRegExp(word)}([^\\p{L}]|$)`, 'giu');
             const matches = textLower.match(regex);
             if (matches) warmCount += matches.length;
           });
@@ -332,36 +356,132 @@
         
         if (WORD_LISTS.darkWords[lang]) {
           WORD_LISTS.darkWords[lang].forEach(word => {
-            const regex = new RegExp(`\\b${this.escapeRegExp(word)}\\b`, 'gi');
+            const regex = new RegExp(`(^|[^\\p{L}])${this.escapeRegExp(word)}([^\\p{L}]|$)`, 'giu');
             const matches = textLower.match(regex);
             if (matches) darkCount += matches.length;
           });
         }
       });
       
-      // Определяем настроение по соотношению слов
-      if (warmCount === 0 && darkCount === 0) return 'neutral';
+      if (warmCount === 0 && darkCount === 0) return 'balance';
       
       const totalWords = this.stats.words || 1;
       const warmRatio = warmCount / totalWords;
       const darkRatio = darkCount / totalWords;
       
-      if (warmRatio > 0.7 && darkRatio < 0.15) return 'hot';
-      if (warmRatio > 0.55) return 'warm';
-      if (darkRatio > 0.7 && warmRatio < 0.15) return 'haze';
-      if (darkRatio > 0.55) return 'dark';
-      if (Math.abs(warmRatio - darkRatio) < 0.15) return 'neutral';
+      if (warmRatio > 0.7 && darkRatio < 0.15) return 'calm';
+      if (warmRatio > 0.55) return 'comfort';
+      if (darkRatio > 0.7 && warmRatio < 0.15) return 'depression';
+      if (darkRatio > 0.55) return 'melancholy';
+      if (Math.abs(warmRatio - darkRatio) < 0.15) return 'balance';
       
-      return warmRatio > darkRatio ? 'warm' : 'dark';
+      return warmRatio > darkRatio ? 'comfort' : 'melancholy';
     }
     
     escapeRegExp(string) {
       return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
     
+    generateWaveCount() {
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+      const range = isMobile ? NOISE_CONFIG.WAVES.mobile : NOISE_CONFIG.WAVES.desktop;
+      const rng = this.createRNG();
+      return Math.floor(rng(range.min, range.max + 1));
+    }
+    
+    generateColorPalette(count) {
+      const palette = [];
+      const rng = this.createRNG();
+      const mood = this.mood;
+      
+      for (let i = 0; i < count; i++) {
+        let h, s, l;
+        
+        switch(mood) {
+          case 'calm':
+            h = rng(0, 60) + (Math.random() > 0.5 ? 300 : 0);
+            s = rng(70, 100);
+            l = rng(60, 80);
+            break;
+          case 'comfort':
+            h = rng(20, 80);
+            s = rng(60, 90);
+            l = rng(50, 70);
+            break;
+          case 'balance':
+            h = rng(0, 360);
+            s = rng(40, 70);
+            l = rng(40, 60);
+            break;
+          case 'melancholy':
+            h = rng(180, 270);
+            s = rng(30, 50);
+            l = rng(30, 45);
+            break;
+          case 'depression':
+            h = rng(200, 280);
+            s = rng(20, 40);
+            l = rng(20, 35);
+            break;
+          default:
+            h = rng(0, 360);
+            s = rng(40, 70);
+            l = rng(40, 60);
+        }
+        
+        palette.push(this.hslToHex(h, s, l));
+      }
+      
+      return palette;
+    }
+    
+    hslToHex(h, s, l) {
+      h /= 360;
+      s /= 100;
+      l /= 100;
+      
+      let r, g, b;
+      
+      if (s === 0) {
+        r = g = b = l;
+      } else {
+        const hue2rgb = (p, q, t) => {
+          if (t < 0) t += 1;
+          if (t > 1) t -= 1;
+          if (t < 1/6) return p + (q - p) * 6 * t;
+          if (t < 1/2) return q;
+          if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+          return p;
+        };
+        
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+        
+        r = hue2rgb(p, q, h + 1/3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1/3);
+      }
+      
+      const toHex = x => {
+        const hex = Math.round(x * 255).toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+      };
+      
+      return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+    }
+    
+    createRNG() {
+      let seed = this.seed;
+      return function(min, max) {
+        seed = (seed * 9301 + 49297) % 233280;
+        const rnd = seed / 233280;
+        return min + rnd * (max - min);
+      };
+    }
+    
     getInfoText() {
       const lines = [];
-      lines.push('semantic visualisation of your text');
+      lines.push('semantic audio visualization');
       lines.push(`id: ${this.sessionId}`);
       lines.push(`waves: ${this.waveCount}`);
       lines.push(`mood: ${this.mood}`);
@@ -372,17 +492,17 @@
     }
     
     getMoodConfig() {
-      return WAVE_CONFIG.MOOD_LEVELS[this.mood] || WAVE_CONFIG.MOOD_LEVELS.neutral;
+      return NOISE_CONFIG.MOOD_LEVELS[this.mood] || NOISE_CONFIG.MOOD_LEVELS.balance;
     }
   }
   
-  // КЛАСС ДЛЯ ВИЗУАЛИЗАЦИИ ВОЛН (оптимизированная)
   class WaveVisualizer {
     constructor(canvas, analyzer) {
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
       this.analyzer = analyzer;
       this.moodConfig = analyzer.getMoodConfig();
+      this.colorPalette = analyzer.colorPalette;
       this.waves = [];
       this.time = 0;
       this.isAnimating = false;
@@ -412,17 +532,14 @@
       const moodConfig = this.moodConfig;
       
       for (let i = 0; i < waveCount; i++) {
-        const amplitude = (Math.random() * 20 + 10) * moodConfig.energy;
-        const frequency = (Math.random() * 0.01 + 0.005) * moodConfig.speed;
+        const amplitude = (Math.random() * 25 + 15) * moodConfig.amplitude;
+        const frequency = (Math.random() * 0.02 + 0.005) * moodConfig.speed;
         const phase = Math.random() * Math.PI * 2;
-        const speed = (Math.random() * 0.3 + 0.7) * moodConfig.speed;
-        const thickness = Math.random() * 1.5 + 0.5;
+        const speed = (Math.random() * 0.4 + 0.6) * moodConfig.speed;
+        const thickness = Math.random() * 2.5 + 0.5;
         
-        // Генерируем цвет на основе настроения
-        const baseColor = this.hexToRgb(moodConfig.color);
-        const hueShift = (Math.random() - 0.5) * 30;
-        const color = this.shiftColor(baseColor, hueShift, moodConfig.brightness);
-        const alpha = 0.2 + Math.random() * 0.4;
+        const color = this.colorPalette[Math.floor(Math.random() * this.colorPalette.length)];
+        const alpha = 0.3 + Math.random() * 0.4;
         
         this.waves.push({
           amplitude,
@@ -430,33 +547,25 @@
           phase,
           speed,
           thickness,
-          color: `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha})`,
+          color: this.hexToRgba(color, alpha),
           yOffset: (i / waveCount) * height * 0.8 + height * 0.1,
           seed: Math.random() * 1000
         });
       }
     }
     
-    hexToRgb(hex) {
-      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-      return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-      } : { r: 0, g: 0, b: 0 };
-    }
-    
-    shiftColor(rgb, hueShift, brightness) {
-      const r = Math.min(255, Math.max(0, rgb.r * brightness + hueShift));
-      const g = Math.min(255, Math.max(0, rgb.g * brightness));
-      const b = Math.min(255, Math.max(0, rgb.b * brightness - hueShift));
-      return { r, g, b };
+    hexToRgba(hex, alpha) {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     }
     
     calculateWaveY(x, wave, time) {
       const t = time * wave.speed + wave.phase + wave.seed;
-      // Простая синусоида для производительности
-      return Math.sin(x * wave.frequency + t) * wave.amplitude;
+      return Math.sin(x * wave.frequency + t) * wave.amplitude +
+             Math.sin(x * wave.frequency * 1.7 + t * 0.8) * wave.amplitude * 0.5 +
+             Math.cos(x * wave.frequency * 0.5 + t * 1.2) * wave.amplitude * 0.3;
     }
     
     draw() {
@@ -464,18 +573,16 @@
       const width = this.canvas.width / (window.devicePixelRatio || 1);
       const height = this.canvas.height / (window.devicePixelRatio || 1);
       
-      // Очищаем с полупрозрачным фоном для эффекта шлейфа
-      ctx.fillStyle = 'rgba(8, 12, 25, 0.15)';
+      ctx.fillStyle = 'rgba(8, 12, 25, 0.1)';
       ctx.fillRect(0, 0, width, height);
       
-      // Рисуем волны (оптимизированно)
       this.waves.forEach(wave => {
         ctx.beginPath();
         ctx.strokeStyle = wave.color;
         ctx.lineWidth = wave.thickness;
         ctx.lineJoin = 'round';
         
-        const step = Math.max(3, Math.floor(width / 50)); // Меньше точек для производительности
+        const step = Math.max(4, Math.floor(width / 60));
         
         for (let x = 0; x <= width; x += step) {
           const y = wave.yOffset + this.calculateWaveY(x, wave, this.time);
@@ -489,14 +596,13 @@
         ctx.stroke();
       });
       
-      // Рисуем информационный текст
       this.drawInfoText(ctx, width, height);
     }
     
     drawInfoText(ctx, width, height) {
       const infoText = this.analyzer.getInfoText();
       const lines = infoText.split('\n');
-      ctx.fillStyle = 'rgba(150, 150, 150, 0.8)';
+      ctx.fillStyle = 'rgba(180, 180, 180, 0.8)';
       ctx.font = '11px monospace';
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
@@ -508,7 +614,7 @@
     animate() {
       if (!this.isAnimating) return;
       
-      this.time += 0.015 * this.moodConfig.speed; // Медленнее для производительности
+      this.time += 0.015 * this.moodConfig.speed;
       this.draw();
       this.animationId = requestAnimationFrame(() => this.animate());
     }
@@ -534,175 +640,209 @@
     }
   }
   
-  // КЛАСС ДЛЯ ГЕНЕРАЦИИ МУЗЫКИ (исправленный)
-  class MusicComposer {
+  class AudioRecombinator {
     constructor(analyzer) {
       this.analyzer = analyzer;
       this.moodConfig = analyzer.getMoodConfig();
       this.audioContext = null;
       this.isPlaying = false;
-      this.notes = [];
-      this.currentNoteIndex = 0;
-      this.intervalId = null;
-      this.volume = 0.3;
-      
-      this.generateMelody();
+      this.currentSource = null;
+      this.volume = 0.5;
+      this.segments = [];
+      this.audioFiles = {
+        calm: 'https://blokknote.vercel.app/audio/mood/calm.mp3',
+        comfort: 'https://blokknote.vercel.app/audio/mood/comfort.mp3',
+        balance: 'https://blokknote.vercel.app/audio/mood/balance.mp3',
+        melancholy: 'https://blokknote.vercel.app/audio/mood/melancholy.mp3',
+        depression: 'https://blokknote.vercel.app/audio/mood/depression.mp3'
+      };
     }
     
-    generateMelody() {
-      this.notes = [];
-      const mood = this.analyzer.mood;
-      const text = this.analyzer.text;
-      
-      // Определяем гамму на основе настроения
-      let scale;
-      switch(mood) {
-        case 'hot':
-          scale = [0, 2, 4, 5, 7, 9, 11]; // Мажорная
-          break;
-        case 'warm':
-          scale = [0, 2, 4, 7, 9]; // Пентатоника
-          break;
-        case 'neutral':
-          scale = [0, 2, 4, 7, 9]; // Пентатоника
-          break;
-        case 'dark':
-          scale = [0, 2, 3, 5, 7, 8, 10]; // Минорная
-          break;
-        case 'haze':
-          scale = [0, 1, 3, 5, 6, 8, 10]; // Мрачная
-          break;
-        default:
-          scale = [0, 2, 4, 7, 9];
-      }
-      
-      if (text.length === 0) {
-        // Для пустого текста - простая нейтральная мелодия
-        for (let i = 0; i < 8; i++) {
-          const degree = i % scale.length;
-          const octave = 3 + Math.floor(i / scale.length) % 2;
-          const midiNote = 60 + scale[degree] + (octave * 12);
-          const duration = 0.4 + Math.random() * 0.3;
-          this.notes.push({ midiNote, duration });
-        }
-      } else {
-        // Генерация мелодии на основе текста
-        const words = text.toLowerCase()
-          .split(/\s+/)
-          .filter(w => w.length > 1);
-        
-        const maxNotes = Math.min(16, words.length);
-        
-        for (let i = 0; i < maxNotes; i++) {
-          const word = words[i % words.length];
-          const wordValue = this.calculateWordValue(word);
-          
-          // Определяем параметры ноты на основе настроения и значения слова
-          const moodMultiplier = this.moodConfig.energy;
-          const noteIntensity = (wordValue % 100) / 100;
-          
-          let degree;
-          let octave;
-          
-          if (mood === 'hot' || mood === 'warm') {
-            degree = (wordValue + i) % scale.length;
-            octave = 4 + Math.floor(noteIntensity * 1.5);
-          } else if (mood === 'dark' || mood === 'haze') {
-            degree = (wordValue - i) % scale.length;
-            if (degree < 0) degree += scale.length;
-            octave = 3 + Math.floor(noteIntensity * 0.5);
-          } else {
-            degree = (i * 2) % scale.length;
-            octave = 3 + Math.floor(noteIntensity);
-          }
-          
-          const midiNote = 60 + scale[degree] + (octave * 12);
-          // Убедимся, что длительность не слишком маленькая
-          const duration = Math.max(0.3, 0.3 + (noteIntensity * 0.5) * moodMultiplier);
-          
-          this.notes.push({ midiNote, duration, word });
-        }
-      }
-    }
-    
-    calculateWordValue(word) {
-      let value = 0;
-      for (let i = 0; i < word.length; i++) {
-        value += word.charCodeAt(i);
-      }
-      return value % 100;
-    }
-    
-    midiToFrequency(midiNote) {
-      return 440 * Math.pow(2, (midiNote - 69) / 12);
-    }
-    
-    playNote(midiNote, duration) {
+    async initialize() {
       if (!this.audioContext) {
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
       }
       
-      const now = this.audioContext.currentTime;
-      const frequency = this.midiToFrequency(midiNote);
-      const oscillator = this.audioContext.createOscillator();
-      const gainNode = this.audioContext.createGain();
+      try {
+        const mood = this.analyzer.mood;
+        const response = await fetch(this.audioFiles[mood]);
+        const arrayBuffer = await response.arrayBuffer();
+        const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
+        
+        this.segments = this.sliceAudioBuffer(audioBuffer);
+        return true;
+      } catch (error) {
+        console.error('Audio loading failed:', error);
+        return false;
+      }
+    }
+    
+    sliceAudioBuffer(audioBuffer) {
+      const sampleRate = audioBuffer.sampleRate;
+      const channelData = audioBuffer.getChannelData(0);
+      const segments = [];
       
-      oscillator.connect(gainNode);
-      gainNode.connect(this.audioContext.destination);
+      const segmentDuration = 1.5;
+      const segmentSamples = Math.floor(segmentDuration * sampleRate);
+      const overlapSamples = Math.floor(0.2 * sampleRate);
       
-      oscillator.type = 'sine'; // Простой тип для производительности
-      oscillator.frequency.setValueAtTime(frequency, now);
+      let startSample = 0;
       
-      // Убедимся, что временные параметры валидны
-      const attackTime = Math.min(0.05, duration * 0.1);
-      const releaseTime = Math.min(0.2, duration * 0.3);
-      const sustainTime = Math.max(0.1, duration - attackTime - releaseTime);
+      while (startSample < channelData.length) {
+        const endSample = Math.min(startSample + segmentSamples + overlapSamples, channelData.length);
+        const segmentData = channelData.slice(startSample, endSample);
+        
+        const segmentBuffer = this.audioContext.createBuffer(
+          1,
+          segmentData.length,
+          sampleRate
+        );
+        
+        segmentBuffer.copyToChannel(segmentData, 0);
+        
+        segments.push({
+          buffer: segmentBuffer,
+          duration: segmentBuffer.duration,
+          startTime: startSample / sampleRate,
+          energy: this.calculateEnergy(segmentData)
+        });
+        
+        startSample += segmentSamples;
+      }
       
-      gainNode.gain.setValueAtTime(0, now);
-      gainNode.gain.linearRampToValueAtTime(this.volume, now + attackTime);
-      gainNode.gain.setValueAtTime(this.volume, now + attackTime + sustainTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.001, now + attackTime + sustainTime + releaseTime);
+      return segments;
+    }
+    
+    calculateEnergy(data) {
+      let sum = 0;
+      for (let i = 0; i < data.length; i++) {
+        sum += data[i] * data[i];
+      }
+      return Math.sqrt(sum / data.length);
+    }
+    
+    createRecombinedBuffer() {
+      const moodConfig = this.moodConfig;
+      const segments = this.segments;
       
-      oscillator.start(now);
-      oscillator.stop(now + duration);
+      if (!segments || segments.length === 0) return null;
+      
+      const selectedSegments = [];
+      const segmentCount = moodConfig.segmentCount;
+      
+      for (let i = 0; i < segmentCount; i++) {
+        let segmentIndex;
+        
+        if (this.analyzer.mood === 'calm') {
+          const highEnergySegments = segments.filter(s => s.energy > 0.15);
+          segmentIndex = Math.floor(Math.random() * highEnergySegments.length);
+          selectedSegments.push(highEnergySegments[segmentIndex]);
+        } else if (this.analyzer.mood === 'comfort') {
+          const midEnergySegments = segments.filter(s => s.energy > 0.08 && s.energy < 0.2);
+          segmentIndex = Math.floor(Math.random() * midEnergySegments.length);
+          selectedSegments.push(midEnergySegments[segmentIndex]);
+        } else if (this.analyzer.mood === 'depression') {
+          const lowEnergySegments = segments.filter(s => s.energy < 0.04);
+          segmentIndex = Math.floor(Math.random() * lowEnergySegments.length);
+          selectedSegments.push(lowEnergySegments[segmentIndex]);
+        } else if (this.analyzer.mood === 'melancholy') {
+          const lowEnergySegments = segments.filter(s => s.energy < 0.06);
+          segmentIndex = Math.floor(Math.random() * lowEnergySegments.length);
+          selectedSegments.push(lowEnergySegments[segmentIndex]);
+        } else {
+          segmentIndex = Math.floor(Math.random() * segments.length);
+          selectedSegments.push(segments[segmentIndex]);
+        }
+      }
+      
+      let totalSamples = 0;
+      selectedSegments.forEach(segment => {
+        totalSamples += segment.buffer.length;
+      });
+      
+      const outputBuffer = this.audioContext.createBuffer(
+        1,
+        totalSamples,
+        this.audioContext.sampleRate
+      );
+      
+      const outputData = outputBuffer.getChannelData(0);
+      let currentSample = 0;
+      
+      selectedSegments.forEach((segment, index) => {
+        const segmentData = segment.buffer.getChannelData(0);
+        const playbackRate = moodConfig.audioSpeed * (0.85 + Math.random() * 0.3);
+        const pitchShift = moodConfig.audioPitch * (0.95 + Math.random() * 0.1);
+        
+        for (let i = 0; i < segmentData.length; i++) {
+          const sourceIndex = Math.floor(i / playbackRate);
+          if (sourceIndex < segmentData.length) {
+            outputData[currentSample + i] = segmentData[sourceIndex] * pitchShift;
+          }
+        }
+        
+        currentSample += Math.floor(segmentData.length / playbackRate);
+      });
+      
+      return outputBuffer;
     }
     
     play() {
-      if (this.isPlaying) return;
+      if (this.isPlaying || !this.audioContext) return;
+      
+      const recombinedBuffer = this.createRecombinedBuffer();
+      if (!recombinedBuffer) return;
       
       this.isPlaying = true;
-      this.currentNoteIndex = 0;
       
-      const playNextNote = () => {
-        if (!this.isPlaying || this.currentNoteIndex >= this.notes.length) {
-          this.stop();
-          return;
-        }
-        
-        const note = this.notes[this.currentNoteIndex];
-        this.playNote(note.midiNote, note.duration);
-        
-        this.currentNoteIndex++;
-        
-        // Интервал между нотами
-        const interval = note.duration * 600 * (0.9 + Math.random() * 0.2);
-        this.intervalId = setTimeout(playNextNote, interval);
+      this.currentSource = this.audioContext.createBufferSource();
+      this.currentSource.buffer = recombinedBuffer;
+      
+      const gainNode = this.audioContext.createGain();
+      const filterNode = this.audioContext.createBiquadFilter();
+      
+      switch(this.analyzer.mood) {
+        case 'calm':
+          filterNode.type = 'highpass';
+          filterNode.frequency.value = 300;
+          break;
+        case 'comfort':
+          filterNode.type = 'bandpass';
+          filterNode.frequency.value = 1000;
+          break;
+        case 'balance':
+          filterNode.type = 'lowpass';
+          filterNode.frequency.value = 5000;
+          break;
+        case 'melancholy':
+          filterNode.type = 'lowpass';
+          filterNode.frequency.value = 2500;
+          break;
+        case 'depression':
+          filterNode.type = 'lowpass';
+          filterNode.frequency.value = 1500;
+          break;
+      }
+      
+      this.currentSource.connect(filterNode);
+      filterNode.connect(gainNode);
+      gainNode.connect(this.audioContext.destination);
+      
+      gainNode.gain.value = this.volume;
+      
+      this.currentSource.start();
+      
+      this.currentSource.onended = () => {
+        this.isPlaying = false;
+        this.currentSource = null;
       };
-      
-      playNextNote();
     }
     
     stop() {
-      this.isPlaying = false;
-      if (this.intervalId) {
-        clearTimeout(this.intervalId);
-        this.intervalId = null;
-      }
-      
-      // Останавливаем аудиоконтекст
-      if (this.audioContext) {
-        this.audioContext.close();
-        this.audioContext = null;
+      if (this.currentSource && this.isPlaying) {
+        this.currentSource.stop();
+        this.isPlaying = false;
+        this.currentSource = null;
       }
     }
     
@@ -711,10 +851,9 @@
     }
   }
   
-  // ОСНОВНОЙ КОНТРОЛЛЕР (исправленный)
-  class WaveController {
+  class NoiseController {
     constructor() {
-      console.log('🌊 Wave Universe v' + WAVE_CONFIG.VERSION + ' initializing');
+      console.log('🎵 Noise Universe v' + NOISE_CONFIG.VERSION + ' initializing');
       
       this.btn = document.getElementById('noise-btn');
       this.container = document.getElementById('noise-canvas-container');
@@ -729,75 +868,64 @@
       this.isActive = false;
       this.analyzer = null;
       this.visualizer = null;
-      this.composer = null;
+      this.recombinator = null;
+      this.progressInterval = null;
       
       if (!this.btn) {
-        console.error('❌ noise-btn element not found');
+        console.error('noise-btn element not found');
         return;
       }
       
       this.setupEventListeners();
-      console.log('✅ Wave Universe initialized successfully');
+      this.updateCloseButton();
+      console.log('✅ Noise Universe initialized successfully');
     }
     
     setupEventListeners() {
-      // Основная кнопка
       this.btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        console.log('🌊 Wave button clicked');
         this.toggle();
       });
       
-      // Кнопка закрытия
       if (this.closeBtn) {
         this.closeBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          console.log('✖️ Close button clicked');
           this.close();
         });
       }
       
-      // Клик по фону для закрытия
       if (this.container) {
         this.container.addEventListener('click', (e) => {
           if (e.target === this.container) {
-            console.log('⏭️ Background click detected, closing');
             this.close();
           }
         });
       }
       
-      // Клавиша Escape
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && this.isActive) {
-          console.log('⌨️ Escape pressed, closing');
           this.close();
         }
       });
       
-      // Кнопки Play/Stop
       if (this.playBtn) {
-        this.playBtn.addEventListener('click', () => {
-          console.log('▶️ Play button clicked');
-          this.play();
+        this.playBtn.addEventListener('click', async () => {
+          await this.play();
         });
       }
       
       if (this.stopBtn) {
         this.stopBtn.addEventListener('click', () => {
-          console.log('⏹️ Stop button clicked');
           this.stop();
         });
       }
       
-      // Громкость
       if (this.volumeSlider) {
         this.volumeSlider.addEventListener('input', (e) => {
           const value = e.target.value / 100;
-          console.log(`🔊 Volume changed to: ${value.toFixed(2)}`);
           
-          if (this.composer) {
-            this.composer.setVolume(value);
+          if (this.recombinator) {
+            this.recombinator.setVolume(value);
           }
           
           if (this.statusText) {
@@ -811,26 +939,59 @@
         });
       }
       
-      // Изменение размера окна
       window.addEventListener('resize', () => {
         if (this.isActive && this.visualizer) {
           this.visualizer.resize();
+          this.visualizer.generateWaves();
         }
       });
     }
     
-    toggle() {
-      if (this.isActive) {
-        this.close();
-      } else {
-        this.open();
+    updateCloseButton() {
+      if (this.closeBtn) {
+        this.closeBtn.style.cssText = `
+          position: absolute;
+          top: 12px;
+          right: 12px;
+          background: transparent;
+          border: none;
+          color: rgba(200, 200, 200, 0.9);
+          width: 32px;
+          height: 32px;
+          font-size: 24px;
+          cursor: pointer;
+          z-index: 10001;
+          padding: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-family: Arial, sans-serif;
+          transition: all 0.2s ease;
+        `;
+        
+        this.closeBtn.addEventListener('mouseenter', () => {
+          this.closeBtn.style.color = 'rgba(255, 255, 255, 1)';
+          this.closeBtn.style.transform = 'scale(1.1)';
+        });
+        
+        this.closeBtn.addEventListener('mouseleave', () => {
+          this.closeBtn.style.color = 'rgba(200, 200, 200, 0.9)';
+          this.closeBtn.style.transform = 'scale(1)';
+        });
       }
     }
     
-    open() {
+    async toggle() {
+      if (this.isActive) {
+        this.close();
+      } else {
+        await this.open();
+      }
+    }
+    
+    async open() {
       if (this.isActive) return;
       
-      console.log('📂 Opening wave panel');
       this.isActive = true;
       
       if (this.container) {
@@ -840,38 +1001,28 @@
         }, 10);
       }
       
-      // Получаем текст из редактора
       const editor = document.getElementById('editor');
       const text = editor ? editor.innerText.trim() : '';
       
-      console.log(`📝 Analyzing text (length: ${text.length})`);
-      
       try {
         this.analyzer = new TextAnalyzer(text);
-        console.log('✅ Text analysis complete:', {
-          mood: this.analyzer.mood,
-          waveCount: this.analyzer.waveCount,
-          sessionId: this.analyzer.sessionId
-        });
-        
-        // Создаем визуализатор
         this.visualizer = new WaveVisualizer(this.canvas, this.analyzer);
+        this.recombinator = new AudioRecombinator(this.analyzer);
         
-        // Создаем композитора
-        this.composer = new MusicComposer(this.analyzer);
+        const audioReady = await this.recombinator.initialize();
         
-        // Обновляем статус
+        if (!audioReady) {
+          console.warn('Audio initialization failed');
+        }
+        
         this.updateStatus();
-        
-        // Запускаем визуализацию
         this.visualizer.start();
         
-        // Обновляем состояние кнопок
         if (this.playBtn) this.playBtn.disabled = false;
         if (this.stopBtn) this.stopBtn.disabled = true;
         
       } catch (error) {
-        console.error('❌ Error initializing wave universe:', error);
+        console.error('Error initializing noise universe:', error);
         
         if (this.statusText) {
           this.statusText.textContent = 'Error initializing';
@@ -882,7 +1033,6 @@
     close() {
       if (!this.isActive) return;
       
-      console.log('📂 Closing wave panel');
       this.container.classList.add('closing');
       
       setTimeout(() => {
@@ -890,7 +1040,6 @@
         this.container.style.display = 'none';
         this.container.classList.remove('closing');
         
-        // Останавливаем все
         this.stop();
         
         if (this.visualizer) {
@@ -899,41 +1048,33 @@
         }
         
         this.analyzer = null;
-        this.composer = null;
+        this.recombinator = null;
       }, 300);
     }
     
-    play() {
-      if (!this.isActive || !this.composer) return;
+    async play() {
+      if (!this.isActive || !this.recombinator) return;
       
-      console.log('🎵 Starting music playback');
-      
-      if (this.composer) {
-        this.composer.play();
+      if (this.recombinator) {
+        this.recombinator.play();
       }
       
       if (this.playBtn) this.playBtn.disabled = true;
       if (this.stopBtn) this.stopBtn.disabled = false;
       
       this.updateStatus('Playing...');
-      
-      // Запускаем обновление прогресс-бара
       this.startProgressBar();
     }
     
     stop() {
-      console.log('🎵 Stopping music playback');
-      
-      if (this.composer) {
-        this.composer.stop();
+      if (this.recombinator) {
+        this.recombinator.stop();
       }
       
       if (this.playBtn) this.playBtn.disabled = false;
       if (this.stopBtn) this.stopBtn.disabled = true;
       
       this.updateStatus();
-      
-      // Останавливаем прогресс-бар
       this.stopProgressBar();
     }
     
@@ -956,7 +1097,7 @@
       
       let progress = 0;
       const interval = setInterval(() => {
-        if (!this.composer || !this.composer.isPlaying) {
+        if (!this.recombinator || !this.recombinator.isPlaying) {
           clearInterval(interval);
           this.progressBar.style.width = '0%';
           return;
@@ -980,26 +1121,20 @@
     }
   }
   
-  // Инициализация при загрузке
   document.addEventListener('DOMContentLoaded', function() {
     setTimeout(function() {
-      if (typeof WaveController !== 'undefined') {
+      if (typeof NoiseController !== 'undefined') {
         try {
-          window.waveController = new WaveController();
-          console.log('🌊 Wave Universe loaded and ready');
+          window.noiseController = new NoiseController();
+          console.log('🎵 Noise Universe loaded and ready');
         } catch (error) {
-          console.error('Failed to create WaveController:', error);
+          console.error('Failed to create NoiseController:', error);
         }
       }
     }, 100);
   });
   
-  // Экспорт для глобального доступа
-  window.WaveController = WaveController;
+  window.NoiseController = NoiseController;
   
-  console.log('=== WAVE UNIVERSE v' + WAVE_CONFIG.VERSION + ' LOADED ===');
-  console.log('💡 Tips:');
-  console.log('- Write emotional text to hear different music');
-  console.log('- Try different moods: hot, warm, neutral, dark, haze');
-  console.log('- Music and visualization change based on your text');
+  console.log('=== NOISE UNIVERSE v' + NOISE_CONFIG.VERSION + ' LOADED ===');
 })();
