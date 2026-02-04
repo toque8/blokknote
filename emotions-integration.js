@@ -394,8 +394,8 @@
                 if (this.shouldShowMetric(emotionalArc)) {
                     html += `
                         <div class="emotion-metric">
-                            <span class="label" title="${translations.emotionalArcDesc}">${translations.emotionalArc}:</span>
-                            <span class="value">${this.translateEmotionalArc(emotionalArc, currentLang)}</span>
+                            <span class="label" title="${translations.emotionalArcDesc}">${translations.emotionalArc}: </span>
+                            <span class="value" style="display:block;text-align:right;">${this.translateEmotionalArc(emotionalArc, currentLang)} </span>
                         </div>`;
                 }
                 
@@ -2004,3 +2004,4 @@
     }
 
 })();
+
