@@ -347,7 +347,13 @@
       .fonts-area { display: none; }
       .format-tools { font-size: 19px; gap: 10px; }
       #editor { padding: 20px 16px; font-size: 16px; }
-      .controls { padding: 16px; gap: 36px; margin-left: -63px; }
+      .controls {
+        padding: 16px;
+        display: flex;
+        justify-content: space-around;
+        gap: 0;
+        margin-left: 0;
+      }
       .action-icon { height: 34px; }
       .cancel-btn { bottom: 16px; left: 16px; height: 30px; }
       #typing-test-btn { margin-right: 8px; }
@@ -386,7 +392,10 @@
       .fonts-area { display: none; }
       .format-tools { gap: 6px; font-size: 17px; }
       #editor { padding: 18px 12px; font-size: 15px; }
-      .controls { gap: 32px; padding: 14px 12px; margin-left: -63px; }
+      .controls {
+        gap: 0;
+        padding: 14px 12px;
+      }
       .action-icon { height: 32px; }
       .cancel-btn { bottom: 14px; left: 12px; height: 28px; }
       #typing-test-btn { margin-right: 4px; }
@@ -569,6 +578,164 @@
       width: 0%;
       transition: width 0.1s linear;
     }
+    #emotions-sidebar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 450px;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.97);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 10000;
+      padding: 20px;
+      box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+      transform: translateX(100%);
+      transition: transform 0.3s ease-out;
+      overflow-y: auto;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #e2e8f0;
+    }
+    #emotions-sidebar.active {
+      transform: translateX(0);
+    }
+    #emotions-sidebar .close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: rgba(200, 220, 255, 0.9);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    cursor: pointer;
+    z-index: 10001;
+    transition: all 0.2s ease;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    }
+    #emotions-sidebar .close-btn:hover {
+    transform: scale(1.1);
+    color: rgba(255, 255, 255, 1);
+    }
+    #emotions-sidebar h2 {
+      font-size: 24px;
+      margin-bottom: 25px;
+      color: #f8fafc;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 10px;
+    }
+    #emotions-sidebar h3 {
+      font-size: 18px;
+      margin: 20px 0 10px 0;
+      color: #cbd5e1;
+    }
+    #emotions-sidebar .emotion-section {
+      background: rgba(30, 41, 59, 0.4);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      border: 1px solid rgba(100, 116, 139, 0.2);
+    }
+    #emotions-sidebar .emotion-metric {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    #emotions-sidebar .emotion-metric .label {
+      color: #94a3b8;
+      font-weight: 500;
+    }
+    #emotions-sidebar .emotion-metric .value {
+      color: #e2e8f0;
+      font-weight: 600;
+    }
+    #emotions-sidebar .emotion-bar {
+      height: 6px;
+      background: rgba(71, 85, 105, 0.5);
+      border-radius: 3px;
+      margin: 5px 0 15px 0;
+      overflow: hidden;
+    }
+    #emotions-sidebar .emotion-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      border-radius: 3px;
+    }
+    #emotions-sidebar .color-preview {
+      display: flex;
+      gap: 8px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    #emotions-sidebar .color-preview div {
+      width: 30px;
+      height: 30px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    #emotions-sidebar .color-preview div:hover {
+      transform: scale(1.2);
+    }
+    #emotions-sidebar .behavior-tag {
+      display: inline-block;
+      background: rgba(59, 130, 246, 0.2);
+      color: #93c5fd;
+      padding: 4px 10px;
+      border-radius: 12px;
+      margin: 4px;
+      font-size: 12px;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    #emotions-sidebar .emotion-category {
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    #emotions-sidebar .emotion-category.positive {
+      background: rgba(34, 197, 94, 0.1);
+      border-left: 3px solid #10b981;
+    }
+    #emotions-sidebar .emotion-category.negative {
+      background: rgba(239, 68, 68, 0.1);
+      border-left: 3px solid #ef4444;
+    }
+    #emotions-sidebar .emotion-category.complex {
+      background: rgba(168, 85, 247, 0.1);
+      border-left: 3px solid #8b5cf6;
+    }
+    #emotions-sidebar .category-name {
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+    #emotions-sidebar .category-stats {
+      font-size: 11px;
+      color: #94a3b8;
+    }
+    @media (max-width: 768px) {
+      #emotions-sidebar {
+        width: 100%;
+        border-radius: 20px 20px 0 0;
+        top: auto;
+        bottom: 0;
+        height: 80vh;
+        transform: translateY(100%);
+      }
+      #emotions-sidebar.active {
+        transform: translateY(0);
+      }
+    }
   </style>
 </head>
 <body>
@@ -576,7 +743,7 @@
   <audio id="sound-erase" src="https://blokknote.vercel.app/audio/erase.mp3" preload="auto"></audio>
   <audio id="sound-download" src="https://blokknote.vercel.app/audio/download.mp3" preload="auto"></audio>
   <audio id="sound-lang" src="https://blokknote.vercel.app/audio/lang.mp3" preload="auto"></audio>
-  
+
   <div class="top-bar">
     <div>
       <img src="https://blokknote.vercel.app/ui/pencil.png" class="pencil-icon" alt="" onerror="this.style.display='none'">
@@ -600,6 +767,7 @@
         </div>
       </div>
     </div>
+
     <div class="format-tools">
       <span id="btn-bold"><b>e</b></span>
       <span id="btn-italic"><i>f</i></span>
@@ -607,6 +775,11 @@
       <span id="btn-heading">h3</span>
       <span id="btn-list">i-j-k</span>
     </div>
+
+    <div>
+      <img src="https://blokknote.vercel.app/ui/emotions.png" class="action-icon" id="emotions-btn" onerror="this.style.display='none'">
+    </div>
+
     <div>
       <button id="typing-test-btn" style="background:none;border:none;cursor:pointer;padding:0;margin-right:12px;height:19px;display:inline-flex;align-items:center;">
         <img src="https://blokknote.vercel.app/ui/hourglass.png" alt="" onerror="this.style.display='none'" style="height:19px;opacity:0.7;">
@@ -617,9 +790,9 @@
       </div>
     </div>
   </div>
-  
+
   <div id="editor" contenteditable="true" data-placeholder="Пиши…"></div>
-  
+
   <div class="controls">
     <img src="https://blokknote.vercel.app/ui/noise.png" class="action-icon" id="noise-btn" onerror="this.style.display='none'">
     <img src="https://blokknote.vercel.app/ui/chaos.png" class="action-icon" id="chaos-btn" onerror="this.style.display='none'">
@@ -627,8 +800,7 @@
     <img src="https://blokknote.vercel.app/ui/download.png" class="action-icon" id="download-btn" onerror="this.style.display='none'">
     <img src="https://blokknote.vercel.app/ui/share.png" class="action-icon" id="share-btn" onerror="this.style.display='none'">
   </div>
-  
-  <!-- Noise контейнер -->
+
   <div id="noise-canvas-container" style="
     position: fixed;
     bottom: 0;
@@ -648,14 +820,12 @@
     touch-action: none;
   ">
     <canvas id="noise-canvas" style="width:100%;height:100%;display:block;"></canvas>
-    <!-- Панель управления -->
     <div class="noise-controls">
       <button id="noise-play-btn">Play</button>
       <button id="noise-stop-btn" disabled>Stop</button>
       <input type="range" id="noise-volume" min="0" max="100" value="30">
       <span id="noise-status">Ready to play</span>
     </div>
-    <!-- Прогресс-бар -->
     <div id="noise-progress">
       <div id="noise-progress-bar"></div>
     </div>
@@ -680,8 +850,7 @@
       transition: all 0.2s ease;
     ">&times;</button>
   </div>
-  
-  <!-- Chaos контейнер -->
+
   <div id="chaos-canvas-container" style="
     position: fixed;
     bottom: 0;
@@ -737,8 +906,9 @@
       transition: all 0.2s ease;
     ">&times;</button>
   </div>
-  
+
   <img src="https://blokknote.vercel.app/ui/cancel.png" class="cancel-btn" id="cancel-btn" onerror="this.style.display='none'">
+
   <button id="apk-btn" onclick="window.open('https://github.com/toque8/blokknoteapp/releases/download/v1/blokknote-release.apk', '_blank')">
     <img src="https://blokknote.vercel.app/ui/apk.png" alt="" decoding="async" loading="lazy">
   </button>
@@ -748,21 +918,21 @@
   <button id="copyright-btn" onclick="window.open('https://www.toquevibe.space/', '_blank')">
     <img src="https://blokknote.vercel.app/ui/copy.png" alt="" decoding="async" loading="lazy">
   </button>
-  
+
   <div class="donate-overlay" id="donateOverlay" onclick="toggleDonateSidebar()"></div>
   <div id="donate-sidebar">
     <h3>if you like<br>buy me a coffee?</h3>
     <p>usdt trc20</p>
     <div id="donate-address">TQuARR37qSt59am1R8aosCk2R1sgwwHwxT</div>
   </div>
-  
+
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('from') === 'test') {
       const sound = new Audio('https://blokknote.vercel.app/audio/lang.mp3');
       sound.play().catch(() => {});
     }
-    
+
     const editor = document.getElementById('editor');
     const translations = { ru: 'Пиши…', en: 'Typing…' };
     let currentLang = 'ru';
@@ -770,11 +940,11 @@
     const MIN_FONT_SIZE = 8;
     const MAX_FONT_SIZE = 30;
     const BASE_FONT_SIZE = 17;
-    
+
     const saved = localStorage.getItem('blokknote-html');
     const savedFontSize = localStorage.getItem('blokknote-fontSize');
     const savedFontFamily = localStorage.getItem('blokknote-fontFamily');
-    
+
     if (saved) {
       editor.innerHTML = saved;
       if (savedFontSize) editor.style.fontSize = savedFontSize;
@@ -783,9 +953,9 @@
     } else {
       history.push({html: editor.innerHTML, fontSize: '', fontFamily: ''});
     }
-    
+
     editor.setAttribute('data-placeholder', translations[currentLang]);
-    
+
     function saveState() {
       history.push({
         html: editor.innerHTML,
@@ -793,23 +963,22 @@
         fontFamily: editor.style.fontFamily
       });
     }
-    
+
     editor.addEventListener('input', () => {
       saveState();
       localStorage.setItem('blokknote-html', editor.innerHTML);
       localStorage.setItem('blokknote-fontSize', editor.style.fontSize);
       localStorage.setItem('blokknote-fontFamily', editor.style.fontFamily);
-      
       const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
       sound.play().catch(() => {});
     });
-    
+
     function exec(cmd, value = null) {
       saveState();
       document.execCommand(cmd, false, value);
       editor.focus();
     }
-    
+
     document.getElementById('btn-bold').onclick = () => exec('bold');
     document.getElementById('btn-italic').onclick = () => exec('italic');
     document.getElementById('btn-underline').onclick = () => exec('underline');
@@ -825,20 +994,19 @@
       }
     };
     document.getElementById('btn-list').onclick = () => exec('insertUnorderedList');
-    
+
     function setLang(lang) {
       currentLang = lang;
       editor.setAttribute('data-placeholder', translations[lang]);
       document.getElementById('lang-ru').classList.toggle('active', lang === 'ru');
       document.getElementById('lang-en').classList.toggle('active', lang === 'en');
-      
       const sound = new Audio('https://blokknote.vercel.app/audio/lang.mp3');
       sound.play().catch(() => {});
     }
-    
+
     document.getElementById('lang-ru').onclick = () => setLang('ru');
     document.getElementById('lang-en').onclick = () => setLang('en');
-    
+
     document.getElementById('clear-btn').onclick = () => {
       saveState();
       editor.innerHTML = '';
@@ -848,42 +1016,41 @@
       localStorage.removeItem('blokknote-fontSize');
       localStorage.removeItem('blokknote-fontFamily');
       editor.setAttribute('data-placeholder', translations[currentLang]);
-      
       const sound = new Audio('https://blokknote.vercel.app/audio/erase.mp3');
       sound.play().catch(() => {});
     };
-    
+
     document.getElementById('download-btn').onclick = () => {
       const sound = document.getElementById('sound-download');
       sound.currentTime = 0;
       sound.play().catch(() => {});
-      
+
       const textContent = editor.innerText.trim();
       if (!textContent) {
         alert(currentLang === 'ru' ? 'Добавьте текст' : 'Add text');
         return;
       }
-      
+
       const html = editor.innerHTML || '<p></p>';
       const currentFontFamily = editor.style.fontFamily || 'system-ui, -apple-system, sans-serif';
       const currentFontSize = editor.style.fontSize || '17px';
-      
+
       const fullHtml = `<!DOCTYPE html>
-      <html>
-      <head>
-      <meta charset="utf-8">
-      <title>Blokknote</title>
-      <style>
-      body {
-        font-family: ${currentFontFamily};
-        font-size: ${currentFontSize};
-        line-height: 1.6;
-      }
-      </style>
-      </head>
-      <body>${html}</body>
-      </html>`;
-      
+<html>
+<head>
+<meta charset="utf-8">
+<title>Blokknote</title>
+<style>
+body {
+  font-family: ${currentFontFamily};
+  font-size: ${currentFontSize};
+  line-height: 1.6;
+}
+</style>
+</head>
+<body>${html}</body>
+</html>`;
+
       const blob = new Blob([fullHtml], { type: 'application/msword' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -892,53 +1059,51 @@
       a.click();
       URL.revokeObjectURL(url);
     };
-    
+
     document.getElementById('share-btn').onclick = async () => {
       const sound = document.getElementById('sound-download');
       sound.currentTime = 0;
       sound.play().catch(() => {});
-      
+
       const computedStyle = window.getComputedStyle(editor);
       const fontSize = editor.style.fontSize || computedStyle.fontSize;
       const fontFamily = editor.style.fontFamily || computedStyle.fontFamily;
-      
+
       const style = `
-      body {
-        font-family: ${fontFamily} !important;
-        font-size: ${fontSize} !important;
-        line-height: 1.6;
-        padding: 24px;
-        margin: 0;
-      }
-      `;
-      
+body {
+  font-family: ${fontFamily} !important;
+  font-size: ${fontSize} !important;
+  line-height: 1.6;
+  padding: 24px;
+  margin: 0;
+}`;
+
       const html = editor.innerHTML || '<p></p>';
       const fullHtml = `<!DOCTYPE html>
-      <html>
-      <head>
-      <meta charset="utf-8">
-      <title>Blokknote</title>
-      <style>${style}</style>
-      </head>
-      <body>${html}</body>
-      </html>`;
-      
+<html>
+<head>
+<meta charset="utf-8">
+<title>Blokknote</title>
+<style>${style}</style>
+</head>
+<body>${html}</body>
+</html>`;
+
       const textContent = html.replace(/<[^>]*>/g, '').trim();
       if (!textContent) {
         alert(currentLang === 'ru' ? 'Добавьте текст' : 'Add text');
         return;
       }
-      
+
       const btn = document.getElementById('share-btn');
       btn.style.opacity = '0.5';
-      
+
       try {
         const res = await fetch('/api/share', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ content: fullHtml })
         });
-        
         const data = await res.json();
         if (res.ok) {
           const fullUrl = `${window.location.origin}/api/doc?id=${data.id}`;
@@ -949,10 +1114,10 @@
       } catch {
         alert(currentLang === 'ru' ? 'Ошибка сети' : 'Network error');
       }
-      
+
       btn.style.opacity = '1';
     };
-    
+
     document.getElementById('cancel-btn').onclick = () => {
       if (history.length <= 1) {
         editor.innerHTML = '';
@@ -968,32 +1133,30 @@
         editor.innerHTML = prevState.html || '';
         editor.style.fontSize = prevState.fontSize || '';
         editor.style.fontFamily = prevState.fontFamily || '';
-        
         localStorage.setItem('blokknote-html', editor.innerHTML);
         localStorage.setItem('blokknote-fontSize', editor.style.fontSize);
         localStorage.setItem('blokknote-fontFamily', editor.style.fontFamily);
       }
-      
       const sound = new Audio('https://blokknote.vercel.app/audio/erase.mp3');
       sound.play().catch(() => {});
     };
-    
+
     document.getElementById('typing-test-btn').onclick = (e) => {
       e.preventDefault();
       window.location.href = 'typing-test.html';
     };
-    
+
     const fontsDropdown = document.getElementById('fonts-dropdown');
     const fontsTrigger = document.getElementById('fonts-trigger');
     const fontItems = document.querySelectorAll('#fonts-dropdown .font-item');
-    
+
     fontsTrigger.onclick = (e) => {
       e.stopPropagation();
       const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
       sound.play().catch(() => {});
       fontsDropdown.classList.toggle('active');
     };
-    
+
     function getSelectedFontFamily() {
       const sel = window.getSelection();
       if (sel.rangeCount === 0 || sel.isCollapsed) return null;
@@ -1002,7 +1165,7 @@
       const element = node.nodeType === 3 ? node.parentElement : node;
       return element ? window.getComputedStyle(element).fontFamily : null;
     }
-    
+
     function applyFontToSelection(font) {
       const selection = window.getSelection();
       if (selection.rangeCount === 0 || selection.isCollapsed) return;
@@ -1013,7 +1176,7 @@
       selection.removeAllRanges();
       selection.addRange(range);
     }
-    
+
     function removeFontFromSelection() {
       const selection = window.getSelection();
       if (selection.rangeCount === 0 || selection.isCollapsed) return;
@@ -1022,7 +1185,6 @@
       const fontSpan = container.nodeType === 1 ?
         container.closest('span[style*="font-family"]') :
         container.parentElement.closest('span[style*="font-family"]');
-        
       if (fontSpan) {
         const parent = fontSpan.parentNode;
         while (fontSpan.firstChild) {
@@ -1031,13 +1193,12 @@
         parent.removeChild(fontSpan);
       }
     }
-    
+
     fontItems.forEach(item => {
       item.onclick = () => {
         const font = item.getAttribute('data-font');
         const selection = window.getSelection();
         saveState();
-        
         if (selection.rangeCount > 0 && !selection.getRangeAt(0).collapsed) {
           const currentFont = getSelectedFontFamily();
           if (currentFont && currentFont.replace(/"/g, '') === font.replace(/"/g, '')) {
@@ -1052,14 +1213,13 @@
             editor.style.fontFamily = font;
           }
         }
-        
         editor.focus();
         localStorage.setItem('blokknote-html', editor.innerHTML);
         localStorage.setItem('blokknote-fontFamily', editor.style.fontFamily);
         fontsDropdown.classList.remove('active');
       };
     });
-    
+
     function getSelectedFontSize() {
       const sel = window.getSelection();
       if (sel.rangeCount === 0 || sel.isCollapsed) return null;
@@ -1068,7 +1228,7 @@
       const element = node.nodeType === 3 ? node.parentElement : node;
       return element ? window.getComputedStyle(element).fontSize : null;
     }
-    
+
     function applyFontSizeToSelection(size) {
       document.execCommand('fontSize', false, 7);
       const fontElements = editor.querySelectorAll('font[size="7"]');
@@ -1078,11 +1238,10 @@
         }
       });
     }
-    
+
     function applyFontSize(size) {
       const selection = window.getSelection();
       saveState();
-      
       if (selection.rangeCount > 0 && !selection.getRangeAt(0).collapsed) {
         const currentSize = getSelectedFontSize();
         if (currentSize === size + 'px') {
@@ -1097,16 +1256,14 @@
           editor.style.fontSize = size + 'px';
         }
       }
-      
       editor.focus();
       localStorage.setItem('blokknote-html', editor.innerHTML);
       localStorage.setItem('blokknote-fontSize', editor.style.fontSize);
     }
-    
+
     function adjustFontSize(delta) {
       const selection = window.getSelection();
       saveState();
-      
       if (selection.rangeCount > 0 && !selection.getRangeAt(0).collapsed) {
         const currentSize = getSelectedFontSize();
         let current = currentSize ? parseInt(currentSize) : BASE_FONT_SIZE;
@@ -1123,55 +1280,50 @@
         current = Math.max(MIN_FONT_SIZE, Math.min(MAX_FONT_SIZE, current + delta));
         editor.style.fontSize = current + 'px';
       }
-      
       editor.focus();
       localStorage.setItem('blokknote-html', editor.innerHTML);
       localStorage.setItem('blokknote-fontSize', editor.style.fontSize);
     }
-    
+
     document.getElementById('size-12').onclick = () => {
       const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
       sound.play().catch(() => {});
       applyFontSize(12);
     };
-    
     document.getElementById('size-14').onclick = () => {
       const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
       sound.play().catch(() => {});
       applyFontSize(14);
     };
-    
     document.getElementById('size-plus').onclick = () => {
       const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
       sound.play().catch(() => {});
       adjustFontSize(1);
     };
-    
     document.getElementById('size-minus').onclick = () => {
       const sound = new Audio('https://blokknote.vercel.app/audio/typing.mp3');
       sound.play().catch(() => {});
       adjustFontSize(-1);
     };
-    
+
     document.onclick = (e) => {
       if (!fontsTrigger.contains(e.target) && !fontsDropdown.contains(e.target)) {
         fontsDropdown.classList.remove('active');
       }
     };
-    
+
     function toggleDonateSidebar() {
       const sidebar = document.getElementById('donate-sidebar');
       const overlay = document.getElementById('donateOverlay');
       sidebar.classList.toggle('active');
       overlay.classList.toggle('active');
-      
       if (typeof gtag !== 'undefined') {
         gtag('event', sidebar.classList.contains('active') ? 'donate_open' : 'donate_close', {
           'event_category': 'donate'
         });
       }
     }
-    
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         const sidebar = document.getElementById('donate-sidebar');
@@ -1180,37 +1332,35 @@
         }
       }
     });
-    
+
     const chaosBtn = document.getElementById('chaos-btn');
     if (chaosBtn) {
       chaosBtn.addEventListener('mouseenter', () => {
         chaosBtn.style.transform = 'rotate(15deg) scale(1.1)';
         chaosBtn.style.filter = 'drop-shadow(0 0 8px rgba(102, 126, 234, 0.5))';
       });
-      
       chaosBtn.addEventListener('mouseleave', () => {
         chaosBtn.style.transform = '';
         chaosBtn.style.filter = '';
       });
     }
-    
+
     const noiseBtn = document.getElementById('noise-btn');
     if (noiseBtn) {
       noiseBtn.addEventListener('mouseenter', () => {
         noiseBtn.style.transform = 'rotate(-5deg) scale(1.1)';
         noiseBtn.style.filter = 'drop-shadow(0 0 8px rgba(102, 234, 126, 0.5))';
       });
-      
       noiseBtn.addEventListener('mouseleave', () => {
         noiseBtn.style.transform = '';
         noiseBtn.style.filter = '';
       });
     }
   </script>
-  
+
   <script src="https://blokknote.vercel.app/chaos.js" defer></script>
   <script src="https://blokknote.vercel.app/noise.js" defer></script>
-
+  <script src="https://blokknote.vercel.app/emotions.js"></script>
+  <script src="https://blokknote.vercel.app/emotions-integration.js"></script>
 </body>
 </html>
-
