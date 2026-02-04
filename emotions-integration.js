@@ -189,6 +189,7 @@
                 'optimism': 'оптимизм',
                 'disapproval': 'неодобрение',
                 'remorse': 'раскаяние',
+                'neutral': 'мало данных',
                 'contempt': 'презрение'
             };
             return translations[emotion] || emotion;
@@ -206,7 +207,11 @@
                 'complex': 'сложная',
                 'irregular': 'нерегулярная',
                 'rise_fall_rise': 'восходяще-нисходящая',
-                'fall_rise_fall': 'нисходяще-восходящая'
+                'fall_rise_fall': 'нисходяще-восходящая',
+                'steady_rise': 'устойчиво восходящая',
+                'steady_fall': 'устойчиво нисходящая',
+                'man_in_hole': 'человек в яме',
+                'man_in_hole_rise': 'человек в яме с подъёмом'
             };
             return translations[arc] || arc;
         }
@@ -998,8 +1003,8 @@
                 if (semanticDetails.abstraction && semanticDetails.abstraction.description) {
                     html += `
                         <div class="emotion-metric">
-                            <span class="label" title="${translations.abstractionLevelDesc}">${translations.abstractionLevel}:</span>
-                            <span class="value">${this.translateAbstraction(semanticDetails.abstraction.description, currentLang)}</span>
+                            <span class="label" title="${translations.abstractionLevelDesc}">${translations.abstractionLevel}: </span>
+                            <span class="value" style="display:block;text-align:right;">${this.translateAbstraction(semanticDetails.abstraction.description, currentLang)} </span>
                         </div>`;
                 }
                 
@@ -1357,7 +1362,13 @@
                 'wave': 'волновой',
                 'chaotic': 'хаотичный',
                 'steady': 'устойчивый',
-                'variable': 'переменный'
+                'variable': 'переменный',
+                'ascending': 'восходящий',
+                'descending': 'нисходящий',
+                'symmetric': 'симметричный',
+                'wavy': 'волнистый',
+                'crescendo': 'нарастание',
+                'decrescendo': 'затухание'
             };
             return translations[pattern] || pattern;
         }
@@ -1369,7 +1380,9 @@
                 'jerky': 'рывковый',
                 'flowing': 'текучий',
                 'staccato': 'стаккато',
-                'balanced': 'сбалансированный'
+                'balanced': 'сбалансированный',
+                'moderate': 'умеренный',
+                'choppy': 'прерывистый'
             };
             return translations[flow] || flow;
         }
@@ -1396,7 +1409,8 @@
                 'falling': 'убывающий',
                 'stable': 'стабильный',
                 'fluctuating': 'колеблющийся',
-                'complex': 'сложный'
+                'complex': 'сложный',
+                'rising': 'восходящий'
             };
             return translations[trend] || trend;
         }
@@ -1988,4 +2002,5 @@
     } else {
         window.emotionsUI = new EmotionsUI();
     }
+
 })();
