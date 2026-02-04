@@ -342,85 +342,183 @@
       }
     }
     @media (max-width: 500px) {
-      .top-bar { padding: 14px 16px; }
-      .pencil-icon { height: 42px; }
-      .fonts-area { display: none; }
-      .format-tools { font-size: 19px; gap: 10px; }
-      #editor { padding: 20px 16px; font-size: 16px; }
-      .controls {
-        padding: 16px;
-        display: flex;
-        justify-content: space-around;
-        gap: 0;
+      .top-bar {
+        padding: 14px 16px;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 10px;
+      }
+      .top-bar > div:first-child {
+        width: auto;
+        justify-content: flex-start;
+      }
+      .top-bar > div:nth-child(2) {
+        justify-content: center;
+        flex: none;
+        width: 100%;
+        grid-column: 2;
+        grid-row: 1;
+      }
+      .top-bar > div:nth-child(3) {
+        width: auto;
+        justify-content: center;
+        grid-column: 3;
+        grid-row: 1;
         margin-left: 0;
       }
-      .action-icon { height: 34px; }
-      .cancel-btn { bottom: 16px; left: 16px; height: 30px; }
+      .top-bar > div:nth-child(4) {
+        width: auto;
+        justify-content: flex-end;
+        grid-column: 4;
+        grid-row: 1;
+      }
+      .pencil-icon { height: 42px; }
+      .fonts-area { display: none; }
+      .format-tools {
+        font-size: 18px;
+        gap: 12px;
+        justify-content: center;
+      }
+      #editor { padding: 20px 16px; font-size: 16px; }
+      .controls {
+        padding: 16px 12px;
+        display: flex;
+        justify-content: space-between;
+        gap: 0;
+        position: relative;
+        margin-bottom: 60px;
+      }
+      .action-icon {
+        height: 34px;
+        flex: 0 1 auto;
+      }
+      .cancel-btn {
+        position: absolute;
+        bottom: 16px;
+        left: 12px;
+        height: 30px;
+        width: 30px;
+      }
       #typing-test-btn { margin-right: 8px; }
       #apk-btn {
         width: 36px;
         height: 36px;
-        bottom: 15px;
-        right: 100px;
+        bottom: 16px;
+        right: auto;
+        left: 50%;
+        transform: translateX(40px);
       }
       #donate-btn {
         width: 36px;
         height: 36px;
-        bottom: 17px;
-        right: 58px;
+        bottom: 16px;
+        right: auto;
+        left: 50%;
+        transform: translateX(80px);
       }
       #copyright-btn {
         width: 35px;
         height: 35px;
-        bottom: 15px;
-        right: 18px;
+        bottom: 16px;
+        right: 12px;
       }
     }
     @media (max-width: 400px) {
-      .format-tools { font-size: 18px; gap: 8px; }
+      .format-tools { font-size: 17px; gap: 10px; }
       #typing-test-btn { margin-right: 6px; }
-      #apk-btn {
-        width: 36px;
-        height: 36px;
-        bottom: 15px;
-        right: 94px;
-      }
-    }
-    @media (max-width: 360px) {
-      .top-bar { padding: 12px 12px; }
-      .pencil-icon { height: 38px; }
-      .fonts-area { display: none; }
-      .format-tools { gap: 6px; font-size: 17px; }
-      #editor { padding: 18px 12px; font-size: 15px; }
       .controls {
-        gap: 0;
-        padding: 14px 12px;
+        padding: 16px 10px;
       }
       .action-icon { height: 32px; }
-      .cancel-btn { bottom: 14px; left: 12px; height: 28px; }
-      #typing-test-btn { margin-right: 4px; }
       #apk-btn {
         width: 34px;
         height: 34px;
-        bottom: 15px;
-        right: 90px;
+        transform: translateX(38px);
       }
       #donate-btn {
         width: 34px;
         height: 34px;
-        bottom: 17px;
-        right: 53px;
+        transform: translateX(76px);
       }
       #copyright-btn {
         width: 33px;
         height: 33px;
-        bottom: 15px;
-        right: 12px;
+        bottom: 16px;
+        right: 10px;
+      }
+    }
+    @media (max-width: 360px) {
+      .top-bar {
+        padding: 12px 12px;
+        grid-template-columns: auto 1fr auto;
+        gap: 8px;
+      }
+      .pencil-icon { height: 38px; }
+      .fonts-area { display: none; }
+      .format-tools {
+        gap: 8px;
+        font-size: 16px;
+      }
+      #editor { padding: 18px 12px; font-size: 15px; }
+      .controls {
+        gap: 0;
+        padding: 14px 10px;
+        margin-bottom: 55px;
+      }
+      .action-icon { height: 30px; }
+      .cancel-btn {
+        bottom: 14px;
+        left: 10px;
+        height: 28px;
+        width: 28px;
+      }
+      #typing-test-btn { margin-right: 4px; }
+      #apk-btn {
+        width: 32px;
+        height: 32px;
+        bottom: 14px;
+        transform: translateX(36px);
+      }
+      #donate-btn {
+        width: 32px;
+        height: 32px;
+        bottom: 14px;
+        transform: translateX(72px);
+      }
+      #copyright-btn {
+        width: 31px;
+        height: 31px;
+        bottom: 14px;
+        right: 10px;
       }
     }
     @media (max-width: 320px) {
-      .format-tools { gap: 5px; font-size: 16px; }
+      .format-tools { gap: 6px; font-size: 15px; }
       #typing-test-btn { margin-right: 3px; }
+      .controls {
+        padding: 14px 8px;
+      }
+      .action-icon { height: 28px; }
+      .cancel-btn {
+        left: 8px;
+        height: 26px;
+        width: 26px;
+      }
+      #apk-btn {
+        width: 30px;
+        height: 30px;
+        transform: translateX(34px);
+      }
+      #donate-btn {
+        width: 30px;
+        height: 30px;
+        transform: translateX(68px);
+      }
+      #copyright-btn {
+        width: 29px;
+        height: 29px;
+        right: 8px;
+      }
     }
     @supports (padding-top: env(safe-area-inset-top)) {
       .top-bar {
@@ -734,6 +832,22 @@
       }
       #emotions-sidebar.active {
         transform: translateY(0);
+      }
+      #emotions-sidebar .close-btn {
+        position: relative !important;
+        top: auto !important;
+        right: auto !important;
+        left: auto !important;
+        margin: 0 auto 15px auto !important;
+        display: block !important;
+        width: 40px !important;
+        height: 40px !important;
+        line-height: 40px !important;
+        font-size: 28px !important;
+      }
+      #emotions-sidebar h2 {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
       }
     }
   </style>
