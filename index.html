@@ -313,44 +313,36 @@
       visibility: visible;
     }
     @media (max-width: 768px) {
-      .cancel-btn,
-      #apk-btn,
-      #donate-btn,
+      #apk-btn { display: none; }
+      #donate-btn { display: none; }
       #copyright-btn {
-        position: static !important;
-        transform: none !important;
-        bottom: auto !important;
-        left: auto !important;
-        right: auto !important;
-        margin: 0 !important;
+        width: 38px;
+        height: 38px;
+        bottom: 18px;
+        right: 20px;
       }
-
+      .top-bar {
+        padding: 15px 10px;
+        gap: 20px;
+      }
+      .fonts-area { display: none; }
+      .format-tools { 
+        gap: 10px; 
+        }
+      .cancel-btn {
+        position: absolute;
+        bottom: 18px;
+        left: 20px;
+        height: 38px;
+      }
       .controls {
-        display: flex;
-        flex-wrap: nowrap;
-        justify-content: space-between;
-        padding: 16px;
-        gap: 5px;
-        margin-bottom: 0;
+        padding: 20px 20px;
+        justify-content: center;
+        margin-left: -10;
       }
-
-      .cancel-btn,
-      .action-icon,
-      #apk-btn,
-      #donate-btn,
-      #copyright-btn {
-        height: 34px;
-        width: 34px;
-        flex: 0 0 auto;
+      .action-icon {
+        height: 38px;
       }
-
-      #apk-btn,
-      #donate-btn,
-      #copyright-btn {
-        width: 36px;
-        height: 36px;
-      }
-      
       #donate-sidebar {
         top: auto;
         bottom: 70px;
@@ -360,95 +352,116 @@
         transform: none;
         padding: 12px;
       }
+      #chaos-btn, #noise-btn {
+        height: 38px;
+      }
     }
     @media (max-width: 500px) {
       .top-bar {
-        padding: 14px 16px;
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        gap: 10px;
-      }
-      .top-bar > div:first-child {
-        width: auto;
-        justify-content: flex-start;
-      }
-      .top-bar > div:nth-child(2) {
-        justify-content: flex-end;
-        flex: none;
-        width: auto;
-        grid-column: 2;
-        grid-row: 1;
-      }
-      .top-bar > div:nth-child(3) {
-        width: auto;
-        justify-content: center;
-        grid-column: 3;
-        grid-row: 1;
-        margin-left: 0;
-      }
-      .top-bar > div:nth-child(4) {
-        width: auto;
-        justify-content: flex-end;
-        grid-column: 4;
-        grid-row: 1;
+        padding: 15px 10px;
+        gap: 5px;
       }
       .pencil-icon { height: 42px; }
       .fonts-area { display: none; }
-      .format-tools {
-        font-size: 18px;
-        gap: 12px;
-        justify-content: flex-end;
-      }
+      .format-tools { 
+        gap: 20px; 
+        }
       #editor { padding: 20px 16px; font-size: 16px; }
+      .controls {
+        padding: 0px;
+        gap: 30px;
+        margin-left: 10;
+        position: center;
+        bottom: 20px; 
+        left: 10px; 
+        height: 25px; 
+      }
+      .action-icon { height: 36px; }
+      .cancel-btn { 
+        position: absolute;
+        bottom: 16px; 
+        left: 10px; 
+        height: 36px; 
+      }
+      #apk-btn { display: none; }
+      #donate-btn { display: none; }
+      #copyright-btn {
+        width: 36px;
+        height: 36px;
+        bottom: 16px;
+        right: 10px;
+      }
       #typing-test-btn { margin-right: 8px; }
+      #chaos-btn, #noise-btn { height: 36px; }
     }
     @media (max-width: 400px) {
-      .format-tools { font-size: 17px; gap: 10px; justify-content: flex-end; }
       #typing-test-btn { margin-right: 6px; }
-      .cancel-btn,
-      .action-icon,
-      #apk-btn,
-      #donate-btn,
-      #copyright-btn {
-        height: 32px;
-        width: 32px;
+      .controls {
+        gap: 20px;
       }
+      .action-icon { height: 34px; }
+      .cancel-btn { height: 34px; }
+      #apk-btn { display: none; }
+      #donate-btn { display: none; }
+      #copyright-btn {
+        width: 34px;
+        height: 34px;
+        right: 10px;
+        bottom: 17px;
+      }
+      #chaos-btn, #noise-btn { height: 34px; }
     }
     @media (max-width: 360px) {
-      .top-bar {
-        padding: 12px 12px;
-        grid-template-columns: auto 1fr auto;
-        gap: 8px;
-      }
+      .top-bar { padding: 12px 12px; }
       .pencil-icon { height: 38px; }
       .fonts-area { display: none; }
-      .format-tools {
-        gap: 8px;
-        font-size: 16px;
-        justify-content: flex-end;
-      }
+      .format-tools { 
+        gap: 10px; 
+        }
       #editor { padding: 18px 12px; font-size: 15px; }
-      .cancel-btn,
-      .action-icon,
-      #apk-btn,
-      #donate-btn,
-      #copyright-btn {
-        height: 30px;
-        width: 30px;
+      .controls {
+        gap: 16px;
+        padding: 14px 12px;
+      }
+      .action-icon { height: 32px; }
+      .cancel-btn { 
+        bottom: 14px; 
+        left: 12px; 
+        height: 32px; 
       }
       #typing-test-btn { margin-right: 4px; }
+      #apk-btn { display: none; }
+      #donate-btn { display: none; }
+      #copyright-btn {
+        width: 32px;
+        height: 32px;
+        right: 12px;
+        bottom: 14px;
+      }
+      #chaos-btn, #noise-btn { height: 32px; }
     }
     @media (max-width: 320px) {
-      .format-tools { gap: 6px; font-size: 15px; justify-content: flex-end; }
-      #typing-test-btn { margin-right: 3px; }
-      .cancel-btn,
-      .action-icon,
-      #apk-btn,
-      #donate-btn,
-      #copyright-btn {
-        height: 28px;
-        width: 28px;
+      .fonts-area { display: none; }
+      .format-tools { 
+        gap: 6px; 
+        font-size: 15px; 
+        justify-content: center;
       }
+      #typing-test-btn { margin-right: 3px; }
+      .controls {
+        gap: 12px;
+      }
+      .action-icon { height: 30px; }
+      .cancel-btn { height: 30px; }
+      #apk-btn { display: none; }
+      #donate-btn { display: none; }
+      #copyright-btn {
+        width: 30px;
+        height: 30px;
+        right: 22px;
+        bottom: 16px;
+      }
+      #chaos-btn, #noise-btn { height: 30px; }
     }
     @supports (padding-top: env(safe-area-inset-top)) {
       .top-bar {
@@ -460,18 +473,12 @@
       .cancel-btn {
         bottom: calc(18px + env(safe-area-inset-bottom));
       }
+      #apk-btn, #donate-btn, #copyright-btn {
+        bottom: calc(18px + env(safe-area-inset-bottom));
+      }
     }
     #chaos-btn, #noise-btn { opacity: 0.7; }
     #chaos-btn:hover, #noise-btn:hover { opacity: 1; }
-    @media (max-width: 768px) {
-      #chaos-btn, #noise-btn { height: 34px; }
-    }
-    @media (max-width: 500px) {
-      #chaos-btn, #noise-btn { height: 32px; }
-    }
-    @media (max-width: 360px) {
-      #chaos-btn, #noise-btn { height: 30px; }
-    }
     #chaos-btn {
       transition: all 0.3s ease !important;
     }
