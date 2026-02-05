@@ -313,24 +313,44 @@
       visibility: visible;
     }
     @media (max-width: 768px) {
-      #apk-btn {
-        width: 36px;
-        height: 36px;
-        bottom: 15px;
-        right: 100px;
-      }
-      #donate-btn {
-        width: 36px;
-        height: 36px;
-        bottom: 17px;
-        right: 58px;
-      }
+      .cancel-btn,
+      #apk-btn,
+      #donate-btn,
       #copyright-btn {
-        width: 35px;
-        height: 35px;
-        bottom: 18px;
-        right: 22px;
+        position: static !important;
+        transform: none !important;
+        bottom: auto !important;
+        left: auto !important;
+        right: auto !important;
+        margin: 0 !important;
       }
+
+      .controls {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        padding: 16px;
+        gap: 5px;
+        margin-bottom: 0;
+      }
+
+      .cancel-btn,
+      .action-icon,
+      #apk-btn,
+      #donate-btn,
+      #copyright-btn {
+        height: 34px;
+        width: 34px;
+        flex: 0 0 auto;
+      }
+
+      #apk-btn,
+      #donate-btn,
+      #copyright-btn {
+        width: 36px;
+        height: 36px;
+      }
+      
       #donate-sidebar {
         top: auto;
         bottom: 70px;
@@ -380,71 +400,18 @@
         justify-content: flex-end;
       }
       #editor { padding: 20px 16px; font-size: 16px; }
-      .controls {
-        padding: 16px 12px;
-        display: flex;
-        justify-content: space-between;
-        gap: 0;
-        position: relative;
-        margin-bottom: 60px;
-      }
-      .action-icon {
-        height: 34px;
-        flex: 0 1 auto;
-      }
-      .cancel-btn,
-      #apk-btn,
-      #donate-btn,
-      #copyright-btn {
-        position: fixed;
-        bottom: 16px;
-        height: 36px;
-        width: 36px;
-        transform: none;
-        left: auto;
-        right: auto;
-        margin: 0;
-      }
-      .cancel-btn {
-        left: 16px;
-      }
-      #apk-btn {
-        left: calc(25% - 18px);
-      }
-      #donate-btn {
-        left: calc(50% - 18px);
-      }
-      #copyright-btn {
-        right: 16px;
-      }
       #typing-test-btn { margin-right: 8px; }
     }
     @media (max-width: 400px) {
       .format-tools { font-size: 17px; gap: 10px; justify-content: flex-end; }
       #typing-test-btn { margin-right: 6px; }
-      .controls {
-        padding: 16px 10px;
-      }
-      .action-icon { height: 32px; }
       .cancel-btn,
+      .action-icon,
       #apk-btn,
       #donate-btn,
       #copyright-btn {
-        height: 34px;
-        width: 34px;
-        bottom: 14px;
-      }
-      .cancel-btn {
-        left: 14px;
-      }
-      #apk-btn {
-        left: calc(25% - 17px);
-      }
-      #donate-btn {
-        left: calc(50% - 17px);
-      }
-      #copyright-btn {
-        right: 14px;
+        height: 32px;
+        width: 32px;
       }
     }
     @media (max-width: 360px) {
@@ -461,60 +428,26 @@
         justify-content: flex-end;
       }
       #editor { padding: 18px 12px; font-size: 15px; }
-      .controls {
-        gap: 0;
-        padding: 14px 10px;
-        margin-bottom: 55px;
-      }
-      .action-icon { height: 30px; }
       .cancel-btn,
+      .action-icon,
       #apk-btn,
       #donate-btn,
       #copyright-btn {
-        height: 32px;
-        width: 32px;
-        bottom: 12px;
-      }
-      .cancel-btn {
-        left: 12px;
-      }
-      #apk-btn {
-        left: calc(25% - 16px);
-      }
-      #donate-btn {
-        left: calc(50% - 16px);
-      }
-      #copyright-btn {
-        right: 12px;
+        height: 30px;
+        width: 30px;
       }
       #typing-test-btn { margin-right: 4px; }
     }
     @media (max-width: 320px) {
       .format-tools { gap: 6px; font-size: 15px; justify-content: flex-end; }
       #typing-test-btn { margin-right: 3px; }
-      .controls {
-        padding: 14px 8px;
-      }
-      .action-icon { height: 28px; }
       .cancel-btn,
+      .action-icon,
       #apk-btn,
       #donate-btn,
       #copyright-btn {
-        height: 30px;
-        width: 30px;
-        bottom: 10px;
-      }
-      .cancel-btn {
-        left: 10px;
-      }
-      #apk-btn {
-        left: calc(25% - 15px);
-      }
-      #donate-btn {
-        left: calc(50% - 15px);
-      }
-      #copyright-btn {
-        right: 10px;
+        height: 28px;
+        width: 28px;
       }
     }
     @supports (padding-top: env(safe-area-inset-top)) {
