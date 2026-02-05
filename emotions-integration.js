@@ -51,7 +51,7 @@
         createSidebar() {
             const sidebar = document.createElement('div');
             sidebar.id = 'emotions-sidebar';
-            sidebar.innerHTML = `<button class="close-btn" id="emotions-close-btn">×</button><h2>🎭 Blokknote Emotions Analysis</h2><div id="emotions-content"><p style="color:#aaa;text-align:center;padding:40px 0;">Click 'A' button to analyze text</p></div>`;
+            sidebar.innerHTML = `<button class="close-btn" id="emotions-close-btn">×</button><h2>Blokknote Emotions Analysis</h2><div id="emotions-content"><p style="color:#aaa;text-align:center;padding:40px 0;">Click 'A' button to analyze text</p></div>`;
             document.body.appendChild(sidebar);
             this.sidebar = sidebar;
             this.closeBtn = document.getElementById('emotions-close-btn');
@@ -447,7 +447,7 @@
                     html += `
                         <div class="emotion-metric" style="border-left:3px solid ${severityColor};padding-left:8px;">
                             <span class="label">${rep.word}:</span>
-                            <span class="value">${rep.count} ${translations.repetitionCount}</span>
+                            <span class="value">${rep.count}</span>
                         </div>
                     `;
                 });
@@ -2004,4 +2004,5 @@
     }
 
 })();
+
 
