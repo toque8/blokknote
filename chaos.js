@@ -500,8 +500,6 @@
             lines.push('semantic physic visualization');
             lines.push(`id: ${this.sessionId}`);
             if (this.text.length > 0) {
-                lines.push(`symbols: ${this.stats.symbols}`);
-                lines.push(`words: ${this.stats.words}`);
                 lines.push(`objects: ${this.particleCount}`);
                 lines.push(`sensitivity: ${this.sensitivity}`);
             } else {
@@ -1126,5 +1124,6 @@
     
     initializeChaos();
 })();
+
 
 
