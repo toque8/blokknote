@@ -94,7 +94,7 @@ class EmotionsUI {
                     if (!hasEnoughData) {
                         const currentLang = this.getCurrentLanguage();
                         if (currentLang === 'ru') {
-                            this.showError('Не достаточно данных для анализа');
+                            this.showError('Недостаточно данных для анализа');
                         } else {
                             this.showError('Not enough data for analysis');
                         }
@@ -108,8 +108,11 @@ class EmotionsUI {
             } catch (err) {
                 const currentLang = this.getCurrentLanguage();
                 let message = err.message;
-                if (err.message.includes('avgComplexity') || err.message.includes('Cannot read properties')) {
-                    message = currentLang === 'ru' ? 'Не достаточно данных для анализа' : 'Not enough data for analysis';
+                if (err.message.includes('avgComplexity') || 
+                    err.message.includes('Cannot read properties') || 
+                    err.message.includes('undefined') ||
+                    err.message.includes('syntactic')) {
+                    message = currentLang === 'ru' ? 'Недостаточно данных для анализа' : 'Not enough data for analysis';
                 }
                 this.showError(message);
             } finally {
@@ -208,7 +211,9 @@ class EmotionsUI {
             'disapproval': 'неодобрение',
             'remorse': 'раскаяние',
             'neutral': 'мало данных',
-            'contempt': 'презрение'
+            'contempt': 'презрение',
+            'peaceful': 'спокойствие',
+            'peacefulAdj': 'спокойный'
         };
         return translations[emotion] || emotion;
     }
@@ -320,6 +325,22 @@ class EmotionsUI {
             html += `
                 <div class="emotion-section">
                     <h3>${translations.primaryProfile}</h3>`;
+            
+            if (this.shouldShowMetric(primaryToneName)) {
+                html += `
+                    <div class="emotion-metric">
+                        <span class="label" title="${translations.primaryToneDesc}">${translations.primaryTone}:</span>
+                        <span class="value">${primaryToneName}</span>
+                    </div>`;
+            }
+            
+            if (this.shouldShowMetric(primaryToneDesc)) {
+                html += `
+                    <div class="emotion-metric">
+                        <span class="label">${translations.description}:</span>
+                        <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${primaryToneDesc}</span>
+                    </div>`;
+            }
             
             if (this.shouldShowMetric(polarity, true)) {
                 html += `
@@ -1183,7 +1204,7 @@ class EmotionsUI {
                     html += `
                         <div class="emotion-metric">
                             <span class="label" title="${translations.emotionalPatternsDesc}">${translations.emotionalPatterns}:</span>
-                            <span class="value">${insights.emotionalPatterns.join(', ')}</span>
+                            <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${insights.emotionalPatterns.join(', ')}</span>
                         </div>`;
                 }
                 
@@ -1191,7 +1212,7 @@ class EmotionsUI {
                     html += `
                         <div class="emotion-metric">
                             <span class="label" title="${translations.cognitiveStyleDesc}">${translations.cognitiveStyle}:</span>
-                            <span class="value">${this.translateCognitiveStyle(insights.cognitiveStyle.style, currentLang)}</span>
+                            <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${this.translateCognitiveStyle(insights.cognitiveStyle.style, currentLang)}</span>
                         </div>`;
                 }
                 
@@ -1199,7 +1220,7 @@ class EmotionsUI {
                     html += `
                         <div class="emotion-metric">
                             <span class="label" title="${translations.relationsDesc}">${translations.relations}:</span>
-                            <span class="value">${insights.relationalPatterns.join(', ')}</span>
+                            <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${insights.relationalPatterns.join(', ')}</span>
                         </div>`;
                 }
                 
@@ -1207,7 +1228,7 @@ class EmotionsUI {
                     html += `
                         <div class="emotion-metric">
                             <span class="label" title="${translations.growthPathsDesc}">${translations.growthPaths}:</span>
-                            <span class="value">${insights.personalGrowth.join(', ')}</span>
+                            <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${insights.personalGrowth.join(', ')}</span>
                         </div>`;
                 }
                 
@@ -1215,7 +1236,7 @@ class EmotionsUI {
                     html += `
                         <div class="emotion-metric">
                             <span class="label" title="${translations.therapeuticApproachesDesc}">${translations.therapeuticApproaches}:</span>
-                            <span class="value">${insights.therapeuticApproaches.join(', ')}</span>
+                            <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${insights.therapeuticApproaches.join(', ')}</span>
                         </div>`;
                 }
                 
@@ -1994,7 +2015,14 @@ class EmotionsUI {
         const content = document.getElementById('emotions-content');
         const currentLang = this.getCurrentLanguage();
         const title = currentLang === 'ru' ? 'Ошибка анализа' : 'Analysis Error';
-        content.innerHTML = `<div style="color:#f87171;padding:20px;text-align:center;"><h3>${title}</h3><p>${error}</p></div>`;
+        let message = error;
+        if (error.includes('avgComplexity') || 
+            error.includes('Cannot read properties') || 
+            error.includes('undefined') ||
+            error.includes('syntactic')) {
+            message = currentLang === 'ru' ? 'Недостаточно данных для анализа' : 'Not enough data for analysis';
+        }
+        content.innerHTML = `<div style="color:#f87171;padding:20px;text-align:center;"><h3>${title}</h3><p>${message}</p></div>`;
     }
 }
 
