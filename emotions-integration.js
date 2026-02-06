@@ -88,26 +88,12 @@
                 try {
                     const result = this.analyzer.analyze(text);
                     if (result.success) {
-                        if (!result.details || !result.details.syntactic) {
-                            const currentLang = this.getCurrentLanguage();
-                            if (currentLang === 'ru') {
-                                this.showError('Не достаточно данных для анализа');
-                            } else {
-                                this.showError('Not enough data for analysis');
-                            }
-                            return;
-                        }
                         this.renderResult(result);
                     } else {
                         this.showError(result.error);
                     }
                 } catch (err) {
-                    const currentLang = this.getCurrentLanguage();
-                    if (currentLang === 'ru') {
-                        this.showError('Не достаточно данных для анализа');
-                    } else {
-                        this.showError('Not enough data for analysis');
-                    }
+                    this.showError(err.message);
                 } finally {
                     this._rendering = false;
                 }
@@ -2007,9 +1993,16 @@
             const content = document.getElementById('emotions-content');
             const currentLang = this.getCurrentLanguage();
     
+            let message = error;
+            if (error.includes('avgComplexity') || error.includes('Cannot read properties of undefined')) {
+                message = currentLang === 'ru' 
+                    ? 'Не достаточно данных для анализа' 
+                    : 'Not enough data for analysis';
+            }
+    
             content.innerHTML = `<div style="color:#f87171;padding:20px;text-align:center;">
                 <h3>${currentLang === 'ru' ? 'Ошибка анализа' : 'Analysis Error'}</h3>
-                <p>${error}</p>
+                <p>${message}</p>
             </div>`;
         }
     }
@@ -2023,6 +2016,7 @@
     }
 
 })();
+
 
 
 
