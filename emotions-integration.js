@@ -1996,6 +1996,7 @@
                             error.includes('undefined') ||
                             error.includes('enough data') ||
                             error.includes('syntacticComplexity') ||
+                            error.includes('данных')
                 ? (currentLang === 'ru' ? 'Не достаточно данных для анализа' : 'Not enough data for analysis')
                 : error;
     
@@ -2015,5 +2016,6 @@
     }
 
 })();
+
 
 
