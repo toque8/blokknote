@@ -212,7 +212,7 @@ translatePlutchikEmotion(emotion, lang) {
         'neutral': 'мало данных',
         'contempt': 'презрение',
         'peaceful': 'спокойствие',
-        'peacefulAdj': 'спокойный'
+        'peacefulAdj': 'покой'
     };
     return translations[emotion] || emotion;
 }
@@ -311,13 +311,92 @@ translateValue(value, lang) {
         return translations[value] || value;
     } else if (lang === 'en') {
         const translations = {
-            'рефлексивный': 'reflective',
-            'импульсивный': 'impulsive',
-            'аналитический': 'analytical',
-            'интуитивный': 'intuitive',
-            'сбалансированный': 'balanced',
-            'креативный': 'creative',
-            'прагматичный': 'practical',
+            // Primary tone names
+            'Эмоциональная гамма': 'Emotional Spectrum',
+            'Божественный экстаз': 'Divine Ecstasy',
+            'Всепоглощающая радость': 'All-Encompassing Joy',
+            'Лучистая радость': 'Radiant Joy',
+            'Тихий восторг': 'Quiet Delight',
+            'Счастливая гармония': 'Happy Harmony',
+            'Умиротворённое удовлетворение': 'Peaceful Satisfaction',
+            'Абсолютное спокойствие': 'Absolute Calm',
+            'Гармоничное равновесие': 'Harmonious Balance',
+            'Яростный шторм': 'Furious Storm',
+            'Сдерживаемая буря': 'Contained Storm',
+            'Бездонная печаль': 'Bottomless Sadness',
+            'Нежная грусть': 'Gentle Sadness',
+            'Философская меланхолия': 'Philosophical Melancholy',
+            'Тревожное ожидание': 'Anxious Anticipation',
+            'Многогранная сложность': 'Multifaceted Complexity',
+            'Сложное переплетение': 'Complex Intertwining',
+            'Горько-сладкая симфония': 'Bittersweet Symphony',
+            'Ностальгическое эхо': 'Nostalgic Echo',
+            
+            // Primary tone descriptions
+            'Сдержанное богатое эмоциональное переживание': 'Restrained rich emotional experience',
+            'Состояние полного, всеобъемлющего счастья и духовного подъёма': 'A state of complete, all-encompassing happiness and spiritual upliftment',
+            'Яркое, жизнеутверждающее эмоциональное состояние': 'A bright, life-affirming emotional state',
+             'Устойчивое чувство удовлетворения и благополучия': 'A stable feeling of satisfaction and well-being',
+            'Спокойное принятие и удовлетворение текущим моментом': 'Calm acceptance and satisfaction with the current moment',
+            'Глубокое внутреннее равновесие и гармония': 'Deep inner balance and harmony',
+            'Интенсивное состояние недовольства и внутреннего напряжения': 'An intense state of dissatisfaction and inner tension',
+            'Эмоциональное переживание потери или разочарования': 'An emotional experience of loss or disappointment',
+            'Сложное сочетание грусти и глубокой рефлексии': 'A complex combination of sadness and deep reflection',
+            'Состояние беспокойства и предчувствия': 'A state of anxiety and premonition',
+            'Многоуровневое, противоречивое эмоциональное переживание': 'A multi-layered, contradictory emotional experience',
+            'Одновременное переживание радости и печали': 'Simultaneous experience of joy and sadness',
+            'Тёплые воспоминания, окрашенные лёгкой грустью': 'Warm memories tinged with slight sadness',
+            'Богатое эмоциональное переживание': 'Rich emotional experience',
+            'Интенсивное богатое эмоциональное переживание, отличающееся глубиной и многослойностью': 'Intense rich emotional experience characterized by depth and multi-layeredness',
+            'Сдержанное богатое эмоциональное переживание, отличающееся глубиной и многослойностью': 'Restrained rich emotional experience characterized by depth and multi-layeredness',
+            
+            // Keywords
+            'эмоция': 'emotion',
+            'чувство': 'feeling',
+            'переживание': 'experience',
+            'восторг': 'ecstasy',
+            'экстаз': 'ecstasy',
+            'эйфория': 'euphoria',
+            'блаженство': 'bliss',
+            'радость': 'joy',
+            'счастье': 'happiness',
+            'ликование': 'jubilation',
+            'веселье': 'merriment',
+            'удовлетворение': 'satisfaction',
+            'благополучие': 'well-being',
+            'гармония': 'harmony',
+            'спокойствие': 'calm',
+            'тишина': 'silence',
+            'равновесие': 'balance',
+            'умиротворение': 'serenity',
+            'гнев': 'anger',
+            'ярость': 'fury',
+            'раздражение': 'irritation',
+            'негодование': 'indignation',
+            'грусть': 'sadness',
+            'печаль': 'sorrow',
+            'тоска': 'melancholy',
+            'скорбь': 'grief',
+            'меланхолия': 'melancholy',
+            'рефлексия': 'reflection',
+            'созерцание': 'contemplation',
+            'тревога': 'anxiety',
+            'беспокойство': 'worry',
+            'опасение': 'apprehension',
+            'нервозность': 'nervousness',
+            'противоречие': 'contradiction',
+            'многослойность': 'multi-layeredness',
+            'глубина': 'depth',
+            'нюансы': 'nuances',
+            'амбивалентность': 'ambivalence',
+            'смешанные чувства': 'mixed feelings',
+            'контраст': 'contrast',
+            'воспоминания': 'memories',
+            'прошлое': 'past',
+            'память': 'memory',
+            'эхо': 'echo',
+            
+            // Psychological insights
             'устойчивый эмоциональный фон': 'stable emotional background',
             'широкий эмоциональный диапазон': 'wide emotional range',
             'сложная эмоциональная палитра': 'complex emotional palette',
@@ -327,23 +406,30 @@ translateValue(value, lang) {
             'умеренная эмоциональная выразительность': 'moderate emotional expressiveness',
             'склонность к позитивным взаимодействиям': 'tendency to positive interactions',
             'открытость в общении': 'openness in communication',
-             'потребность в понимании и поддержке': 'need for understanding and support',
+            'потребность в понимании и поддержке': 'need for understanding and support',
             'глубина в отношениях': 'depth in relationships',
             'защитная позиция в отношениях': 'defensive position in relationships',
             'потребность в безопасных границах': 'need for safe boundaries',
             'использование дистанции в общении': 'use of distance in communication',
             'сбалансированный стиль общения': 'balanced communication style',
             'расширение эмоционального репертуара': 'expanding emotional repertoire',
-             'развитие эмоциональной стабильности': 'developing emotional stability',
+            'развитие эмоциональной стабильности': 'developing emotional stability',
             'интеграция сложных эмоциональных переживаний': 'integration of complex emotional experiences',
-             'развитие психологической осознанности': 'developing psychological awareness',
+            'развитие психологической осознанности': 'developing psychological awareness',
             'гармонизация эмоциональной сферы': 'harmonization of emotional sphere',
             'гештальт-терапия': 'gestalt therapy',
             'экзистенциальная терапия': 'existential therapy',
             'когнитивно-поведенческая терапия': 'cognitive-behavioral therapy',
             'терапия принятия и ответственности': 'acceptance and commitment therapy',
             'глубинная психотерапия': 'depth psychotherapy',
-            'общеукрепляющая психотерапия': 'general strengthening psychotherapy'
+            'общеукрепляющая психотерапия': 'general strengthening psychotherapy',
+            'рефлексивный': 'reflective',
+            'импульсивный': 'impulsive',
+            'аналитический': 'analytical',
+            'интуитивный': 'intuitive',
+            'сбалансированный': 'balanced',
+            'креативный': 'creative',
+            'прагматичный': 'practical'
         };
         return translations[value] || value;
     }
@@ -408,7 +494,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.primaryToneDesc}">${translations.primaryTone}:</span>
-                     <span class="value">${this.translateValue(primaryToneName, currentLang)}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${this.translateValue(primaryToneName, currentLang)}</span>
                  </div>`;
         }
         
@@ -416,7 +502,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label">${translations.description}:</span>
-                     <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${this.translateValue(primaryToneDesc, currentLang)}</span>
+                     <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${this.translateValue(primaryToneDesc, currentLang)}</span>
                  </div>`;
         }
         
@@ -424,7 +510,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.polarityDesc}">${translations.polarity}:</span>
-                     <span class="value">${(polarity * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(polarity * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -432,7 +518,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.intensityDesc}">${translations.intensity}:</span>
-                     <span class="value">${(intensity * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(intensity * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -440,7 +526,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.confidenceDesc}">${translations.confidence}:</span>
-                     <span class="value">${(confidence * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(confidence * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -448,7 +534,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.consistencyDesc}">${translations.consistency}:</span>
-                     <span class="value">${(consistency * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(consistency * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -456,7 +542,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.textComplexityDesc}">${translations.textComplexity}:</span>
-                     <span class="value">${(textComplexity * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(textComplexity * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -464,7 +550,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.complexityDesc}">${translations.complexity}:</span>
-                     <span class="value">${(complexity * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(complexity * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -472,7 +558,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.emotionalRangeDesc}">${translations.emotionalRange}:</span>
-                     <span class="value">${(emotionalRange * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(emotionalRange * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -480,7 +566,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.emotionalDepthDesc}">${translations.emotionalDepth}:</span>
-                     <span class="value">${(emotionalDepth * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(emotionalDepth * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -488,7 +574,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.emotionalTrendDesc}">${translations.emotionalTrend}:</span>
-                     <span class="value">${this.translateEmotionalTrend(emotionalTrend, currentLang)}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${this.translateEmotionalTrend(emotionalTrend, currentLang)}</span>
                  </div>`;
         }
         
@@ -496,7 +582,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.emotionalArcDesc}">${translations.emotionalArc}:</span>
-                     <span class="value">${this.translateEmotionalArc(emotionalArc, currentLang)}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${this.translateEmotionalArc(emotionalArc, currentLang)}</span>
                  </div>`;
         }
         
@@ -504,7 +590,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.narrativeDesc}">${translations.narrative}:</span>
-                     <span class="value">${this.translateNarrative(narrative, currentLang)}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${this.translateNarrative(narrative, currentLang)}</span>
                  </div>`;
         }
         
@@ -516,7 +602,7 @@ renderResult(result) {
              <div class="emotion-section">
                  <h3>${translations.keywords}</h3>
                ${keywords.map(keyword => 
-                    `<div class="emotion-metric"><span class="value">${this.translateValue(keyword, currentLang)}</span></div>`
+                    `<div class="emotion-metric"><span class="value" style="text-align:right !important;float:right;">${this.translateValue(keyword, currentLang)}</span></div>`
                 ).join('')}
              </div>`;
     }
@@ -567,7 +653,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.totalCharsDesc}">${translations.totalChars}:</span>
-                     <span class="value">${textLength}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${textLength}</span>
                  </div>`;
         }
         
@@ -575,7 +661,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.totalWordsDesc}">${translations.totalWords}:</span>
-                     <span class="value">${wordCount}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${wordCount}</span>
                  </div>`;
         }
         
@@ -583,7 +669,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.paragraphsDesc}">${translations.paragraphs}:</span>
-                     <span class="value">${paragraphCount}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${paragraphCount}</span>
                  </div>`;
         }
         
@@ -591,7 +677,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.languageConfidenceDesc}">${translations.languageConfidence}:</span>
-                     <span class="value">${(languageConfidence * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(languageConfidence * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -608,7 +694,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.emotionalWordsDesc}">${translations.emotionalWords}:</span>
-                     <span class="value">${emotionalWords}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${emotionalWords}</span>
                  </div>`;
         }
         
@@ -616,7 +702,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.lexicalDensityDesc}">${translations.lexicalDensity}:</span>
-                     <span class="value">${(lexicalDensity * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(lexicalDensity * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -624,7 +710,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.categoriesFoundDesc}">${translations.categoriesFound}:</span>
-                     <span class="value">${categoryCount}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${categoryCount}</span>
                  </div>`;
         }
         
@@ -632,7 +718,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.dominantCategoryDesc}">${translations.dominantCategory}:</span>
-                     <span class="value">${this.translateCategory(dominantCategory, currentLang)}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${this.translateCategory(dominantCategory, currentLang)}</span>
                  </div>`;
         }
         
@@ -640,7 +726,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.lexicalConcentrationDesc}">${translations.lexicalConcentration}:</span>
-                     <span class="value">${(lexicalConcentration * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(lexicalConcentration * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -648,7 +734,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.lexicalRichnessDesc}">${translations.lexicalRichness}:</span>
-                     <span class="value">${(lexicalRichness * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(lexicalRichness * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -656,7 +742,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.emotionalClustersDesc}">${translations.emotionalClusters}:</span>
-                     <span class="value">${emotionalClusters}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${emotionalClusters}</span>
                  </div>`;
         }
         
@@ -671,7 +757,7 @@ renderResult(result) {
                 html += `
                      <div class="emotion-metric">
                          <span class="label" title="${translations.emoticonsDesc}">${translations.emoticons}:</span>
-                         <span class="value">${emoticonsText}</span>
+                         <span class="value" style="text-align:right !important;float:right;">${emoticonsText}</span>
                      </div>`;
             }
         }
@@ -694,7 +780,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.sentencesDesc}">${translations.sentences}:</span>
-                     <span class="value">${sentenceCount}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${sentenceCount}</span>
                  </div>`;
         }
         
@@ -702,7 +788,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.avgLengthDesc}">${translations.avgLength}:</span>
-                     <span class="value">${avgLength.toFixed(1)} ${translations.words}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${avgLength.toFixed(1)} ${translations.words}</span>
                  </div>`;
         }
         
@@ -715,7 +801,7 @@ renderResult(result) {
             html += `
               <div class="emotion-metric">
                      <span class="label" title="${translations.totalPunctuationDesc}">${translations.totalPunctuation}:</span>
-                     <span class="value">${totalPunctuation}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${totalPunctuation}</span>
                  </div>`;
         }
         
@@ -728,7 +814,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.emotionalPunctuationDesc}">${translations.emotionalPunctuation}:</span>
-                     <span class="value">${emotionalPunctuation}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${emotionalPunctuation}</span>
                  </div>`;
         }
         
@@ -744,7 +830,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.exclamatoryDesc}">${translations.exclamatory}:</span>
-                     <span class="value">${sentenceTypes.exclamatory}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${sentenceTypes.exclamatory}</span>
                  </div>`;
         }
         
@@ -752,7 +838,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.interrogativeDesc}">${translations.interrogative}:</span>
-                     <span class="value">${sentenceTypes.interrogative}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${sentenceTypes.interrogative}</span>
                  </div>`;
         }
         
@@ -760,7 +846,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.hesitantDesc}">${translations.hesitant}:</span>
-                     <span class="value">${sentenceTypes.hesitant}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${sentenceTypes.hesitant}</span>
                  </div>`;
         }
         
@@ -768,7 +854,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.emphaticDesc}">${translations.emphatic}:</span>
-                     <span class="value">${sentenceTypes.emphatic}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${sentenceTypes.emphatic}</span>
                  </div>`;
         }
         
@@ -776,7 +862,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.imperativeDesc}">${translations.imperative}:</span>
-                     <span class="value">${sentenceTypes.imperative}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${sentenceTypes.imperative}</span>
                  </div>`;
         }
         
@@ -784,7 +870,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.hyperbolicDesc}">${translations.hyperbolic}:</span>
-                     <span class="value">${sentenceTypes.hyperbolic}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${sentenceTypes.hyperbolic}</span>
                  </div>`;
         }
         
@@ -792,7 +878,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.poeticDesc}">${translations.poetic}:</span>
-                     <span class="value">${sentenceTypes.poetic}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${sentenceTypes.poetic}</span>
                  </div>`;
         }
         
@@ -800,7 +886,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.complexityDesc}">${translations.complexity}:</span>
-                     <span class="value">${syntacticComplexity.toFixed(2)}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${syntacticComplexity.toFixed(2)}</span>
                  </div>`;
         }
         
@@ -808,7 +894,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.rhythmDesc}">${translations.rhythm}:</span>
-                     <span class="value">${rhythmRegularity.toFixed(2)}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${rhythmRegularity.toFixed(2)}</span>
                  </div>`;
         }
         
@@ -816,7 +902,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.rhythmPatternDesc}">${translations.rhythmPattern}:</span>
-                     <span class="value">${this.translateRhythmPattern(rhythmPattern, currentLang)}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${this.translateRhythmPattern(rhythmPattern, currentLang)}</span>
                  </div>`;
         }
         
@@ -824,7 +910,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.rhythmFlowDesc}">${translations.rhythmFlow}:</span>
-                     <span class="value">${this.translateRhythmFlow(rhythmFlow, currentLang)}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${this.translateRhythmFlow(rhythmFlow, currentLang)}</span>
                  </div>`;
         }
         
@@ -832,7 +918,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.readabilityDesc}">${translations.readability}:</span>
-                     <span class="value">${this.translateReadability(readingLevel, currentLang)}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${this.translateReadability(readingLevel, currentLang)}</span>
                  </div>`;
         }
         
@@ -840,7 +926,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.syntacticCoherenceDesc}">${translations.syntacticCoherence}:</span>
-                     <span class="value">${(syntacticCoherence * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(syntacticCoherence * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -865,7 +951,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.negationsDesc}">${translations.negations}:</span>
-                     <span class="value">${contextualIndicators.negations}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${contextualIndicators.negations}</span>
                  </div>`;
         }
         
@@ -873,7 +959,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.intensifiersDesc}">${translations.intensifiers}:</span>
-                     <span class="value">${contextualIndicators.intensifiers}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${contextualIndicators.intensifiers}</span>
                  </div>`;
         }
         
@@ -881,7 +967,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.diminutivesDesc}">${translations.diminutives}:</span>
-                     <span class="value">${contextualIndicators.diminutives}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${contextualIndicators.diminutives}</span>
                  </div>`;
         }
         
@@ -889,7 +975,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.augmentativesDesc}">${translations.augmentatives}:</span>
-                     <span class="value">${contextualIndicators.augmentatives}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${contextualIndicators.augmentatives}</span>
                  </div>`;
         }
         
@@ -897,7 +983,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.ironyDesc}">${translations.irony}:</span>
-                     <span class="value">${contextualIndicators.irony}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${contextualIndicators.irony}</span>
                  </div>`;
         }
         
@@ -905,7 +991,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.contrastsDesc}">${translations.contrasts}:</span>
-                     <span class="value">${contextualIndicators.contrasts}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${contextualIndicators.contrasts}</span>
                  </div>`;
         }
         
@@ -913,7 +999,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.rhetoricalDesc}">${translations.rhetorical}:</span>
-                     <span class="value">${contextualIndicators.rhetorical}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${contextualIndicators.rhetorical}</span>
                  </div>`;
         }
         
@@ -921,7 +1007,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.hyperboleDesc}">${translations.hyperbole}:</span>
-                     <span class="value">${contextualIndicators.hyperbole}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${contextualIndicators.hyperbole}</span>
                  </div>`;
         }
         
@@ -929,7 +1015,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.understatementDesc}">${translations.understatement}:</span>
-                     <span class="value">${contextualIndicators.understatement}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${contextualIndicators.understatement}</span>
                  </div>`;
         }
         
@@ -937,7 +1023,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.contextualCoherenceDesc}">${translations.contextualCoherence}:</span>
-                     <span class="value">${(contextualCoherence * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(contextualCoherence * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -945,7 +1031,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.contextualConsistencyDesc}">${translations.contextualConsistency}:</span>
-                     <span class="value">${(contextualConsistency * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(contextualConsistency * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -953,7 +1039,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.toneVariationDesc}">${translations.toneVariation}:</span>
-                     <span class="value">${(toneVariation * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(toneVariation * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -978,7 +1064,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.literaryDesc}">${translations.literary}:</span>
-                     <span class="value">${culturalReferences.literary.count}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${culturalReferences.literary.count}</span>
                  </div>`;
         }
         
@@ -986,7 +1072,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.historicalDesc}">${translations.historical}:</span>
-                     <span class="value">${culturalReferences.historical.count}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${culturalReferences.historical.count}</span>
                  </div>`;
         }
         
@@ -994,7 +1080,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.mythologicalDesc}">${translations.mythological}:</span>
-                     <span class="value">${culturalReferences.mythological.count}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${culturalReferences.mythological.count}</span>
                  </div>`;
         }
         
@@ -1002,7 +1088,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.traditionalDesc}">${translations.traditional}:</span>
-                     <span class="value">${culturalReferences.traditional.count}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${culturalReferences.traditional.count}</span>
                  </div>`;
         }
         
@@ -1010,7 +1096,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.idiomsDesc}">${translations.idioms}:</span>
-                     <span class="value">${culturalReferences.idioms.count}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${culturalReferences.idioms.count}</span>
                  </div>`;
         }
         
@@ -1018,7 +1104,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.poeticDesc}">${translations.poetic}:</span>
-                     <span class="value">${culturalReferences.poetic.count}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${culturalReferences.poetic.count}</span>
                  </div>`;
         }
         
@@ -1026,7 +1112,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.culturalDepthDesc}">${translations.culturalDepth}:</span>
-                     <span class="value">${(culturalScores.culturalDepth * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(culturalScores.culturalDepth * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -1034,7 +1120,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.intertextualityDesc}">${translations.intertextuality}:</span>
-                     <span class="value">${(culturalScores.intertextuality * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(culturalScores.intertextuality * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -1042,7 +1128,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.culturalCoherenceDesc}">${translations.culturalCoherence}:</span>
-                     <span class="value">${(culturalCoherenceVal * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(culturalCoherenceVal * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -1050,7 +1136,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.dominantCulturalThemeDesc}">${translations.dominantCulturalTheme}:</span>
-                     <span class="value">${this.translateCulturalTheme(dominantCulturalTheme, currentLang)}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${this.translateCulturalTheme(dominantCulturalTheme, currentLang)}</span>
                  </div>`;
         }
         
@@ -1073,7 +1159,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.semanticDensityDesc}">${translations.semanticDensity}:</span>
-                     <span class="value">${(semanticDetails.density * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(semanticDetails.density * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -1081,7 +1167,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.semanticRichnessDesc}">${translations.semanticRichness}:</span>
-                     <span class="value">${(semanticDetails.semanticRichness * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(semanticDetails.semanticRichness * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -1089,7 +1175,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.semanticCoherenceDesc}">${translations.semanticCoherence}:</span>
-                     <span class="value">${(semanticDetails.coherence * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(semanticDetails.coherence * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -1097,7 +1183,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.abstractionLevelDesc}">${translations.abstractionLevel}:</span>
-                     <span class="value" style="text-align:right;">${this.translateAbstraction(semanticDetails.abstraction.description, currentLang)}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${this.translateAbstraction(semanticDetails.abstraction.description, currentLang)}</span>
                  </div>`;
         }
         
@@ -1105,7 +1191,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.semanticClustersDesc}">${translations.semanticClusters}:</span>
-                     <span class="value">${semanticDetails.clusters.length}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${semanticDetails.clusters.length}</span>
                  </div>`;
         }
         
@@ -1113,7 +1199,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.thematicDominantDesc}">${translations.thematicDominant}:</span>
-                     <span class="value" style="text-align:right;">${this.translateThematicDominant(semanticThematic.dominant, currentLang)}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${this.translateThematicDominant(semanticThematic.dominant, currentLang)}</span>
                  </div>`;
         }
         
@@ -1121,7 +1207,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.thematicComplexityDesc}">${translations.thematicComplexity}:</span>
-                     <span class="value">${(semanticThematic.complexity * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(semanticThematic.complexity * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -1149,7 +1235,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.primaryPlutchikDesc}">${translations.primaryPlutchik}:</span>
-                     <span class="value">${this.translatePlutchikEmotion(plutchikDetails.primary.emotion, currentLang)}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${this.translatePlutchikEmotion(plutchikDetails.primary.emotion, currentLang)}</span>
                  </div>`;
         }
         
@@ -1157,7 +1243,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.plutchikDiversityDesc}">${translations.plutchikDiversity}:</span>
-                     <span class="value">${(plutchikDetails.emotionalDiversity * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(plutchikDetails.emotionalDiversity * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -1165,7 +1251,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.dominantMaslowDesc}">${translations.dominantMaslow}:</span>
-                     <span class="value">${this.translateMaslowLevel(maslowDetails.dominant.level, currentLang)}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${this.translateMaslowLevel(maslowDetails.dominant.level, currentLang)}</span>
                  </div>`;
         }
         
@@ -1173,7 +1259,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.hierarchyCompletionDesc}">${translations.hierarchyCompletion}:</span>
-                     <span class="value">${(maslowDetails.hierarchyCompletion * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(maslowDetails.hierarchyCompletion * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -1181,7 +1267,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.personalityTypeDesc}">${translations.personalityType}:</span>
-                     <span class="value">${this.translatePersonalityType(bigFiveDetails.profile.type, currentLang)}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${this.translatePersonalityType(bigFiveDetails.profile.type, currentLang)}</span>
                  </div>`;
         }
         
@@ -1190,7 +1276,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.dominantTraitsDesc}">${translations.dominantTraits}:</span>
-                     <span class="value">${bigFiveDetails.profile.dominantTraits.map(trait => 
+                     <span class="value" style="text-align:right !important;float:right;">${bigFiveDetails.profile.dominantTraits.map(trait => 
                         this.translateBigFiveTrait(trait, currentLang)
                     ).join(', ')}</span>
                  </div>`;
@@ -1200,7 +1286,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.bigFiveComplexityDesc}">${translations.bigFiveComplexity}:</span>
-                     <span class="value">${(bigFiveDetails.complexity * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(bigFiveDetails.complexity * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -1208,7 +1294,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.emotionalIntelligenceDesc}">${translations.emotionalIntelligence}:</span>
-                     <span class="value">${this.translateEmotionalIntelligence(emotionalIntelligenceDetails.level, currentLang)}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${this.translateEmotionalIntelligence(emotionalIntelligenceDetails.level, currentLang)}</span>
                  </div>`;
         }
         
@@ -1216,7 +1302,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.eiScoreDesc}">${translations.eiScore}:</span>
-                     <span class="value">${(emotionalIntelligenceDetails.score * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(emotionalIntelligenceDetails.score * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -1224,7 +1310,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.primaryDefenseDesc}">${translations.primaryDefense}:</span>
-                     <span class="value">${this.translateDefenseMechanism(defenseMechanismsDetails.primaryMechanism, currentLang)}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${this.translateDefenseMechanism(defenseMechanismsDetails.primaryMechanism, currentLang)}</span>
                  </div>`;
         }
         
@@ -1232,7 +1318,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.defenseIntensityDesc}">${translations.defenseIntensity}:</span>
-                     <span class="value">${(defenseMechanismsDetails.overallIntensity * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(defenseMechanismsDetails.overallIntensity * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -1240,7 +1326,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.psychologicalComplexityDesc}">${translations.psychologicalComplexity}:</span>
-                     <span class="value">${(psychologicalDetails.psychologicalComplexity * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(psychologicalDetails.psychologicalComplexity * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -1248,7 +1334,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.selfAwarenessLevelDesc}">${translations.selfAwarenessLevel}:</span>
-                     <span class="value">${this.translateSelfAwareness(selfAwarenessDetails.level, currentLang)}</span>
+                     <span class="value" style="text-align:right !important;float:right;">${this.translateSelfAwareness(selfAwarenessDetails.level, currentLang)}</span>
                  </div>`;
         }
         
@@ -1256,7 +1342,7 @@ renderResult(result) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.selfAwarenessScoreDesc}">${translations.selfAwarenessScore}:</span>
-                     <span class="value">${(selfAwarenessDetails.score * 100).toFixed(1)}%</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(selfAwarenessDetails.score * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -1282,7 +1368,7 @@ renderResult(result) {
                 html += `
                      <div class="emotion-metric">
                          <span class="label" title="${translations.emotionalPatternsDesc}">${translations.emotionalPatterns}:</span>
-                         <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${insights.emotionalPatterns.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
+                         <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${insights.emotionalPatterns.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
                      </div>`;
             }
             
@@ -1290,7 +1376,7 @@ renderResult(result) {
                 html += `
                      <div class="emotion-metric">
                          <span class="label" title="${translations.cognitiveStyleDesc}">${translations.cognitiveStyle}:</span>
-                         <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${this.translateValue(insights.cognitiveStyle.style, currentLang)}</span>
+                         <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${this.translateValue(insights.cognitiveStyle.style, currentLang)}</span>
                      </div>`;
             }
             
@@ -1298,7 +1384,7 @@ renderResult(result) {
                 html += `
                      <div class="emotion-metric">
                          <span class="label" title="${translations.relationsDesc}">${translations.relations}:</span>
-                         <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${insights.relationalPatterns.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
+                         <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${insights.relationalPatterns.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
                      </div>`;
             }
             
@@ -1306,7 +1392,7 @@ renderResult(result) {
                 html += `
                      <div class="emotion-metric">
                          <span class="label" title="${translations.growthPathsDesc}">${translations.growthPaths}:</span>
-                         <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${insights.personalGrowth.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
+                         <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${insights.personalGrowth.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
                      </div>`;
             }
             
@@ -1314,7 +1400,7 @@ renderResult(result) {
                 html += `
                      <div class="emotion-metric">
                          <span class="label" title="${translations.therapeuticApproachesDesc}">${translations.therapeuticApproaches}:</span>
-                         <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${insights.therapeuticApproaches.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
+                         <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${insights.therapeuticApproaches.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
                      </div>`;
             }
             
@@ -1344,35 +1430,35 @@ renderResult(result) {
              <h3>${translations.processingInfo}</h3>
              <div class="emotion-metric">
                  <span class="label">${translations.language}:</span>
-                 <span class="value">${language.toUpperCase()}</span>
+                 <span class="value" style="text-align:right !important;float:right;">${language.toUpperCase()}</span>
              </div>`;
 
     if (this.shouldShowMetric(readingTime, true) && readingTime > 0) {
         html += `
              <div class="emotion-metric">
                  <span class="label">${translations.readingTime}:</span>
-                 <span class="value">${this.formatReadingTime(readingTime)}</span>
+                 <span class="value" style="text-align:right !important;float:right;">${this.formatReadingTime(readingTime)}</span>
              </div>`;
     }
 
     html += `
              <div class="emotion-metric">
                  <span class="label">${translations.timestamp}:</span>
-                 <span>${this.formatTimestamp(timestamp)}</span>
+                 <span style="text-align:right !important;float:right;">${this.formatTimestamp(timestamp)}</span>
              </div>`;
 
     if (this.shouldShowMetric(processingTime, true) && processingTime > 0) {
         html += `
              <div class="emotion-metric">
                  <span class="label">${translations.processingTime}:</span>
-                 <span class="value">${this.formatProcessingTime(processingTime)}</span>
+                 <span class="value" style="text-align:right !important;float:right;">${this.formatProcessingTime(processingTime)}</span>
              </div>`;
     }
 
     html += `
              <div class="emotion-metric">
                  <span class="label">${translations.analysisVersion}:</span>
-                 <span class="value">1.0</span>
+                 <span class="value" style="text-align:right !important;float:right;">1.0</span>
              </div>
          </div>
    `;
@@ -1423,7 +1509,7 @@ translateCategory(category, lang) {
         'calmness': 'спокойствие',
         'vulnerability': 'уязвимость',
         'resilience': 'стойкость',
-        'peacefulAdj': 'спокойный'
+        'peacefulAdj': 'покой'
     };
     return translations[category] || category;
 }
