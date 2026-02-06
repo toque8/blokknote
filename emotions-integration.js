@@ -1993,7 +1993,7 @@
             const content = document.getElementById('emotions-content');
             const currentLang = this.getCurrentLanguage();
             const message = error.includes('avgComplexity') || 
-                            error.includes('undefined') ||
+                            error.includes('сannot read properties') ||
                             error.includes('enough data') ||
                             error.includes('syntacticComplexity') ||
                             error.includes('данных')
@@ -2016,6 +2016,7 @@
     }
 
 })();
+
 
 
 
