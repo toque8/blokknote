@@ -1995,7 +1995,7 @@
             const message = error.includes('avgComplexity') || 
                             error.includes('undefined') ||
                             error.includes('enough data') ||
-                            error.includes('данных')
+                            error.includes('syntacticComplexity') ||
                 ? (currentLang === 'ru' ? 'Не достаточно данных для анализа' : 'Not enough data for analysis')
                 : error;
     
@@ -2015,4 +2015,5 @@
     }
 
 })();
+
 
