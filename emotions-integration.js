@@ -272,6 +272,88 @@ class EmotionsUI {
         return translations[theme] || theme;
     }
     
+    translateValue(value, lang) {
+        if (lang !== 'en') return value;
+        
+        const translations = {
+            // Psychological insights
+            'устойчивый эмоциональный фон': 'stable emotional background',
+            'широкий эмоциональный диапазон': 'wide emotional range',
+            'сложная эмоциональная палитра': 'complex emotional palette',
+            'использование иронии как защитного механизма': 'use of irony as a defense mechanism',
+            'склонность к драматизации': 'tendency to dramatization',
+            'использование юмора': 'use of humor',
+            'умеренная эмоциональная выразительность': 'moderate emotional expressiveness',
+            'склонность к позитивным взаимодействиям': 'tendency to positive interactions',
+            'открытость в общении': 'openness in communication',
+            'потребность в понимании и поддержке': 'need for understanding and support',
+            'глубина в отношениях': 'depth in relationships',
+            'защитная позиция в отношениях': 'defensive position in relationships',
+            'потребность в безопасных границах': 'need for safe boundaries',
+            'использование дистанции в общении': 'use of distance in communication',
+            'сбалансированный стиль общения': 'balanced communication style',
+            'расширение эмоционального репертуара': 'expanding emotional repertoire',
+            'развитие эмоциональной стабильности': 'developing emotional stability',
+            'интеграция сложных эмоциональных переживаний': 'integration of complex emotional experiences',
+            'развитие психологической осознанности': 'developing psychological awareness',
+            'гармонизация эмоциональной сферы': 'harmonization of emotional sphere',
+            'гештальт-терапия': 'gestalt therapy',
+            'экзистенциальная терапия': 'existential therapy',
+            'когнитивно-поведенческая терапия': 'cognitive-behavioral therapy',
+            'терапия принятия и ответственности': 'acceptance and commitment therapy',
+            'глубинная психотерапия': 'depth psychotherapy',
+            'общеукрепляющая психотерапия': 'general strengthening psychotherapy',
+            'рефлексивный': 'reflective',
+            'импульсивный': 'impulsive',
+            'аналитический': 'analytical',
+            'интуитивный': 'intuitive',
+            'сбалансированный': 'balanced',
+            'креативный': 'creative',
+            'прагматичный': 'practical',
+            
+            // Primary tone names
+            'Божественный экстаз': 'Divine ecstasy',
+            'Всепоглощающая радость': 'All-encompassing joy',
+            'Лучистая радость': 'Radiant joy',
+            'Тихий восторг': 'Quiet delight',
+            'Счастливая гармония': 'Happy harmony',
+            'Умиротворённое удовлетворение': 'Peaceful satisfaction',
+            'Абсолютное спокойствие': 'Absolute calm',
+            'Гармоничное равновесие': 'Harmonious balance',
+            'Яростный шторм': 'Furious storm',
+            'Сдерживаемая буря': 'Contained storm',
+            'Бездонная печаль': 'Bottomless sadness',
+            'Нежная грусть': 'Gentle sadness',
+            'Философская меланхолия': 'Philosophical melancholy',
+            'Тревожное ожидание': 'Anxious anticipation',
+            'Многогранная сложность': 'Multifaceted complexity',
+            'Сложное переплетение': 'Complex intertwining',
+            'Горько-сладкая симфония': 'Bittersweet symphony',
+            'Ностальгическое эхо': 'Nostalgic echo',
+            'Эмоциональная гамма': 'Emotional spectrum',
+            
+            // Primary tone descriptions
+            'Состояние полного, всеобъемлющего счастья и духовного подъёма': 'A state of complete, all-encompassing happiness and spiritual upliftment',
+            'Яркое, жизнеутверждающее эмоциональное состояние': 'A bright, life-affirming emotional state',
+            'Устойчивое чувство удовлетворения и благополучия': 'A stable feeling of satisfaction and well-being',
+            'Спокойное принятие и удовлетворение текущим моментом': 'Calm acceptance and satisfaction with the current moment',
+            'Глубокое внутреннее равновесие и гармония': 'Deep inner balance and harmony',
+            'Интенсивное состояние недовольства и внутреннего напряжения': 'An intense state of dissatisfaction and inner tension',
+            'Эмоциональное переживание потери или разочарования': 'An emotional experience of loss or disappointment',
+            'Сложное сочетание грусти и глубокой рефлексии': 'A complex combination of sadness and deep reflection',
+            'Состояние беспокойства и предчувствия': 'A state of anxiety and premonition',
+            'Многоуровневое, противоречивое эмоциональное переживание': 'A multi-layered, contradictory emotional experience',
+            'Одновременное переживание радости и печали': 'Simultaneous experience of joy and sadness',
+            'Тёплые воспоминания, окрашенные лёгкой грустью': 'Warm memories tinged with slight sadness',
+            'Богатое эмоциональное переживание': 'Rich emotional experience',
+            'Интенсивное богатое эмоциональное переживание, отличающееся глубиной и многослойностью': 'Intense rich emotional experience characterized by depth and multi-layeredness',
+            'Сдержанное богатое эмоциональное переживание, отличающееся глубиной и многослойностью': 'Restrained rich emotional experience characterized by depth and multi-layeredness',
+            'Сдержанное богатое эмоциональное переживание': 'Restrained rich emotional experience'
+        };
+        
+        return translations[value] || value;
+    }
+    
     renderResult(result) {
         if (!result || !result.success) {
             this.showError('Analysis failed');
@@ -330,7 +412,7 @@ class EmotionsUI {
                 html += `
                     <div class="emotion-metric">
                         <span class="label" title="${translations.primaryToneDesc}">${translations.primaryTone}:</span>
-                        <span class="value">${primaryToneName}</span>
+                        <span class="value">${this.translateValue(primaryToneName, currentLang)}</span>
                     </div>`;
             }
             
@@ -338,7 +420,7 @@ class EmotionsUI {
                 html += `
                     <div class="emotion-metric">
                         <span class="label">${translations.description}:</span>
-                        <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${primaryToneDesc}</span>
+                        <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${this.translateValue(primaryToneDesc, currentLang)}</span>
                     </div>`;
             }
             
@@ -1204,7 +1286,7 @@ class EmotionsUI {
                     html += `
                         <div class="emotion-metric">
                             <span class="label" title="${translations.emotionalPatternsDesc}">${translations.emotionalPatterns}:</span>
-                            <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${insights.emotionalPatterns.join(', ')}</span>
+                            <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${insights.emotionalPatterns.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
                         </div>`;
                 }
                 
@@ -1212,7 +1294,7 @@ class EmotionsUI {
                     html += `
                         <div class="emotion-metric">
                             <span class="label" title="${translations.cognitiveStyleDesc}">${translations.cognitiveStyle}:</span>
-                            <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${this.translateCognitiveStyle(insights.cognitiveStyle.style, currentLang)}</span>
+                            <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${this.translateValue(insights.cognitiveStyle.style, currentLang)}</span>
                         </div>`;
                 }
                 
@@ -1220,7 +1302,7 @@ class EmotionsUI {
                     html += `
                         <div class="emotion-metric">
                             <span class="label" title="${translations.relationsDesc}">${translations.relations}:</span>
-                            <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${insights.relationalPatterns.join(', ')}</span>
+                            <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${insights.relationalPatterns.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
                         </div>`;
                 }
                 
@@ -1228,7 +1310,7 @@ class EmotionsUI {
                     html += `
                         <div class="emotion-metric">
                             <span class="label" title="${translations.growthPathsDesc}">${translations.growthPaths}:</span>
-                            <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${insights.personalGrowth.join(', ')}</span>
+                            <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${insights.personalGrowth.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
                         </div>`;
                 }
                 
@@ -1236,7 +1318,7 @@ class EmotionsUI {
                     html += `
                         <div class="emotion-metric">
                             <span class="label" title="${translations.therapeuticApproachesDesc}">${translations.therapeuticApproaches}:</span>
-                            <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${insights.therapeuticApproaches.join(', ')}</span>
+                            <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${insights.therapeuticApproaches.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
                         </div>`;
                 }
                 
@@ -1344,7 +1426,8 @@ class EmotionsUI {
             'intensity': 'интенсивность',
             'calmness': 'спокойствие',
             'vulnerability': 'уязвимость',
-            'resilience': 'стойкость'
+            'resilience': 'стойкость',
+            'peacefulAdj': 'спокойный'
         };
         return translations[category] || category;
     }
@@ -1591,7 +1674,6 @@ class EmotionsUI {
                 primaryTone: 'Эмоциональная гамма',
                 primaryToneDesc: 'Основная эмоциональная окраска текста',
                 description: 'Описание',
-                descriptionText: 'Сдержанное богатое эмоциональное переживание',
                 polarity: 'Полярность',
                 polarityDesc: 'Общая эмоциональная направленность (-100% = негатив, +100% = позитив)',
                 intensity: 'Интенсивность',
@@ -1798,13 +1880,7 @@ class EmotionsUI {
                 primaryProfile: 'Primary Profile',
                 primaryTone: 'Emotional Spectrum',
                 primaryToneDesc: 'Main emotional tone of the text',
-                description: 'Emotional Spectrum',
-                descriptionText: 'Restrained rich emotional experience',
-                emotionalPatterns: 'moderate emotional expressiveness',
-                cognitiveStyle: 'reflective',
-                relations: 'balanced communication style',
-                growthPaths: 'expanding emotional repertoire, developing psychological awareness',
-                therapeuticApproaches: 'general strengthening psychotherapy',
+                description: 'Description',
                 polarity: 'Polarity',
                 polarityDesc: 'Overall emotional direction (-100% = negative, +100% = positive)',
                 intensity: 'Intensity',
