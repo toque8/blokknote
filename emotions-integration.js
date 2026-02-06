@@ -407,6 +407,14 @@
                         </div>`;
                 }
                 
+                if (this.shouldShowMetric(syntacticComplexity, true)) {
+                    html += `
+                        <div class="emotion-metric">
+                            <span class="label" title="${translations.complexityDesc}">${translations.complexity}:</span>
+                            <span class="value">${syntacticComplexity.toFixed(2)}</span>
+                        </div>`;
+                }
+                
                 if (this.shouldShowMetric(emotionalVolatility, true)) {
                     html += `
                         <div class="emotion-metric">
@@ -700,14 +708,6 @@
                         <div class="emotion-metric">
                             <span class="label" title="${translations.poeticDesc}">${translations.poetic}:</span>
                             <span class="value">${sentenceTypes.poetic}</span>
-                        </div>`;
-                }
-                
-                if (this.shouldShowMetric(syntacticComplexity, true)) {
-                    html += `
-                        <div class="emotion-metric">
-                            <span class="label" title="${translations.complexityDesc}">${translations.complexity}:</span>
-                            <span class="value">${syntacticComplexity.toFixed(2)}</span>
                         </div>`;
                 }
                 
@@ -1780,9 +1780,9 @@
                 },
                 en: {
                     primaryProfile: 'Primary Profile',
-                    primaryTone: 'Primary Tone',
+                    primaryTone: 'Emotional Spectrum',
                     primaryToneDesc: 'Main emotional tone of the text',
-                    description: 'Description',
+                    description: 'Restrained rich emotional experience',
                     polarity: 'Polarity',
                     polarityDesc: 'Overall emotional direction (-100% = negative, +100% = positive)',
                     intensity: 'Intensity',
@@ -1962,15 +1962,15 @@
                     selfAwarenessScore: 'Self-Awareness Score',
                     selfAwarenessScoreDesc: 'Numerical score of self-awareness level',
                     psychologicalInsights: 'Psychological Insights',
-                    emotionalPatterns: 'Emotional Patterns',
+                    emotionalPatterns: 'Moderate emotional expressiveness',
                     emotionalPatternsDesc: 'Characteristic emotional patterns',
                     cognitiveStyle: 'Cognitive Style',
                     cognitiveStyleDesc: 'Dominant cognitive style',
-                    relations: 'Relational Patterns',
+                    relations: 'Balanced communication style',
                     relationsDesc: 'Characteristic relational patterns',
-                    growthPaths: 'Growth Paths',
+                    growthPaths: 'Expanding emotional repertoire, developing psychological awareness',
                     growthPathsDesc: 'Recommended personal growth directions',
-                    therapeuticApproaches: 'Therapeutic Approaches',
+                    therapeuticApproaches: 'General strengthening psychotherapy',
                     therapeuticApproachesDesc: 'Recommended therapeutic approaches',
                     colorPalette: 'Color Palette',
                     processingInfo: 'Processing Info',
@@ -1991,7 +1991,18 @@
         
         showError(error) {
             const content = document.getElementById('emotions-content');
-            content.innerHTML = `<div style="color:#f87171;padding:20px;text-align:center;"><h3>Analysis Error</h3><p>${error}</p></div>`;
+            const currentLang = this.getCurrentLanguage();
+            const message = error.includes('avgComplexity') || 
+                            error.includes('undefined') ||
+                            error.includes('enough data') ||
+                            error.includes('данных')
+                ? (currentLang === 'ru' ? 'Не достаточно данных для анализа' : 'Not enough data for analysis')
+                : error;
+    
+            content.innerHTML = `<div style="color:#f87171;padding:20px;text-align:center;">
+                <h3>${currentLang === 'ru' ? 'Ошибка анализа' : 'Analysis Error'}</h3>
+                <p>${message}</p>
+            </div>`;
         }
     }
     
@@ -2004,5 +2015,4 @@
     }
 
 })();
-
 
