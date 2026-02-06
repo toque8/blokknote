@@ -321,22 +321,6 @@ class EmotionsUI {
                 <div class="emotion-section">
                     <h3>${translations.primaryProfile}</h3>`;
             
-            if (this.shouldShowMetric(primaryToneName)) {
-                html += `
-                    <div class="emotion-metric">
-                        <span class="label" title="${translations.primaryToneDesc}">${translations.primaryTone}:</span>
-                        <span class="value">${primaryToneName}</span>
-                    </div>`;
-            }
-            
-            if (this.shouldShowMetric(primaryToneDesc)) {
-                html += `
-                    <div class="emotion-metric">
-                        <span class="label">${translations.description}:</span>
-                        <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${primaryToneDesc}</span>
-                    </div>`;
-            }
-            
             if (this.shouldShowMetric(polarity, true)) {
                 html += `
                     <div class="emotion-metric">
@@ -350,14 +334,6 @@ class EmotionsUI {
                     <div class="emotion-metric">
                         <span class="label" title="${translations.intensityDesc}">${translations.intensity}:</span>
                         <span class="value">${(intensity * 100).toFixed(1)}%</span>
-                    </div>`;
-            }
-            
-            if (this.shouldShowMetric(complexity, true)) {
-                html += `
-                    <div class="emotion-metric">
-                        <span class="label" title="${translations.complexityDesc}">${translations.complexity}:</span>
-                        <span class="value">${(complexity * 100).toFixed(1)}%</span>
                     </div>`;
             }
             
@@ -377,6 +353,22 @@ class EmotionsUI {
                     </div>`;
             }
             
+            if (this.shouldShowMetric(textComplexity, true)) {
+                html += `
+                    <div class="emotion-metric">
+                        <span class="label" title="${translations.textComplexityDesc}">${translations.textComplexity}:</span>
+                        <span class="value">${(textComplexity * 100).toFixed(1)}%</span>
+                    </div>`;
+            }
+            
+            if (this.shouldShowMetric(complexity, true)) {
+                html += `
+                    <div class="emotion-metric">
+                        <span class="label" title="${translations.complexityDesc}">${translations.complexity}:</span>
+                        <span class="value">${(complexity * 100).toFixed(1)}%</span>
+                    </div>`;
+            }
+            
             if (this.shouldShowMetric(emotionalRange, true)) {
                 html += `
                     <div class="emotion-metric">
@@ -393,38 +385,6 @@ class EmotionsUI {
                     </div>`;
             }
             
-            if (this.shouldShowMetric(ironyLevel, true)) {
-                html += `
-                    <div class="emotion-metric">
-                        <span class="label" title="${translations.ironyLevelDesc}">${translations.ironyLevel}:</span>
-                        <span class="value">${(ironyLevel * 100).toFixed(1)}%</span>
-                    </div>`;
-            }
-            
-            if (this.shouldShowMetric(narrative)) {
-                html += `
-                    <div class="emotion-metric">
-                        <span class="label" title="${translations.narrativeDesc}">${translations.narrative}:</span>
-                        <span class="value">${this.translateNarrative(narrative, currentLang)}</span>
-                    </div>`;
-            }
-            
-            if (this.shouldShowMetric(textComplexity, true)) {
-                html += `
-                    <div class="emotion-metric">
-                        <span class="label" title="${translations.textComplexityDesc}">${translations.textComplexity}:</span>
-                        <span class="value">${(textComplexity * 100).toFixed(1)}%</span>
-                    </div>`;
-            }
-            
-            if (this.shouldShowMetric(emotionalArc)) {
-                html += `
-                    <div class="emotion-metric">
-                        <span class="label" title="${translations.emotionalArcDesc}">${translations.emotionalArc}: </span>
-                        <span class="value" style="display:block;text-align:right;">${this.translateEmotionalArc(emotionalArc, currentLang)} </span>
-                    </div>`;
-            }
-            
             if (this.shouldShowMetric(emotionalTrend)) {
                 html += `
                     <div class="emotion-metric">
@@ -433,11 +393,19 @@ class EmotionsUI {
                     </div>`;
             }
             
-            if (this.shouldShowMetric(emotionalVolatility, true)) {
+            if (this.shouldShowMetric(emotionalArc)) {
                 html += `
                     <div class="emotion-metric">
-                        <span class="label" title="${translations.emotionalVolatilityDesc}">${translations.emotionalVolatility}:</span>
-                        <span class="value">${(emotionalVolatility * 100).toFixed(1)}%</span>
+                        <span class="label" title="${translations.emotionalArcDesc}">${translations.emotionalArc}:</span>
+                        <span class="value">${this.translateEmotionalArc(emotionalArc, currentLang)}</span>
+                    </div>`;
+            }
+            
+            if (this.shouldShowMetric(narrative)) {
+                html += `
+                    <div class="emotion-metric">
+                        <span class="label" title="${translations.narrativeDesc}">${translations.narrative}:</span>
+                        <span class="value">${this.translateNarrative(narrative, currentLang)}</span>
                     </div>`;
             }
             
@@ -465,7 +433,7 @@ class EmotionsUI {
             html += `
                 <div class="emotion-section">
                     <h3>${translations.repetitionsTitle}</h3>
-           `;
+            `;
             
             sortedRepetitions.forEach(rep => {
                 const severityColor = rep.count > 5 ? '#ef4444' : '#f59e0b';
@@ -475,7 +443,7 @@ class EmotionsUI {
                         <span class="label">${rep.word}:</span>
                         <span class="value">${rep.count}</span>
                     </div>
-               `;
+                `;
             });
             
             html += `</div>`;
@@ -1029,8 +997,8 @@ class EmotionsUI {
             if (semanticDetails.abstraction && semanticDetails.abstraction.description) {
                 html += `
                     <div class="emotion-metric">
-                        <span class="label" title="${translations.abstractionLevelDesc}">${translations.abstractionLevel}: </span>
-                        <span class="value" style="display:block;text-align:right;">${this.translateAbstraction(semanticDetails.abstraction.description, currentLang)} </span>
+                        <span class="label" title="${translations.abstractionLevelDesc}">${translations.abstractionLevel}:</span>
+                        <span class="value">${this.translateAbstraction(semanticDetails.abstraction.description, currentLang)}</span>
                     </div>`;
             }
             
@@ -1208,14 +1176,14 @@ class EmotionsUI {
             
             if (hasInsights) {
                 html += `
-        <div class="emotion-section">
-                        <h3>${translations.psychologicalInsights}</h3>`;
+                <div class="emotion-section">
+                    <h3>${translations.psychologicalInsights}</h3>`;
                 
                 if (this.hasArrayContent(insights.emotionalPatterns)) {
                     html += `
                         <div class="emotion-metric">
                             <span class="label" title="${translations.emotionalPatternsDesc}">${translations.emotionalPatterns}:</span>
-                            <span class="value" style="text-align: right; display: block; word-break: break-word;">${insights.emotionalPatterns.join(', ')}</span>
+                            <span class="value">${insights.emotionalPatterns.join(', ')}</span>
                         </div>`;
                 }
                 
@@ -1231,7 +1199,7 @@ class EmotionsUI {
                     html += `
                         <div class="emotion-metric">
                             <span class="label" title="${translations.relationsDesc}">${translations.relations}:</span>
-                            <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${insights.relationalPatterns.join(', ')}</span>
+                            <span class="value">${insights.relationalPatterns.join(', ')}</span>
                         </div>`;
                 }
                 
@@ -1239,7 +1207,7 @@ class EmotionsUI {
                     html += `
                         <div class="emotion-metric">
                             <span class="label" title="${translations.growthPathsDesc}">${translations.growthPaths}:</span>
-                            <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${insights.personalGrowth.join(', ')}</span>
+                            <span class="value">${insights.personalGrowth.join(', ')}</span>
                         </div>`;
                 }
                 
@@ -1247,7 +1215,7 @@ class EmotionsUI {
                     html += `
                         <div class="emotion-metric">
                             <span class="label" title="${translations.therapeuticApproachesDesc}">${translations.therapeuticApproaches}:</span>
-                            <span class="value" style="display:block;text-align:right;word-break:break-word;margin-top:2px;">${insights.therapeuticApproaches.join(', ')}</span>
+                            <span class="value">${insights.therapeuticApproaches.join(', ')}</span>
                         </div>`;
                 }
                 
@@ -1599,9 +1567,10 @@ class EmotionsUI {
         const translations = {
             ru: {
                 primaryProfile: 'Основной профиль',
-                primaryTone: 'Primary Tone',
+                primaryTone: 'Эмоциональная гамма',
                 primaryToneDesc: 'Основная эмоциональная окраска текста',
-                description: 'Эмоциональная гамма',
+                description: 'Описание',
+                descriptionText: 'Сдержанное богатое эмоциональное переживание',
                 polarity: 'Полярность',
                 polarityDesc: 'Общая эмоциональная направленность (-100% = негатив, +100% = позитив)',
                 intensity: 'Интенсивность',
@@ -1785,11 +1754,11 @@ class EmotionsUI {
                 emotionalPatternsDesc: 'Характерные эмоциональные паттерны',
                 cognitiveStyle: 'Когнитивный стиль',
                 cognitiveStyleDesc: 'Доминирующий когнитивный стиль',
-                relations: 'Relational Patterns',
+                relations: 'Межличностные особенности',
                 relationsDesc: 'Характерные межличностные паттерны',
-                growthPaths: 'Growth Paths',
+                growthPaths: 'Направления роста',
                 growthPathsDesc: 'Рекомендуемые направления личностного роста',
-                therapeuticApproaches: 'Therapeutic Approaches',
+                therapeuticApproaches: 'Терапевтические подходы',
                 therapeuticApproachesDesc: 'Рекомендуемые терапевтические подходы',
                 colorPalette: 'Цветовая палитра',
                 processingInfo: 'Информация об обработке',
@@ -2023,7 +1992,9 @@ class EmotionsUI {
     
     showError(error) {
         const content = document.getElementById('emotions-content');
-        content.innerHTML = `<div style="color:#f87171;padding:20px;text-align:center;"><h3>Analysis Error</h3><p>${error}</p></div>`;
+        const currentLang = this.getCurrentLanguage();
+        const title = currentLang === 'ru' ? 'Ошибка анализа' : 'Analysis Error';
+        content.innerHTML = `<div style="color:#f87171;padding:20px;text-align:center;"><h3>${title}</h3><p>${error}</p></div>`;
     }
 }
 
