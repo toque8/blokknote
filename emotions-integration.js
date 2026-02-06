@@ -88,12 +88,26 @@
                 try {
                     const result = this.analyzer.analyze(text);
                     if (result.success) {
+                        if (!result.details || !result.details.syntactic) {
+                            const currentLang = this.getCurrentLanguage();
+                            if (currentLang === 'ru') {
+                                this.showError('Не достаточно данных для анализа');
+                            } else {
+                                this.showError('Not enough data for analysis');
+                            }
+                            return;
+                        }
                         this.renderResult(result);
                     } else {
                         this.showError(result.error);
                     }
                 } catch (err) {
-                    this.showError(err.message);
+                    const currentLang = this.getCurrentLanguage();
+                    if (currentLang === 'ru') {
+                        this.showError('Не достаточно данных для анализа');
+                    } else {
+                        this.showError('Not enough data for analysis');
+                    }
                 } finally {
                     this._rendering = false;
                 }
@@ -1992,17 +2006,10 @@
         showError(error) {
             const content = document.getElementById('emotions-content');
             const currentLang = this.getCurrentLanguage();
-            const message = error.includes('avgComplexity') || 
-                            error.includes('сannot read properties') ||
-                            error.includes('enough data') ||
-                            error.includes('syntacticComplexity') ||
-                            error.includes('данных')
-                ? (currentLang === 'ru' ? 'Не достаточно данных для анализа' : 'Not enough data for analysis')
-                : error;
     
             content.innerHTML = `<div style="color:#f87171;padding:20px;text-align:center;">
                 <h3>${currentLang === 'ru' ? 'Ошибка анализа' : 'Analysis Error'}</h3>
-                <p>${message}</p>
+                <p>${error}</p>
             </div>`;
         }
     }
@@ -2016,6 +2023,7 @@
     }
 
 })();
+
 
 
 
