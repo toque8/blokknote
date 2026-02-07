@@ -652,15 +652,15 @@
             };
             
             this.sentencePatterns = {
-                exclamatory: /!{1,3}$/,
-                interrogative: /\?$/,
-                hesitant: /\.{3,}$/,
-                emphatic: /!!|\?!|!\?/,
-                incomplete: /[.,:;]\s*$/,
-                imperative: /^(?!.*[.!?]$).*[а-яa-z]/i,
-                hyperbolic: /\b(вечность|бесконечность|абсолютно|совершенно|totally|completely|absolutely)\b/i,
-                poetic: /(\s[А-ЯA-Z][а-яa-z]+){3,},?\sи\s[А-ЯA-Z][а-яa-z]+/,
-                dramatic: /^[А-ЯA-Z].*[!?]{2,}$/
+                exclamatory: /!+$|^(Ура|Ого|Вау|Браво|Ах|Ох|Эх|Wow|Yay|Hooray|Bravo|Ouch|Whoa)!?$/i,
+                interrogative: /\?+$|^(Кто|Что|Где|Когда|Почему|Зачем|Как|Какой|Чей|Куда|Откуда|Who|What|Where|When|Why|How|Which)\b.*[^.!]$/i,
+                hesitant: /(\.{3,}|…)\s*$|\b(может быть|наверное|вроде|кажется|похоже|возможно|probably|maybe|perhaps|I guess|kind of|sort of)\b/i,
+                emphatic: /[!?]{2,}$|[А-ЯA-Z]{3,}|\{1,2}\w+\{1,2}|\b(очень|крайне|чрезвычайно|extremely|absolutely|totally|really)\s+[А-ЯA-Z]|\b\w+(\w)\1{2,}\b/iu,
+                incomplete: /[,:;-–—]\s$|^[А-ЯA-Z][^.!?…][а-яa-z]$|\b(но|и|а|или|потому что|because|and|but|or|so)\s*$/i,
+                imperative: /^[А-ЯA-Z][а-яa-z]+(й|йте|и|ите|ь|ьте)[\s,!]|^(Let's|Don't|Please)\b/i,
+                hyperbolic: /\b(вечность|бесконечность|навсегда|навеки|всегда|никогда|абсолютно|совершенно|полностью|целиком|весь|все|никто|ничто|тысяч[аи]|миллион[ыа]?|миллиард[ыа]?|триллион|невероятно|безумно|ужасно|страшно|жутко|incredibly|absolutely|completely|totally|forever|never|always|everyone|nobody|nothing|thousand|million|billion|trillion|extremely|insanely|terribly|ridiculously|ages)\b/i,
+                poetic: /\b(словно|будто|как|точно|подобно|似|like|as if|as though)\s+\w+|\b(\w+)\s+(и|да|but|and)\s+\1\b|([а-я]+)а[,:]?\s+\3а\b/iu,
+                dramatic: /^[А-ЯA-Z].*[!?]{2,}$|\b(катастрофа|трагедия|ужас|кошмар|беда|шок|паника|крах|disaster|tragedy|horror|nightmare|shock|panic|crisis)\b|О\s+(Боже|Господи|God|my|no)!?/i
             };
             
             this.metricsConfig = {
@@ -5814,4 +5814,5 @@
         });
     }
     
+
 })();
