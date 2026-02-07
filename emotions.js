@@ -5226,7 +5226,7 @@
                         description: this.getAdvancedDescription(primaryEmotion, polarity, intensity, emotionComplexity),
                         keywords: this.generateEmotionKeywords(primaryEmotion, secondaryEmotions)
                     },
-                    meta {
+                    meta: {
                         analysisDepth: 'advanced',
                         timestamp: new Date().toISOString(),
                         modelVersion: this.version
@@ -6367,6 +6367,7 @@
     
 
 })();
+
 
 
 
