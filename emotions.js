@@ -1509,19 +1509,121 @@
         }
         
         enhancedSentenceSplit(text) {
+            if (!text || typeof text !== 'string') {
+              return [];
+            }
+
+            const abbreviations = this.language === 'ru'
+              ? ['т\.д\.', 'т\.п\.', 'др\.', 'г\.', 'ул\.', 'им\.', 'проф\.', 'акад\.', 'см\.', 'рис\.', 'стр\.', 'п\.', 'к\.', 'м\.', 'ж\.', 'гг\.', 'вв\.', 'тыс\.', 'млн\.', 'млрд\.']
+              : ['e\.g\.', 'i\.e\.', 'etc\.', 'Mr\.', 'Mrs\.', 'Dr\.', 'Prof\.', 'vs\.', 'fig\.', 'no\.', 'vol\.', 'pp\.', 'inc\.', 'ltd\.', 'corp\.', 'st\.', 'ave\.', 'blvd\.'];
+
+            let protectedText = text;
+            const placeholders = [];
+
+            abbreviations.forEach((abbr, index) => {
+              const regex = new RegExp(abbr, 'gi');
+              let match;
+              while ((match = regex.exec(protectedText)) !== null) {
+                const placeholder = `__ABBR_${index}_${placeholders.length}__`;
+                placeholders.push({ placeholder, original: match[0], position: match.index });
+              }
+            });
+
+            placeholders.forEach(ph => {
+              protectedText = protectedText.replace(ph.original, ph.placeholder);
+            });
+
             const sentenceRegex = /[^.!?…]*[.!?…]+(?=\s+|$)/g;
-            const matches = text.match(sentenceRegex) || [];
-            
-            return matches
-                .map(s => s.trim())
-                .filter(s => s.length > 0)
-                .map((sentence, index) => ({
-                    text: sentence,
-                    index: index,
-                    length: sentence.length,
-                    wordCount: sentence.split(/\s+/).length,
-                    emotionalMarkers: this.extractSentenceEmotionalMarkers(sentence)
-                }));
+            const matches = protectedText.match(sentenceRegex) || [];
+
+            const sentences = matches
+              .map(s => s.trim())
+              .filter(s => s.length > 0)
+              .map((sentence, index) => {
+                let restored = sentence;
+                placeholders.forEach(ph => {
+                  if (restored.includes(ph.placeholder)) {
+                    restored = restored.replace(ph.placeholder, ph.original);
+                  }
+                });
+                return {
+                  text: restored,
+                  index: index,
+                  length: restored.length,
+                  wordCount: restored.split(/\s+/).length,
+                  emotionalMarkers: this.extractSentenceEmotionalMarkers(restored)
+                };
+              });
+
+            const lastMatchEnd = matches.reduce((end, m) => end + m.length, 0);
+            if (lastMatchEnd < protectedText.length) {
+              let remainder = protectedText.slice(lastMatchEnd).trim();
+              if (remainder) {
+                placeholders.forEach(ph => {
+                  if (remainder.includes(ph.placeholder)) {
+                    remainder = remainder.replace(ph.placeholder, ph.original);
+                  }
+                });
+                sentences.push({
+                  text: remainder,
+                  index: sentences.length,
+                  length: remainder.length,
+                  wordCount: remainder.split(/\s+/).length,
+                  emotionalMarkers: this.extractSentenceEmotionalMarkers(remainder)
+                });
+              }
+            }
+
+            return sentences;
+        }
+
+        calculateWordLengthDistribution(words) {
+            if (words.length === 0) return { short: 0, medium: 0, long: 0 };
+            const short = words.filter(w => w.length <= 3).length;
+            const medium = words.filter(w => w.length > 3 && w.length <= 7).length;
+            const long = words.filter(w => w.length > 7).length;
+            const total = words.length;
+            return {
+              short: short / total,
+              medium: medium / total,
+              long: long / total
+            };
+        }
+
+        calculatePunctuationDensity(text) {
+            const punctuationCount = (text.match(/[.!?…,:;—\-]/g) || []).length;
+            const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
+            return wordCount > 0 ? punctuationCount / wordCount : 0;
+        }
+
+        calculateEmoticonDensity(emoticons, wordCount) {
+            if (wordCount === 0) return 0;
+            const totalEmoticons = Object.values(emoticons).reduce((a, b) => a + b, 0);
+            return totalEmoticons / wordCount;
+        }
+
+        isValidSentence(sentence) {
+            if (!sentence || sentence.length === 0) return false;
+            const hasLetter = /[a-zA-Zа-яА-ЯёЁ]/.test(sentence);
+            const hasContent = sentence.trim().length >= 2;
+            return hasLetter && hasContent;
+        }
+
+        countWordsInSentence(sentence) {
+            if (!sentence) return 0;
+            return sentence
+              .replace(/[^\p{L}\s\-']/gu, ' ')
+              .split(/\s+/)
+              .filter(w => w.length > 0).length;
+        }
+
+        findOriginalPosition(processedIndex, originalPositions) {
+            if (!originalPositions || originalPositions.length === 0) return processedIndex;
+            if (processedIndex < 0) return 0;
+            if (processedIndex >= originalPositions.length) {
+              return originalPositions[originalPositions.length - 1] || processedIndex;
+            }
+            return originalPositions[processedIndex] || processedIndex;
         }
         
         extractSentenceEmotionalMarkers(sentence) {
@@ -6375,6 +6477,7 @@
     
 
 })();
+
 
 
 
