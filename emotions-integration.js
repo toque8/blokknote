@@ -284,6 +284,7 @@ translateValue(value, lang) {
             'устойчивый эмоциональный фон': 'устойчивый эмоциональный фон',
             'широкий эмоциональный диапазон': 'широкий эмоциональный диапазон',
             'сложная эмоциональная палитра': 'сложная эмоциональная палитра',
+            'сдержанное спокойное принятие и удовлетворение текущим моментом': 'restrained calm acceptance and satisfaction with the current moment',
             'использование иронии как защитного механизма': 'использование иронии как защитного механизма',
             'склонность к драматизации': 'склонность к драматизации',
             'использование юмора': 'использование юмора',
@@ -879,14 +880,6 @@ renderResult(result) {
                  <div class="emotion-metric">
                      <span class="label" title="${translations.poeticDesc}">${translations.poetic}:</span>
                      <span class="value" style="text-align:right !important;float:right;">${sentenceTypes.poetic}</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(syntacticComplexity, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.complexityDesc}">${translations.complexity}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${syntacticComplexity.toFixed(2)}</span>
                  </div>`;
         }
         
@@ -2177,3 +2170,4 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
