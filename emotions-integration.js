@@ -312,7 +312,6 @@ translateValue(value, lang) {
         return translations[value] || value;
     } else if (lang === 'en') {
         const translations = {
-            // Primary tone names
             'Эмоциональная гамма': 'Emotional Spectrum',
             'Божественный экстаз': 'Divine Ecstasy',
             'Всепоглощающая радость': 'All-Encompassing Joy',
@@ -333,8 +332,8 @@ translateValue(value, lang) {
             'Горько-сладкая симфония': 'Bittersweet Symphony',
             'Ностальгическое эхо': 'Nostalgic Echo',
             
-            // Primary tone descriptions
             'Сдержанное богатое эмоциональное переживание': 'Restrained rich emotional experience',
+            'Cдержанное спокойное принятие и удовлетворение текущим моментом': 'Restrained calm acceptance and satisfaction with the current moment',
             'Состояние полного, всеобъемлющего счастья и духовного подъёма': 'A state of complete, all-encompassing happiness and spiritual upliftment',
             'Яркое, жизнеутверждающее эмоциональное состояние': 'A bright, life-affirming emotional state',
              'Устойчивое чувство удовлетворения и благополучия': 'A stable feeling of satisfaction and well-being',
@@ -351,7 +350,6 @@ translateValue(value, lang) {
             'Интенсивное богатое эмоциональное переживание, отличающееся глубиной и многослойностью': 'Intense rich emotional experience characterized by depth and multi-layeredness',
             'Сдержанное богатое эмоциональное переживание, отличающееся глубиной и многослойностью': 'Restrained rich emotional experience characterized by depth and multi-layeredness',
             
-            // Keywords
             'эмоция': 'emotion',
             'чувство': 'feeling',
             'переживание': 'experience',
@@ -397,7 +395,6 @@ translateValue(value, lang) {
             'память': 'memory',
             'эхо': 'echo',
             
-            // Psychological insights
             'устойчивый эмоциональный фон': 'stable emotional background',
             'широкий эмоциональный диапазон': 'wide emotional range',
             'сложная эмоциональная палитра': 'complex emotional palette',
@@ -2170,4 +2167,5 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
