@@ -664,27 +664,418 @@
             };
             
             this.metricsConfig = {
-                wordThreshold: 2,
-                sentenceThreshold: 3,
-                paragraphThreshold: 1,
+                wordThreshold: 1,
+                sentenceThreshold: 1,
+                paragraphThreshold: 0,
                 punctuationWeight: {
                     '!': 1.5,
                     '?': 0.8,
                     '...': 0.6,
+                    '…': 0.6,
+                    '—': 0.3,
+                    ',': 0.0,
                     '!!': 2.0,
-                    '?!': 1.2,
-                    '!?': 1.2,
+                    '?!': 1.6,
+                    '!?': 1.6,
                     '!!!': 2.5,
-                    '??': 1.0,
-                    '!?!': 1.8
+                    '??': 1.2,
+                    '???': 1.5,
+                    '!?!': 1.8,
+                    ';': 0.1
                 },
                 advancedMetrics: {
-                    emotionalDepth: true,
-                    contextualLayers: 3,
-                    semanticComplexity: true,
-                    culturalReferences: true,
-                    psychologicalProfiling: true
-                }
+                      emotionalDepth: true,
+                      
+                      contextualLayers: {
+                          enabled: true,
+                          count: 3,
+                          mode: 'extend',
+                          layers: [
+                              'word', 
+                              'sentence', 
+                              'discourse'
+                          ],
+                          weights: {
+                              word: 0.4,
+                              sentence: 0.4,
+                              discourse: 0.2
+                          },
+                          advanced: {
+                              word: {
+                                  considerSynonyms: true,
+                                  considerStemming: true,
+                                  intensityMultipliers: {
+                                      повтор: 1.2,
+                                      ALLCAPS: 1.5,
+                                      '!!!': 2.0
+                                  }
+                              },
+                              sentence: {
+                                  considerPunctuation: true,
+                                  considerStructure: true,
+                                  questionWeight: 0.8,
+                                  exclamationWeight: 1.5
+                              },
+                              discourse: {
+                                  windowSize: 3,
+                                  trackTransitions: true,
+                                  coherenceThreshold: 0.7
+                              }
+                          }
+                      },
+                      
+                      semanticComplexity: {
+                          enabled: true,
+                          mode: 'extend',
+                          metrics: {
+                              lexicalDiversity: { enabled: true, weight: 0.25 },
+                              averageWordLength: { enabled: true, weight: 0.15 },
+                              sentenceComplexity: { enabled: true, weight: 0.30 },
+                              syntacticVariety: { enabled: true, weight: 0.20 },
+                              metaphorDensity: { enabled: false, weight: 0.10 }
+                          },
+                          thresholds: {
+                              simple: 0.3,
+                              medium: 0.6,
+                              complex: 0.8
+                          },
+                          languageSpecific: {
+                              ru: {
+                                  considerVerbalAspect: true,
+                                  considerCaseSystem: true
+                              },
+                              en: {
+                                  considerPhrasalVerbs: true,
+                                  considerArticles: true
+                              }
+                          }
+                      },
+                      
+                      culturalReferences: {
+                          enabled: true,
+                          mode: 'extend',
+                          categories: {
+                              internetSlang: {
+                                  mode: 'override',
+                                  markers: {
+                                      ru: ['кек', 'лол', 'кринж', 'вайб', 'хайп', 'рофл', 'агриться', 'шипперить', 'скоммуниздить', 'краш', 'флекс', 'скибиди', 'рил', 'пруф', 'имба'],
+                                      en: ['lol', 'rofl', 'cringe', 'simp', 'flex', 'noob', 'facepalm', 'based', 'salty', 'ghosting', 'shipping', 'stan']
+                                  },
+                                  weight: 0.7,
+                                  caseSensitive: false
+                              },
+                              literaryQuotes: {
+                                  mode: 'extend',
+                                  markers: {
+                                      ru: [
+                                          'быть или не быть',
+                                          'счастливые часов не наблюдают',
+                                          'а счастье было так возможно',
+                                          'весь мир — театр',
+                                          'рожденный ползать летать не может',
+                                          'глаза страшатся — руки делают'
+                                      ],
+                                      en: [
+                                          'to be or not to be',
+                                          'all the world\'s a stage',
+                                          'the rest is silence',
+                                          'it was the best of times, it was the worst of times',
+                                          'call me Ishmael',
+                                          'happy families are all alike'
+                                      ]
+                                  },
+                                  weight: 1.3,
+                                  detectPartial: true
+                              },
+                              philosophy: {
+                                  mode: 'extend',
+                                  markers: {
+                                      ru: ['экзистенция', 'бытие', 'стоицизм', 'смысл', 'диалектика', 'абсурд', 'нигилизм', 'категорический императив', 'вечное возвращение', 'дазайн', 'феноменология', 'солипсизм'],
+                                      en: ['existence', 'being', 'meaning', 'dialectics', 'absurd', 'nihilism', 'categorical imperative', 'eternal recurrence', 'dasein', 'phenomenology', 'solipsism']
+                                  },
+                                  weight: 1.5
+                              },
+                              historicalEvents: {
+                                  enabled: true,
+                                  markers: {
+                                      ru: ['куликовская битва', 'крещение руси', 'ленинградский метроном', 'железный занавес', 'перестройка', 'августовский путч', 'бородино', 'дефолт'],
+                                      en: ['battle of kulikovo', 'baptism of rus', 'leningrad metronome', 'iron curtain', 'perestroika', 'august coup', 'default']
+                                  },
+                                  weight: 1.4,
+                                  contextRequired: true
+                              },
+                              cinemaQuotes: {
+                                  enabled: true,
+                                  markers: {
+                                      ru: [
+                                          'мы легких путей не ищем',
+                                          'я требую продолжения банкета',
+                                          'а вдоль дороги мертвые с косами',
+                                          'морда лица',
+                                          'все путем',
+                                          'деньги есть — ума не надо'
+                                      ],
+                                      en: [
+                                          'you shall not pass',
+                                          'may the force be with you',
+                                          'I\'ll be back',
+                                          'show me the money',
+                                          'you can\'t handle the truth',
+                                          'I see dead people'
+                                      ]
+                                  },
+                                  weight: 0.9
+                              },
+                              popCulture: {
+                                  enabled: true,
+                                  markers: {
+                                      ru: ['баян', 'дноклассик', 'превед', 'ржака', 'троллинг', 'вирусный', 'эпично', 'омегапечаль'],
+                                      en: ['meme', 'viral', 'trolling', 'epic', 'fail', 'win', 'cancelled', 'woke', 'based', 'sus']
+                                  },
+                                  weight: 0.6
+                              }
+                          },
+                          detection: {
+                              requireContext: false,
+                              minOccurrences: 1,
+                              boostForExactMatch: 1.5
+                          }
+                      },
+                      
+                      psychologicalProfiling: {
+                          enabled: true,
+                          mode: 'extend',
+                          states: {
+                              anxiety: {
+                                  markers: {
+                                      ru: ['боюсь', 'страшно', 'беспокоюсь', 'волнуюсь', 'паника', 'тревога', 'нервы', 'испуг'],
+                                      en: ['afraid', 'scared', 'worried', 'anxious', 'panic', 'nervous', 'frightened']
+                                  },
+                                  threshold: 2,
+                                  coOccurrence: ['stress', 'panic', 'anxiety']
+                              },
+                              joy: {
+                                  markers: {
+                                      ru: ['счастливо', 'радостно', 'восторг', 'кайф', 'ура', 'это победа', 'обожаю', 'блаженство'],
+                                      en: ['happy', 'joy', 'delight', 'bliss', 'hooray', 'victory', 'love', 'ecstasy']
+                                  },
+                                  threshold: 1,
+                                  intensityBoosters: ['очень', 'невероятно', 'безумно', 'very', 'incredibly', 'insanely']
+                              },
+                              sadness: {
+                                  markers: {
+                                      ru: ['грустно', 'печально', 'тоскливо', 'уныние', 'хандра', 'нет сил', 'все плохо'],
+                                      en: ['sad', 'sorrow', 'melancholy', 'gloom', 'depression', 'no strength', 'everything is bad']
+                                  },
+                                  threshold: 1,
+                                  coOccurrence: ['слезы', 'одиночество', 'потеря', 'tears', 'loneliness', 'loss']
+                              },
+                              anger: {
+                                  markers: {
+                                      ru: ['бесит', 'злост', 'ненавижу', 'достало', 'ярост', 'возмущен', 'в бешенстве', 'терпеть не могу'],
+                                      en: ['angry', 'furious', 'hate', 'enough', 'rage', 'outraged', 'fuming', 'can\'t stand']
+                                  },
+                                  threshold: 1,
+                                  intensityIndicators: ['ужасно', 'совершенно', 'окончательно', 'terribly', 'completely', 'finally']
+                              },
+                              curiosity: {
+                                  enabled: true,
+                                  markers: {
+                                      ru: ['интересно', 'любопытно', 'хочу узнать', 'почему', 'как это работает', 'а что если'],
+                                      en: ['interesting', 'curious', 'want to know', 'why', 'how it works', 'what if']
+                                  },
+                                  threshold: 1,
+                                  weight: 0.9
+                              },
+                              surprise: {
+                                  enabled: true,
+                                  markers: {
+                                      ru: ['неожиданно', 'ничего себе', 'вот это да', 'ого', 'не может быть', 'шок', 'сюрприз'],
+                                      en: ['unexpected', 'wow', 'oh my', 'oh', 'can\'t be', 'shock', 'surprise']
+                                  },
+                                  threshold: 1,
+                                  weight: 0.8
+                              },
+                              gratitude: {
+                                  enabled: true,
+                                  markers: {
+                                      ru: ['спасибо', 'благодарен', 'ценю', 'признателен', 'ты лучший', 'выручил'],
+                                      en: ['thanks', 'thankful', 'appreciate', 'grateful', 'you are the best', 'helped out']
+                                  },
+                                  threshold: 1,
+                                  weight: 1.1
+                              },
+                              nostalgia: {
+                                  enabled: true,
+                                  markers: {
+                                      ru: ['вспомнилось', 'как в старые добрые', 'ностальгия', 'раньше было лучше', 'помню'],
+                                      en: ['remembered', 'like in the good old days', 'nostalgia', 'it was better before', 'I remember']
+                                  },
+                                  threshold: 1,
+                                  weight: 1.0
+                              },
+                              pride: {
+                                  enabled: true,
+                                  markers: {
+                                      ru: ['горжусь', 'достижение', 'успех', 'победа', 'я смог', 'лучший'],
+                                      en: ['proud', 'achievement', 'success', 'victory', 'I did it', 'the best']
+                                  },
+                                  threshold: 1,
+                                  weight: 1.2
+                              },
+                              shame: {
+                                  enabled: true,
+                                  markers: {
+                                      ru: ['стыдно', 'позор', 'срам', 'унижение', 'неловко', 'смущение'],
+                                      en: ['ashamed', 'shame', 'disgrace', 'humiliation', 'awkward', 'embarrassment']
+                                  },
+                                  threshold: 1,
+                                  weight: 1.3
+                              },
+                              envy: {
+                                  enabled: true,
+                                  markers: {
+                                      ru: ['зависть', 'ревность', 'хочу как', 'несправедливо', 'почему у него есть'],
+                                      en: ['envy', 'jealous', 'want what he has', 'unfair', 'why does he have']
+                                  },
+                                  threshold: 1,
+                                  weight: 1.1
+                              },
+                              contempt: {
+                                  enabled: true,
+                                  markers: {
+                                      ru: ['презрение', 'пренебрежение', 'ничтожество', 'жалкий', 'презираю'],
+                                      en: ['contempt', 'disdain', 'scorn', 'pathetic', 'despise']
+                                  },
+                                  threshold: 1,
+                                  weight: 1.4
+                              }
+                          },
+                          cognitiveBiases: {
+                              dichotomous: {
+                                  markers: {
+                                      ru: ['всегда', 'никогда', 'все', 'никто', 'абсолютно', 'категорически', 'либо-либо'],
+                                      en: ['always', 'never', 'everyone', 'nobody', 'absolutely', 'categorically', 'either-or']
+                                  },
+                                  weight: 1.2
+                              },
+                              catastrophizing: {
+                                  markers: {
+                                      ru: ['ужасно', 'кошмар', 'конец', 'катастрофа', 'все пропало', 'безысходность', 'крах'],
+                                      en: ['awful', 'nightmare', 'the end', 'disaster', 'all is lost', 'hopelessness', 'collapse']
+                                  },
+                                  weight: 1.5
+                              },
+                              emotionalReasoning: {
+                                  enabled: true,
+                                  markers: {
+                                      ru: ['чувствую, что это так', 'ощущаю, что он неправ', 'мне кажется, это плохо'],
+                                      en: ['I feel that it is so', 'I feel that he is wrong', 'it seems bad to me']
+                                  },
+                                  weight: 1.1
+                              },
+                              overgeneralization: {
+                                  enabled: true,
+                                  markers: {
+                                      ru: ['как всегда', 'опять все по старому', 'у меня никогда не получается', 'все люди...'],
+                                      en: ['as always', 'again everything is the same', 'I never succeed', 'all people...']
+                                  },
+                                  weight: 1.0
+                              },
+                              mindReading: {
+                                  enabled: true,
+                                  markers: {
+                                      ru: ['он думает, что я', 'она наверняка считает', 'они меня ненавидят'],
+                                      en: ['he thinks that I', 'she surely thinks', 'they hate me']
+                                  },
+                                  weight: 1.3
+                              },
+                              personalization: {
+                                  enabled: true,
+                                  markers: {
+                                      ru: ['это из-за меня', 'я виноват', 'наверное, я им не нравлюсь', 'они так поступили, потому что я...'],
+                                      en: ['it\'s because of me', 'I\'m to blame', 'probably they don\'t like me', 'they did that because I...']
+                                  },
+                                  weight: 1.2
+                              },
+                              fortuneTelling: {
+                                  enabled: true,
+                                  markers: {
+                                      ru: ['наверняка не получится', 'точно провалюсь', 'они откажут', 'будет ужасно'],
+                                      en: ['it probably won\'t work', 'I\'ll definitely fail', 'they will refuse', 'it will be terrible']
+                                  },
+                                  weight: 1.1
+                              },
+                              minimization: {
+                                  enabled: true,
+                                  markers: {
+                                      ru: ['ничего особенного', 'просто повезло', 'это ерунда', 'не стоит внимания'],
+                                      en: ['nothing special', 'just lucky', 'it\'s nonsense', 'not worth attention']
+                                  },
+                                  weight: 0.9
+                              }
+                          },
+                          communicationStyles: {
+                              enabled: true,
+                              assertive: {
+                                  markers: {
+                                      ru: ['я считаю', 'предлагаю', 'давайте вместе', 'мне важно'],
+                                      en: ['I think', 'I suggest', 'let\'s together', 'it is important to me']
+                                  },
+                                  markersAvoid: {
+                                      ru: ['наверное', 'извините, но', 'как-нибудь'],
+                                      en: ['maybe', 'sorry, but', 'somehow']
+                                  }
+                              },
+                              passive: {
+                                  markers: {
+                                      ru: ['не знаю', 'как скажете', 'мне все равно', 'лишь бы вас не беспокоить'],
+                                      en: ['I don\'t know', 'as you say', 'I don\'t care', 'just not to bother you']
+                                  }
+                              },
+                              aggressive: {
+                                  markers: {
+                                      ru: ['ты должен', 'категорически не согласен', 'это глупость', 'сейчас же'],
+                                      en: ['you must', 'categorically disagree', 'this is nonsense', 'right now']
+                                  }
+                              },
+                              manipulative: {
+                                  enabled: true,
+                                  markers: {
+                                      ru: ['если бы ты меня любил', 'все так делают', 'ты же не хочешь, чтобы...', 'после всего, что я для тебя...'],
+                                      en: ['if you loved me', 'everyone does it', 'you don\'t want to...', 'after all I\'ve done for you...']
+                                  }
+                              }
+                          },
+                          valuesAndMotivation: {
+                              enabled: true,
+                              achievement: {
+                                  markers: {
+                                      ru: ['успех', 'цель', 'результат', 'победа', 'достижение'],
+                                      en: ['success', 'goal', 'result', 'victory', 'achievement']
+                                  }
+                              },
+                              relationships: {
+                                  markers: {
+                                      ru: ['семья', 'друзья', 'любовь', 'близкие', 'поддержка'],
+                                      en: ['family', 'friends', 'love', 'close ones', 'support']
+                                  }
+                              },
+                              growth: {
+                                  markers: {
+                                      ru: ['развитие', 'учеба', 'новое', 'опыт', 'самосовершенствование'],
+                                      en: ['development', 'learning', 'new', 'experience', 'self-improvement']
+                                  }
+                              },
+                              security: {
+                                  markers: {
+                                      ru: ['безопасность', 'стабильность', 'надежность', 'защита', 'покой'],
+                                      en: ['security', 'stability', 'reliability', 'protection', 'peace']
+                                  }
+                              }
+                          }
+                      }
+                  }
             };
         }
         
@@ -5816,5 +6207,6 @@
     
 
 })();
+
 
 
