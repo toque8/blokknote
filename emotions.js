@@ -4852,27 +4852,46 @@
         }
         
         calculateOverallComplexity(analyses) {
-            const complexityFactors = [
-                (analyses.lexical?.metrics?.lexicalConcentration || 0) * 0.15,
-                (analyses.syntactic?.complexity || 0) * 0.15,
-                (analyses.contextual?.scores?.contextualComplexity || 0) * 0.15,
-                (analyses.semantic?.thematic?.complexity || 0) * 0.15,
-                (analyses.psychological?.psychologicalComplexity || 0) * 0.10,
-                (analyses.lexical?.summary?.categoryCount / 40 || 0) * 0.10,
-                (analyses.semantic?.progression?.metrics?.avgComplexity || 0) * 0.10,
-                (analyses.cultural?.culturalDensity || 0) * 0.05,
-                (analyses.semantic?.abstraction?.level || 0) * 0.05
-            ];
-            
-            const validFactors = complexityFactors.filter(f => !isNaN(f) && f !== undefined);
-            
+            const textFactors = [];
+
+            const sentenceComplexity = analyses.syntactic?.sentenceStats?.complexity || 0;
+            textFactors.push(sentenceComplexity * 0.20);
+
+            const readabilityGrade = analyses.syntactic?.readability?.fleschKincaidGrade || 0;
+            const normalizedReadability = Math.min(1, readabilityGrade / 20);
+            textFactors.push(normalizedReadability * 0.15);
+
+            const lexicalRichness = analyses.lexical?.metrics?.lexicalRichness || 0;
+            textFactors.push(lexicalRichness * 0.15);
+
+            const syntacticDiversity = analyses.syntactic?.diversity || 0;
+            textFactors.push(syntacticDiversity * 0.10);
+
+            const wordCount = analyses.metrics?.wordCount || 0;
+            const lengthFactor = Math.min(1, wordCount / 300);
+            textFactors.push(lengthFactor * 0.10);
+
+            const sentenceLengthVariance = analyses.syntactic?.sentenceStats?.lengthVariance || 0;
+            const normalizedVariance = Math.min(1, sentenceLengthVariance / 10);
+            textFactors.push(normalizedVariance * 0.10);
+
+            const punctuationDensity = analyses.syntactic?.punctuation?.density || 0;
+            textFactors.push(Math.min(0.1, punctuationDensity * 2));
+
+            const coherence = analyses.syntactic?.coherence || 0;
+            textFactors.push(coherence * 0.10);
+
+            const validFactors = textFactors.filter(f => !isNaN(f) && f !== undefined);
+
             if (validFactors.length === 0) return 0.5;
-            
+
             const rawComplexity = validFactors.reduce((a, b) => a + b, 0) / validFactors.length;
+
+            const nonLinearComplexity = Math.pow(rawComplexity, 0.9);
+
+            const finalComplexity = Math.min(0.99, Math.max(0.01, nonLinearComplexity));
             
-            const nonlinearComplexity = Math.pow(rawComplexity, 1.1);
-            
-            return Math.min(0.99, Math.max(0.01, nonlinearComplexity));
+            return Math.round(finalComplexity * 100) / 100;
         }
         
         calculateAnalysisConfidence(analyses, languageConfidence) {
@@ -5005,75 +5024,94 @@
         }
         
         calculateEmotionalRange(analyses) {
-            const ranges = [];
-            
-            const lexicalRange = analyses.lexical.intensityProfile.positive + 
-                               analyses.lexical.intensityProfile.negative;
-            ranges.push(lexicalRange);
-            
-            const semanticScores = analyses.semantic.progression.emotions.map(e => e.emotion);
-            const semanticRange = Math.max(...semanticScores) - Math.min(...semanticScores);
-            ranges.push(semanticRange);
-            
-            const plutchikIntensities = Object.values(analyses.psychological.plutchik.basicEmotions)
-                .map(e => e.intensity);
-            const psychologicalRange = Math.max(...plutchikIntensities) - Math.min(...plutchikIntensities);
-            ranges.push(psychologicalRange);
-            
-            return ranges.reduce((a, b) => a + b, 0) / ranges.length;
-        }
-        
-        calculateEmotionalDepth(analyses) {
-            const depthFactors = [];
-            
-            const lexicalDiversity = analyses.lexical?.summary?.lexicalDensity || 0;
-            depthFactors.push(lexicalDiversity * 0.25);
-            
-            const abstractionLevel = analyses.semantic?.abstraction?.level || 0.5;
-            depthFactors.push(abstractionLevel * 0.20);
-            
-            const selfAwareness = analyses.psychological?.selfAwarenessLevel?.score || 0;
-            depthFactors.push(selfAwareness * 0.20);
-            
-            const culturalDepth = analyses.cultural?.scores?.culturalDepth || 0;
-            depthFactors.push(culturalDepth * 0.15);
-            
-            const progressionComplexity = analyses.semantic?.progression?.metrics?.avgComplexity || 0;
-            depthFactors.push(progressionComplexity * 0.20);
-            
-            const emotionCategories = Object.keys(analyses.lexical?.categories || {}).length;
-            const categoryDiversity = Math.min(1, emotionCategories / 25);
-            depthFactors.push(categoryDiversity * 0.25);
-            
-            const complexEmotions = ['ambivalence', 'bittersweet', 'nostalgiaMixed', 'irony'];
+            const complexityFactors = [];
+
+            const categoryCount = analyses.lexical?.summary?.categoryCount || 0;
+            const normalizedCategories = Math.min(1, categoryCount / 25);
+            complexityFactors.push(normalizedCategories * 0.25);
+
+            const lexicalConcentration = analyses.lexical?.metrics?.lexicalConcentration || 0;
+            complexityFactors.push(lexicalConcentration * 0.20);
+
+            const complexEmotions = ['ambivalence', 'bittersweet', 'nostalgiaMixed', 'irony', 'nostalgia'];
             const complexCount = complexEmotions.filter(cat => 
                 analyses.lexical?.categories?.[cat]
             ).length;
             const complexRatio = complexCount / complexEmotions.length;
-            depthFactors.push(complexRatio * 0.20);
+            complexityFactors.push(complexRatio * 0.20);
+
+            const emotionRange = analyses.emotionalRange || 0;
+            complexityFactors.push(emotionRange * 0.15);
+
+            const progressionComplexity = analyses.semantic?.progression?.metrics?.avgComplexity || 0;
+            complexityFactors.push(progressionComplexity * 0.10);
+
+            const plutchikDiversity = analyses.psychological?.plutchik?.emotionalDiversity || 0;
+            complexityFactors.push(plutchikDiversity * 0.10);
+
+            const positiveCount = ['ecstasy', 'joy', 'love', 'peace', 'hope', 'gratitude', 'inspiration', 'pride']
+                .filter(cat => analyses.lexical?.categories?.[cat]).length;
+            const negativeCount = ['sadness', 'grief', 'anger', 'fear', 'disgust', 'shame', 'guilt', 'loneliness', 'envy', 'despair']
+                .filter(cat => analyses.lexical?.categories?.[cat]).length;
+            const balanceRatio = Math.min(1, (positiveCount + negativeCount) / Math.max(1, Math.abs(positiveCount - negativeCount) + 1));
+            complexityFactors.push(balanceRatio * 0.15);
+
+            const validFactors = complexityFactors.filter(f => 
+                !isNaN(f) && f !== undefined && f !== null && f >= 0
+            );
+
+            if (validFactors.length === 0) return 0.5;
+
+            const rawComplexity = validFactors.reduce((a, b) => a + b, 0) / validFactors.length;
+
+            const nonLinearComplexity = Math.pow(rawComplexity, 1.1);
+
+            const variance = this.calculateVariance(complexityFactors);
+            const varianceBonus = Math.min(0.15, variance * 0.5);
+
+            const finalComplexity = Math.min(0.99, Math.max(0.01, 
+                nonLinearComplexity * (1 + varianceBonus)
+            ));
             
-            const lexicalIntensity = analyses.lexical?.intensityProfile?.overall || 0;
-            depthFactors.push(lexicalIntensity * 0.15);
-            
-            const semanticRichness = analyses.semantic?.semanticRichness || 0;
-            depthFactors.push(semanticRichness * 0.15);
-            
+            return Math.round(finalComplexity * 100) / 100;
+        }
+        
+        calculateEmotionalDepth(analyses) {
+            const depthFactors = [];
+
+            const selfAwareness = analyses.psychological?.selfAwarenessLevel?.score || 0;
+            depthFactors.push(selfAwareness * 0.25);
+
+            const abstractionLevel = analyses.semantic?.abstraction?.level || 0;
+            depthFactors.push(abstractionLevel * 0.20);
+
+            const culturalDepth = analyses.cultural?.scores?.culturalDepth || 0;
+            depthFactors.push(culturalDepth * 0.15);
+
+            const semanticDepth = analyses.semantic?.progression?.metrics?.avgComplexity || 0;
+            depthFactors.push(semanticDepth * 0.15);
+
+            const psychologicalDepth = analyses.psychological?.maslow?.needComplexity || 0;
+            depthFactors.push(psychologicalDepth * 0.10);
+
+            const emotionalIntelligence = analyses.psychological?.emotionalIntelligence?.overall || 0;
+            depthFactors.push(emotionalIntelligence * 0.10);
+
+            const poeticPatterns = analyses.cultural?.references?.poetic?.count || 0;
+            const poeticFactor = Math.min(0.1, poeticPatterns * 0.05);
+            depthFactors.push(poeticFactor);
+
             const validFactors = depthFactors.filter(f => 
                 !isNaN(f) && f !== undefined && f !== null && f >= 0
             );
-            
+
             if (validFactors.length === 0) return 0.3;
-            
+
             const rawDepth = validFactors.reduce((a, b) => a + b, 0) / validFactors.length;
-            
-            const variance = this.calculateVariance(validFactors);
-            const varianceBonus = Math.min(0.2, variance * 0.5);
-            
-            const nonlinearity = Math.pow(rawDepth, 0.7);
-            
-            const finalDepth = Math.min(0.99, Math.max(0.01, 
-                nonlinearity * (1 + varianceBonus)
-            ));
+
+            const depthWeighted = Math.pow(rawDepth, 0.7);
+
+            const finalDepth = Math.min(0.99, Math.max(0.01, depthWeighted * 1.1));
             
             return Math.round(finalDepth * 100) / 100;
         }
@@ -6318,6 +6356,7 @@
     
 
 })();
+
 
 
 
