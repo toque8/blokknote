@@ -4840,58 +4840,47 @@
             return Math.min(1, factors.reduce((a, b) => a + b, 0) / factors.length);
         }
         
-        calculatePsychologicalDimensionScore(psychological) {
-            const factors = [
-                psychological.psychologicalComplexity,
-                psychological.selfAwarenessLevel.score,
-                psychological.plutchik.emotionalDiversity,
-                psychological.bigFive.complexity
-            ];
-            
-            return Math.min(1, factors.reduce((a, b) => a + b, 0) / factors.length);
-        }
-        
         calculateOverallComplexity(analyses, wordCount = 0) {
-                const textFactors = [];
-                
-                const sentenceComplexity = analyses.syntactic?.sentenceStats?.complexity || 0;
-                textFactors.push(sentenceComplexity * 0.25);
-                
-                const readabilityGrade = analyses.syntactic?.readability?.fleschKincaidGrade || 0;
-                const normalizedReadability = Math.min(1, readabilityGrade / 15);
-                textFactors.push(normalizedReadability * 0.20);
-                
-                const lexicalRichness = analyses.lexical?.metrics?.lexicalRichness || 0;
-                textFactors.push(lexicalRichness * 0.20);
-                
-                const syntacticDiversity = analyses.syntactic?.diversity || 0;
-                textFactors.push(syntacticDiversity * 0.15);
-                
-                const lengthFactor = wordCount > 0 ? 
-                    Math.min(1, Math.log10(wordCount + 1) / 3) : 0;
-                textFactors.push(lengthFactor * 0.10);
-                
-                const sentenceLengthVariance = analyses.syntactic?.sentenceStats?.lengthVariance || 0;
-                const normalizedVariance = Math.min(1, sentenceLengthVariance / 8);
-                textFactors.push(normalizedVariance * 0.15);
-                
-                const punctuationDensity = analyses.syntactic?.punctuation?.density || 0;
-                textFactors.push(Math.min(0.15, punctuationDensity * 3));
-                
-                const coherence = analyses.syntactic?.coherence || 0;
-                textFactors.push(coherence * 0.10);
-                
-                const validFactors = textFactors.filter(f => !isNaN(f) && f !== undefined && f >= 0);
-                
-                if (validFactors.length === 0) return 0.5;
-                
-                const rawComplexity = validFactors.reduce((a, b) => a + b, 0) / validFactors.length;
-                
-                const nonLinearComplexity = Math.pow(rawComplexity, 0.85);
-                
-                const finalComplexity = Math.min(0.99, Math.max(0.1, nonLinearComplexity));
-                
-                return Math.round(finalComplexity * 100) / 100;
+            const textFactors = [];
+            
+            const sentenceComplexity = analyses.syntactic?.sentenceStats?.complexity || 0;
+            textFactors.push(sentenceComplexity * 0.25);
+            
+            const readabilityGrade = analyses.syntactic?.readability?.fleschKincaidGrade || 0;
+            const normalizedReadability = Math.min(1, readabilityGrade / 15);
+            textFactors.push(normalizedReadability * 0.20);
+            
+            const lexicalRichness = analyses.lexical?.metrics?.lexicalRichness || 0;
+            textFactors.push(lexicalRichness * 0.20);
+            
+            const syntacticDiversity = analyses.syntactic?.diversity || 0;
+            textFactors.push(syntacticDiversity * 0.15);
+            
+            const lengthFactor = wordCount > 0 ? 
+                Math.min(1, Math.log10(wordCount + 1) / 3) : 0;
+            textFactors.push(lengthFactor * 0.10);
+            
+            const sentenceLengthVariance = analyses.syntactic?.sentenceStats?.lengthVariance || 0;
+            const normalizedVariance = Math.min(1, sentenceLengthVariance / 8);
+            textFactors.push(normalizedVariance * 0.15);
+            
+            const punctuationDensity = analyses.syntactic?.punctuation?.density || 0;
+            textFactors.push(Math.min(0.15, punctuationDensity * 3));
+            
+            const coherence = analyses.syntactic?.coherence || 0;
+            textFactors.push(coherence * 0.10);
+            
+            const validFactors = textFactors.filter(f => !isNaN(f) && f !== undefined && f >= 0);
+            
+            if (validFactors.length === 0) return 0.5;
+            
+            const rawComplexity = validFactors.reduce((a, b) => a + b, 0) / validFactors.length;
+            
+            const nonLinearComplexity = Math.pow(rawComplexity, 0.85);
+            
+            const finalComplexity = Math.min(0.99, Math.max(0.1, nonLinearComplexity));
+            
+            return Math.round(finalComplexity * 100) / 100;
         }
         
         calculateAnalysisConfidence(analyses, languageConfidence) {
@@ -5024,63 +5013,63 @@
         }
         
         calculateEmotionalRange(analyses) {
-                const rangeFactors = [];
-                
-                const categoryCount = analyses.lexical?.summary?.categoryCount || 0;
-                const normalizedCategories = Math.min(1, categoryCount / 30);
-                rangeFactors.push(normalizedCategories * 0.25);
-                
-                const lexicalDistribution = analyses.lexical?.metrics?.distribution || 0;
-                rangeFactors.push(lexicalDistribution * 0.20);
-                
-                const complexEmotions = ['ambivalence', 'bittersweet', 'nostalgiaMixed', 'irony', 'nostalgia'];
-                const complexCount = complexEmotions.filter(cat => 
-                    analyses.lexical?.categories?.[cat]
-                ).length;
-                const complexRatio = complexCount / complexEmotions.length;
-                rangeFactors.push(complexRatio * 0.20);
-                
-                const progressionComplexity = analyses.semantic?.progression?.metrics?.avgComplexity || 0;
-                rangeFactors.push(progressionComplexity * 0.15);
-                
-                const plutchikDiversity = analyses.psychological?.plutchik?.emotionalDiversity || 0;
-                rangeFactors.push(plutchikDiversity * 0.15);
-                
-                const positiveCategories = ['ecstasy', 'joy', 'love', 'peace', 'hope', 'gratitude', 'inspiration', 'pride'];
-                const negativeCategories = ['sadness', 'grief', 'anger', 'fear', 'disgust', 'shame', 'guilt', 'loneliness', 'envy', 'despair'];
-                
-                const positiveCount = positiveCategories.filter(cat => 
-                    analyses.lexical?.categories?.[cat]
-                ).length;
-                const negativeCount = negativeCategories.filter(cat => 
-                    analyses.lexical?.categories?.[cat]
-                ).length;
-                
-                const balanceRatio = positiveCount > 0 && negativeCount > 0 ? 
-                    1 - Math.abs(positiveCount - negativeCount) / (positiveCount + negativeCount) : 0;
-                rangeFactors.push(balanceRatio * 0.15);
-                
-                const volatility = analyses.semantic?.progression?.metrics?.volatility || 0;
-                rangeFactors.push(volatility * 0.15);
-                
-                const validFactors = rangeFactors.filter(f => 
-                    !isNaN(f) && f !== undefined && f !== null && f >= 0
-                );
-                
-                if (validFactors.length === 0) return 0.3;
-                
-                const rawRange = validFactors.reduce((a, b) => a + b, 0) / validFactors.length;
-                
-                const nonLinearRange = Math.pow(rawRange, 1.2);
-                
-                const variance = this.calculateVariance(rangeFactors);
-                const varianceBonus = Math.min(0.2, variance * 0.8);
-                
-                const finalRange = Math.min(0.99, Math.max(0.05,
-                    nonLinearRange * (1 + varianceBonus)
-                ));
-                
-                return Math.round(finalRange * 100) / 100;
+            const rangeFactors = [];
+            
+            const categoryCount = analyses.lexical?.summary?.categoryCount || 0;
+            const normalizedCategories = Math.min(1, categoryCount / 30);
+            rangeFactors.push(normalizedCategories * 0.25);
+            
+            const lexicalDistribution = analyses.lexical?.metrics?.distribution || 0;
+            rangeFactors.push(lexicalDistribution * 0.20);
+            
+            const complexEmotions = ['ambivalence', 'bittersweet', 'nostalgiaMixed', 'irony', 'nostalgia'];
+            const complexCount = complexEmotions.filter(cat => 
+                analyses.lexical?.categories?.[cat]
+            ).length;
+            const complexRatio = complexCount / complexEmotions.length;
+            rangeFactors.push(complexRatio * 0.20);
+            
+            const progressionComplexity = analyses.semantic?.progression?.metrics?.avgComplexity || 0;
+            rangeFactors.push(progressionComplexity * 0.15);
+            
+            const plutchikDiversity = analyses.psychological?.plutchik?.emotionalDiversity || 0;
+            rangeFactors.push(plutchikDiversity * 0.15);
+            
+            const positiveCategories = ['ecstasy', 'joy', 'love', 'peace', 'hope', 'gratitude', 'inspiration', 'pride'];
+            const negativeCategories = ['sadness', 'grief', 'anger', 'fear', 'disgust', 'shame', 'guilt', 'loneliness', 'envy', 'despair'];
+            
+            const positiveCount = positiveCategories.filter(cat => 
+                analyses.lexical?.categories?.[cat]
+            ).length;
+            const negativeCount = negativeCategories.filter(cat => 
+                analyses.lexical?.categories?.[cat]
+            ).length;
+            
+            const balanceRatio = positiveCount > 0 && negativeCount > 0 ? 
+                1 - Math.abs(positiveCount - negativeCount) / (positiveCount + negativeCount) : 0;
+            rangeFactors.push(balanceRatio * 0.15);
+            
+            const volatility = analyses.semantic?.progression?.metrics?.volatility || 0;
+            rangeFactors.push(volatility * 0.15);
+            
+            const validFactors = rangeFactors.filter(f => 
+                !isNaN(f) && f !== undefined && f !== null && f >= 0
+            );
+            
+            if (validFactors.length === 0) return 0.3;
+            
+            const rawRange = validFactors.reduce((a, b) => a + b, 0) / validFactors.length;
+            
+            const nonLinearRange = Math.pow(rawRange, 1.2);
+            
+            const variance = this.calculateVariance(rangeFactors);
+            const varianceBonus = Math.min(0.2, variance * 0.8);
+            
+            const finalRange = Math.min(0.99, Math.max(0.05,
+                nonLinearRange * (1 + varianceBonus)
+            ));
+            
+            return Math.round(finalRange * 100) / 100;
         }
         
         calculateEmotionalDepth(analyses) {
@@ -6367,6 +6356,7 @@
     
 
 })();
+
 
 
 
