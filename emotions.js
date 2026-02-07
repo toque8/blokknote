@@ -1394,7 +1394,7 @@
                             semantic: semanticAnalysis,
                             psychological: psychologicalAnalysis
                         },
-                        writingQuality: { // ДОБАВЛЕНО: включение анализа повторов
+                        writingQuality: { 
                             repetitions: repetitionAnalysis
                         },
                         timestamp: new Date().toISOString(),
@@ -1523,7 +1523,7 @@
                     for (const word of categoryWords) {
                         if (words.includes(word)) {
                             count++;
-                            break; // Count each category only once per sentence
+                            break; 
                         }
                     }
                 }
@@ -1934,7 +1934,6 @@
             for (let i = 0; i < sentenceEmotions.length; i++) {
                 const emotion = sentenceEmotions[i];
                 
-                // Simple trend detection
                 if (i === 0) {
                     currentPhase.trend = emotion.score > 0.1 ? 'positive' : 
                                        emotion.score < -0.1 ? 'negative' : 'neutral';
@@ -2587,9 +2586,7 @@
                 let ironyDetected = false;
                 rules.ironyIndicators.forEach(indicator => {
                     if (lowerSentence.includes(indicator)) {
-                        // Check for question marks or exclamation
                         if (sentence.includes('?') || sentence.includes('!')) {
-                            // Additional check for unexpected sentiment words
                             const positiveAfterNegative = this.checkIronyPattern(sentence);
                             if (positiveAfterNegative) {
                                 analysis.indicators.irony++;
@@ -2636,7 +2633,6 @@
                     }
                 });
                 
-                // Understatement
                 rules.understatement.forEach(marker => {
                     if (lowerSentence.includes(marker)) {
                         analysis.indicators.understatement++;
@@ -2880,7 +2876,6 @@
                 );
                 
                 if (hasPronoun) {
-                    // Check if previous sentence has potential antecedents
                     const nouns = this.extractNouns(prev);
                     if (nouns.length > 0) {
                         referenceChains++;
@@ -3370,7 +3365,6 @@
         }
         
         isMythologicalPattern(reference, text) {
-            // Check if mythological reference is used in a pattern
             const patterns = [
                 new RegExp(`как\\s+${reference}[^.!?]*[.!?]`, 'i'),
                 new RegExp(`словно\\s+${reference}[^.!?]*[.!?]`, 'i'),
@@ -3520,35 +3514,51 @@
             const words = this.enhancedTokenization(sentence.toLowerCase());
             let score = 0;
             let weightSum = 0;
+            const foundCategories = new Set();
             
             for (const [category, wordList] of Object.entries(this.dictionaries[this.language])) {
-                  const categoryWeight = this.categoryWeights[category] || 1.0;
-                  
-                  let foundInCategory = false;
-                  for (const word of wordList) {
-                        if (words.includes(word)) {
-                              const polarity = this.getCategoryPolarity(category);
-                              score += polarity * categoryWeight;
-                              foundInCategory = true;
-                              break; // ИСПРАВЛЕНО: считаем каждую категорию только раз
+                const categoryWeight = this.categoryWeights[category] || 1.0;
+                
+                for (const word of wordList) {
+                    if (words.includes(word)) {
+                        if (!foundCategories.has(category)) {
+                            const polarity = this.getCategoryPolarity(category);
+                            score += polarity * categoryWeight;
+                            foundCategories.add(category);
+                            weightSum += categoryWeight;
                         }
-                  }
-                  
-                  if (foundInCategory) {
-                        weightSum += categoryWeight;
-                  }
+                        score += this.getCategoryPolarity(category) * 0.1;
+                    }
+                }
             }
             
-            return weightSum > 0 ? score / weightSum : 0;
+            const wordCount = words.length || 1;
+            const intensityBonus = Math.min(0.3, foundCategories.size * 0.1);
+            
+            return weightSum > 0 ? 
+                (score / weightSum) * (1 + intensityBonus) * Math.min(1, foundCategories.size / 3) : 
+                0;
         }
         
         getCategoryPolarity(category) {
-            const positive = ['ecstasy', 'joy', 'love', 'peace', 'hope', 'gratitude', 'inspiration', 'pride'];
-            const negative = ['sadness', 'grief', 'anger', 'fear', 'disgust', 'shame', 'guilt', 'loneliness', 'envy', 'despair'];
+            const positive = ['ecstasy', 'joy', 'love', 'peace', 'hope', 
+                            'gratitude', 'inspiration', 'pride', 'surprise',
+                            'curiosity', 'aesthetic', 'triumph', 'liberation',
+                            'connection', 'calmness', 'vulnerability', 'resilience'];
             
-            if (positive.includes(category)) return 1;
-            if (negative.includes(category)) return -1;
-            return 0; // neutral for complex emotions
+            const negative = ['sadness', 'grief', 'anger', 'fear', 'disgust', 
+                            'shame', 'guilt', 'loneliness', 'envy', 'despair',
+                            'contempt', 'bitterness', 'anxiety', 'emptiness',
+                            'confusion'];
+            
+            const complex = ['ambivalence', 'irony', 'nostalgiaMixed', 'bittersweet',
+                            'nostalgia', 'intensity', 'calmness'];
+            
+            if (positive.includes(category)) return 0.7 + (Math.random() * 0.1);
+            if (negative.includes(category)) return -0.7 - (Math.random() * 0.1);
+            if (complex.includes(category)) return (Math.random() * 0.4) - 0.2;
+            
+            return 0;
         }
         
         calculateSentenceIntensity(sentence) {
@@ -3640,7 +3650,6 @@
         detectEmotionalArcType(emotions) {
             const scores = emotions.map(e => e.emotion);
             
-            // Common narrative arcs
             if (this.isRiseFallRiseArc(scores)) return 'rise_fall_rise';
             if (this.isFallRiseFallArc(scores)) return 'fall_rise_fall';
             if (this.isSteadyRiseArc(scores)) return 'steady_rise';
@@ -5007,19 +5016,54 @@
         }
         
         calculateEmotionalDepth(analyses) {
-            const depthFactors = [
-                (analyses.lexical?.metrics?.lexicalConcentration || 0) * 0.25,
-                (analyses.semantic?.abstraction?.level || 0) * 0.20,
-                (analyses.psychological?.selfAwarenessLevel?.score || 0) * 0.20,
-                (analyses.cultural?.scores?.culturalDepth || 0) * 0.15,
-                (analyses.semantic?.progression?.metrics?.avgComplexity || 0) * 0.20
-            ];
-            const validFactors = depthFactors.filter(f => !isNaN(f) && f !== undefined && f !== null);
+            const depthFactors = [];
+            
+            const lexicalDiversity = analyses.lexical?.summary?.lexicalDensity || 0;
+            depthFactors.push(lexicalDiversity * 0.25);
+            
+            const abstractionLevel = analyses.semantic?.abstraction?.level || 0.5;
+            depthFactors.push(abstractionLevel * 0.20);
+            
+            const selfAwareness = analyses.psychological?.selfAwarenessLevel?.score || 0;
+            depthFactors.push(selfAwareness * 0.20);
+            
+            const culturalDepth = analyses.cultural?.scores?.culturalDepth || 0;
+            depthFactors.push(culturalDepth * 0.15);
+            
+            const progressionComplexity = analyses.semantic?.progression?.metrics?.avgComplexity || 0;
+            depthFactors.push(progressionComplexity * 0.20);
+            
+            const emotionCategories = Object.keys(analyses.lexical?.categories || {}).length;
+            const maxCategories = 50;
+            const categoryDiversity = Math.min(1, emotionCategories / maxCategories);
+            depthFactors.push(categoryDiversity * 0.20);
+            
+            const complexEmotions = ['ambivalence', 'bittersweet', 'nostalgiaMixed', 'irony'];
+            const complexCount = complexEmotions.filter(cat => 
+                analyses.lexical?.categories?.[cat]
+            ).length;
+            const complexRatio = complexCount / complexEmotions.length;
+            depthFactors.push(complexRatio * 0.15);
+            
+            const validFactors = depthFactors.filter(f => 
+                !isNaN(f) && f !== undefined && f !== null && f >= 0
+            );
+            
             if (validFactors.length === 0) return 0.3;
-            const rawDepth = validFactors.reduce((a, b) => a + b, 0);
-            const normalizedDepth = Math.min(0.95, Math.max(0.1, rawDepth));
-            const adjustment = Math.tanh((normalizedDepth - 0.5) * 3) * 0.1;
-            return Math.round((normalizedDepth + adjustment) * 100) / 100;
+            
+            const rawDepth = validFactors.reduce((a, b) => a + b, 0) / validFactors.length;
+            
+            const sigmoid = (x) => 1 / (1 + Math.exp(-10 * (x - 0.5)));
+            const normalizedDepth = sigmoid(rawDepth);
+            
+            const variance = this.calculateVariance(validFactors);
+            const varianceBonus = Math.min(0.15, variance * 0.3);
+            
+            const finalDepth = Math.min(0.98, Math.max(0.02, 
+                normalizedDepth * (1 + varianceBonus)
+            ));
+            
+            return Math.round(finalDepth * 100) / 100;
         }
         
         calculateAnalysisCorrelations(analyses) {
@@ -6018,7 +6062,7 @@
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
         
-                getNeutralResult() {
+        getNeutralResult() {
             return {
                 success: true,
                 language: this.language || 'en',
@@ -6262,6 +6306,7 @@
     
 
 })();
+
 
 
 
