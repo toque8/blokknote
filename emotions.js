@@ -1415,27 +1415,43 @@
             if (!text || typeof text !== 'string') {
                 return { language: 'en', confidence: 0.5 };
             }
-            
             if (this.language !== 'auto') {
                 return { language: this.language, confidence: 1.0 };
             }
-            
-            const ruChars = (text.match(/[а-яё]/gi) || []).length;
-            const enChars = (text.match(/[a-z]/gi) || []).length;
+            if (/[ёЁ]/.test(text)) {
+                return { language: 'ru', confidence: 0.95 };
+            }
+            const ruChars = (text.match(/[а-яА-ЯёЁ]/g) || []).length;
+            const enChars = (text.match(/[a-zA-Z]/g) || []).length;
             const totalChars = ruChars + enChars;
-            
-            if (totalChars === 0) return { language: 'en', confidence: 0.5 };
-            
-            const ruConfidence = ruChars / totalChars;
-            const enConfidence = enChars / totalChars;
-            
-            if (ruConfidence > 0.7) return { language: 'ru', confidence: ruConfidence };
-            if (enConfidence > 0.7) return { language: 'en', confidence: enConfidence };
-            
-            const confidence = Math.max(ruConfidence, enConfidence);
+            if (totalChars === 0) {
+                return /[А-Яа-яЁё]/.test(text) ? 
+                    { language: 'ru', confidence: 0.7 } : 
+                    { language: 'en', confidence: 0.5 };
+            }
+            const ruRatio = ruChars / totalChars;
+            const enRatio = enChars / totalChars;
+            const diff = Math.abs(ruRatio - enRatio);
+            let baseConfidence = Math.max(ruRatio, enRatio);
+            if (text.length < 30) {
+                baseConfidence = Math.min(baseConfidence, 0.75);
+            }
+            if (diff < 0.25) {
+                baseConfidence = Math.min(baseConfidence, 0.65);
+            }
+            const lowerText = text.toLowerCase();
+            const hasRuMarkers = /(^|\s)(и|в|на|с|к|а|но|или|да|же)($|\s)/.test(lowerText);
+            const hasEnMarkers = /(^|\s)(the|a|an|and|or|but|in|on|at|to)($|\s)/.test(lowerText);
+            let confidence = baseConfidence;
+            if (hasRuMarkers && ruRatio > enRatio) confidence = Math.min(0.9, confidence + 0.15);
+            if (hasEnMarkers && enRatio > ruRatio) confidence = Math.min(0.9, confidence + 0.15);
+            if (hasRuMarkers && hasEnMarkers && diff < 0.4) {
+                confidence = Math.min(confidence, 0.6);
+            }
+            const detectedLang = ruRatio >= enRatio ? 'ru' : 'en';
             return { 
-                language: ruConfidence >= enConfidence ? 'ru' : 'en', 
-                confidence: confidence 
+                language: detectedLang,
+                confidence: parseFloat(confidence.toFixed(2))
             };
         }
         
@@ -6330,6 +6346,7 @@
     
 
 })();
+
 
 
 
