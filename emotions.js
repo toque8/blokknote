@@ -3,7 +3,7 @@
     
     class EmotionAnalyzer {
         constructor(language = 'auto') {
-            this.version = '1.5.0';
+            this.version = '1.0.0';
             this.language = language;
             this.metrics = {};
             this.initializeExtendedDictionaries();
@@ -4293,7 +4293,6 @@
                 const prevWords = this.enhancedTokenization(prev);
                 const currWords = this.enhancedTokenization(curr);
                 
-                // Word overlap
                 const overlap = prevWords.filter(w => currWords.includes(w)).length;
                 const maxWords = Math.max(prevWords.length, currWords.length);
                 
@@ -4301,6 +4300,18 @@
             }
             
             return coherence / (sentences.length - 1);
+        }
+
+        calculatePsychologicalDimensionScore(psychological) {
+            const factors = [
+              psychological.psychologicalComplexity || 0,
+              (psychological.selfAwarenessLevel && psychological.selfAwarenessLevel.score) || 0,
+              (psychological.plutchik && psychological.plutchik.emotionalDiversity) || 0,
+              (psychological.bigFive && psychological.bigFive.complexity) || 0
+            ];
+            const validFactors = factors.filter(f => f > 0);
+            if (validFactors.length === 0) return 0.5;
+            return Math.min(1, validFactors.reduce((a, b) => a + b, 0) / validFactors.length);
         }
         
         psychologicalAnalysis(data) {
@@ -6345,6 +6356,7 @@
     
 
 })();
+
 
 
 
