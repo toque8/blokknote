@@ -5032,9 +5032,6 @@
             const progressionComplexity = analyses.semantic?.progression?.metrics?.avgComplexity || 0;
             rangeFactors.push(progressionComplexity * 0.15);
             
-            const plutchikDiversity = analyses.psychological?.plutchik?.emotionalDiversity || 0;
-            rangeFactors.push(plutchikDiversity * 0.15);
-            
             const positiveCategories = ['ecstasy', 'joy', 'love', 'peace', 'hope', 'gratitude', 'inspiration', 'pride'];
             const negativeCategories = ['sadness', 'grief', 'anger', 'fear', 'disgust', 'shame', 'guilt', 'loneliness', 'envy', 'despair'];
             
@@ -6356,6 +6353,7 @@
     
 
 })();
+
 
 
 
