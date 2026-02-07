@@ -1254,24 +1254,81 @@
             
             this.complexityMetrics = {
                 emotionalDiversity: {
-                    measure: 'Number of distinct emotional categories',
-                    weight: 0.3,
-                    calculation: (categories) => Object.keys(categories).length
+                    measure: 'Distribution balance of emotional categories (Shannon Entropy)',
+                    weight: 0.25,
+                    calculation: (categories) => {
+                        const total = Object.values(categories)
+                        .reduce((sum, cat) => sum + cat.frequency.length, 0);
+                        if (total === 0) return 0;
+
+                        const entropy = Object.values(categories).reduce((sum, cat) => {
+                        const p = cat.frequency.length / total;
+                        return p > 0 ? sum - p * Math.log2(p) : sum;
+                        }, 0);
+                        const maxEntropy = Math.log2(Object.keys(categories).length);
+                        return maxEntropy > 0 ? entropy / maxEntropy : 0;
+                    }
                 },
                 emotionalIntensity: {
-                    measure: 'Average intensity of emotional expressions',
-                    weight: 0.4,
-                    calculation: (categories) => {
-                        const intensities = Object.values(categories).map(cat => cat.frequency * cat.weight);
-                        return intensities.reduce((a, b) => a + b, 0) / intensities.length;
+                    measure: 'Average emotional intensity per sentence',
+                    weight: 0.25,
+                    calculation: (categories, allSentences) => {
+                        const totalSentences = allSentences.length; 
+                        if (totalSentences === 0) return 0;
+                        const emotionalSentences = allSentences.filter(sentence => {
+                        const emotionCount = Object.values(categories)
+                            .filter(cat => cat.sentences.some(s => s.text === sentence))
+                            .length;
+                            return emotionCount >= 2;
+                        });
+                        return emotionalSentences.length / totalSentences;
                     }
                 },
                 emotionalNuance: {
-                    measure: 'Presence of complex and mixed emotions',
-                    weight: 0.3,
+                    measure: 'Presence of complex/mixed/ambivalent emotions',
+                    weight: 0.25,
                     calculation: (categories) => {
-                        const complexCategories = ['ambivalence', 'irony', 'nostalgiaMixed', 'bittersweet'];
-                        return complexCategories.filter(cat => categories[cat]).length / complexCategories.length;
+                        const complexCategories = [
+                            'ambivalence', 'bittersweet', 'nostalgiaMixed',
+                            'anticipationHope', 'joyContentment', 'trustGratitude',
+                            'surpriseCuriosity', 'aweWonder',
+                            'fearAnxiety', 'angerFrustration', 'sadnessNostalgia',
+                            'disgustContempt', 'guiltShame',
+                            'irony', 'sarcasm'
+                        ];
+                        const foundComplex = complexCategories
+                            .filter(cat => categories[cat] && categories[cat].frequency.length > 0);
+                            return foundComplex.length / complexCategories.length;
+                        }
+                },
+                emotionalDynamics: {
+                    measure: 'How much emotions change throughout the text',
+                    weight: 0.25,
+                    calculation: (categories, allSentences) => {
+                        if (allSentences.length < 2) return 0;
+                        const third = Math.floor(allSentences.length / 3);
+                        const parts = [
+                            allSentences.slice(0, third),
+                            allSentences.slice(third, third * 2),
+                            allSentences.slice(third * 2)
+                        ];
+                        const dominantEmotions = parts.map(part => {
+                        const emotionCounts = {};
+                            part.forEach(sentence => {
+                                Object.entries(categories).forEach(([emotion, data]) => {
+                                    if (data.sentences.some(s => s.text === sentence)) {
+                                        emotionCounts[emotion] = (emotionCounts[emotion] || 0) + 1;
+                                    }
+                            });
+                        });
+                        return Object.keys(emotionCounts).reduce((a, b) => 
+                            emotionCounts[a] > emotionCounts[b] ? a : b, null
+                        );
+                        });
+                        const changes = dominantEmotions.filter((emotion, i) => 
+                            i > 0 && emotion !== dominantEmotions[i - 1]
+                        ).length;
+                        return changes / 2;
                     }
                 }
             };
@@ -6205,6 +6262,7 @@
     
 
 })();
+
 
 
 
