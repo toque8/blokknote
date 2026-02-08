@@ -1544,13 +1544,7 @@
                 text: restored,
                 index: index,
                 length: restored.length,
-                wordCount: restored
-                  .replace(/[^\p{L}\p{N}\s]/gu, ' ')
-                  .replace(/\s+/g, ' ')
-                  .trim()
-                  .split(' ')
-                  .filter(w => w.length > 0)
-                  .length,
+                wordCount: this.enhancedTokenization(restored).length,
                 emotionalMarkers: this.extractSentenceEmotionalMarkers(restored)
               };
             });
@@ -1567,13 +1561,7 @@
                 text: remainder,
                 index: sentences.length,
                 length: remainder.length,
-                wordCount: remainder
-                  .replace(/[^\p{L}\p{N}\s]/gu, ' ')
-                  .replace(/\s+/g, ' ')
-                  .trim()
-                  .split(' ')
-                  .filter(w => w.length > 0)
-                  .length,
+                wordCount: this.enhancedTokenization(remainder).length,
                 emotionalMarkers: this.extractSentenceEmotionalMarkers(remainder)
               });
             }
@@ -1740,26 +1728,170 @@
         }
         
         countEmotionalWordsInSentence(sentence) {
-            const words = sentence.toLowerCase()
-                .replace(/[^\p{L}\s]/gu, ' ')
-                .split(/\s+/)
-                .filter(w => w.length >= this.metricsConfig.wordThreshold);
-            
-            let count = 0;
-            const dict = this.dictionaries[this.language];
-            
-            for (const categoryWords of Object.values(dict)) {
-                if (Array.isArray(categoryWords)) {
-                    for (const word of categoryWords) {
-                        if (words.includes(word)) {
-                            count++;
-                            break; 
+                if (typeof sentence !== 'string' || sentence.length === 0) {
+                    return 0;
+                }
+                
+                const normalizedSentence = sentence
+                    .toLowerCase()
+                    .normalize('NFKC')
+                    .replace(/[^\p{L}\p{M}\p{N}\s\-']/gu, ' ');
+                
+                const words = normalizedSentence
+                    .split(/\s+/)
+                    .filter(w => {
+                        const trimmed = w.replace(/^[-']+|[-']+$/g, '');
+                        return trimmed.length >= this.metricsConfig.wordThreshold;
+                    });
+                
+                if (words.length === 0) {
+                    return 0;
+                }
+                
+                const dict = this.dictionaries[this.language];
+                let totalCount = 0;
+                const foundWords = new Set();
+                
+                for (const [category, categoryWords] of Object.entries(dict)) {
+                    if (!Array.isArray(categoryWords)) {
+                        continue;
+                    }
+                    
+                    for (const emotionalWord of categoryWords) {
+                        if (words.includes(emotionalWord)) {
+                            totalCount++;
+                            foundWords.add(emotionalWord);
+                        }
+                    }
+                    
+                    const categoryVariants = this.generateWordVariants(categoryWords);
+                    
+                    for (const variant of categoryVariants) {
+                        if (words.includes(variant) && !foundWords.has(variant)) {
+                            totalCount++;
+                            foundWords.add(variant);
                         }
                     }
                 }
-            }
-            
-            return count;
+                
+                const partialMatches = this.countPartialMatches(words, dict);
+                const contextualMatches = this.countContextualEmotions(sentence, dict);
+                
+                return totalCount + partialMatches + contextualMatches;
+        }
+          
+        generateWordVariants(words) {
+                const variants = new Set();
+                const language = this.language;
+                
+                for (const word of words) {
+                    variants.add(word);
+                    
+                    if (language === 'ru') {
+                        if (word.endsWith('ая') || word.endsWith('яя') || 
+                            word.endsWith('ое') || word.endsWith('ее') || 
+                            word.endsWith('ый') || word.endsWith('ий')) {
+                            const base = word.slice(0, -2);
+                            variants.add(base + 'ого');
+                            variants.add(base + 'ому');
+                            variants.add(base + 'ым');
+                            variants.add(base + 'ом');
+                        }
+                        
+                        if (word.endsWith('ость')) {
+                            variants.add(word.slice(0, -4) + 'ый');
+                            variants.add(word.slice(0, -4) + 'ая');
+                            variants.add(word.slice(0, -4) + 'ое');
+                        }
+                    } else if (language === 'en') {
+                        if (word.endsWith('ing')) {
+                            variants.add(word.slice(0, -3) + 'ed');
+                            variants.add(word.slice(0, -3));
+                        } else if (word.endsWith('ed')) {
+                            variants.add(word.slice(0, -2) + 'ing');
+                            variants.add(word.slice(0, -1));
+                        } else if (word.endsWith('s')) {
+                            variants.add(word.slice(0, -1));
+                        }
+                    }
+                    
+                    if (word.includes('-')) {
+                        variants.add(word.replace('-', ''));
+                        variants.add(word.replace('-', ' '));
+                    }
+                }
+                
+                return Array.from(variants);
+        }
+          
+        countPartialMatches(words, dict) {
+                let partialCount = 0;
+                const processed = new Set();
+                
+                for (const word of words) {
+                    if (processed.has(word)) {
+                        continue;
+                    }
+                    
+                    for (const [category, categoryWords] of Object.entries(dict)) {
+                        if (!Array.isArray(categoryWords)) {
+                            continue;
+                        }
+                        
+                        for (const emotionalWord of categoryWords) {
+                            if (emotionalWord.includes(word) && emotionalWord !== word) {
+                                partialCount += 0.5;
+                                processed.add(word);
+                                break;
+                            } else if (word.includes(emotionalWord) && emotionalWord !== word) {
+                                partialCount += 0.3;
+                                processed.add(word);
+                                break;
+                            }
+                        }
+                    }
+                }
+                
+                return partialCount;
+        }
+          
+        countContextualEmotions(sentence, dict) {
+                const contextualMarkers = {
+                    ru: [
+                        { pattern: /(чувствую себя|ощущаю себя|испытываю)\s+(\w+)/i, weight: 1.2 },
+                        { pattern: /(кажется|похоже|вероятно)\s+(что\s+)?(\w+)/i, weight: 0.7 },
+                        { pattern: /(почти|чуть не|едва не)\s+(\w+)/i, weight: 0.8 },
+                        { pattern: /(так\s+)?(\w+)\s+(что|как)/i, weight: 0.6 },
+                        { pattern: /(не\s+)?(\w+)\s+(\w+)/i, weight: 0.5 }
+                    ],
+                    en: [
+                        { pattern: /(feel|feeling|felt)\s+(\w+)/i, weight: 1.2 },
+                        { pattern: /(seems|seemed|appears)\s+(to be\s+)?(\w+)/i, weight: 0.7 },
+                        { pattern: /(almost|nearly|barely)\s+(\w+)/i, weight: 0.8 },
+                        { pattern: /(so|too|very)\s+(\w+)/i, weight: 0.9 },
+                        { pattern: /(not\s+)?(\w+)\s+(\w+)/i, weight: 0.5 }
+                    ]
+                };
+                
+                const markers = contextualMarkers[this.language] || [];
+                let contextualScore = 0;
+                
+                for (const marker of markers) {
+                    const matches = sentence.match(marker.pattern);
+                    if (matches) {
+                        const potentialEmotion = matches[matches.length - 1]?.toLowerCase();
+                        if (potentialEmotion) {
+                            for (const [category, categoryWords] of Object.entries(dict)) {
+                                if (Array.isArray(categoryWords) && categoryWords.includes(potentialEmotion)) {
+                                    contextualScore += marker.weight;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                return Math.min(3, contextualScore);
         }
         
         enhancedTokenization(text) {
@@ -2311,13 +2443,7 @@
             count: sentences.length,
             lengths: sentences.map(s => {
               const text = typeof s === 'object' ? s.text : s;
-              return text
-                .replace(/[^\p{L}\p{N}\s]/gu, ' ')
-                .replace(/\s+/g, ' ')
-                .trim()
-                .split(' ')
-                .filter(w => w.length > 0)
-                .length;
+              return this.enhancedTokenization(text).length;
             }),
             characters: sentences.map(s => {
               const text = typeof s === 'object' ? s.text : s;
@@ -6577,6 +6703,7 @@
     
 
 })();
+
 
 
 
