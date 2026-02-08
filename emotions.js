@@ -2158,35 +2158,329 @@
         }
         
         extractEmotionalPunctuation(text) {
-            const punctuation = {};
-            
-            const normalizedText = text
-                  .replace(/…/g, '...')
-                  .replace(/\.\.\./g, '...');
-            
-            const patterns = [
-                  { key: '!', regex: /!{1}(?!\!|\?)/g },
-                  { key: '!!', regex: /!{2}(?!\!)/g },
-                  { key: '!!!', regex: /!{3,}/g },
-                  { key: '?', regex: /\?{1}(?!\?|\!)/g },
-                  { key: '??', regex: /\?{2}(?!\?)/g },
-                  { key: '???', regex: /\?{3,}/g },
-                  { key: '!?', regex: /!\?/g },
-                  { key: '?!', regex: /\?!/g },
-                  { key: '...', regex: /\.{3,}/g }
-            ];
-            
-            let workingText = normalizedText;
-            
-            for (const pattern of patterns) {
-                  const matches = workingText.match(pattern.regex);
-                  if (matches) {
+                if (typeof text !== 'string' || text.length === 0) {
+                    return {};
+                }
+                
+                const punctuationAnalysis = this.comprehensivePunctuationScan(text);
+                const sequencedPatterns = this.extractSequencedPatterns(text);
+                const contextualPunctuation = this.analyzePunctuationContext(text);
+                const intensityZones = this.identifyPunctuationIntensityZones(text);
+                
+                const mergedResults = this.mergePunctuationResults(
+                    punctuationAnalysis,
+                    sequencedPatterns,
+                    contextualPunctuation
+                );
+                
+                mergedResults.sequencedPatterns = sequencedPatterns;
+                mergedResults.contextual = contextualPunctuation;
+                mergedResults.intensityZones = intensityZones;
+                mergedResults.overallIntensity = this.calculatePunctuationIntensityScore(mergedResults);
+                mergedResults.density = Object.values(mergedResults).reduce((sum, val) => {
+                    return typeof val === 'number' ? sum + val : sum;
+                }, 0) / (text.length / 100);
+                
+                return mergedResults;
+        }
+          
+        comprehensivePunctuationScan(text) {
+                const punctuation = {};
+                const patterns = [
+                    { key: '!', regex: /!{1}(?!!|\?)/g },
+                    { key: '!!', regex: /!{2}(?!!)/g },
+                    { key: '!!!', regex: /!{3,}/g },
+                    { key: '?', regex: /\?{1}(?!\?|!)/g },
+                    { key: '??', regex: /\?{2}(?!\?)/g },
+                    { key: '???', regex: /\?{3,}/g },
+                    { key: '!?', regex: /!\?/g },
+                    { key: '?!', regex: /\?!/g },
+                    { key: '!!?', regex: /!!\?/g },
+                    { key: '??!', regex: /\?\?!/g },
+                    { key: '!?!', regex: /!\?!/g },
+                    { key: '?!?', regex: /\?!\?/g },
+                    { key: '...', regex: /\.{3,}/g },
+                    { key: '--', regex: /--{2,}/g },
+                    { key: '—-', regex: /—{1,}/g },
+                    { key: ',', regex: /,{1,}/g },
+                    { key: ';', regex: /;{1,}/g },
+                    { key: ':', regex: /:{1,}/g },
+                    { key: '…..', regex: /\.{4,}/g },
+                    { key: '?!?!', regex: /\?!!\?/g },
+                    { key: '!!!', regex: /!{4,}/g, weight: 2.5 },
+                    { key: '????', regex: /\?{4,}/g, weight: 1.8 }
+                ];
+                
+                let workingText = text;
+                
+                for (const pattern of patterns) {
+                    const matches = workingText.match(pattern.regex);
+                    if (matches) {
                         punctuation[pattern.key] = matches.length;
-                        workingText = workingText.replace(pattern.regex, ' ');
-                  }
-            }
-            
-            return punctuation;
+                    }
+                }
+                
+                punctuation.singleQuote = (text.match(/'/g) || []).length;
+                punctuation.doubleQuote = (text.match(/"/g) || []).length;
+                punctuation.parentheses = (text.match(/[()]/g) || []).length;
+                punctuation.brackets = (text.match(/[\[\]]/g) || []).length;
+                punctuation.ellipsis = punctuation['...'] || 0;
+                punctuation.total = Object.values(punctuation).reduce((a, b) => a + b, 0);
+                
+                return punctuation;
+        }
+          
+        extractSequencedPatterns(text) {
+                const sequences = [];
+                const pattern = /[!?…]{2,}/g;
+                let match;
+                
+                while ((match = pattern.exec(text)) !== null) {
+                    sequences.push({
+                        pattern: match[0],
+                        position: match.index,
+                        length: match[0].length,
+                        context: this.getPunctuationContext(text, match.index, match[0].length)
+                    });
+                }
+                
+                const uniqueSequences = {};
+                sequences.forEach(seq => {
+                    if (!uniqueSequences[seq.pattern]) {
+                        uniqueSequences[seq.pattern] = {
+                            count: 0,
+                            positions: [],
+                            contexts: []
+                        };
+                    }
+                    uniqueSequences[seq.pattern].count++;
+                    uniqueSequences[seq.pattern].positions.push(seq.position);
+                    uniqueSequences[seq.pattern].contexts.push(seq.context);
+                });
+                
+                return {
+                    sequences: sequences,
+                    uniquePatterns: uniqueSequences,
+                    complexity: Object.keys(uniqueSequences).length,
+                    longestSequence: sequences.length > 0 ? 
+                        Math.max(...sequences.map(s => s.length)) : 0,
+                    density: sequences.length / (text.length / 100)
+                };
+        }
+          
+        analyzePunctuationContext(text) {
+                const context = {
+                    endOfSentence: 0,
+                    middleOfSentence: 0,
+                    afterEmotionalWords: 0,
+                    clustered: 0,
+                    isolated: 0,
+                    withIntensifiers: 0,
+                    withNegations: 0
+                };
+                
+                const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+                const emotionalWords = this.buildEmotionalWordsList();
+                const intensifiers = this.language === 'ru' ? 
+                    ['очень', 'крайне', 'невероятно', 'ужасно'] :
+                    ['very', 'extremely', 'incredibly', 'terribly'];
+                const negations = this.language === 'ru' ?
+                    ['не', 'ни', 'нет', 'без'] :
+                    ['not', 'no', 'never', 'without'];
+                
+                sentences.forEach(sentence => {
+                    const trimmed = sentence.trim();
+                    if (trimmed.length === 0) return;
+                    
+                    const lastChar = text.charAt(text.indexOf(trimmed) + trimmed.length);
+                    if ('!?'.includes(lastChar)) {
+                        context.endOfSentence++;
+                        
+                        const words = trimmed.toLowerCase().split(/\s+/);
+                        const hasEmotional = words.some(w => emotionalWords.has(w));
+                        if (hasEmotional) context.afterEmotionalWords++;
+                        
+                        const hasIntensifier = words.some(w => intensifiers.includes(w));
+                        if (hasIntensifier) context.withIntensifiers++;
+                        
+                        const hasNegation = words.some(w => negations.includes(w));
+                        if (hasNegation) context.withNegations++;
+                    }
+                    
+                    const internalPunctuation = (trimmed.match(/[!?]/g) || []).length;
+                    if (internalPunctuation > 0) {
+                        context.middleOfSentence += internalPunctuation;
+                    }
+                });
+                
+                const punctuationClusters = text.match(/[!?]{2,}/g) || [];
+                context.clustered = punctuationClusters.length;
+                
+                const isolatedPattern = /\b[^!?]*[!?][^!?]*\b/g;
+                const isolatedMatches = text.match(isolatedPattern) || [];
+                context.isolated = isolatedMatches.length;
+                
+                return context;
+        }
+          
+        identifyPunctuationIntensityZones(text) {
+                const zones = [];
+                const punctuationPattern = /[!?…]{2,}/g;
+                let match;
+                
+                while ((match = punctuationPattern.exec(text)) !== null) {
+                    const start = Math.max(0, match.index - 50);
+                    const end = Math.min(text.length, match.index + match[0].length + 50);
+                    const context = text.substring(start, end);
+                    
+                    let intensity = 1;
+                    if (match[0].length >= 3) intensity += 0.5;
+                    if (match[0].includes('!')) intensity += 0.3;
+                    if (match[0].includes('?')) intensity += 0.2;
+                    if (match[0].includes('…')) intensity += 0.1;
+                    
+                    const emotionalWordsInContext = this.countEmotionalWordsInSentence(context);
+                    if (emotionalWordsInContext > 0) intensity += emotionalWordsInContext * 0.1;
+                    
+                    const capsWords = (context.match(/\b[A-ZА-ЯЁ]{3,}\b/g) || []).length;
+                    if (capsWords > 0) intensity += capsWords * 0.05;
+                    
+                    zones.push({
+                        pattern: match[0],
+                        position: match.index,
+                        length: match[0].length,
+                        context: context,
+                        intensity: Math.min(3, intensity),
+                        surroundingEmotion: this.analyzeSurroundingEmotion(context)
+                    });
+                }
+                
+                zones.sort((a, b) => b.intensity - a.intensity);
+                
+                return {
+                    zones: zones.slice(0, 10),
+                    maxIntensity: zones.length > 0 ? Math.max(...zones.map(z => z.intensity)) : 0,
+                    averageIntensity: zones.length > 0 ? 
+                        zones.reduce((sum, z) => sum + z.intensity, 0) / zones.length : 0,
+                    intensityDistribution: this.calculateIntensityDistribution(zones)
+                };
+        }
+          
+        calculatePunctuationIntensityScore(punctuationData) {
+                let score = 0;
+                
+                if (punctuationData['!']) score += punctuationData['!'] * 1.0;
+                if (punctuationData['!!']) score += punctuationData['!!'] * 1.5;
+                if (punctuationData['!!!']) score += punctuationData['!!!'] * 2.0;
+                if (punctuationData['?']) score += punctuationData['?'] * 0.7;
+                if (punctuationData['??']) score += punctuationData['??'] * 1.0;
+                if (punctuationData['???']) score += punctuationData['???'] * 1.3;
+                if (punctuationData['!?']) score += punctuationData['!?'] * 1.8;
+                if (punctuationData['?!']) score += punctuationData['?!'] * 1.8;
+                if (punctuationData['...']) score += punctuationData['...'] * 0.5;
+                
+                const sequencedPatterns = punctuationData.sequencedPatterns;
+                if (sequencedPatterns && sequencedPatterns.complexity > 0) {
+                    score += sequencedPatterns.complexity * 0.3;
+                }
+                
+                const intensityZones = punctuationData.intensityZones;
+                if (intensityZones && intensityZones.maxIntensity > 0) {
+                    score += intensityZones.maxIntensity * 0.5;
+                }
+                
+                return Math.round(score * 100) / 100;
+        }
+          
+        buildEmotionalWordsList() {
+                const emotionalSet = new Set();
+                const dict = this.dictionaries[this.language];
+                
+                for (const [category, words] of Object.entries(dict)) {
+                    if (Array.isArray(words)) {
+                        words.forEach(word => emotionalSet.add(word));
+                    }
+                }
+                
+                return emotionalSet;
+        }
+          
+        getPunctuationContext(text, position, length) {
+                const start = Math.max(0, position - 30);
+                const end = Math.min(text.length, position + length + 30);
+                return text.substring(start, end);
+        }
+          
+        countEmotionalWordsInSentence(sentence) {
+                const words = sentence.toLowerCase().split(/\s+/);
+                const dict = this.dictionaries[this.language];
+                let count = 0;
+                
+                for (const [category, categoryWords] of Object.entries(dict)) {
+                    if (!Array.isArray(categoryWords)) continue;
+                    for (const word of categoryWords) {
+                        if (words.includes(word)) {
+                            count++;
+                        }
+                    }
+                }
+                
+                return count;
+        }
+          
+        analyzeSurroundingEmotion(context) {
+                const dict = this.dictionaries[this.language];
+                const words = context.toLowerCase().split(/\s+/);
+                const emotions = [];
+                
+                for (const [category, categoryWords] of Object.entries(dict)) {
+                    if (!Array.isArray(categoryWords)) continue;
+                    for (const word of categoryWords) {
+                        if (words.includes(word) && !emotions.includes(category)) {
+                            emotions.push(category);
+                        }
+                    }
+                }
+                
+                return emotions.slice(0, 3);
+        }
+          
+        calculateIntensityDistribution(zones) {
+                if (zones.length === 0) return { low: 0, medium: 0, high: 0 };
+                
+                let low = 0, medium = 0, high = 0;
+                zones.forEach(zone => {
+                    if (zone.intensity < 1.5) low++;
+                    else if (zone.intensity < 2.5) medium++;
+                    else high++;
+                });
+                
+                const total = zones.length;
+                return {
+                    low: low / total,
+                    medium: medium / total,
+                    high: high / total
+                };
+        }
+          
+        mergePunctuationResults(...results) {
+                const merged = {};
+                
+                results.forEach(result => {
+                    if (typeof result === 'object') {
+                        Object.entries(result).forEach(([key, value]) => {
+                            if (typeof value === 'number') {
+                                merged[key] = (merged[key] || 0) + value;
+                            } else if (key !== 'sequencedPatterns' && 
+                                     key !== 'contextual' && 
+                                     key !== 'intensityZones') {
+                                merged[key] = value;
+                            }
+                        });
+                    }
+                });
+                
+                return merged;
         }
         
         extractEmoticons(text) {
@@ -6937,6 +7231,7 @@
     
 
 })();
+
 
 
 
