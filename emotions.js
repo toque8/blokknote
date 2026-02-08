@@ -2158,30 +2158,41 @@
         }
         
         extractEmotionalPunctuation(text) {
-                if (typeof text !== 'string' || text.length === 0) {
-                    return {};
-                }
-                
-                const punctuationAnalysis = this.comprehensivePunctuationScan(text);
-                const sequencedPatterns = this.extractSequencedPatterns(text);
-                const contextualPunctuation = this.analyzePunctuationContext(text);
-                const intensityZones = this.identifyPunctuationIntensityZones(text);
-                
-                const mergedResults = this.mergePunctuationResults(
-                    punctuationAnalysis,
-                    sequencedPatterns,
-                    contextualPunctuation
-                );
-                
-                mergedResults.sequencedPatterns = sequencedPatterns;
-                mergedResults.contextual = contextualPunctuation;
-                mergedResults.intensityZones = intensityZones;
-                mergedResults.overallIntensity = this.calculatePunctuationIntensityScore(mergedResults);
-                mergedResults.density = Object.values(mergedResults).reduce((sum, val) => {
-                    return typeof val === 'number' ? sum + val : sum;
-                }, 0) / (text.length / 100);
-                
-                return mergedResults;
+          if (typeof text !== 'string' || text.length === 0) {
+            return {};
+          }
+          const punctuation = {};
+          const normalizedText = text
+            .replace(/…/g, '...')
+            .replace(/\.\.\./g, '...');
+          const patterns = [
+            { key: '!', regex: /!{1}(?!!|\?)/g },
+            { key: '!!', regex: /!{2}(?!!)/g },
+            { key: '!!!', regex: /!{3,}/g },
+            { key: '?', regex: /\?{1}(?!\?|!)/g },
+            { key: '??', regex: /\?{2}(?!\?)/g },
+            { key: '???', regex: /\?{3,}/g },
+            { key: '!?', regex: /!\?/g },
+            { key: '?!', regex: /\?!/g },
+            { key: '...', regex: /\.{3,}/g },
+            { key: '--', regex: /--/g },
+            { key: '—', regex: /—/g },
+            { key: ',', regex: /,/g },
+            { key: ';', regex: /;/g },
+            { key: ':', regex: /:/g },
+            { key: '"', regex: /"/g },
+            { key: '\'', regex: /'/g }
+          ];
+          let workingText = normalizedText;
+          for (const pattern of patterns) {
+            const matches = workingText.match(pattern.regex);
+            if (matches) {
+              punctuation[pattern.key] = matches.length;
+              workingText = workingText.replace(pattern.regex, ' ');
+            }
+          }
+          punctuation.total = Object.values(punctuation).reduce((a, b) => a + b, 0);
+          return punctuation;
         }
           
         comprehensivePunctuationScan(text) {
@@ -2484,27 +2495,686 @@
         }
         
         extractEmoticons(text) {
-            const emoticonPatterns = {
-                positive: [':)', ':-)', ':]', '=)', ':D', ':-D', ':>', '=D', ';)', ';-)', ';]', '^_^', '^^'],
-                negative: [':(', ':-(', ':[', '=(', ':/', ':-/', ':\\', ':-\\', ':|', ':-|', '>:(', '>:-('],
-                neutral: [':|', ':-|', ':|]', ':-|]', ':O', ':-O', ':@', ':-@'],
-                complex: [':\'()', ':\'-()', ':\')', ':\'-)', ';_;', 'T_T', 'ಥ_ಥ']
-            };
-            
-            const emoticons = {};
-            for (const [type, patterns] of Object.entries(emoticonPatterns)) {
-                const count = patterns.reduce((total, emoticon) => {
-                    const regex = new RegExp(this.escapeRegExp(emoticon), 'g');
-                    const matches = text.match(regex);
-                    return total + (matches ? matches.length : 0);
+                if (typeof text !== 'string' || text.length === 0) {
+                    return {
+                        positive: 0,
+                        negative: 0,
+                        neutral: 0,
+                        complex: 0,
+                        total: 0,
+                        details: [],
+                        density: 0,
+                        modernEmojis: 0,
+                        combinedEmoticons: 0,
+                        intensityScore: 0,
+                        emojiAnalysis: {},
+                        patternAnalysis: {}
+                    };
+                }
+
+                const basicEmoticons = this.buildBasicEmoticonPatterns();
+                const modernEmojis = this.buildModernEmojiPatterns();
+                const combinedPatterns = this.buildCombinedEmoticonPatterns();
+                
+                const allPatterns = [
+                    ...basicEmoticons.patterns,
+                    ...modernEmojis.patterns,
+                    ...combinedPatterns.patterns
+                ];
+                
+                const emoticonMap = new Map([
+                    ...basicEmoticons.map,
+                    ...modernEmojis.map,
+                    ...combinedPatterns.map
+                ]);
+                
+                const emojiWeights = this.buildEmojiWeights();
+                const contextAnalyzer = this.buildContextAnalyzer();
+                
+                const matches = this.findAllEmoticonMatches(text, allPatterns);
+                const categorized = this.categorizeMatches(matches, emoticonMap, emojiWeights);
+                const contextual = this.analyzeEmoticonContext(text, matches, contextAnalyzer);
+                const intensity = this.calculateEmoticonIntensity(categorized, contextual);
+                
+                const result = {
+                    positive: categorized.positive || 0,
+                    negative: categorized.negative || 0,
+                    neutral: categorized.neutral || 0,
+                    complex: categorized.complex || 0,
+                    total: categorized.total || 0,
+                    details: categorized.details || [],
+                    density: this.calculateEmoticonDensity(categorized.total, text.length),
+                    modernEmojis: categorized.modernEmojis || 0,
+                    combinedEmoticons: categorized.combinedEmoticons || 0,
+                    intensityScore: intensity.score || 0,
+                    emojiAnalysis: categorized.emojiAnalysis || {},
+                    patternAnalysis: categorized.patternAnalysis || {},
+                    contextual: contextual,
+                    intensity: intensity,
+                    clusters: this.findEmoticonClusters(matches, text),
+                    sequentialPatterns: this.findSequentialPatterns(matches),
+                    positionAnalysis: this.analyzeEmoticonPositions(matches, text.length)
+                };
+                
+                return result;
+        }
+          
+        buildBasicEmoticonPatterns() {
+                const patterns = [];
+                const map = new Map();
+                
+                const categories = {
+                    positive: [
+                        ':)', ':-)', ':]', '=)', ':D', ':-D', ':>', '=D', 
+                        ';)', ';-)', ';]', '^_^', '^^', ':3', 'c:', '(:', 
+                        'xD', 'XD', 'xDD', 'XDXD', ':P', ':-P', ':p', ':-p',
+                        'B)', 'B-)', '8)', '8-)', '>:)', '>:-)', '(-:', 
+                        '°ω°', '°▽°', '°∀°', '≧▽≦', '≧ω≦', '(´▽｀)', 
+                        '(⁎˃ᆺ˂)', '(๑˃ᴗ˂)ﻭ', '(๑>ᴗ<๑)', '（＾ω＾）', 
+                        '(´• ω •`)', '(◕‿◕)', '(◠‿◠)', '(｡◕‿◕｡)', 
+                        '(づ｡◕‿◕｡)づ', '(~˘▾˘)~', '~(˘▾˘~)', '( ˘▽˘)っ♨',
+                        '(´ ε ` )♨', '(◠﹏◠)', '＼(^ω^)／', 'ヽ(´▽`)/',
+                        'ヾ(´▽`)ノ', 'ヽ(´ー`)人', '(´∀`)人'
+                    ],
+                    negative: [
+                        ':(', ':-(', ':[', '=(', ':/', ':-/', ':\\', ':-\\',
+                        ':|', ':-|', '>:(', '>:-(', 'D:', '):', ':-c', ':c',
+                        ':{', '>:|', '>:-|', '>:O', '>:-O', ':-[', '=[',
+                        ':-{', ':-||', ':@', ':-@', '×_×', 'x_x', 'X_X',
+                        'x.x', 'X.X', '(´；д；`)', '(；ω；)', '(；へ：)',
+                        '(´；ω；`)', '（；へ：）', '(T_T)', '(TT)', '(T.T)',
+                        '(ToT)', '(>_<)', '(>_>)', '(<_<)', '(>_<)>',
+                        '(¬_¬)', '(－‸ლ)', '(ಠ_ಠ)', '(×_×)', '(╯°□°)╯',
+                        '(︶︹︶)', '(；一_一)', '(´-﹏-`；)', '(´-ι_-`)',
+                        '(´-ω-`)', '(´-﹏-`)', '(´-д-`)'
+                    ],
+                    neutral: [
+                        ':|', ':-|', ':|]', ':-|]', ':O', ':-O', '://',
+                        '°-°', '°o°', '°O°', '°0°', 'o.O', 'O.o', 'o_o',
+                        'O_O', '0_0', 'o.O', '◉_◉', '⊙_⊙', '・_・',
+                        '（・_・）', '(・_・;)', '(・–・;)', '(・∀・)',
+                        '(・▽・)', '(・ω・)', '(・ε・)', '(・д・)',
+                        '(・_・)', '(´・ω・`)', '(´・∀・`)', '(´・д・`)',
+                        '(´・ε・`)', '(´・▽・`)', '(´・_・`)', '(´-ι_-｀)',
+                        '(´-д-｀)', '(´-ω-｀)', '(´-ε-｀)', '(´-▽-｀)'
+                    ],
+                    complex: [
+                        ':\'(', ':\'-(', ':\')', ':\'-)', ';_;', 'T_T',
+                        'T.T', 'ToT', '>_.<', 'o_o', 'O_O', '0_0', '-_-',
+                        '¯\\_(ツ)_/¯', 'ಠ_ಠ', 'ಠ⌣ಠ', 'ಠ▃ಠ', 'ಠ益ಠ',
+                        'ლ(ಠ益ಠლ)', '≧☉_☉≦', '≧◉_◉≦', '≧✯_✯≦',
+                        '(≧◡≦)', '(≧ω≦)', '(≧ε≦)', '(≧д≦)', '(≧▽≦)',
+                        '(≧∇≦)', '(≧∀≦)', '(≧﹏≦)', '(≧×≦)', '(≧人≦)',
+                        '(╥_╥)', '(╥﹏╥)', '(╯︵╰,)', '(╯_╰)', '(╯3╰)',
+                        '(╯▽╰)', '(╯ω╰)', '(╯ε╰)', '(╯д╰)', '(╯︿╰)',
+                        '(╯△╰)', '(╯□╰)', '（╯°□°）╯', '(ノಠ益ಠ)ノ',
+                        '┻━┻', '┬─┬', '╰(´□`)╯', '╰(´︵`)╯',
+                        '(⊙﹏⊙)', '(⊙_⊙;)', '(⊙ω⊙)', '(⊙ε⊙)',
+                        '(⊙▽⊙)', '(⊙∀⊙)', '(⊙△⊙)', '(⊙□⊙)',
+                        '(●´ω`●)', '(●´∀`●)', '(●´▽`●)', '(●´д`●)',
+                        '(●´ε`●)', '(●´△`●)', '(●´□`●)', '(＠´ー`)',
+                        '(＠´ω`)', '(＠´∀`)', '(＠´▽`)', '(＠´д`)',
+                        '(＠´ε`)', '(＠´△`)', '(＠´□`)'
+                    ]
+                };
+                
+                for (const [type, emoticons] of Object.entries(categories)) {
+                    emoticons.forEach(emoticon => {
+                        const escaped = emoticon.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                        patterns.push(escaped);
+                        map.set(emoticon, type);
+                    });
+                }
+                
+                return { patterns, map };
+        }
+          
+        buildModernEmojiPatterns() {
+                const patterns = [];
+                const map = new Map();
+                
+                const emojiRanges = [
+                    '\\u{1F600}-\\u{1F64F}', 
+                    '\\u{1F300}-\\u{1F5FF}', 
+                    '\\u{1F680}-\\u{1F6FF}', 
+                    '\\u{1F1E0}-\\u{1F1FF}',
+                    '\\u{2600}-\\u{26FF}',
+                    '\\u{2700}-\\u{27BF}',
+                    '\\u{FE00}-\\u{FE0F}',
+                    '\\u{1F900}-\\u{1F9FF}',
+                    '\\u{1F018}-\\u{1F270}'
+                ];
+                
+                const emojiRegex = new RegExp(`[${emojiRanges.join('')}]`, 'gu');
+                
+                patterns.push(emojiRegex.source);
+                
+                const predefinedEmojis = {
+                    positive: ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🥳', '🤩', '🥺', '😻', '😽', '🙀', '😺', '😸', '😹', '😼', '🤗', '🤭', '🤫', '🤔', '🤐', '🤠', '🥴', '😸', '💖', '💕', '💞', '💓', '💗', '💘', '💝', '💟', '❤️', '🧡', '💛', '💚', '💙', '💜', '🤎', '🖤', '🤍', '💯', '✨', '🌟', '⭐', '🌈', '☀️', '🌞', '🌻', '🌺', '🌹', '🌸', '💐', '🎉', '🎊', '🎁', '🎈', '🏆', '🥇', '🥈', '🥉', '🏅', '🎖', '👍', '👏', '🙌', '👌', '🤘', '✌️', '🤞', '🤙', '👋', '🖐', '✋', '👐', '🙏', '🤝', '💪', '🧠', '🦾', '🦿', '🦵', '🦶', '👂', '👃', '👀', '👁', '👅', '👄', '💋', '🦷', '🍦', '🍧', '🍨', '🍩', '🍪', '🎂', '🍰', '🧁', '🥧', '🍫', '🍬', '🍭', '🍮', '🍯', '🥛', '🍼', '☕', '🍵', '🧃', '🥤', '🍶', '🍾', '🍷', '🍸', '🍹', '🍺', '🍻', '🥂', '🥃', '🧉', '🧊', '🥢', '🍽', '🍴', '🥄', '🔪', '🏺'],
+                    negative: ['😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '💀', '☠️', '💩', '🤡', '👹', '👺', '👻', '👽', '👾', '🤖', '🎃', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '🐱', '🐶', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐽', '🐸', '🐵', '🙈', '🙉', '🙊', '🐒', '🐔', '🐧', '🐦', '🐤', '🐣', '🐥', '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛', '🦋', '🐌', '🐞', '🐜', '🦟', '🦗', '🕷', '🕸', '🦂', '🐢', '🐍', '🦎', '🦖', '🦕', '🐙', '🦑', '🦐', '🦞', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐊', '🐅', '🐆', '🦓', '🦍', '🦧', '🐘', '🦛', '🦏', '🐪', '🐫', '🦒', '🦘', '🐃', '🐂', '🐄', '🐎', '🐖', '🐏', '🐑', '🦙', '🐐', '🦌', '🐕', '🐩', '🦮', '🐕‍🦺', '🐈', '🐓', '🦃', '🦚', '🦜', '🦢', '🦩', '🐇', '🦝', '🦨', '🦡', '🦦', '🦥', '🐁', '🐀', '🐿', '🦔'],
+                    neutral: ['😐', '😑', '😶', '😶‍🌫️', '😏', '😒', '🙄', '😬', '😮‍💨', '🤥', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥴', '🥵', '🥶', '😵', '😵‍💫', '🤯', '🤠', '🥳', '🥸', '😎', '🤓', '🧐', '😕', '😟', '🙁', '☹️', '😮', '😯', '😲', '😳', '🥺', '😦', '😧', '😨', '😰', '😥', '😢', '😭', '😱', '😖', '😣', '😞', '😓', '😩', '😫', '🥱', '😤', '😡', '😠', '🤬', '😈', '👿', '💀', '☠️', '💩', '🤡', '👹', '👺', '👻', '👽', '👾', '🤖', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾'],
+                    complex: ['😅', '😂', '🤣', '🥲', '☺️', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🥳', '🤩', '🥺', '😻', '😽', '🙀', '😺', '😸', '😹', '😼', '🤗', '🤭', '🤫', '🤔', '🤐', '🤠', '🥴', '😸', '💖', '💕', '💞', '💓', '💗', '💘', '💝', '💟', '❤️', '🧡', '💛', '💚', '💙', '💜', '🤎', '🖤', '🤍', '💯', '✨', '🌟', '⭐', '🌈', '☀️', '🌞', '🌻', '🌺', '🌹', '🌸', '💐', '🎉', '🎊', '🎁', '🎈', '🏆', '🥇', '🥈', '🥉', '🏅', '🎖', '👍', '👏', '🙌', '👌', '🤘', '✌️', '🤞', '🤙', '👋', '🖐', '✋', '👐', '🙏', '🤝', '💪', '🧠', '🦾', '🦿', '🦵', '🦶', '👂', '👃', '👀', '👁', '👅', '👄', '💋', '🦷']
+                };
+                
+                for (const [type, emojis] of Object.entries(predefinedEmojis)) {
+                    emojis.forEach(emoji => {
+                        map.set(emoji, type);
+                    });
+                }
+                
+                return { patterns: [emojiRegex], map };
+        }
+          
+        buildCombinedEmoticonPatterns() {
+                const patterns = [];
+                const map = new Map();
+                
+                const combined = [
+                    { pattern: '>:D', type: 'positive' },
+                    { pattern: '>:[', type: 'negative' },
+                    { pattern: '>:]', type: 'positive' },
+                    { pattern: '>:)', type: 'positive' },
+                    { pattern: '>:(', type: 'negative' },
+                    { pattern: '>:O', type: 'complex' },
+                    { pattern: '>:P', type: 'positive' },
+                    { pattern: '>:p', type: 'positive' },
+                    { pattern: '>:S', type: 'negative' },
+                    { pattern: '>:|', type: 'neutral' },
+                    { pattern: '>:\\', type: 'negative' },
+                    { pattern: '>:/', type: 'negative' },
+                    { pattern: '>:＼', type: 'negative' },
+                    { pattern: '>:３', type: 'positive' },
+                    { pattern: '<3', type: 'positive' },
+                    { pattern: '</3', type: 'negative' },
+                    { pattern: '<\\3', type: 'negative' },
+                    { pattern: '~@~', type: 'complex' },
+                    { pattern: '~_~', type: 'neutral' },
+                    { pattern: '-_-', type: 'neutral' },
+                    { pattern: '^_^', type: 'positive' },
+                    { pattern: '^^', type: 'positive' },
+                    { pattern: '>_<', type: 'negative' },
+                    { pattern: '>_>', type: 'neutral' },
+                    { pattern: '<_<', type: 'neutral' },
+                    { pattern: '=.=', type: 'neutral' },
+                    { pattern: '= =', type: 'neutral' },
+                    { pattern: '=.=', type: 'neutral' },
+                    { pattern: '=3=', type: 'complex' },
+                    { pattern: 'XD', type: 'positive' },
+                    { pattern: 'XDXD', type: 'positive' },
+                    { pattern: 'XDD', type: 'positive' },
+                    { pattern: 'xDD', type: 'positive' },
+                    { pattern: 'xD', type: 'positive' },
+                    { pattern: 'xd', type: 'positive' },
+                    { pattern: 'X-D', type: 'positive' },
+                    { pattern: 'X-d', type: 'positive' },
+                    { pattern: 'x-d', type: 'positive' },
+                    { pattern: ':’D', type: 'positive' },
+                    { pattern: ':’d', type: 'positive' },
+                    { pattern: ':’(', type: 'negative' },
+                    { pattern: ':’)', type: 'positive' },
+                    { pattern: ':’|', type: 'neutral' },
+                    { pattern: ':’O', type: 'complex' },
+                    { pattern: ':’o', type: 'complex' },
+                    { pattern: ':’P', type: 'positive' },
+                    { pattern: ':’p', type: 'positive' },
+                    { pattern: ':’S', type: 'negative' },
+                    { pattern: ':’s', type: 'negative' },
+                    { pattern: ':’\\', type: 'negative' },
+                    { pattern: ':’/', type: 'negative' },
+                    { pattern: ':’３', type: 'positive' },
+                    { pattern: ':’３', type: 'positive' }
+                ];
+                
+                combined.forEach(item => {
+                    const escaped = item.pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    patterns.push(escaped);
+                    map.set(item.pattern, item.type);
+                });
+                
+                return { patterns, map };
+        }
+          
+        findAllEmoticonMatches(text, patterns) {
+                const matches = [];
+                
+                patterns.forEach(pattern => {
+                    let regex;
+                    if (pattern instanceof RegExp) {
+                        regex = pattern;
+                    } else {
+                        regex = new RegExp(pattern, 'gi');
+                    }
+                    
+                    let match;
+                    while ((match = regex.exec(text)) !== null) {
+                        matches.push({
+                            emoticon: match[0],
+                            position: match.index,
+                            length: match[0].length,
+                            pattern: pattern instanceof RegExp ? pattern.source : pattern
+                        });
+                    }
+                });
+                
+                matches.sort((a, b) => a.position - b.position);
+                
+                return this.removeOverlappingMatches(matches);
+        }
+          
+        removeOverlappingMatches(matches) {
+                if (matches.length <= 1) return matches;
+                
+                const filtered = [];
+                let lastMatch = matches[0];
+                filtered.push(lastMatch);
+                
+                for (let i = 1; i < matches.length; i++) {
+                    const current = matches[i];
+                    const lastEnd = lastMatch.position + lastMatch.length;
+                    
+                    if (current.position >= lastEnd) {
+                        filtered.push(current);
+                        lastMatch = current;
+                    }
+                }
+                
+                return filtered;
+        }
+          
+        categorizeMatches(matches, emoticonMap, emojiWeights) {
+                const result = {
+                    positive: 0,
+                    negative: 0,
+                    neutral: 0,
+                    complex: 0,
+                    total: 0,
+                    details: [],
+                    modernEmojis: 0,
+                    combinedEmoticons: 0,
+                    emojiAnalysis: {},
+                    patternAnalysis: {}
+                };
+                
+                const typeCounts = {};
+                const emojiCounts = {};
+                const patternCounts = {};
+                
+                matches.forEach(match => {
+                    const type = emoticonMap.get(match.emoticon) || 'neutral';
+                    result[type]++;
+                    result.total++;
+                    
+                    if (match.pattern.includes('\\u{') || match.emoticon.length > 2) {
+                        result.modernEmojis++;
+                    }
+                    
+                    if (match.emoticon.length >= 3 && !match.pattern.includes('\\u{')) {
+                        result.combinedEmoticons++;
+                    }
+                    
+                    typeCounts[type] = (typeCounts[type] || 0) + 1;
+                    emojiCounts[match.emoticon] = (emojiCounts[match.emoticon] || 0) + 1;
+                    patternCounts[match.pattern] = (patternCounts[match.pattern] || 0) + 1;
+                    
+                    result.details.push({
+                        emoticon: match.emoticon,
+                        type: type,
+                        position: match.position,
+                        length: match.length,
+                        weight: emojiWeights[match.emoticon] || 1.0
+                    });
+                });
+                
+                result.emojiAnalysis = {
+                    uniqueEmojis: Object.keys(emojiCounts).length,
+                    mostFrequent: Object.entries(emojiCounts)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 10)
+                        .map(([emoji, count]) => ({ emoji, count })),
+                    distribution: typeCounts
+                };
+                
+                result.patternAnalysis = {
+                    uniquePatterns: Object.keys(patternCounts).length,
+                    patternFrequency: patternCounts
+                };
+                
+                return result;
+        }
+          
+        buildEmojiWeights() {
+                const weights = {
+                    '❤️': 1.5, '😍': 1.4, '😂': 1.3, '🥰': 1.4, '😊': 1.2,
+                    '😭': 1.4, '😘': 1.3, '🤣': 1.3, '😁': 1.2, '👍': 1.1,
+                    '😢': 1.3, '🎉': 1.2, '🔥': 1.2, '💕': 1.3, '🙏': 1.1,
+                    '😎': 1.2, '✨': 1.1, '🤔': 1.0, '😴': 1.0, '💖': 1.3,
+                    '💯': 1.2, '👏': 1.1, '🙌': 1.1, '😅': 1.1, '🤗': 1.2,
+                    '😡': 1.4, '😠': 1.3, '😤': 1.2, '😞': 1.2, '😔': 1.2,
+                    '😕': 1.1, '😟': 1.2, '🙁': 1.2, '☹️': 1.3, '😣': 1.2,
+                    '😖': 1.3, '😫': 1.2, '😩': 1.2, '😮': 1.1, '😯': 1.1,
+                    '😲': 1.2, '😳': 1.2, '🥺': 1.3, '😦': 1.2, '😧': 1.2,
+                    '😨': 1.3, '😰': 1.2, '😥': 1.2, '😢': 1.3, '😭': 1.4,
+                    '😱': 1.4, '😵': 1.2, '😵‍💫': 1.3, '🤯': 1.3, '🤠': 1.1,
+                    '🥳': 1.2, '🥸': 1.1, '😎': 1.2, '🤓': 1.1, '🧐': 1.1
+                };
+                
+                return weights;
+        }
+          
+         buildContextAnalyzer() {
+                return {
+                    positiveWords: ['хорошо', 'отлично', 'прекрасно', 'радость', 'счастье', 'любовь', 'good', 'great', 'excellent', 'happy', 'love', 'joy'],
+                    negativeWords: ['плохо', 'ужасно', 'грустно', 'злость', 'ненависть', 'bad', 'terrible', 'awful', 'sad', 'angry', 'hate'],
+                    intensifiers: ['очень', 'крайне', 'невероятно', 'ужасно', 'жутко', 'very', 'extremely', 'incredibly', 'terribly', 'awfully'],
+                    distance: 5
+                };
+        }
+          
+        analyzeEmoticonContext(text, matches, contextAnalyzer) {
+                const context = {
+                    withPositiveWords: 0,
+                    withNegativeWords: 0,
+                    withIntensifiers: 0,
+                    atSentenceEnd: 0,
+                    atSentenceStart: 0,
+                    isolated: 0,
+                    clustered: 0,
+                    contextMatches: []
+                };
+                
+                const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+                
+                matches.forEach(match => {
+                    const start = Math.max(0, match.position - 30);
+                    const end = Math.min(text.length, match.position + match.length + 30);
+                    const surroundingText = text.substring(start, end).toLowerCase();
+                    
+                    const contextMatch = {
+                        emoticon: match.emoticon,
+                        surrounding: surroundingText,
+                        features: {}
+                    };
+                    
+                    contextAnalyzer.positiveWords.forEach(word => {
+                        if (surroundingText.includes(word)) {
+                            context.withPositiveWords++;
+                            contextMatch.features.positiveWord = true;
+                        }
+                    });
+                    
+                    contextAnalyzer.negativeWords.forEach(word => {
+                        if (surroundingText.includes(word)) {
+                            context.withNegativeWords++;
+                            contextMatch.features.negativeWord = true;
+                        }
+                    });
+                    
+                    contextAnalyzer.intensifiers.forEach(intensifier => {
+                        if (surroundingText.includes(intensifier)) {
+                            context.withIntensifiers++;
+                            contextMatch.features.intensifier = true;
+                        }
+                    });
+                    
+                    const charBefore = text.charAt(match.position - 1);
+                    const charAfter = text.charAt(match.position + match.length);
+                    
+                    if (charAfter === '' || /[.!?]/.test(charAfter)) {
+                        context.atSentenceEnd++;
+                        contextMatch.features.sentenceEnd = true;
+                    }
+                    
+                    if (charBefore === '' || /[.!?]/.test(charBefore)) {
+                        context.atSentenceStart++;
+                        contextMatch.features.sentenceStart = true;
+                    }
+                    
+                    if ((charBefore === ' ' || charBefore === '') && 
+                        (charAfter === ' ' || charAfter === '')) {
+                        context.isolated++;
+                        contextMatch.features.isolated = true;
+                    }
+                    
+                    context.contextMatches.push(contextMatch);
+                });
+                
+                const clusters = this.findEmoticonClusters(matches, text);
+                context.clustered = clusters.length;
+                
+                return context;
+        }
+          
+        calculateEmoticonIntensity(categorized, contextual) {
+                let score = 0;
+                
+                score += categorized.positive * 1.0;
+                score += categorized.negative * 1.2;
+                score += categorized.complex * 0.8;
+                score += categorized.neutral * 0.5;
+                
+                if (contextual.withIntensifiers > 0) {
+                    score *= (1 + contextual.withIntensifiers * 0.1);
+                }
+                
+                if (contextual.clustered > 0) {
+                    score *= (1 + contextual.clustered * 0.15);
+                }
+                
+                if (categorized.modernEmojis > 0) {
+                    score *= (1 + categorized.modernEmojis * 0.05);
+                }
+                
+                const weightSum = categorized.details.reduce((sum, detail) => {
+                    return sum + (detail.weight || 1.0);
                 }, 0);
                 
-                if (count > 0) {
-                    emoticons[type] = count;
+                if (categorized.total > 0) {
+                    score *= (weightSum / categorized.total);
                 }
-            }
-            
-            return emoticons;
+                
+                return {
+                    score: Math.round(score * 100) / 100,
+                    baseScore: score,
+                    weightedScore: weightSum,
+                    contextualBoost: contextual.withIntensifiers + contextual.clustered
+                };
+        }
+          
+        calculateEmoticonDensity(totalEmoticons, textLength) {
+                if (textLength === 0) return 0;
+                return Math.round((totalEmoticons / textLength) * 1000 * 100) / 100;
+        }
+          
+        findEmoticonClusters(matches, text) {
+                const clusters = [];
+                let currentCluster = [];
+                const clusterDistance = 10;
+                
+                for (let i = 0; i < matches.length; i++) {
+                    if (currentCluster.length === 0) {
+                        currentCluster.push(matches[i]);
+                    } else {
+                        const lastMatch = currentCluster[currentCluster.length - 1];
+                        const currentMatch = matches[i];
+                        
+                        const distance = currentMatch.position - (lastMatch.position + lastMatch.length);
+                        
+                        if (distance <= clusterDistance) {
+                            currentCluster.push(currentMatch);
+                        } else {
+                            if (currentCluster.length > 1) {
+                                clusters.push({
+                                    matches: [...currentCluster],
+                                    size: currentCluster.length,
+                                    start: currentCluster[0].position,
+                                    end: currentCluster[currentCluster.length - 1].position + 
+                                          currentCluster[currentCluster.length - 1].length,
+                                    types: [...new Set(currentCluster.map(m => 
+                                        this.categorizeEmoticonType(m.emoticon)
+                                    ))],
+                                    intensity: this.calculateClusterIntensity(currentCluster)
+                                });
+                            }
+                            currentCluster = [currentMatch];
+                        }
+                    }
+                }
+                
+                if (currentCluster.length > 1) {
+                    clusters.push({
+                        matches: [...currentCluster],
+                        size: currentCluster.length,
+                        start: currentCluster[0].position,
+                        end: currentCluster[currentCluster.length - 1].position + 
+                              currentCluster[currentCluster.length - 1].length,
+                        types: [...new Set(currentCluster.map(m => 
+                            this.categorizeEmoticonType(m.emoticon)
+                        ))],
+                        intensity: this.calculateClusterIntensity(currentCluster)
+                    });
+                }
+                
+                return clusters;
+        }
+          
+        categorizeEmoticonType(emoticon) {
+                if (emoticon.includes(')') || emoticon.includes('D') || emoticon.includes('^')) {
+                    return 'positive';
+                } else if (emoticon.includes('(') || emoticon.includes('[') || emoticon.includes('/')) {
+                    return 'negative';
+                } else if (emoticon.includes('|') || emoticon.includes('O') || emoticon.includes('o')) {
+                    return 'neutral';
+                } else {
+                    return 'complex';
+                }
+        }
+          
+        calculateClusterIntensity(cluster) {
+                let intensity = 0;
+                
+                cluster.forEach(match => {
+                    if (match.emoticon.includes('!')) intensity += 0.2;
+                    if (match.emoticon.includes('?')) intensity += 0.1;
+                    if (match.emoticon.includes('!!')) intensity += 0.3;
+                    if (match.emoticon.includes('??')) intensity += 0.2;
+                    if (match.emoticon.length > 3) intensity += 0.1;
+                });
+                
+                return Math.min(1, intensity);
+        }
+          
+        findSequentialPatterns(matches) {
+                const patterns = [];
+                
+                for (let i = 0; i < matches.length - 1; i++) {
+                    const current = matches[i];
+                    const next = matches[i + 1];
+                    
+                    const distance = next.position - (current.position + current.length);
+                    
+                    if (distance <= 5) {
+                        patterns.push({
+                            first: current.emoticon,
+                            second: next.emoticon,
+                            distance: distance,
+                            types: [
+                                this.categorizeEmoticonType(current.emoticon),
+                                this.categorizeEmoticonType(next.emoticon)
+                            ],
+                            patternType: this.determinePatternType(
+                                current.emoticon, 
+                                next.emoticon
+                            )
+                        });
+                    }
+                }
+                
+                return {
+                    patterns: patterns,
+                    total: patterns.length,
+                    mostCommon: this.findMostCommonPattern(patterns)
+                };
+        }
+          
+        determinePatternType(first, second) {
+                const firstType = this.categorizeEmoticonType(first);
+                const secondType = this.categorizeEmoticonType(second);
+                
+                if (firstType === 'positive' && secondType === 'positive') {
+                    return 'reinforcement';
+                } else if (firstType === 'negative' && secondType === 'negative') {
+                    return 'amplification';
+                } else if (firstType === 'positive' && secondType === 'negative') {
+                    return 'contrast';
+                } else if (firstType === 'negative' && secondType === 'positive') {
+                    return 'recovery';
+                } else {
+                    return 'mixed';
+                }
+        }
+          
+        findMostCommonPattern(patterns) {
+                if (patterns.length === 0) return null;
+                
+                const patternCounts = {};
+                patterns.forEach(pattern => {
+                    const key = `${pattern.first}+${pattern.second}`;
+                    patternCounts[key] = (patternCounts[key] || 0) + 1;
+                });
+                
+                let maxCount = 0;
+                let mostCommon = null;
+                
+                for (const [key, count] of Object.entries(patternCounts)) {
+                    if (count > maxCount) {
+                        maxCount = count;
+                        mostCommon = { pattern: key, count: count };
+                    }
+                }
+                
+                return mostCommon;
+        }
+          
+        analyzeEmoticonPositions(matches, textLength) {
+                if (matches.length === 0) {
+                    return {
+                        distribution: { start: 0, middle: 0, end: 0 },
+                        densityBySection: { start: 0, middle: 0, end: 0 }
+                    };
+                }
+                
+                const third = Math.floor(textLength / 3);
+                let startCount = 0, middleCount = 0, endCount = 0;
+                
+                matches.forEach(match => {
+                    if (match.position < third) {
+                        startCount++;
+                    } else if (match.position < 2 * third) {
+                        middleCount++;
+                    } else {
+                        endCount++;
+                    }
+                });
+                
+                const total = matches.length;
+                
+                return {
+                    distribution: {
+                        start: startCount / total,
+                        middle: middleCount / total,
+                        end: endCount / total
+                    },
+                    densityBySection: {
+                        start: startCount / third,
+                        middle: middleCount / third,
+                        end: endCount / third
+                    },
+                    rawCounts: {
+                        start: startCount,
+                        middle: middleCount,
+                        end: endCount
+                    }
+                };
         }
         
         analyzeCapitalization(text) {
@@ -7231,6 +7901,7 @@
     
 
 })();
+
 
 
 
