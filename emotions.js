@@ -3356,22 +3356,48 @@
             };
         }
         
-        calculateCategoryIntensity(category, count, frequency) {
-            const baseIntensity = Math.min(1, frequency * 10);
-            
-            const intenseCategories = ['ecstasy', 'rage', 'despair', 'triumph'];
-            const moderateCategories = ['joy', 'sadness', 'anger', 'fear'];
-            const mildCategories = ['peace', 'calmness', 'curiosity'];
-            
-            if (intenseCategories.includes(category)) {
-                return baseIntensity * 1.5;
-            } else if (moderateCategories.includes(category)) {
-                return baseIntensity * 1.0;
-            } else if (mildCategories.includes(category)) {
-                return baseIntensity * 0.7;
-            }
-            
-            return baseIntensity;
+        calculateCategoryIntensity(category, count, frequency, data = null, categoryData = null) {
+                const baseIntensity = Math.min(1, frequency * 10);
+                const intenseCategories = ['ecstasy', 'rage', 'despair', 'triumph', 'grief', 'terror', 'fury', 'agony', 'bliss', 'rapture', 'exaltation'];
+                const moderateCategories = ['joy', 'sadness', 'anger', 'fear', 'love', 'hate', 'disgust', 'shame', 'guilt', 'envy', 'loneliness', 'anxiety', 'contempt', 'bitterness', 'confusion', 'emptiness'];
+                const mildCategories = ['peace', 'calmness', 'curiosity', 'hope', 'gratitude', 'inspiration', 'pride', 'surprise', 'aesthetic', 'nostalgia', 'connection', 'resilience', 'vulnerability'];
+                let multiplier = 1.0;
+                if (intenseCategories.includes(category)) {
+                          multiplier = 1.5;
+                } else if (moderateCategories.includes(category)) {
+                          multiplier = 1.0;
+                } else if (mildCategories.includes(category)) {
+                          multiplier = 0.7;
+                }
+                let contextualBoost = 0;
+                if (data && data.punctuation) {
+                          if (data.punctuation['!']) contextualBoost += data.punctuation['!'] * 0.05;
+                          if (data.punctuation['!!!']) contextualBoost += data.punctuation['!!!'] * 0.15;
+                }
+                if (data && data.contextual && data.contextual.indicators && data.contextual.indicators.intensifiers) {
+                          contextualBoost += data.contextual.indicators.intensifiers * 0.03;
+                }
+                let positionFactor = 1.0;
+                if (categoryData && categoryData.positions && data && data.cleaned) {
+                          const firstPosition = categoryData.positions[0]?.position || 0;
+                          const lastPosition = categoryData.positions[categoryData.positions.length - 1]?.position || 0;
+                          const textLength = data.cleaned.length;
+                          if (firstPosition < textLength * 0.1 || lastPosition > textLength * 0.9) {
+                                    positionFactor = 1.2;
+                          }
+                }
+                let textLengthFactor = 1.0;
+                if (data && data.words && data.words.length > 0) {
+                          textLengthFactor = Math.min(1.5, 1 + (100 / (data.words.length + 100)));
+                }
+                let clusterBoost = 0;
+                if (categoryData && categoryData.clusters) {
+                          clusterBoost = Math.min(0.5, categoryData.clusters.length * 0.1);
+                }
+                const adjustedMultiplier = multiplier * textLengthFactor;
+                const contextualIntensity = baseIntensity * adjustedMultiplier * (1 + contextualBoost) * positionFactor;
+                const finalIntensity = Math.min(1, contextualIntensity + clusterBoost);
+                return finalIntensity;
         }
         
         calculateCategoryDominance(category, count, totalWords) {
@@ -7963,3 +7989,4 @@
     
 
 })();
+
