@@ -3357,295 +3357,318 @@
         }
         
         calculateCategoryIntensity(category, count, frequency, data = null, categoryData = null) {
-                const baseIntensity = Math.min(1, frequency * 10);
-                const intenseCategories = ['ecstasy', 'rage', 'despair', 'triumph', 'grief', 'terror', 'fury', 'agony', 'bliss', 'rapture', 'exaltation'];
-                const moderateCategories = ['joy', 'sadness', 'anger', 'fear', 'love', 'hate', 'disgust', 'shame', 'guilt', 'envy', 'loneliness', 'anxiety', 'contempt', 'bitterness', 'confusion', 'emptiness'];
-                const mildCategories = ['peace', 'calmness', 'curiosity', 'hope', 'gratitude', 'inspiration', 'pride', 'surprise', 'aesthetic', 'nostalgia', 'connection', 'resilience', 'vulnerability'];
-                let multiplier = 1.0;
-                if (intenseCategories.includes(category)) {
-                          multiplier = 1.5;
-                } else if (moderateCategories.includes(category)) {
-                          multiplier = 1.0;
-                } else if (mildCategories.includes(category)) {
-                          multiplier = 0.7;
-                }
-                let contextualBoost = 0;
-                if (data && data.punctuation) {
-                          if (data.punctuation['!']) contextualBoost += data.punctuation['!'] * 0.05;
-                          if (data.punctuation['!!!']) contextualBoost += data.punctuation['!!!'] * 0.15;
-                }
-                if (data && data.contextual && data.contextual.indicators && data.contextual.indicators.intensifiers) {
-                          contextualBoost += data.contextual.indicators.intensifiers * 0.03;
-                }
-                let positionFactor = 1.0;
-                if (categoryData && categoryData.positions && data && data.cleaned) {
-                          const firstPosition = categoryData.positions[0]?.position || 0;
-                          const lastPosition = categoryData.positions[categoryData.positions.length - 1]?.position || 0;
-                          const textLength = data.cleaned.length;
-                          if (firstPosition < textLength * 0.1 || lastPosition > textLength * 0.9) {
-                                    positionFactor = 1.2;
-                          }
-                }
-                let textLengthFactor = 1.0;
-                if (data && data.words && data.words.length > 0) {
-                          textLengthFactor = Math.min(1.5, 1 + (100 / (data.words.length + 100)));
-                }
-                let clusterBoost = 0;
-                if (categoryData && categoryData.clusters) {
-                          clusterBoost = Math.min(0.5, categoryData.clusters.length * 0.1);
-                }
-                const adjustedMultiplier = multiplier * textLengthFactor;
-                const contextualIntensity = baseIntensity * adjustedMultiplier * (1 + contextualBoost) * positionFactor;
-                const finalIntensity = Math.min(1, contextualIntensity + clusterBoost);
-                return finalIntensity;
+                  const baseIntensity = Math.min(1, frequency * 10);
+                  const intenseCategories = ['ecstasy', 'rage', 'despair', 'triumph', 'grief', 'terror', 'fury', 'agony', 'bliss', 'rapture', 'exaltation'];
+                  const moderateCategories = ['joy', 'sadness', 'anger', 'fear', 'love', 'hate', 'disgust', 'shame', 'guilt', 'envy', 'loneliness', 'anxiety', 'contempt', 'bitterness', 'confusion', 'emptiness'];
+                  const mildCategories = ['peace', 'calmness', 'curiosity', 'hope', 'gratitude', 'inspiration', 'pride', 'surprise', 'aesthetic', 'nostalgia', 'connection', 'resilience', 'vulnerability'];
+                  let multiplier = 1.0;
+                  if (intenseCategories.includes(category)) {
+                    multiplier = 1.5;
+                  } else if (moderateCategories.includes(category)) {
+                    multiplier = 1.0;
+                  } else if (mildCategories.includes(category)) {
+                    multiplier = 0.7;
+                  }
+                  let contextualBoost = 0;
+                  if (data && data.punctuation) {
+                    if (data.punctuation['!']) contextualBoost += data.punctuation['!'] * 0.05;
+                    if (data.punctuation['!!!']) contextualBoost += data.punctuation['!!!'] * 0.15;
+                  }
+                  if (data && data.contextual && data.contextual.indicators && data.contextual.indicators.intensifiers) {
+                    contextualBoost += data.contextual.indicators.intensifiers * 0.03;
+                  }
+                  let positionFactor = 1.0;
+                  if (categoryData && categoryData.positions && data && data.cleaned) {
+                    const firstPosition = categoryData.positions[0]?.position || 0;
+                    const lastPosition = categoryData.positions[categoryData.positions.length - 1]?.position || 0;
+                    const textLength = data.cleaned.length;
+                    if (firstPosition < textLength * 0.1 || lastPosition > textLength * 0.9) {
+                      positionFactor = 1.2;
+                    }
+                  }
+                  let textLengthFactor = 1.0;
+                  if (data && data.words && data.words.length > 0) {
+                    textLengthFactor = Math.min(1.5, 1 + (100 / (data.words.length + 100)));
+                  }
+                  let clusterBoost = 0;
+                  if (categoryData && categoryData.clusters) {
+                    clusterBoost = Math.min(0.5, categoryData.clusters.length * 0.1);
+                  }
+                  const adjustedMultiplier = multiplier * textLengthFactor;
+                  const contextualIntensity = baseIntensity * adjustedMultiplier * (1 + contextualBoost) * positionFactor;
+                  const finalIntensity = Math.min(1, contextualIntensity + clusterBoost);
+                  return finalIntensity;
         }
         
         calculateCategoryDominance(category, count, totalWords, categoryData = null, textLength = null, allCategories = null) {
-          const proportion = totalWords > 0 ? count / totalWords : 0;
-          let textLengthFactor = 1.0;
-          if (textLength) {
-          textLengthFactor = Math.min(1.5, 100 / (textLength + 100));
-          }
-          let relativeFactor = 1.0;
-          if (allCategories && Object.keys(allCategories).length > 0) {
-          const categoryProportions = Object.values(allCategories).map(cat => 
-          cat.count / totalWords
-          );
-          const maxProportion = Math.max(...categoryProportions);
-          const proportionRank = categoryProportions
-          .sort((a, b) => b - a)
-          .indexOf(proportion);
-          if (proportion > 0 && proportion >= maxProportion * 0.7) {
-          relativeFactor = 1.3;
-          }
-          if (proportionRank === 0) {
-          relativeFactor = 1.5;
-          } else if (proportionRank === 1) {
-          relativeFactor = 1.2;
-          }
-          }
-          let clusterFactor = 1.0;
-          if (categoryData && categoryData.clusters && categoryData.clusters.length > 0) {
-          const clusterDensity = categoryData.clusters.length / (textLength || 1);
-          clusterFactor = 1 + Math.min(0.5, clusterDensity * 10);
-          }
-          let intensityFactor = 1.0;
-          if (categoryData && categoryData.intensity) {
-          intensityFactor = 0.8 + (categoryData.intensity * 0.4);
-          }
-          let positionFactor = 1.0;
-          if (categoryData && categoryData.positions && categoryData.positions.length > 0) {
-          const positions = categoryData.positions.map(p => p.position);
-          const firstPosition = Math.min(...positions);
-          const lastPosition = Math.max(...positions);
-          const textStart = firstPosition / (textLength || 1);
-          const textEnd = lastPosition / (textLength || 1);
-          if (textStart < 0.1 || textEnd > 0.9) {
-          positionFactor = 1.3;
-          }
-          const positionSpread = (lastPosition - firstPosition) / (textLength || 1);
-          if (positionSpread > 0.7) {
-          positionFactor *= 1.2;
-          }
-          }
-          const adjustedProportion = proportion * textLengthFactor * relativeFactor * clusterFactor * intensityFactor * positionFactor;
-          const baseThreshold = 0.05;
-          const adjustedThresholds = {
-          high: baseThreshold * 2,
-          medium: baseThreshold,
-          low: baseThreshold * 0.4
-          };
-          if (adjustedProportion > adjustedThresholds.high) return 'high';
-          if (adjustedProportion > adjustedThresholds.medium) return 'medium';
-          if (adjustedProportion > adjustedThresholds.low) return 'low';
-          return 'minimal';
+                  const proportion = totalWords > 0 ? count / totalWords : 0;
+                  let textLengthFactor = 1.0;
+                  if (textLength) {
+                    textLengthFactor = Math.min(1.5, 100 / (textLength + 100));
+                  }
+                  let relativeFactor = 1.0;
+                  if (allCategories && Object.keys(allCategories).length > 0) {
+                    const categoryProportions = Object.values(allCategories).map(cat => cat.count / totalWords);
+                    const maxProportion = Math.max(...categoryProportions);
+                    const proportionRank = categoryProportions.sort((a, b) => b - a).indexOf(proportion);
+                    if (proportion > 0 && proportion >= maxProportion * 0.7) {
+                      relativeFactor = 1.3;
+                    }
+                    if (proportionRank === 0) {
+                      relativeFactor = 1.5;
+                    } else if (proportionRank === 1) {
+                      relativeFactor = 1.2;
+                    }
+                  }
+                  let clusterFactor = 1.0;
+                  if (categoryData && categoryData.clusters && categoryData.clusters.length > 0) {
+                    const clusterDensity = categoryData.clusters.length / (textLength || 1);
+                    clusterFactor = 1 + Math.min(0.5, clusterDensity * 10);
+                  }
+                  let intensityFactor = 1.0;
+                  if (categoryData && categoryData.intensity) {
+                    intensityFactor = 0.8 + (categoryData.intensity * 0.4);
+                  }
+                  let positionFactor = 1.0;
+                  if (categoryData && categoryData.positions && categoryData.positions.length > 0) {
+                    const positions = categoryData.positions.map(p => p.position);
+                    const firstPosition = Math.min(...positions);
+                    const lastPosition = Math.max(...positions);
+                    const textStart = firstPosition / (textLength || 1);
+                    const textEnd = lastPosition / (textLength || 1);
+                    if (textStart < 0.1 || textEnd > 0.9) {
+                      positionFactor = 1.3;
+                    }
+                    const positionSpread = (lastPosition - firstPosition) / (textLength || 1);
+                    if (positionSpread > 0.7) {
+                      positionFactor *= 1.2;
+                    }
+                  }
+                  const adjustedProportion = proportion * textLengthFactor * relativeFactor * clusterFactor * intensityFactor * positionFactor;
+                  const baseThreshold = 0.05;
+                  const adjustedThresholds = {
+                    high: baseThreshold * 2,
+                    medium: baseThreshold,
+                    low: baseThreshold * 0.4
+                  };
+                  if (adjustedProportion > adjustedThresholds.high) return 'high';
+                  if (adjustedProportion > adjustedThresholds.medium) return 'medium';
+                  if (adjustedProportion > adjustedThresholds.low) return 'low';
+                  return 'minimal';
         }
         
         calculateLexicalConcentration(categories, totalWords, data = null, categoryData = null) {
-                if (totalWords === 0) return 0;
-                const emotionalWords = Object.values(categories)
-                .reduce((sum, cat) => sum + cat.count, 0);
-                if (emotionalWords === 0) return 0;
-                let weightedProportions = [];
-                for (const [category, catData] of Object.entries(categories)) {
-                const rawProportion = catData.count / emotionalWords;
-                const weight = catData.weight || 1.0;
-                const intensity = catData.intensity || 0.5;
-                const weightedProportion = rawProportion * weight * intensity;
-                weightedProportions.push({
-                category: category,
-                proportion: weightedProportion,
-                weight: weight,
-                intensity: intensity,
-                rawCount: catData.count
-                });
-                }
-                const totalWeighted = weightedProportions.reduce((sum, p) => sum + p.proportion, 0);
-                if (totalWeighted === 0) return 0;
-                weightedProportions = weightedProportions.map(p => ({
-                ...p,
-                normalized: p.proportion / totalWeighted
-                }));
-                const proportions = weightedProportions.map(p => p.normalized).sort((a, b) => a - b);
-                const n = proportions.length;
-                if (n === 0) return 0;
-                let gini = 0;
-                for (let i = 0; i < n; i++) {
-                for (let j = 0; j < n; j++) {
-                gini += Math.abs(proportions[i] - proportions[j]);
-                }
-                }
-                const baseGini = gini / (2 * n * n * (proportions.reduce((a, b) => a + b, 0) / n));
-                let textLengthFactor = 1.0;
-                if (data && data.words && data.words.length > 0) {
-                const textLength = data.words.length;
-                textLengthFactor = Math.max(0.7, 1 - (50 / (textLength + 50)));
-                }
-                let clusterFactor = 1.0;
-                if (categoryData) {
-                let totalClusters = 0;
-                for (const [category, catData] of Object.entries(categoryData)) {
-                if (catData.clusters && catData.clusters.length > 0) {
-                totalClusters += catData.clusters.length;
-                }
-                }
-                if (totalClusters > 0) {
-                clusterFactor = 1 + Math.min(0.3, totalClusters * 0.05);
-                }
-                }
-                let positionFactor = 1.0;
-                if (data && data.sentences && data.sentences.length > 0) {
-                const firstThird = Math.floor(data.sentences.length / 3);
-                const lastThird = data.sentences.length - firstThird;
-                let earlyEmotionCount = 0;
-                let lateEmotionCount = 0;
-                for (const [category, catData] of Object.entries(categories)) {
-                if (catData.sentenceOccurrences) {
-                for (const sentenceIdx of Object.keys(catData.sentenceOccurrences)) {
-                const idx = parseInt(sentenceIdx);
-                if (idx < firstThird) earlyEmotionCount += catData.sentenceOccurrences[sentenceIdx].length;
-                if (idx >= lastThird) lateEmotionCount += catData.sentenceOccurrences[sentenceIdx].length;
-                }
-                }
-                }
-                }
-                const totalEmotions = emotionalWords;
-                const edgeConcentration = (earlyEmotionCount + lateEmotionCount) / totalEmotions;
-                if (edgeConcentration > 0.6) {
-                positionFactor = 1.2;
-                }
-                }
-                const adjustedGini = baseGini * textLengthFactor * clusterFactor * positionFactor;
-                return Math.min(1, Math.max(0, adjustedGini));
+                  if (totalWords === 0) return 0;
+                  const emotionalWords = Object.values(categories).reduce((sum, cat) => sum + cat.count, 0);
+                  if (emotionalWords === 0) return 0;
+                  let weightedProportions = [];
+                  for (const [category, catData] of Object.entries(categories)) {
+                    const rawProportion = catData.count / emotionalWords;
+                    const weight = catData.weight || 1.0;
+                    const intensity = catData.intensity || 0.5;
+                    const weightedProportion = rawProportion * weight * intensity;
+                    weightedProportions.push({
+                      category: category,
+                      proportion: weightedProportion,
+                      weight: weight,
+                      intensity: intensity,
+                      rawCount: catData.count
+                    });
+                  }
+                  const totalWeighted = weightedProportions.reduce((sum, p) => sum + p.proportion, 0);
+                  if (totalWeighted === 0) return 0;
+                  weightedProportions = weightedProportions.map(p => ({
+                    ...p,
+                    normalized: p.proportion / totalWeighted
+                  }));
+                  const proportions = weightedProportions.map(p => p.normalized).sort((a, b) => a - b);
+                  const n = proportions.length;
+                  if (n === 0) return 0;
+                  let gini = 0;
+                  for (let i = 0; i < n; i++) {
+                    for (let j = 0; j < n; j++) {
+                      gini += Math.abs(proportions[i] - proportions[j]);
+                    }
+                  }
+                  const baseGini = gini / (2 * n * n * (proportions.reduce((a, b) => a + b, 0) / n));
+                  let textLengthFactor = 1.0;
+                  if (data && data.words && data.words.length > 0) {
+                    const textLength = data.words.length;
+                    textLengthFactor = Math.max(0.7, 1 - (50 / (textLength + 50)));
+                  }
+                  let clusterFactor = 1.0;
+                  if (categoryData) {
+                    let totalClusters = 0;
+                    for (const [category, catData] of Object.entries(categoryData)) {
+                      if (catData.clusters && catData.clusters.length > 0) {
+                        totalClusters += catData.clusters.length;
+                      }
+                    }
+                    if (totalClusters > 0) {
+                      clusterFactor = 1 + Math.min(0.3, totalClusters * 0.05);
+                    }
+                  }
+                  let positionFactor = 1.0;
+                  if (data && data.sentences && data.sentences.length > 0) {
+                    const firstThird = Math.floor(data.sentences.length / 3);
+                    const lastThird = data.sentences.length - firstThird;
+                    let earlyEmotionCount = 0;
+                    let lateEmotionCount = 0;
+                    for (const [category, catData] of Object.entries(categories)) {
+                      if (catData.sentenceOccurrences) {
+                        for (const sentenceIdx of Object.keys(catData.sentenceOccurrences)) {
+                          const idx = parseInt(sentenceIdx);
+                          if (idx < firstThird) earlyEmotionCount += catData.sentenceOccurrences[sentenceIdx].length;
+                          if (idx >= lastThird) lateEmotionCount += catData.sentenceOccurrences[sentenceIdx].length;
+                        }
+                      }
+                    }
+                    const totalEmotions = emotionalWords;
+                    const edgeConcentration = (earlyEmotionCount + lateEmotionCount) / totalEmotions;
+                    if (edgeConcentration > 0.6) {
+                      positionFactor = 1.2;
+                    }
+                  }
+                  const adjustedGini = baseGini * textLengthFactor * clusterFactor * positionFactor;
+                  return Math.min(1, Math.max(0, adjustedGini));
         }
         
         calculateLexicalDistribution(categories, sentenceCount, data = null) {
-                if (sentenceCount === 0) return 0;
-                const sentencesWithEmotion = new Set();
-                const emotionDensityPerSentence = {};
-                const categoryDiversityPerSentence = {};
-                const sentencePositions = {};
-                for (const [category, dataItem] of Object.entries(categories)) {
-                if (dataItem.sentenceOccurrences) {
-                Object.entries(dataItem.sentenceOccurrences).forEach(([sentenceIndexStr, words]) => {
-                const sentenceIndex = parseInt(sentenceIndexStr);
-                sentencesWithEmotion.add(sentenceIndex);
-                emotionDensityPerSentence[sentenceIndex] = (emotionDensityPerSentence[sentenceIndex] || 0) + words.length;
-                if (!categoryDiversityPerSentence[sentenceIndex]) {
-                categoryDiversityPerSentence[sentenceIndex] = new Set();
-                }
-                categoryDiversityPerSentence[sentenceIndex].add(category);
-                sentencePositions[sentenceIndex] = sentenceIndex;
-                });
-                }
-                }
-                const coverageRatio = sentencesWithEmotion.size / sentenceCount;
-                let densityFactor = 0;
-                if (Object.keys(emotionDensityPerSentence).length > 0) {
-                const densities = Object.values(emotionDensityPerSentence);
-                const avgDensity = densities.reduce((a, b) => a + b, 0) / densities.length;
-                const maxDensity = Math.max(...densities);
-                densityFactor = Math.min(1, avgDensity / 3 + maxDensity / 10);
-                }
-                let diversityFactor = 0;
-                if (Object.keys(categoryDiversityPerSentence).length > 0) {
-                const diversities = Object.values(categoryDiversityPerSentence).map(set => set.size);
-                const avgDiversity = diversities.reduce((a, b) => a + b, 0) / diversities.length;
-                diversityFactor = Math.min(1, avgDiversity / 3);
-                }
-                let sequenceFactor = 1.0;
-                if (sentencesWithEmotion.size > 1) {
-                const sortedIndices = Array.from(sentencesWithEmotion).sort((a, b) => a - b);
-                let consecutiveCount = 0;
-                let maxConsecutive = 1;
-                for (let i = 1; i < sortedIndices.length; i++) {
-                if (sortedIndices[i] === sortedIndices[i - 1] + 1) {
-                consecutiveCount++;
-                maxConsecutive = Math.max(maxConsecutive, consecutiveCount + 1);
-                } else {
-                consecutiveCount = 0;
-                }
-                }
-                sequenceFactor = 1 + Math.min(0.3, maxConsecutive * 0.05);
-                }
-                let positionFactor = 1.0;
-                if (data && data.sentences && data.sentences.length > 0) {
-                const firstThird = Math.floor(sentenceCount / 3);
-                const lastThird = sentenceCount - firstThird;
-                let earlyEmotionCount = 0;
-                let lateEmotionCount = 0;
-                sentencesWithEmotion.forEach(idx => {
-                if (idx < firstThird) earlyEmotionCount++;
-                if (idx >= lastThird) lateEmotionCount++;
-                });
-                const edgeConcentration = (earlyEmotionCount + lateEmotionCount) / sentencesWithEmotion.size;
-                if (edgeConcentration > 0.6) {
-                positionFactor = 1.2;
-                }
-                }
-                let sectionAnalysis = { first: 0, middle: 0, last: 0 };
-                if (sentenceCount >= 3) {
-                const firstThird = Math.floor(sentenceCount / 3);
-                const lastThird = sentenceCount - firstThird;
-                let firstCount = 0, middleCount = 0, lastCount = 0;
-                sentencesWithEmotion.forEach(idx => {
-                if (idx < firstThird) firstCount++;
-                else if (idx < lastThird) middleCount++;
-                else lastCount++;
-                });
-                sectionAnalysis = {
-                first: firstCount / firstThird,
-                middle: middleCount / (lastThird - firstThird),
-                last: lastCount / firstThird
-                };
-                }
-                const adjustedCoverage = coverageRatio * (1 + densityFactor * 0.2 + diversityFactor * 0.2) * sequenceFactor * positionFactor;
-                return {
-                coverage: Math.min(1, adjustedCoverage),
-                rawCoverage: coverageRatio,
-                densityFactor: densityFactor,
-                diversityFactor: diversityFactor,
-                sequenceFactor: sequenceFactor,
-                positionFactor: positionFactor,
-                sectionAnalysis: sectionAnalysis,
-                emotionDensityPerSentence: emotionDensityPerSentence,
-                categoryDiversityPerSentence: categoryDiversityPerSentence
-                };
+                  if (sentenceCount === 0) return 0;
+                  const sentencesWithEmotion = new Set();
+                  const emotionDensityPerSentence = {};
+                  const categoryDiversityPerSentence = {};
+                  const sentencePositions = {};
+                  for (const [category, dataItem] of Object.entries(categories)) {
+                    if (dataItem.sentenceOccurrences) {
+                      Object.entries(dataItem.sentenceOccurrences).forEach(([sentenceIndexStr, words]) => {
+                        const sentenceIndex = parseInt(sentenceIndexStr);
+                        sentencesWithEmotion.add(sentenceIndex);
+                        emotionDensityPerSentence[sentenceIndex] = (emotionDensityPerSentence[sentenceIndex] || 0) + words.length;
+                        if (!categoryDiversityPerSentence[sentenceIndex]) {
+                          categoryDiversityPerSentence[sentenceIndex] = new Set();
+                        }
+                        categoryDiversityPerSentence[sentenceIndex].add(category);
+                        sentencePositions[sentenceIndex] = sentenceIndex;
+                      });
+                    }
+                  }
+                  const coverageRatio = sentencesWithEmotion.size / sentenceCount;
+                  let densityFactor = 0;
+                  if (Object.keys(emotionDensityPerSentence).length > 0) {
+                    const densities = Object.values(emotionDensityPerSentence);
+                    const avgDensity = densities.reduce((a, b) => a + b, 0) / densities.length;
+                    const maxDensity = Math.max(...densities);
+                    densityFactor = Math.min(1, avgDensity / 3 + maxDensity / 10);
+                  }
+                  let diversityFactor = 0;
+                  if (Object.keys(categoryDiversityPerSentence).length > 0) {
+                    const diversities = Object.values(categoryDiversityPerSentence).map(set => set.size);
+                    const avgDiversity = diversities.reduce((a, b) => a + b, 0) / diversities.length;
+                    diversityFactor = Math.min(1, avgDiversity / 3);
+                  }
+                  let sequenceFactor = 1.0;
+                  if (sentencesWithEmotion.size > 1) {
+                    const sortedIndices = Array.from(sentencesWithEmotion).sort((a, b) => a - b);
+                    let consecutiveCount = 0;
+                    let maxConsecutive = 1;
+                    for (let i = 1; i < sortedIndices.length; i++) {
+                      if (sortedIndices[i] === sortedIndices[i - 1] + 1) {
+                        consecutiveCount++;
+                        maxConsecutive = Math.max(maxConsecutive, consecutiveCount + 1);
+                      } else {
+                        consecutiveCount = 0;
+                      }
+                    }
+                    sequenceFactor = 1 + Math.min(0.3, maxConsecutive * 0.05);
+                  }
+                  let positionFactor = 1.0;
+                  if (data && data.sentences && data.sentences.length > 0) {
+                    const firstThird = Math.floor(sentenceCount / 3);
+                    const lastThird = sentenceCount - firstThird;
+                    let earlyEmotionCount = 0;
+                    let lateEmotionCount = 0;
+                    sentencesWithEmotion.forEach(idx => {
+                      if (idx < firstThird) earlyEmotionCount++;
+                      if (idx >= lastThird) lateEmotionCount++;
+                    });
+                    const edgeConcentration = (earlyEmotionCount + lateEmotionCount) / sentencesWithEmotion.size;
+                    if (edgeConcentration > 0.6) {
+                      positionFactor = 1.2;
+                    }
+                  }
+                  let sectionAnalysis = { first: 0, middle: 0, last: 0 };
+                  if (sentenceCount >= 3) {
+                    const firstThird = Math.floor(sentenceCount / 3);
+                    const lastThird = sentenceCount - firstThird;
+                    let firstCount = 0, middleCount = 0, lastCount = 0;
+                    sentencesWithEmotion.forEach(idx => {
+                      if (idx < firstThird) firstCount++;
+                      else if (idx < lastThird) middleCount++;
+                      else lastCount++;
+                    });
+                    sectionAnalysis = {
+                      first: firstCount / firstThird,
+                      middle: middleCount / (lastThird - firstThird),
+                      last: lastCount / firstThird
+                    };
+                  }
+                  const adjustedCoverage = coverageRatio * (1 + densityFactor * 0.2 + diversityFactor * 0.2) * sequenceFactor * positionFactor;
+                  return {
+                    coverage: Math.min(1, adjustedCoverage),
+                    rawCoverage: coverageRatio,
+                    densityFactor: densityFactor,
+                    diversityFactor: diversityFactor,
+                    sequenceFactor: sequenceFactor,
+                    positionFactor: positionFactor,
+                    sectionAnalysis: sectionAnalysis,
+                    emotionDensityPerSentence: emotionDensityPerSentence,
+                    categoryDiversityPerSentence: categoryDiversityPerSentence
+                  };
         }
         
-        calculateLexicalRichness(categories, allWords) {
-            const uniqueEmotionalWords = new Set();
-            
-            for (const [category, data] of Object.entries(categories)) {
-                if (data.words) {
-                    data.words.forEach(word => uniqueEmotionalWords.add(word));
-                }
-            }
-            
-            const totalUniqueWords = new Set(allWords).size;
-            
-            if (totalUniqueWords === 0) return 0;
-            return uniqueEmotionalWords.size / totalUniqueWords;
+        calculateLexicalRichness(categories, allWords, data = null) {
+                  const uniqueEmotionalWords = new Set();
+                  const emotionalWordWeights = {};
+                  const emotionalCategories = new Set();
+                  for (const [category, dataItem] of Object.entries(categories)) {
+                    emotionalCategories.add(category);
+                    if (dataItem.words) {
+                      dataItem.words.forEach(word => {
+                        uniqueEmotionalWords.add(word);
+                        emotionalWordWeights[word] = dataItem.weight || 1.0;
+                      });
+                    }
+                  }
+                  const totalUniqueWords = new Set(allWords).size;
+                  if (totalUniqueWords === 0 || uniqueEmotionalWords.size === 0) return 0;
+                  const baseRichness = uniqueEmotionalWords.size / totalUniqueWords;
+                  let weightFactor = 1.0;
+                  if (Object.keys(emotionalWordWeights).length > 0) {
+                    const weights = Object.values(emotionalWordWeights);
+                    const avgWeight = weights.reduce((a, b) => a + b, 0) / weights.length;
+                    weightFactor = 0.8 + (avgWeight * 0.4);
+                  }
+                  let categoryDiversityFactor = 1.0;
+                  const categoryCount = emotionalCategories.size;
+                  const maxCategories = 15;
+                  categoryDiversityFactor = 0.7 + (categoryCount / maxCategories * 0.6);
+                  let textLengthFactor = 1.0;
+                  if (data && data.words && data.words.length > 0) {
+                    const textLength = data.words.length;
+                    textLengthFactor = Math.min(1.3, 1 + (200 / (textLength + 200)));
+                  }
+                  let specificityFactor = 1.0;
+                  if (data && data.contextual && data.contextual.lexical) {
+                    const specificWords = data.contextual.lexical.specificEmotionalWords || 0;
+                    const totalEmotional = uniqueEmotionalWords.size;
+                    if (totalEmotional > 0) {
+                      const specificityRatio = specificWords / totalEmotional;
+                      specificityFactor = 0.9 + (specificityRatio * 0.4);
+                    }
+                  }
+                  const adjustedRichness = baseRichness * weightFactor * categoryDiversityFactor * textLengthFactor * specificityFactor;
+                  return Math.min(1, Math.max(0, adjustedRichness));
         }
         
         detectEmotionalClusters(categories, data) {
@@ -8178,6 +8201,7 @@
     
 
 })();
+
 
 
 
