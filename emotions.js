@@ -1625,16 +1625,114 @@
             }
             return originalPositions[processedIndex] || processedIndex;
         }
-        
+
         extractSentenceEmotionalMarkers(sentence) {
-            const markers = {
-                exclamation: (sentence.match(/!/g) || []).length,
-                question: (sentence.match(/\?/g) || []).length,
-                ellipsis: (sentence.match(/…|\.{3,}/g) || []).length,
-                capitalization: (sentence.match(/[A-ZА-ЯЁ]{2,}/g) || []).length,
-                emotionalWords: this.countEmotionalWordsInSentence(sentence)
+         if (typeof sentence !== 'string' || sentence.length === 0) {
+            return {
+              exclamation: 0,
+              question: 0,
+              ellipsis: 0,
+              capitalization: 0,
+              emotionalWords: 0,
+              dash: 0,
+              quotes: 0,
+              combined: {
+                exclamatory: 0,
+                interrogative: 0,
+                mixed: 0,
+                repetitive: 0
+              },
+              position: {
+                startsWithPunct: false,
+                endsWithPunct: false
+              },
+              intensityBoosters: {
+                repetition: 0,
+                allCaps: 0
+              },
+              emotionalContext: {
+                positive: 0,
+                negative: 0,
+                complex: 0,
+                neutral: 0
+              },
+              modifiers: {
+                intensifiers: 0,
+                negations: 0,
+                diminishers: 0
+              }
             };
-            return markers;
+          }
+          const exclamatory = (sentence.match(/!{2,}/g) || []).length;
+          const interrogative = (sentence.match(/\?{2,}/g) || []).length;
+          const mixedPunctuation = (sentence.match(/[!?]{2,}/g) || []).length;
+          const repetitivePunctuation = (sentence.match(/([!?]){3,}/g) || []).length;
+          const dash = (sentence.match(/—|--/g) || []).length;
+          const quotes = (sentence.match(/["«»„“”]/g) || []).length;
+          const startsWithPunct = /^[!?…—]/.test(sentence.trim());
+          const endsWithPunct = /[!?…—]$/.test(sentence.trim());
+          const repetition = (sentence.match(/([а-яёa-z])\1{2,}/gi) || []).length;
+          const allCapsWords = (sentence.match(/\b[A-ZА-ЯЁ]{3,}\b/g) || []).length;
+          const emotionalContext = this.analyzeEmotionalContext(sentence);
+          const modifiers = this.extractEmotionalModifiers(sentence);
+          return {
+            exclamation: (sentence.match(/!/g) || []).length,
+            question: (sentence.match(/\?/g) || []).length,
+            ellipsis: (sentence.match(/…|\.{3,}/g) || []).length,
+            capitalization: (sentence.match(/[A-ZА-ЯЁ]{2,}/g) || []).length,
+            emotionalWords: this.countEmotionalWordsInSentence(sentence),
+            dash,
+            quotes,
+            combined: {
+              exclamatory,
+              interrogative,
+              mixed: mixedPunctuation,
+              repetitive: repetitivePunctuation
+            },
+            position: {
+              startsWithPunct,
+              endsWithPunct
+            },
+            intensityBoosters: {
+              repetition,
+              allCaps: allCapsWords
+            },
+            emotionalContext,
+            modifiers
+          };
+        }
+
+        analyzeEmotionalContext(sentence) {
+          const words = this.enhancedTokenization(sentence);
+          const positiveCats = ['ecstasy', 'joy', 'love', 'peace', 'hope', 'gratitude', 'inspiration', 'pride'];
+          const negativeCats = ['sadness', 'grief', 'anger', 'fear', 'disgust', 'shame', 'guilt', 'loneliness', 'envy', 'despair'];
+          const complexCats = ['ambivalence', 'irony', 'nostalgiaMixed', 'bittersweet'];
+          let positive = 0;
+          let negative = 0;
+          let complex = 0;
+          let neutral = 0;
+          for (const [category, wordList] of Object.entries(this.dictionaries[this.language])) {
+            for (const word of wordList) {
+              if (words.includes(word)) {
+                if (positiveCats.includes(category)) positive++;
+                else if (negativeCats.includes(category)) negative++;
+                else if (complexCats.includes(category)) complex++;
+                else neutral++;
+                break;
+              }
+            }
+          }
+          return { positive, negative, complex, neutral };
+        }
+        
+        extractEmotionalModifiers(sentence) {
+          const lowerSentence = sentence.toLowerCase();
+          const rules = this.contextRules[this.language];
+          return {
+            intensifiers: rules.intensifiers.filter(word => lowerSentence.includes(word)).length,
+            negations: rules.negations.filter(word => lowerSentence.includes(word)).length,
+            diminishers: rules.understatement.filter(word => lowerSentence.includes(word)).length
+          };
         }
         
         countEmotionalWordsInSentence(sentence) {
@@ -6477,6 +6575,7 @@
     
 
 })();
+
 
 
 
