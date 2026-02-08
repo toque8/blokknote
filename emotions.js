@@ -3400,13 +3400,65 @@
                 return finalIntensity;
         }
         
-        calculateCategoryDominance(category, count, totalWords) {
-            const proportion = count / totalWords;
-            
-            if (proportion > 0.1) return 'high';
-            if (proportion > 0.05) return 'medium';
-            if (proportion > 0.02) return 'low';
-            return 'minimal';
+        calculateCategoryDominance(category, count, totalWords, categoryData = null, textLength = null, allCategories = null) {
+          const proportion = totalWords > 0 ? count / totalWords : 0;
+          let textLengthFactor = 1.0;
+          if (textLength) {
+          textLengthFactor = Math.min(1.5, 100 / (textLength + 100));
+          }
+          let relativeFactor = 1.0;
+          if (allCategories && Object.keys(allCategories).length > 0) {
+          const categoryProportions = Object.values(allCategories).map(cat => 
+          cat.count / totalWords
+          );
+          const maxProportion = Math.max(...categoryProportions);
+          const proportionRank = categoryProportions
+          .sort((a, b) => b - a)
+          .indexOf(proportion);
+          if (proportion > 0 && proportion >= maxProportion * 0.7) {
+          relativeFactor = 1.3;
+          }
+          if (proportionRank === 0) {
+          relativeFactor = 1.5;
+          } else if (proportionRank === 1) {
+          relativeFactor = 1.2;
+          }
+          }
+          let clusterFactor = 1.0;
+          if (categoryData && categoryData.clusters && categoryData.clusters.length > 0) {
+          const clusterDensity = categoryData.clusters.length / (textLength || 1);
+          clusterFactor = 1 + Math.min(0.5, clusterDensity * 10);
+          }
+          let intensityFactor = 1.0;
+          if (categoryData && categoryData.intensity) {
+          intensityFactor = 0.8 + (categoryData.intensity * 0.4);
+          }
+          let positionFactor = 1.0;
+          if (categoryData && categoryData.positions && categoryData.positions.length > 0) {
+          const positions = categoryData.positions.map(p => p.position);
+          const firstPosition = Math.min(...positions);
+          const lastPosition = Math.max(...positions);
+          const textStart = firstPosition / (textLength || 1);
+          const textEnd = lastPosition / (textLength || 1);
+          if (textStart < 0.1 || textEnd > 0.9) {
+          positionFactor = 1.3;
+          }
+          const positionSpread = (lastPosition - firstPosition) / (textLength || 1);
+          if (positionSpread > 0.7) {
+          positionFactor *= 1.2;
+          }
+          }
+          const adjustedProportion = proportion * textLengthFactor * relativeFactor * clusterFactor * intensityFactor * positionFactor;
+          const baseThreshold = 0.05;
+          const adjustedThresholds = {
+          high: baseThreshold * 2,
+          medium: baseThreshold,
+          low: baseThreshold * 0.4
+          };
+          if (adjustedProportion > adjustedThresholds.high) return 'high';
+          if (adjustedProportion > adjustedThresholds.medium) return 'medium';
+          if (adjustedProportion > adjustedThresholds.low) return 'low';
+          return 'minimal';
         }
         
         calculateLexicalConcentration(categories, totalWords) {
@@ -7989,4 +8041,5 @@
     
 
 })();
+
 
