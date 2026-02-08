@@ -1545,9 +1545,11 @@
                 index: index,
                 length: restored.length,
                 wordCount: restored
-                  .replace(/[^\p{L}\p{N}\s\-']/gu, ' ')
-                  .split(/\s+/)
-                  .filter(w => w.length >= this.metricsConfig.wordThreshold)
+                  .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+                  .replace(/\s+/g, ' ')
+                  .trim()
+                  .split(' ')
+                  .filter(w => w.length > 0)
                   .length,
                 emotionalMarkers: this.extractSentenceEmotionalMarkers(restored)
               };
@@ -1566,9 +1568,11 @@
                 index: sentences.length,
                 length: remainder.length,
                 wordCount: remainder
-                  .replace(/[^\p{L}\p{N}\s\-']/gu, ' ')
-                  .split(/\s+/)
-                  .filter(w => w.length >= this.metricsConfig.wordThreshold)
+                  .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+                  .replace(/\s+/g, ' ')
+                  .trim()
+                  .split(' ')
+                  .filter(w => w.length > 0)
                   .length,
                 emotionalMarkers: this.extractSentenceEmotionalMarkers(remainder)
               });
@@ -2308,9 +2312,11 @@
             lengths: sentences.map(s => {
               const text = typeof s === 'object' ? s.text : s;
               return text
-                .replace(/[^\p{L}\p{N}\s\-']/gu, ' ')
-                .split(/\s+/)
-                .filter(w => w.length >= this.metricsConfig.wordThreshold)
+                .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .split(' ')
+                .filter(w => w.length > 0)
                 .length;
             }),
             characters: sentences.map(s => {
@@ -2323,7 +2329,7 @@
             })
           };
           sentenceStats.avgLength = sentenceStats.lengths.length > 0 ?
-            sentenceStats.lengths.reduce((a, b) => a + b, 0) / sentenceStats.lengths.length : 0;
+            sentenceStats.lengths.reduce((a, b) => a + b) / sentenceStats.lengths.length : 0;
           sentenceStats.lengthVariance = this.calculateVariance(sentenceStats.lengths);
           sentenceStats.complexity = sentenceStats.complexityScores.length > 0 ?
             sentenceStats.complexityScores.reduce((a, b) => a + b) / sentenceStats.complexityScores.length : 0;
@@ -6571,6 +6577,7 @@
     
 
 })();
+
 
 
 
