@@ -1509,72 +1509,72 @@
         }
         
         enhancedSentenceSplit(text) {
-            if (!text || typeof text !== 'string') {
-              return [];
+          if (!text || typeof text !== 'string') {
+            return [];
+          }
+          const abbreviations = this.language === 'ru'
+            ? ['т\.д\.', 'т\.п\.', 'др\.', 'г\.', 'ул\.', 'им\.', 'проф\.', 'акад\.', 'см\.', 'рис\.', 'стр\.', 'п\.', 'к\.', 'м\.', 'ж\.', 'гг\.', 'вв\.', 'тыс\.', 'млн\.', 'млрд\.']
+            : ['e\.g\.', 'i\.e\.', 'etc\.', 'Mr\.', 'Mrs\.', 'Dr\.', 'Prof\.', 'vs\.', 'fig\.', 'no\.', 'vol\.', 'pp\.', 'inc\.', 'ltd\.', 'corp\.', 'st\.', 'ave\.', 'blvd\.'];
+          let protectedText = text;
+          const placeholders = [];
+          abbreviations.forEach((abbr, index) => {
+            const regex = new RegExp(abbr, 'gi');
+            let match;
+            while ((match = regex.exec(protectedText)) !== null) {
+              const placeholder = `__ABBR_${index}_${placeholders.length}__`;
+              placeholders.push({ placeholder, original: match[0], position: match.index });
             }
-
-            const abbreviations = this.language === 'ru'
-              ? ['т\.д\.', 'т\.п\.', 'др\.', 'г\.', 'ул\.', 'им\.', 'проф\.', 'акад\.', 'см\.', 'рис\.', 'стр\.', 'п\.', 'к\.', 'м\.', 'ж\.', 'гг\.', 'вв\.', 'тыс\.', 'млн\.', 'млрд\.']
-              : ['e\.g\.', 'i\.e\.', 'etc\.', 'Mr\.', 'Mrs\.', 'Dr\.', 'Prof\.', 'vs\.', 'fig\.', 'no\.', 'vol\.', 'pp\.', 'inc\.', 'ltd\.', 'corp\.', 'st\.', 'ave\.', 'blvd\.'];
-
-            let protectedText = text;
-            const placeholders = [];
-
-            abbreviations.forEach((abbr, index) => {
-              const regex = new RegExp(abbr, 'gi');
-              let match;
-              while ((match = regex.exec(protectedText)) !== null) {
-                const placeholder = `__ABBR_${index}_${placeholders.length}__`;
-                placeholders.push({ placeholder, original: match[0], position: match.index });
-              }
-            });
-
-            placeholders.forEach(ph => {
-              protectedText = protectedText.replace(ph.original, ph.placeholder);
-            });
-
-            const sentenceRegex = /[^.!?…]*[.!?…]+(?=\s+|$)/g;
-            const matches = protectedText.match(sentenceRegex) || [];
-
-            const sentences = matches
-              .map(s => s.trim())
-              .filter(s => s.length > 0)
-              .map((sentence, index) => {
-                let restored = sentence;
-                placeholders.forEach(ph => {
-                  if (restored.includes(ph.placeholder)) {
-                    restored = restored.replace(ph.placeholder, ph.original);
-                  }
-                });
-                return {
-                  text: restored,
-                  index: index,
-                  length: restored.length,
-                  wordCount: restored.split(/\s+/).length,
-                  emotionalMarkers: this.extractSentenceEmotionalMarkers(restored)
-                };
+          });
+          placeholders.forEach(ph => {
+            protectedText = protectedText.replace(ph.original, ph.placeholder);
+          });
+          const sentenceRegex = /[^.!?…]*[.!?…]+(?=\s+|$)/g;
+          const matches = protectedText.match(sentenceRegex) || [];
+          const sentences = matches
+            .map(s => s.trim())
+            .filter(s => s.length > 0)
+            .map((sentence, index) => {
+              let restored = sentence;
+              placeholders.forEach(ph => {
+                if (restored.includes(ph.placeholder)) {
+                  restored = restored.replace(ph.placeholder, ph.original);
+                }
               });
-
-            const lastMatchEnd = matches.reduce((end, m) => end + m.length, 0);
-            if (lastMatchEnd < protectedText.length) {
-              let remainder = protectedText.slice(lastMatchEnd).trim();
-              if (remainder) {
-                placeholders.forEach(ph => {
-                  if (remainder.includes(ph.placeholder)) {
-                    remainder = remainder.replace(ph.placeholder, ph.original);
-                  }
-                });
-                sentences.push({
-                  text: remainder,
-                  index: sentences.length,
-                  length: remainder.length,
-                  wordCount: remainder.split(/\s+/).length,
-                  emotionalMarkers: this.extractSentenceEmotionalMarkers(remainder)
-                });
-              }
+              return {
+                text: restored,
+                index: index,
+                length: restored.length,
+                wordCount: restored
+                  .replace(/[^\p{L}\p{N}\s\-']/gu, ' ')
+                  .split(/\s+/)
+                  .filter(w => w.length >= this.metricsConfig.wordThreshold)
+                  .length,
+                emotionalMarkers: this.extractSentenceEmotionalMarkers(restored)
+              };
+            });
+          const lastMatchEnd = matches.reduce((end, m) => end + m.length, 0);
+          if (lastMatchEnd < protectedText.length) {
+            let remainder = protectedText.slice(lastMatchEnd).trim();
+            if (remainder) {
+              placeholders.forEach(ph => {
+                if (remainder.includes(ph.placeholder)) {
+                  remainder = remainder.replace(ph.placeholder, ph.original);
+                }
+              });
+              sentences.push({
+                text: remainder,
+                index: sentences.length,
+                length: remainder.length,
+                wordCount: remainder
+                  .replace(/[^\p{L}\p{N}\s\-']/gu, ' ')
+                  .split(/\s+/)
+                  .filter(w => w.length >= this.metricsConfig.wordThreshold)
+                  .length,
+                emotionalMarkers: this.extractSentenceEmotionalMarkers(remainder)
+              });
             }
-
-            return sentences;
+          }
+          return sentences;
         }
 
         calculateWordLengthDistribution(words) {
@@ -2302,92 +2302,88 @@
         }
         
         enhancedSyntacticAnalysis(data) {
-            const sentences = data.sentences;
-            
-            const sentenceStats = {
-                count: sentences.length,
-                lengths: sentences.map(s => {
-                    const text = typeof s === 'object' ? s.text : s;
-                    return text.split(/\s+/).length;
-                }),
-                characters: sentences.map(s => {
-                    const text = typeof s === 'object' ? s.text : s;
-                    return text.length;
-                }),
-                complexityScores: sentences.map(s => {
-                    const text = typeof s === 'object' ? s.text : s;
-                    return this.calculateSentenceComplexity(text);
-                })
-            };
-            
-            sentenceStats.avgLength = sentenceStats.lengths.length > 0 ? 
-                sentenceStats.lengths.reduce((a, b) => a + b) / sentenceStats.lengths.length : 0;
-            sentenceStats.lengthVariance = this.calculateVariance(sentenceStats.lengths);
-            sentenceStats.complexity = sentenceStats.complexityScores.length > 0 ?
-                sentenceStats.complexityScores.reduce((a, b) => a + b) / sentenceStats.complexityScores.length : 0;
-            
-            const punctuationAnalysis = {
-                distribution: data.punctuation,
-                emotionalWeight: this.calculatePunctuationEmotionalWeight(data.punctuation),
-                density: this.calculatePunctuationDensity(data.cleaned),
-                patterns: this.detectPunctuationPatterns(data.sentences)
-            };
-            
-            const sentenceTypes = {
-                exclamatory: sentences.filter(s => {
-                    const text = typeof s === 'object' ? s.text : s;
-                    return this.sentencePatterns.exclamatory.test(text);
-                }).length,
-                interrogative: sentences.filter(s => {
-                    const text = typeof s === 'object' ? s.text : s;
-                    return this.sentencePatterns.interrogative.test(text);
-                }).length,
-                hesitant: sentences.filter(s => {
-                    const text = typeof s === 'object' ? s.text : s;
-                    return this.sentencePatterns.hesitant.test(text);
-                }).length,
-                emphatic: sentences.filter(s => {
-                    const text = typeof s === 'object' ? s.text : s;
-                    return this.sentencePatterns.emphatic.test(text);
-                }).length,
-                incomplete: sentences.filter(s => {
-                    const text = typeof s === 'object' ? s.text : s;
-                    return this.sentencePatterns.incomplete.test(text);
-                }).length,
-                imperative: sentences.filter(s => {
-                    const text = typeof s === 'object' ? s.text : s;
-                    return this.sentencePatterns.imperative.test(text);
-                }).length,
-                hyperbolic: sentences.filter(s => {
-                    const text = typeof s === 'object' ? s.text : s;
-                    return this.sentencePatterns.hyperbolic.test(text);
-                }).length,
-                poetic: sentences.filter(s => {
-                    const text = typeof s === 'object' ? s.text : s;
-                    return this.sentencePatterns.poetic.test(text);
-                }).length,
-                dramatic: sentences.filter(s => {
-                    const text = typeof s === 'object' ? s.text : s;
-                    return this.sentencePatterns.dramatic.test(text);
-                }).length
-            };
-            
-            const rhythmAnalysis = this.enhancedRhythmAnalysis(sentences);
-            
-            const syntacticDiversity = this.calculateSyntacticDiversity(sentences);
-            
-            const readability = this.calculateReadabilityMetrics(data);
-            
-            return {
-                sentenceStats,
-                punctuation: punctuationAnalysis,
-                sentenceTypes,
-                rhythm: rhythmAnalysis,
-                complexity: sentenceStats.complexity,
-                diversity: syntacticDiversity,
-                readability,
-                coherence: this.calculateTextCoherence(sentences)
-            };
+          const sentences = data.sentences;
+          const sentenceStats = {
+            count: sentences.length,
+            lengths: sentences.map(s => {
+              const text = typeof s === 'object' ? s.text : s;
+              return text
+                .replace(/[^\p{L}\p{N}\s\-']/gu, ' ')
+                .split(/\s+/)
+                .filter(w => w.length >= this.metricsConfig.wordThreshold)
+                .length;
+            }),
+            characters: sentences.map(s => {
+              const text = typeof s === 'object' ? s.text : s;
+              return text.length;
+            }),
+            complexityScores: sentences.map(s => {
+              const text = typeof s === 'object' ? s.text : s;
+              return this.calculateSentenceComplexity(text);
+            })
+          };
+          sentenceStats.avgLength = sentenceStats.lengths.length > 0 ?
+            sentenceStats.lengths.reduce((a, b) => a + b, 0) / sentenceStats.lengths.length : 0;
+          sentenceStats.lengthVariance = this.calculateVariance(sentenceStats.lengths);
+          sentenceStats.complexity = sentenceStats.complexityScores.length > 0 ?
+            sentenceStats.complexityScores.reduce((a, b) => a + b) / sentenceStats.complexityScores.length : 0;
+          const punctuationAnalysis = {
+            distribution: data.punctuation,
+            emotionalWeight: this.calculatePunctuationEmotionalWeight(data.punctuation),
+            density: this.calculatePunctuationDensity(data.cleaned),
+            patterns: this.detectPunctuationPatterns(data.sentences)
+          };
+          const sentenceTypes = {
+            exclamatory: sentences.filter(s => {
+              const text = typeof s === 'object' ? s.text : s;
+              return this.sentencePatterns.exclamatory.test(text);
+            }).length,
+            interrogative: sentences.filter(s => {
+              const text = typeof s === 'object' ? s.text : s;
+              return this.sentencePatterns.interrogative.test(text);
+            }).length,
+            hesitant: sentences.filter(s => {
+              const text = typeof s === 'object' ? s.text : s;
+              return this.sentencePatterns.hesitant.test(text);
+            }).length,
+            emphatic: sentences.filter(s => {
+              const text = typeof s === 'object' ? s.text : s;
+              return this.sentencePatterns.emphatic.test(text);
+            }).length,
+            incomplete: sentences.filter(s => {
+              const text = typeof s === 'object' ? s.text : s;
+              return this.sentencePatterns.incomplete.test(text);
+            }).length,
+            imperative: sentences.filter(s => {
+              const text = typeof s === 'object' ? s.text : s;
+              return this.sentencePatterns.imperative.test(text);
+            }).length,
+            hyperbolic: sentences.filter(s => {
+              const text = typeof s === 'object' ? s.text : s;
+              return this.sentencePatterns.hyperbolic.test(text);
+            }).length,
+            poetic: sentences.filter(s => {
+              const text = typeof s === 'object' ? s.text : s;
+              return this.sentencePatterns.poetic.test(text);
+            }).length,
+            dramatic: sentences.filter(s => {
+              const text = typeof s === 'object' ? s.text : s;
+              return this.sentencePatterns.dramatic.test(text);
+            }).length
+          };
+          const rhythmAnalysis = this.enhancedRhythmAnalysis(sentences);
+          const syntacticDiversity = this.calculateSyntacticDiversity(sentences);
+          const readability = this.calculateReadabilityMetrics(data);
+          return {
+            sentenceStats,
+            punctuation: punctuationAnalysis,
+            sentenceTypes,
+            rhythm: rhythmAnalysis,
+            complexity: sentenceStats.complexity,
+            diversity: syntacticDiversity,
+            readability,
+            coherence: this.calculateTextCoherence(sentences)
+          };
         }
         
         calculateVariance(values) {
@@ -6575,6 +6571,7 @@
     
 
 })();
+
 
 
 
