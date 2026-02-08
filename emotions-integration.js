@@ -333,10 +333,9 @@ translateValue(value, lang) {
             'Ностальгическое эхо': 'Nostalgic Echo',
             
             'Сдержанное богатое эмоциональное переживание': 'Restrained rich emotional experience',
-            'Cдержанное спокойное принятие и удовлетворение текущим моментом': 'Restrained calm acceptance and satisfaction with the current moment',
-            'Состояние полного, всеобъемлющего счастья и духовного подъёма': 'A state of complete, all-encompassing happiness and spiritual upliftment',
+            'Сдержанное спокойное принятие и удовлетворение текущим моментом': 'Restrained calm acceptance and satisfaction with the current moment',            'Состояние полного, всеобъемлющего счастья и духовного подъёма': 'A state of complete, all-encompassing happiness and spiritual upliftment',
             'Яркое, жизнеутверждающее эмоциональное состояние': 'A bright, life-affirming emotional state',
-             'Устойчивое чувство удовлетворения и благополучия': 'A stable feeling of satisfaction and well-being',
+            'Устойчивое чувство удовлетворения и благополучия': 'A stable feeling of satisfaction and well-being',
             'Спокойное принятие и удовлетворение текущим моментом': 'Calm acceptance and satisfaction with the current moment',
             'Глубокое внутреннее равновесие и гармония': 'Deep inner balance and harmony',
             'Интенсивное состояние недовольства и внутреннего напряжения': 'An intense state of dissatisfaction and inner tension',
@@ -2167,5 +2166,6 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
