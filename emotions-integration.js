@@ -1774,7 +1774,7 @@ getTranslations(lang) {
             emotionalClusters: 'Эмоциональные кластеры', 
             emotionalClustersDesc: 'Группы связанных эмоциональных слов',
             emoticons: 'Эмоджи',
-            emoticonsDesc: 'Эмоциональные смайлики в тексте',
+            emoticonsDesc: 'Cмайлики в тексте',
              positive: 'позитивные',
             negative: 'негативные',
             neutral: 'нейтральные',
@@ -1785,10 +1785,8 @@ getTranslations(lang) {
             avgLength: 'Средняя длина',
             avgLengthDesc: 'Средняя длина предложения в словах',
             words: 'слов',
-            totalPunctuation: 'Всего знаков препинания',
-            totalPunctuationDesc: 'Общее количество знаков препинания в тексте',
-            emotionalPunctuation: 'Эмоциональные знаки',
-            emotionalPunctuationDesc: 'Знаки препинания с эмоциональной окраской',
+            emotionalPunctuation: 'Знаки препинания',
+            emotionalPunctuationDesc: 'Общее количество знаков препинания в тексте',
             exclamatory: 'Восклицательные',
             exclamatoryDesc: 'Предложения с восклицательными знаками',
             interrogative: 'Вопросительные',
@@ -1808,7 +1806,7 @@ getTranslations(lang) {
             rhythm: 'Ритм',
             rhythmDesc: 'Регулярность длины предложений',
             rhythmPattern: 'Паттерн ритма',
-             rhythmPatternDesc: 'Тип ритмического паттерна',
+            rhythmPatternDesc: 'Тип ритмического паттерна',
             rhythmFlow: 'Поток ритма',
             rhythmFlowDesc: 'Плавность ритма',
             readability: 'Читаемость',
@@ -1994,8 +1992,8 @@ getTranslations(lang) {
             words: 'words',
             totalPunctuation: 'Total Punctuation',
              totalPunctuationDesc: 'Total number of punctuation marks in text',
-            emotionalPunctuation: 'Emotional Punctuation',
-            emotionalPunctuationDesc: 'Punctuation marks with emotional coloring',
+            emotionalPunctuation: 'Punctuation Marks',
+            emotionalPunctuationDesc: 'Total number of punctuation marks in text',
             exclamatory: 'Exclamatory',
             exclamatoryDesc: 'Sentences with exclamation marks',
             interrogative: 'Interrogative',
@@ -2166,6 +2164,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
