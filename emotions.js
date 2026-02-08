@@ -1895,32 +1895,266 @@
         }
         
         enhancedTokenization(text) {
-            if (!text || typeof text !== 'string') {
-                  return [];
+          if (!text || typeof text !== 'string') {
+            return [];
+          }
+          const lowerText = text.toLowerCase();
+          try {
+            const config = this.metricsConfig.tokenization || {};
+            const preserveNumbers = config.preserveNumbers !== false;
+            const preserveEmojis = config.preserveEmojis === true;
+            const normalize = config.normalize !== false;
+            const minWordLength = config.minWordLength || this.metricsConfig.wordThreshold || 1;
+            const preserveHyphens = config.preserveHyphens !== false;
+            let processedText = lowerText;
+            if (preserveEmojis) {
+              processedText = this.extractAndPreserveEmojis(processedText);
             }
-            
-            const lowerText = text.toLowerCase();
-            
-            try {
-                  if (this.language === 'ru') {
-                        return lowerText
-                              .replace(/[^а-яё\s\-']/gi, ' ')
-                              .split(/\s+/)
-                              .filter(w => w && w.length >= this.metricsConfig.wordThreshold)
-                              .map(w => w.replace(/^-+|-$/g, ''))
-                              .filter(w => w.length > 0);
-                  } else {
-                        return lowerText
-                              .replace(/[^a-z\s\-']/gi, ' ')
-                              .split(/\s+/)
-                              .filter(w => w && w.length >= this.metricsConfig.wordThreshold)
-                              .map(w => w.replace(/^-+|-$|^'|'$/g, ''))
-                              .filter(w => w.length > 0);
-                  }
-            } catch (error) {
-                  console.error('Tokenization error:', error);
-                  return [];
+            if (this.language === 'ru') {
+              const allowedPattern = preserveNumbers ?
+                /[^а-яё0-9\s\-']/gi :
+                /[^а-яё\s\-']/gi;
+              return processedText
+                .replace(allowedPattern, ' ')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .split(' ')
+                .filter(w => w && w.length >= minWordLength)
+                .map(w => this.normalizeRussianWord(w, normalize, preserveHyphens))
+                .filter(w => w && w.length > 0);
+            } else {
+              const allowedPattern = preserveNumbers ?
+                /[^a-z0-9\s\-']/gi :
+                /[^a-z\s\-']/gi;
+              return processedText
+                .replace(allowedPattern, ' ')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .split(' ')
+                .filter(w => w && w.length >= minWordLength)
+                .map(w => this.normalizeEnglishWord(w, normalize, preserveHyphens))
+                .filter(w => w && w.length > 0);
             }
+          } catch (error) {
+            console.error('Tokenization error:', error);
+            return [];
+          }
+        }
+
+        normalizeRussianWord(word, normalize = true, preserveHyphens = true) {
+          if (!word) return '';
+          let result = word;
+          if (!preserveHyphens) {
+            result = result.replace(/^-+|-+$/g, '');
+          }
+          if (normalize) {
+            result = this.applyRussianNormalization(result);
+          }
+          return result;
+        }
+
+        normalizeEnglishWord(word, normalize = true, preserveHyphens = true) {
+          if (!word) return '';
+          let result = word;
+          if (!preserveHyphens) {
+            result = result.replace(/^-+|-+$|^'+|'+$/g, '');
+          }
+          if (normalize) {
+            result = this.applyEnglishNormalization(result);
+          }
+          return result;
+        }
+
+        applyRussianNormalization(word) {
+          if (!word || word.length < 3) return word;
+          const exceptions = {
+            'не': 'не',
+            'ни': 'не',
+            'без': 'без',
+            'безо': 'без',
+            'вне': 'вне',
+            'для': 'для',
+            'под': 'под',
+            'над': 'над',
+            'перед': 'перед',
+            'через': 'через',
+            'чрез': 'через',
+            'из': 'из',
+            'от': 'от',
+            'до': 'до',
+            'по': 'по',
+            'за': 'за',
+            'у': 'у',
+            'к': 'к',
+            'о': 'о',
+            'об': 'о',
+            'про': 'про',
+            'на': 'на',
+            'со': 'с',
+            'со': 'с'
+          };
+          if (exceptions[word]) return exceptions[word];
+          if (word.endsWith('ться') || word.endsWith('ться')) {
+            word = word.replace(/ться$/, 'ть');
+          }
+          if (word.endsWith('его') || word.endsWith('ого')) {
+            word = word.replace(/(его|ого)$/, 'ый');
+          }
+          if (word.endsWith('ему') || word.endsWith('ому')) {
+            word = word.replace(/(ему|ому)$/, 'ый');
+          }
+          if (word.endsWith('ими') || word.endsWith('ыми')) {
+            word = word.replace(/(ими|ыми)$/, 'ый');
+          }
+          if (word.endsWith('его') || word.endsWith('ого')) {
+            word = word.replace(/(его|ого)$/, 'ый');
+          }
+          if (word.endsWith('ем') || word.endsWith('ом')) {
+            word = word.replace(/(ем|ом)$/, 'ый');
+          }
+          if (word.endsWith('ие') || word.endsWith('ые')) {
+            word = word.replace(/(ие|ые)$/, 'ый');
+          }
+          if (word.endsWith('ий') || word.endsWith('ый') || word.endsWith('ой')) {
+            word = word.replace(/(ий|ый|ой)$/, 'ый');
+          }
+          if (word.endsWith('ая')) {
+            word = word.replace(/ая$/, 'ый');
+          }
+          if (word.endsWith('яя')) {
+            word = word.replace(/яя$/, 'ый');
+          }
+          if (word.endsWith('ое')) {
+            word = word.replace(/ое$/, 'ый');
+          }
+          if (word.endsWith('ее')) {
+            word = word.replace(/ее$/, 'ый');
+          }
+          if (word.endsWith('юю')) {
+            word = word.replace(/юю$/, 'ый');
+          }
+          if (word.endsWith('их') || word.endsWith('ых')) {
+            word = word.replace(/(их|ых)$/, 'ый');
+          }
+          if (word.endsWith('ую')) {
+            word = word.replace(/ую$/, 'ый');
+          }
+          if (word.endsWith('а') && !word.endsWith('ка') && !word.match(/(га|ра|да|та|са|за|жа|на|ма)$/)) {
+            word = word.replace(/а$/, '');
+          }
+          if (word.endsWith('я') && word.length > 3) {
+            word = word.replace(/я$/, '');
+          }
+          if (word.endsWith('ы') && word.length > 3 && !word.match(/(чы|шы|жы|щы)$/)) {
+            word = word.replace(/ы$/, '');
+          }
+          if (word.endsWith('и') && word.length > 3) {
+            word = word.replace(/и$/, '');
+          }
+          if (word.endsWith('ь') && word.length > 3) {
+            word = word.replace(/ь$/, '');
+          }
+          if (word.endsWith('е') && word.length > 3 && !word.endsWith('ее')) {
+            word = word.replace(/е$/, '');
+          }
+          if (word.endsWith('о') && word.length > 3) {
+            word = word.replace(/о$/, '');
+          }
+          if (word.endsWith('й') && word.length > 3) {
+            word = word.replace(/й$/, '');
+          }
+          if (word.endsWith('вши') || word.endsWith('ши')) {
+            word = word.replace(/(вши|ши)$/, 'ть');
+          }
+          if (word.endsWith('нн') && word.length > 4) {
+            word = word.replace(/нн$/, 'н');
+          }
+          return word;
+        }
+
+        applyEnglishNormalization(word) {
+          if (!word || word.length < 3) return word;
+          const irregularPlurals = {
+            'children': 'child',
+            'teeth': 'tooth',
+            'feet': 'foot',
+            'men': 'man',
+            'women': 'woman',
+            'mice': 'mouse',
+            'geese': 'goose',
+            'oxen': 'ox',
+            'indices': 'index',
+            'appendices': 'appendix',
+            'vertices': 'vertex'
+          };
+          if (irregularPlurals[word]) return irregularPlurals[word];
+          if (word.endsWith('ies') && word.length > 4) {
+            word = word.replace(/ies$/, 'y');
+          }
+          if (word.endsWith('es') && word.length > 4) {
+            const exceptions = ['s', 'x', 'z', 'ch', 'sh'];
+            const lastTwo = word.slice(-3, -1);
+            if (exceptions.some(exc => word.endsWith(exc + 'es'))) {
+              word = word.replace(/es$/, '');
+            }
+          }
+          if (word.endsWith('s') && word.length > 4 && !word.endsWith('ss') && !word.endsWith('us')) {
+            word = word.replace(/s$/, '');
+          }
+          if (word.endsWith('ed') && word.length > 5) {
+            if (word.endsWith('eed')) {
+            } else if (word.match(/[aeiou]ed$/)) {
+              word = word.replace(/ed$/, '');
+            } else if (word.match(/[^aeiou]ed$/)) {
+              word = word.replace(/ed$/, '');
+            }
+          }
+          if (word.endsWith('ing') && word.length > 6) {
+            if (word.endsWith('ying')) {
+              word = word.replace(/ying$/, 'y');
+            } else if (word.match(/[aeiou]ing$/)) {
+              word = word.replace(/ing$/, '');
+            } else if (word.match(/[^aeiou]ing$/)) {
+              word = word.replace(/ing$/, '');
+            }
+          }
+          if (word.endsWith('ly') && word.length > 5) {
+            word = word.replace(/ly$/, '');
+          }
+          if (word.endsWith('ness') && word.length > 6) {
+            word = word.replace(/ness$/, '');
+          }
+          if (word.endsWith('ment') && word.length > 6) {
+            word = word.replace(/ment$/, '');
+          }
+          if (word.endsWith('tion') && word.length > 6) {
+            word = word.replace(/tion$/, 'te');
+          }
+          if (word.endsWith('sion') && word.length > 6) {
+            word = word.replace(/sion$/, 'de');
+          }
+          if (word.endsWith('able') && word.length > 6) {
+            word = word.replace(/able$/, '');
+          }
+          if (word.endsWith('ible') && word.length > 6) {
+            word = word.replace(/ible$/, '');
+          }
+          if (word.endsWith('ful') && word.length > 5) {
+            word = word.replace(/ful$/, '');
+          }
+          if (word.endsWith('less') && word.length > 6) {
+            word = word.replace(/less$/, '');
+          }
+          if (word.endsWith('ive') && word.length > 5) {
+            word = word.replace(/ive$/, '');
+          }
+          if (word.endsWith('ize') && word.length > 5) {
+            word = word.replace(/ize$/, '');
+          }
+          if (word.endsWith('ise') && word.length > 5) {
+            word = word.replace(/ise$/, '');
+          }
+          return word;
         }
         
         extractEmotionalPunctuation(text) {
@@ -6703,6 +6937,7 @@
     
 
 })();
+
 
 
 
