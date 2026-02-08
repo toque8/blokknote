@@ -1947,9 +1947,6 @@
           if (!preserveHyphens) {
             result = result.replace(/^-+|-+$/g, '');
           }
-          if (normalize) {
-            result = this.applyRussianNormalization(result);
-          }
           return result;
         }
 
@@ -1957,204 +1954,17 @@
           if (!word) return '';
           let result = word;
           if (!preserveHyphens) {
-            result = result.replace(/^-+|-+$|^'+|'+$/g, '');
-          }
-          if (normalize) {
-            result = this.applyEnglishNormalization(result);
+            result = result.replace(/^-+|-+$|^'|'$/g, '');
           }
           return result;
         }
 
         applyRussianNormalization(word) {
-          if (!word || word.length < 3) return word;
-          const exceptions = {
-            'не': 'не',
-            'ни': 'не',
-            'без': 'без',
-            'безо': 'без',
-            'вне': 'вне',
-            'для': 'для',
-            'под': 'под',
-            'над': 'над',
-            'перед': 'перед',
-            'через': 'через',
-            'чрез': 'через',
-            'из': 'из',
-            'от': 'от',
-            'до': 'до',
-            'по': 'по',
-            'за': 'за',
-            'у': 'у',
-            'к': 'к',
-            'о': 'о',
-            'об': 'о',
-            'про': 'про',
-            'на': 'на',
-            'со': 'с',
-            'со': 'с'
-          };
-          if (exceptions[word]) return exceptions[word];
-          if (word.endsWith('ться') || word.endsWith('ться')) {
-            word = word.replace(/ться$/, 'ть');
-          }
-          if (word.endsWith('его') || word.endsWith('ого')) {
-            word = word.replace(/(его|ого)$/, 'ый');
-          }
-          if (word.endsWith('ему') || word.endsWith('ому')) {
-            word = word.replace(/(ему|ому)$/, 'ый');
-          }
-          if (word.endsWith('ими') || word.endsWith('ыми')) {
-            word = word.replace(/(ими|ыми)$/, 'ый');
-          }
-          if (word.endsWith('его') || word.endsWith('ого')) {
-            word = word.replace(/(его|ого)$/, 'ый');
-          }
-          if (word.endsWith('ем') || word.endsWith('ом')) {
-            word = word.replace(/(ем|ом)$/, 'ый');
-          }
-          if (word.endsWith('ие') || word.endsWith('ые')) {
-            word = word.replace(/(ие|ые)$/, 'ый');
-          }
-          if (word.endsWith('ий') || word.endsWith('ый') || word.endsWith('ой')) {
-            word = word.replace(/(ий|ый|ой)$/, 'ый');
-          }
-          if (word.endsWith('ая')) {
-            word = word.replace(/ая$/, 'ый');
-          }
-          if (word.endsWith('яя')) {
-            word = word.replace(/яя$/, 'ый');
-          }
-          if (word.endsWith('ое')) {
-            word = word.replace(/ое$/, 'ый');
-          }
-          if (word.endsWith('ее')) {
-            word = word.replace(/ее$/, 'ый');
-          }
-          if (word.endsWith('юю')) {
-            word = word.replace(/юю$/, 'ый');
-          }
-          if (word.endsWith('их') || word.endsWith('ых')) {
-            word = word.replace(/(их|ых)$/, 'ый');
-          }
-          if (word.endsWith('ую')) {
-            word = word.replace(/ую$/, 'ый');
-          }
-          if (word.endsWith('а') && !word.endsWith('ка') && !word.match(/(га|ра|да|та|са|за|жа|на|ма)$/)) {
-            word = word.replace(/а$/, '');
-          }
-          if (word.endsWith('я') && word.length > 3) {
-            word = word.replace(/я$/, '');
-          }
-          if (word.endsWith('ы') && word.length > 3 && !word.match(/(чы|шы|жы|щы)$/)) {
-            word = word.replace(/ы$/, '');
-          }
-          if (word.endsWith('и') && word.length > 3) {
-            word = word.replace(/и$/, '');
-          }
-          if (word.endsWith('ь') && word.length > 3) {
-            word = word.replace(/ь$/, '');
-          }
-          if (word.endsWith('е') && word.length > 3 && !word.endsWith('ее')) {
-            word = word.replace(/е$/, '');
-          }
-          if (word.endsWith('о') && word.length > 3) {
-            word = word.replace(/о$/, '');
-          }
-          if (word.endsWith('й') && word.length > 3) {
-            word = word.replace(/й$/, '');
-          }
-          if (word.endsWith('вши') || word.endsWith('ши')) {
-            word = word.replace(/(вши|ши)$/, 'ть');
-          }
-          if (word.endsWith('нн') && word.length > 4) {
-            word = word.replace(/нн$/, 'н');
-          }
           return word;
         }
 
         applyEnglishNormalization(word) {
-          if (!word || word.length < 3) return word;
-          const irregularPlurals = {
-            'children': 'child',
-            'teeth': 'tooth',
-            'feet': 'foot',
-            'men': 'man',
-            'women': 'woman',
-            'mice': 'mouse',
-            'geese': 'goose',
-            'oxen': 'ox',
-            'indices': 'index',
-            'appendices': 'appendix',
-            'vertices': 'vertex'
-          };
-          if (irregularPlurals[word]) return irregularPlurals[word];
-          if (word.endsWith('ies') && word.length > 4) {
-            word = word.replace(/ies$/, 'y');
-          }
-          if (word.endsWith('es') && word.length > 4) {
-            const exceptions = ['s', 'x', 'z', 'ch', 'sh'];
-            const lastTwo = word.slice(-3, -1);
-            if (exceptions.some(exc => word.endsWith(exc + 'es'))) {
-              word = word.replace(/es$/, '');
-            }
-          }
-          if (word.endsWith('s') && word.length > 4 && !word.endsWith('ss') && !word.endsWith('us')) {
-            word = word.replace(/s$/, '');
-          }
-          if (word.endsWith('ed') && word.length > 5) {
-            if (word.endsWith('eed')) {
-            } else if (word.match(/[aeiou]ed$/)) {
-              word = word.replace(/ed$/, '');
-            } else if (word.match(/[^aeiou]ed$/)) {
-              word = word.replace(/ed$/, '');
-            }
-          }
-          if (word.endsWith('ing') && word.length > 6) {
-            if (word.endsWith('ying')) {
-              word = word.replace(/ying$/, 'y');
-            } else if (word.match(/[aeiou]ing$/)) {
-              word = word.replace(/ing$/, '');
-            } else if (word.match(/[^aeiou]ing$/)) {
-              word = word.replace(/ing$/, '');
-            }
-          }
-          if (word.endsWith('ly') && word.length > 5) {
-            word = word.replace(/ly$/, '');
-          }
-          if (word.endsWith('ness') && word.length > 6) {
-            word = word.replace(/ness$/, '');
-          }
-          if (word.endsWith('ment') && word.length > 6) {
-            word = word.replace(/ment$/, '');
-          }
-          if (word.endsWith('tion') && word.length > 6) {
-            word = word.replace(/tion$/, 'te');
-          }
-          if (word.endsWith('sion') && word.length > 6) {
-            word = word.replace(/sion$/, 'de');
-          }
-          if (word.endsWith('able') && word.length > 6) {
-            word = word.replace(/able$/, '');
-          }
-          if (word.endsWith('ible') && word.length > 6) {
-            word = word.replace(/ible$/, '');
-          }
-          if (word.endsWith('ful') && word.length > 5) {
-            word = word.replace(/ful$/, '');
-          }
-          if (word.endsWith('less') && word.length > 6) {
-            word = word.replace(/less$/, '');
-          }
-          if (word.endsWith('ive') && word.length > 5) {
-            word = word.replace(/ive$/, '');
-          }
-          if (word.endsWith('ize') && word.length > 5) {
-            word = word.replace(/ize$/, '');
-          }
-          if (word.endsWith('ise') && word.length > 5) {
-            word = word.replace(/ise$/, '');
-          }
-          return word;
+           return word;
         }
         
         extractEmotionalPunctuation(text) {
@@ -3178,22 +2988,274 @@
         }
         
         analyzeCapitalization(text) {
-            const words = text.split(/\s+/);
-            const capitalizedWords = words.filter(word => 
-                word.length > 1 && /^[A-ZА-ЯЁ]/.test(word)
-            );
-            
-            const allCapsWords = words.filter(word => 
-                word.length > 1 && /^[A-ZА-ЯЁ]+$/.test(word)
-            );
-            
-            return {
-                totalWords: words.length,
-                capitalized: capitalizedWords.length,
-                allCaps: allCapsWords.length,
-                ratio: words.length > 0 ? capitalizedWords.length / words.length : 0,
-                intensity: words.length > 0 ? allCapsWords.length / words.length : 0
-            };
+             const words = text.split(/\s+/);
+             const capitalizedWords = words.filter(word => 
+                       word.length > 1 && /^[A-ZА-ЯЁ]/.test(word)
+             );
+             
+             const allCapsWords = words.filter(word => 
+                       word.length > 1 && /^[A-ZА-ЯЁ]+$/.test(word)
+             );
+             
+             const firstWordsInSentence = this.extractFirstWordsInSentence(text);
+             const properNouns = this.detectProperNouns(words, text);
+             const emotionalCaps = this.detectEmotionalCapitalization(words, text);
+             
+             const mixedCaseWords = words.filter(word => 
+                       word.length > 2 && 
+                       /[A-ZА-ЯЁ].*[A-ZА-ЯЁ]/.test(word) &&
+                       !/^[A-ZА-ЯЁ]+$/.test(word)
+             );
+             
+             const positionAnalysis = this.analyzeCapsPosition(text);
+             const clusters = this.findCapitalizationClusters(text);
+             
+             return {
+                       totalWords: words.length,
+                       capitalized: capitalizedWords.length,
+                       allCaps: allCapsWords.length,
+                       ratio: words.length > 0 ? capitalizedWords.length / words.length : 0,
+                       intensity: words.length > 0 ? allCapsWords.length / words.length : 0,
+                       advanced: {
+                                 sentenceStarters: firstWordsInSentence.length,
+                                 properNouns: properNouns.length,
+                                 emotionalUse: emotionalCaps.length,
+                                 mixedCase: mixedCaseWords.length,
+                                 grammaticalRatio: firstWordsInSentence.length / words.length,
+                                 emotionalRatio: emotionalCaps.length / words.length,
+                                 stylisticRatio: mixedCaseWords.length / words.length,
+                                 positionAnalysis: positionAnalysis,
+                                 clusters: clusters
+                       },
+                       details: {
+                                 capitalizedWords: capitalizedWords,
+                                 allCapsWords: allCapsWords,
+                                 emotionalCaps: emotionalCaps,
+                                 properNouns: properNouns
+                       }
+             };
+       }
+ 
+       extractFirstWordsInSentence(text) {
+             const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+             return sentences.map(sentence => {
+                       const firstWord = sentence.trim().split(/\s+/)[0];
+                       return firstWord.length > 1 ? firstWord : null;
+             }).filter(Boolean);
+       }
+ 
+       detectProperNouns(words, text) {
+             const properNouns = [];
+             const context = text.toLowerCase();
+             
+             for (let i = 0; i < words.length; i++) {
+                       const word = words[i];
+                       if (word.length > 2 && /^[A-ZА-ЯЁ]/.test(word)) {
+                                 const isSentenceStart = this.isSentenceStart(word, text);
+                                 const prevWord = i > 0 ? words[i - 1] : null;
+                                 
+                                 const isLikelyProperNoun = 
+                                           !isSentenceStart &&
+                                           (word.endsWith('ов') || word.endsWith('ев') || 
+                                            word.endsWith('ин') || word.endsWith('ын') ||
+                                            /^[A-Z][a-z]+ [A-Z][a-z]+$/.test(word)) ||
+                                           (prevWord && ['господин', 'мистер', 'доктор', 'профессор', 
+                                                        'mr.', 'dr.', 'prof.'].includes(prevWord.toLowerCase()));
+                                 
+                                 if (isLikelyProperNoun) {
+                                           properNouns.push(word);
+                                 }
+                       }
+             }
+             
+             return properNouns;
+       }
+ 
+       detectEmotionalCapitalization(words, text) {
+             return words.filter(word => {
+                       if (word.length <= 1 || !/^[A-ZА-ЯЁ]/.test(word)) return false;
+                       const isSentenceStart = this.isSentenceStart(word, text);
+                       const isProperNoun = this.isLikelyProperNoun(word, words, text);
+                       return !isSentenceStart && !isProperNoun;
+             });
+       }
+ 
+       analyzeCapsPosition(text) {
+             const words = text.split(/\s+/);
+             const positions = [];
+             
+             for (let i = 0; i < words.length; i++) {
+                       const word = words[i];
+                       if (word.length > 1 && /^[A-ZА-ЯЁ]/.test(word)) {
+                                 positions.push({
+                                           position: i / words.length,
+                                           word: word,
+                                           type: /^[A-ZА-ЯЁ]+$/.test(word) ? 'ALLCAPS' : 'Capitalized'
+                                 });
+                       }
+             }
+             
+             const startDensity = positions.filter(p => p.position < 0.3).length;
+             const middleDensity = positions.filter(p => p.position >= 0.3 && p.position <= 0.7).length;
+             const endDensity = positions.filter(p => p.position > 0.7).length;
+             const distributionEvenness = this.calculateDistributionEvenness(positions);
+             
+             return {
+                       startDensity: startDensity,
+                       middleDensity: middleDensity,
+                       endDensity: endDensity,
+                       distributionEvenness: distributionEvenness
+             };
+       }
+ 
+       findCapitalizationClusters(text) {
+             const words = text.split(/\s+/);
+             const clusters = [];
+             let currentCluster = [];
+             
+             for (let i = 0; i < words.length; i++) {
+                       const word = words[i];
+                       const isCapped = word.length > 1 && /^[A-ZА-ЯЁ]/.test(word);
+                       
+                       if (isCapped) {
+                                 currentCluster.push({ word: word, index: i });
+                       } else if (currentCluster.length > 0) {
+                                 if (currentCluster.length >= 2) {
+                                           clusters.push({
+                                                     size: currentCluster.length,
+                                                     words: currentCluster.map(c => c.word),
+                                                     startIndex: currentCluster[0].index,
+                                                     intensity: this.calculateClusterIntensity(currentCluster)
+                                           });
+                                 }
+                                 currentCluster = [];
+                       }
+             }
+             
+             if (currentCluster.length >= 2) {
+                       clusters.push({
+                                 size: currentCluster.length,
+                                 words: currentCluster.map(c => c.word),
+                                 startIndex: currentCluster[0].index,
+                                 intensity: this.calculateClusterIntensity(currentCluster)
+                       });
+             }
+             
+             return clusters;
+       }
+ 
+       getCapitalizationRules(language) {
+             const rules = {
+                       ru: {
+                                 alwaysCapitalized: ['я', 'россия', 'москва'],
+                                 alwaysLowercase: ['и', 'в', 'на', 'с', 'о'],
+                                 properNounPatterns: [/ов$/, /ев$/, /ин$/, /ский$/, /цкий$/]
+                       },
+                       en: {
+                                 alwaysCapitalized: ['i', 'usa', 'uk'],
+                                 alwaysLowercase: ['a', 'an', 'the', 'and', 'but', 'or'],
+                                 properNounPatterns: [/\b(?:mr|mrs|dr|prof)\.?\s+[A-Z]/i]
+                       }
+             };
+             return rules[language] || rules.en;
+       }
+ 
+       integrateWithEmotionalAnalysis(capitalizationData, emotionalAnalysis) {
+             const capsIntensity = capitalizationData.advanced.emotionalRatio;
+             const emotionIntensity = emotionalAnalysis.profile.intensity || 0;
+             const combinedIntensity = (capsIntensity * 0.3 + emotionIntensity * 0.7);
+             const confidence = Math.min(1, capitalizationData.totalWords / 50);
+             
+             const flags = {
+                       isShouting: capitalizationData.intensity > 0.1,
+                       isEmphasizing: capitalizationData.advanced.emotionalRatio > 0.05,
+                       hasCapsClusters: capitalizationData.advanced.clusters.length > 0,
+                       isFormal: capitalizationData.advanced.properNouns.length > 
+                                 capitalizationData.advanced.emotionalUse
+             };
+             
+             const recommendations = this.generateCapitalizationRecommendations(capitalizationData);
+             
+             return {
+                       combinedIntensity: combinedIntensity,
+                       confidence: confidence,
+                       flags: flags,
+                       recommendations: recommendations
+             };
+       }
+ 
+       isSentenceStart(word, text) {
+             const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+             for (let i = 0; i < sentences.length; i++) {
+                       const sentence = sentences[i];
+                       const firstWord = sentence.trim().split(/\s+/)[0];
+                       if (firstWord === word) {
+                                 return true;
+                       }
+             }
+             return false;
+       }
+ 
+       isLikelyProperNoun(word, words, text) {
+             const index = words.indexOf(word);
+             const prevWord = index > 0 ? words[index - 1] : null;
+             
+             const properNounMarkers = [
+                       'господин', 'мистер', 'доктор', 'профессор', 
+                       'mr.', 'mrs.', 'dr.', 'prof.', 'ms.',
+                       'святой', 'святая', 'папа', 'король', 'королева'
+             ];
+             
+             if (prevWord && properNounMarkers.includes(prevWord.toLowerCase())) {
+                       return true;
+             }
+             
+             const language = this.language || 'en';
+             const rules = this.getCapitalizationRules(language);
+             return rules.properNounPatterns.some(pattern => pattern.test(word));
+       }
+ 
+       calculateDistributionEvenness(positions) {
+             if (positions.length === 0) return 1;
+             const positionsOnly = positions.map(p => p.position);
+             const mean = positionsOnly.reduce((a, b) => a + b, 0) / positionsOnly.length;
+             const variance = positionsOnly.reduce((sq, n) => sq + Math.pow(n - mean, 2), 0) / positionsOnly.length;
+             return Math.max(0, 1 - Math.sqrt(variance) * 2);
+       }
+ 
+       calculateClusterIntensity(cluster) {
+             let intensity = 0;
+             for (let i = 0; i < cluster.length; i++) {
+                       const item = cluster[i];
+                       if (/^[A-ZА-ЯЁ]+$/.test(item.word)) {
+                                 intensity += 1.0;
+                       } else {
+                                 intensity += 0.5;
+                       }
+             }
+             return intensity / cluster.length;
+       }
+ 
+        generateCapitalizationRecommendations(capitalizationData) {
+             const recommendations = [];
+             
+             if (capitalizationData.intensity > 0.15) {
+                       recommendations.push('reduce_shouting');
+             }
+             
+             if (capitalizationData.advanced.emotionalRatio > 0.1) {
+                       recommendations.push('moderate_emphasis');
+             }
+             
+             if (capitalizationData.advanced.mixedCase > 0) {
+                       recommendations.push('avoid_mixed_case');
+             }
+             
+             if (capitalizationData.advanced.clusters.length > 2) {
+                       recommendations.push('break_up_caps_clusters');
+             }
+             
+             return recommendations.length > 0 ? recommendations : ['capitalization_appropriate'];
         }
         
         enhancedLexicalAnalysis(data) {
@@ -7901,6 +7963,7 @@
     
 
 })();
+
 
 
 
