@@ -3777,115 +3777,307 @@
         }
         
         analyzeEmotionalProgression(categories, data) {
-            const progression = {
-                phases: [],
-                transitions: [],
-                overallTrend: 'stable',
-                emotionalArc: []
-            };
-            
-            if (data.sentences.length < 2) return progression;
-            
-            const sentenceEmotions = data.sentences.map((sentence, index) => {
-                const sentenceText = typeof sentence === 'object' ? sentence.text : sentence;
-                const words = this.enhancedTokenization(sentenceText);
-                
-                let score = 0;
-                let categoryCount = 0;
-                
-                for (const [category, categoryData] of Object.entries(categories)) {
-                    if (categoryData.sentenceOccurrences && categoryData.sentenceOccurrences[index]) {
-                        const occurrences = categoryData.sentenceOccurrences[index].length;
-                        const weight = this.categoryWeights[category] || 1.0;
-                        
-                        const isPositive = ['ecstasy', 'joy', 'love', 'peace', 'hope', 
-                                          'gratitude', 'inspiration', 'pride'].includes(category);
-                        const isNegative = ['sadness', 'grief', 'anger', 'fear', 'disgust', 
-                                          'shame', 'guilt', 'loneliness', 'envy', 'despair'].includes(category);
-                        
-                        if (isPositive) score += occurrences * weight;
-                        if (isNegative) score -= occurrences * weight;
-                        
-                        categoryCount += occurrences;
-                    }
-                }
-                
-                return {
-                    sentence: sentenceText,
-                    index: index,
-                    score: categoryCount > 0 ? score / categoryCount : 0,
-                    wordCount: words.length,
-                    emotionalDensity: categoryCount / words.length || 0
-                };
-            });
-            
-            let currentPhase = {
-                start: 0,
-                end: 0,
-                trend: 'neutral',
-                intensity: 0,
-                dominantCategories: []
-            };
-            
-            for (let i = 0; i < sentenceEmotions.length; i++) {
-                const emotion = sentenceEmotions[i];
-                
-                if (i === 0) {
-                    currentPhase.trend = emotion.score > 0.1 ? 'positive' : 
-                                       emotion.score < -0.1 ? 'negative' : 'neutral';
-                    currentPhase.intensity = Math.abs(emotion.score);
-                } else {
-                    const prevEmotion = sentenceEmotions[i - 1];
-                    const trendChange = Math.abs(emotion.score - prevEmotion.score) > 0.2;
+                    const progression = {
+                        phases: [],
+                        transitions: [],
+                        overallTrend: 'stable',
+                        emotionalArc: [],
+                        metrics: {
+                            volatility: 0,
+                            momentum: 0,
+                            peakIntensity: 0,
+                            valleyDepth: 0,
+                            arcType: 'flat',
+                            phaseCount: 0,
+                            averagePhaseLength: 0,
+                            emotionalMomentum: 0
+                        },
+                        peaks: [],
+                        valleys: [],
+                        inflectionPoints: [],
+                        emotionalMomentum: 0,
+                        complexityScore: 0
+                    };
                     
-                    if (trendChange) {
-                        currentPhase.end = i - 1;
-                        progression.phases.push({...currentPhase});
+                    if (data.sentences.length < 2) return progression;
+                    
+                    const sentenceEmotions = data.sentences.map((sentence, index) => {
+                        const sentenceText = typeof sentence === 'object' ? sentence.text : sentence;
+                        const words = this.enhancedTokenization(sentenceText);
                         
-                        currentPhase = {
-                            start: i,
-                            end: i,
-                            trend: emotion.score > 0.1 ? 'positive' : 
-                                  emotion.score < -0.1 ? 'negative' : 'neutral',
-                            intensity: Math.abs(emotion.score),
-                            dominantCategories: []
+                        let score = 0;
+                        let categoryCount = 0;
+                        let weightedScore = 0;
+                        let positiveWeight = 0;
+                        let negativeWeight = 0;
+                        let complexWeight = 0;
+                        const emotionCategories = [];
+                        
+                        for (const [category, categoryData] of Object.entries(categories)) {
+                            if (categoryData.sentenceOccurrences && categoryData.sentenceOccurrences[index]) {
+                                const occurrences = categoryData.sentenceOccurrences[index].length;
+                                const weight = this.categoryWeights[category] || 1.0;
+                                const intensity = categoryData.intensity || 0.5;
+                                const weightedOccurrences = occurrences * weight * intensity;
+                                
+                                const isPositive = ['ecstasy', 'joy', 'love', 'peace', 'hope', 
+                                                  'gratitude', 'inspiration', 'pride', 'surprise', 'curiosity'].includes(category);
+                                const isNegative = ['sadness', 'grief', 'anger', 'fear', 'disgust', 
+                                                  'shame', 'guilt', 'loneliness', 'envy', 'despair', 'contempt', 'bitterness'].includes(category);
+                                const isComplex = ['ambivalence', 'irony', 'nostalgiaMixed', 'bittersweet', 
+                                                 'nostalgia', 'aesthetic', 'intensity', 'calmness'].includes(category);
+                                
+                                if (isPositive) {
+                                    score += occurrences;
+                                    weightedScore += weightedOccurrences;
+                                    positiveWeight += weightedOccurrences;
+                                }
+                                if (isNegative) {
+                                    score -= occurrences;
+                                    weightedScore -= weightedOccurrences;
+                                    negativeWeight += weightedOccurrences;
+                                }
+                                if (isComplex) {
+                                    complexWeight += weightedOccurrences;
+                                }
+                                
+                                categoryCount += occurrences;
+                                emotionCategories.push({
+                                    category: category,
+                                    occurrences: occurrences,
+                                    weight: weight,
+                                    intensity: intensity
+                                });
+                            }
+                        }
+                        
+                        const emotionalDensity = categoryCount / words.length || 0;
+                        const complexityFactor = complexWeight / (positiveWeight + negativeWeight + complexWeight + 0.001);
+                        const intensityFactor = Math.abs(weightedScore) / (categoryCount || 1);
+                        const momentumFactor = emotionalDensity * intensityFactor * (1 + complexityFactor * 0.3);
+                        
+                        return {
+                            sentence: sentenceText,
+                            index: index,
+                            rawScore: score,
+                            weightedScore: weightedScore,
+                            score: categoryCount > 0 ? weightedScore / categoryCount : 0,
+                            wordCount: words.length,
+                            emotionalDensity: emotionalDensity,
+                            positiveWeight: positiveWeight,
+                            negativeWeight: negativeWeight,
+                            complexWeight: complexWeight,
+                            complexityFactor: complexityFactor,
+                            intensityFactor: intensityFactor,
+                            momentumFactor: momentumFactor,
+                            categories: emotionCategories,
+                            categoryCount: categoryCount
                         };
-                    } else {
-                        currentPhase.end = i;
-                        currentPhase.intensity = (currentPhase.intensity + Math.abs(emotion.score)) / 2;
-                    }
-                }
-                
-                progression.emotionalArc.push(emotion.score);
-            }
-            
-            if (currentPhase.start <= sentenceEmotions.length - 1) {
-                currentPhase.end = sentenceEmotions.length - 1;
-                progression.phases.push(currentPhase);
-            }
-            
-            for (let i = 1; i < progression.phases.length; i++) {
-                const prevPhase = progression.phases[i - 1];
-                const currPhase = progression.phases[i];
-                
-                if (prevPhase.trend !== currPhase.trend) {
-                    progression.transitions.push({
-                        from: prevPhase.trend,
-                        to: currPhase.trend,
-                        position: prevPhase.end,
-                        intensityChange: Math.abs(currPhase.intensity - prevPhase.intensity)
                     });
-                }
-            }
-            
-            const totalScore = sentenceEmotions.reduce((sum, e) => sum + e.score, 0);
-            const avgScore = totalScore / sentenceEmotions.length;
-            
-            if (avgScore > 0.1) progression.overallTrend = 'positive';
-            else if (avgScore < -0.1) progression.overallTrend = 'negative';
-            else progression.overallTrend = 'balanced';
-            
-            return progression;
+                    
+                    let currentPhase = {
+                        start: 0,
+                        end: 0,
+                        trend: 'neutral',
+                        intensity: 0,
+                        dominantCategories: [],
+                        momentum: 0,
+                        complexity: 0,
+                        emotionalDensity: 0
+                    };
+                    
+                    const trendThreshold = 0.08;
+                    const changeThreshold = 0.15;
+                    const momentumThreshold = 0.2;
+                    
+                    for (let i = 0; i < sentenceEmotions.length; i++) {
+                        const emotion = sentenceEmotions[i];
+                        
+                        if (i === 0) {
+                            currentPhase.trend = emotion.score > trendThreshold ? 'positive' : 
+                                               emotion.score < -trendThreshold ? 'negative' : 'neutral';
+                            currentPhase.intensity = Math.abs(emotion.score);
+                            currentPhase.momentum = emotion.momentumFactor;
+                            currentPhase.complexity = emotion.complexityFactor;
+                            currentPhase.emotionalDensity = emotion.emotionalDensity;
+                        } else {
+                            const prevEmotion = sentenceEmotions[i - 1];
+                            const scoreChange = emotion.score - prevEmotion.score;
+                            const momentumChange = emotion.momentumFactor - prevEmotion.momentumFactor;
+                            const trendChange = Math.abs(scoreChange) > changeThreshold || 
+                                              Math.abs(momentumChange) > momentumThreshold;
+                            
+                            if (trendChange) {
+                                currentPhase.end = i - 1;
+                                progression.phases.push({...currentPhase});
+                                
+                                currentPhase = {
+                                    start: i,
+                                    end: i,
+                                    trend: emotion.score > trendThreshold ? 'positive' : 
+                                          emotion.score < -trendThreshold ? 'negative' : 'neutral',
+                                    intensity: Math.abs(emotion.score),
+                                    momentum: emotion.momentumFactor,
+                                    complexity: emotion.complexityFactor,
+                                    emotionalDensity: emotion.emotionalDensity,
+                                    dominantCategories: []
+                                };
+                            } else {
+                                currentPhase.end = i;
+                                currentPhase.intensity = (currentPhase.intensity + Math.abs(emotion.score)) / 2;
+                                currentPhase.momentum = (currentPhase.momentum + emotion.momentumFactor) / 2;
+                                currentPhase.complexity = (currentPhase.complexity + emotion.complexityFactor) / 2;
+                                currentPhase.emotionalDensity = (currentPhase.emotionalDensity + emotion.emotionalDensity) / 2;
+                            }
+                        }
+                        
+                        progression.emotionalArc.push(emotion.score);
+                    }
+                    
+                    if (currentPhase.start <= sentenceEmotions.length - 1) {
+                        currentPhase.end = sentenceEmotions.length - 1;
+                        progression.phases.push(currentPhase);
+                    }
+                    
+                    for (let i = 1; i < progression.phases.length; i++) {
+                        const prevPhase = progression.phases[i - 1];
+                        const currPhase = progression.phases[i];
+                        
+                        if (prevPhase.trend !== currPhase.trend) {
+                            progression.transitions.push({
+                                from: prevPhase.trend,
+                                to: currPhase.trend,
+                                position: prevPhase.end,
+                                intensityChange: Math.abs(currPhase.intensity - prevPhase.intensity),
+                                momentumChange: Math.abs(currPhase.momentum - prevPhase.momentum),
+                                complexityChange: Math.abs(currPhase.complexity - prevPhase.complexity)
+                            });
+                        }
+                    }
+                    
+                    const totalScore = sentenceEmotions.reduce((sum, e) => sum + e.score, 0);
+                    const avgScore = totalScore / sentenceEmotions.length;
+                    const momentumSum = sentenceEmotions.reduce((sum, e) => sum + e.momentumFactor, 0);
+                    const avgMomentum = momentumSum / sentenceEmotions.length;
+                    
+                    if (avgScore > trendThreshold) progression.overallTrend = 'positive';
+                    else if (avgScore < -trendThreshold) progression.overallTrend = 'negative';
+                    else progression.overallTrend = 'balanced';
+                    
+                    progression.emotionalMomentum = avgMomentum;
+                    
+                    const volatility = this.calculateEmotionalVolatility(sentenceEmotions);
+                    const momentum = this.calculateEmotionalMomentum(sentenceEmotions);
+                    const arcType = this.detectEmotionalArcType(sentenceEmotions);
+                    
+                    progression.metrics.volatility = volatility;
+                    progression.metrics.momentum = momentum;
+                    progression.metrics.arcType = arcType;
+                    progression.metrics.phaseCount = progression.phases.length;
+                    progression.metrics.averagePhaseLength = progression.phases.length > 0 ? 
+                        progression.phases.reduce((sum, p) => sum + (p.end - p.start + 1), 0) / progression.phases.length : 0;
+                    progression.metrics.peakIntensity = Math.max(...sentenceEmotions.map(e => Math.abs(e.score)));
+                    progression.metrics.valleyDepth = Math.min(...sentenceEmotions.map(e => e.score));
+                    progression.metrics.emotionalMomentum = momentum;
+                    
+                    progression.peaks = this.detectEmotionalPeaks(sentenceEmotions);
+                    progression.valleys = this.detectEmotionalValleys(sentenceEmotions);
+                    progression.inflectionPoints = this.detectInflectionPoints(sentenceEmotions);
+                    
+                    progression.complexityScore = this.calculateProgressionComplexity(progression);
+                    
+                    return progression;
+        }
+                
+        calculateEmotionalVolatility(sentenceEmotions) {
+                    if (sentenceEmotions.length < 2) return 0;
+                    let volatility = 0;
+                    for (let i = 1; i < sentenceEmotions.length; i++) {
+                        volatility += Math.abs(sentenceEmotions[i].score - sentenceEmotions[i - 1].score);
+                    }
+                    return volatility / (sentenceEmotions.length - 1);
+        }
+                
+        calculateEmotionalMomentum(sentenceEmotions) {
+                    if (sentenceEmotions.length === 0) return 0;
+                    const momentumValues = sentenceEmotions.map(e => e.momentumFactor);
+                    const avgMomentum = momentumValues.reduce((a, b) => a + b, 0) / momentumValues.length;
+                    const stdDev = Math.sqrt(
+                        momentumValues.reduce((sum, val) => sum + Math.pow(val - avgMomentum, 2), 0) / momentumValues.length
+                    );
+                    return avgMomentum * (1 + stdDev);
+        }
+                
+        detectEmotionalPeaks(sentenceEmotions) {
+                    const peaks = [];
+                    for (let i = 1; i < sentenceEmotions.length - 1; i++) {
+                        const prev = sentenceEmotions[i - 1].score;
+                        const curr = sentenceEmotions[i].score;
+                        const next = sentenceEmotions[i + 1].score;
+                        
+                        if (curr > prev && curr > next && curr > 0.15) {
+                            peaks.push({
+                                position: i,
+                                score: curr,
+                                intensity: curr,
+                                type: 'positive'
+                            });
+                        }
+                    }
+                    return peaks.sort((a, b) => b.intensity - a.intensity).slice(0, 5);
+        }
+                
+        detectEmotionalValleys(sentenceEmotions) {
+                    const valleys = [];
+                    for (let i = 1; i < sentenceEmotions.length - 1; i++) {
+                        const prev = sentenceEmotions[i - 1].score;
+                        const curr = sentenceEmotions[i].score;
+                        const next = sentenceEmotions[i + 1].score;
+                        
+                        if (curr < prev && curr < next && curr < -0.15) {
+                            valleys.push({
+                                position: i,
+                                score: curr,
+                                intensity: Math.abs(curr),
+                                type: 'negative'
+                            });
+                        }
+                    }
+                    return valleys.sort((a, b) => b.intensity - a.intensity).slice(0, 5);
+        }
+                
+        detectInflectionPoints(sentenceEmotions) {
+                    const inflections = [];
+                    for (let i = 2; i < sentenceEmotions.length - 2; i++) {
+                        const prev2 = sentenceEmotions[i - 2].score;
+                        const prev1 = sentenceEmotions[i - 1].score;
+                        const curr = sentenceEmotions[i].score;
+                        const next1 = sentenceEmotions[i + 1].score;
+                        const next2 = sentenceEmotions[i + 2].score;
+                        
+                        const firstDerivative = (next1 - prev1) / 2;
+                        const secondDerivative = (next2 - 2 * curr + prev2) / 4;
+                        
+                        if (Math.abs(secondDerivative) > 0.1 && Math.abs(firstDerivative) < 0.05) {
+                            inflections.push({
+                                position: i,
+                                type: secondDerivative > 0 ? 'minimum' : 'maximum',
+                                curvature: Math.abs(secondDerivative)
+                            });
+                        }
+                    }
+                    return inflections.slice(0, 10);
+        }
+                
+        calculateProgressionComplexity(progression) {
+                    const factors = [
+                        progression.metrics.volatility * 0.3,
+                        progression.transitions.length / (progression.phases.length || 1) * 0.3,
+                        progression.metrics.phaseCount / 10 * 0.2,
+                        progression.peaks.length * 0.1,
+                        progression.valleys.length * 0.1
+                    ];
+                    return Math.min(1, factors.reduce((a, b) => a + b, 0));
         }
         
         createIntensityProfile(categories) {
@@ -8237,6 +8429,7 @@
     
 
 })();
+
 
 
 
