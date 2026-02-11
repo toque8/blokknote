@@ -838,7 +838,10 @@ renderResult(result) {
         const emotionalWords = this.getNumber(this.getSafe(result, 'details.lexical.summary.totalEmotionalWords'));
         const lexicalDensity = this.getNumber(this.getSafe(result, 'details.lexical.summary.lexicalDensity'));
         const categoryCount = this.getNumber(this.getSafe(result, 'details.lexical.summary.categoryCount'));
-         const dominantCategory = this.getSafe(result, 'details.lexical.summary.dominantCategory');
+        const dominantCategoryRaw = this.getSafe(result, 'details.lexical.summary.dominantCategory');
+		const dominantCategory = (dominantCategoryRaw && typeof dominantCategoryRaw === 'object') 
+    		? dominantCategoryRaw.primary 
+    		: dominantCategoryRaw;
         const lexicalConcentration = this.getNumber(this.getSafe(result, 'details.lexical.summary.lexicalConcentration'));
         const lexicalRichness = this.getNumber(this.getSafe(result, 'details.lexical.summary.lexicalRichness'));
         const emotionalClusters = this.getNumber(this.getSafe(result, 'details.lexical.clusters.length'));
@@ -2373,6 +2376,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
