@@ -459,9 +459,9 @@ renderResult(result) {
     const complexity = this.getNumber(this.getSafe(result, 'profile.complexity'));
     const confidence = this.getNumber(this.getSafe(result, 'profile.confidence'));
     const consistency = this.getNumber(this.getSafe(result, 'profile.consistency'));
-     const emotionalRange = this.getNumber(this.getSafe(result, 'profile.emotionalRange'));
+    const emotionalRange = this.getNumber(this.getSafe(result, 'profile.emotionalRange'));
     const emotionalDepth = this.getNumber(this.getSafe(result, 'profile.emotionalDepth'));
-     const ironyLevel = this.getNumber(this.getSafe(result, 'profile.ironyLevel'));
+    const ironyLevel = this.getNumber(this.getSafe(result, 'profile.ironyLevel'));
     const textComplexity = this.getNumber(this.getSafe(result, 'metrics.complexityScore'));
     const primaryToneName = this.getSafe(result, 'profile.display.name');
     const primaryToneDesc = this.getSafe(result, 'profile.display.description');
@@ -483,156 +483,292 @@ renderResult(result) {
                             this.shouldShowMetric(intensity, true);
 
     if (hasPrimaryProfile) {
-                        html += `
-<div class="emotion-section">
-<h3>${translations.primaryProfile}</h3>`;
-                        if (this.shouldShowMetric(primaryToneName)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label" title="${translations.primaryToneDesc}">${translations.primaryTone}:</span>
-<span class="value" style="text-align:right !important;float:right;">${this.translateValue(primaryToneName, currentLang)}</span>
-</div>`;
-    					}
-                        if (this.shouldShowMetric(primaryToneDesc)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label">${translations.description}:</span>
-<span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${this.translateValue(primaryToneDesc, currentLang)}</span>
-</div>`;
-    					}
-                        if (this.shouldShowMetric(polarity, true)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label" title="${translations.polarityDesc}">${translations.polarity}:</span>
-<span class="value" style="text-align:right !important;float:right;">${(polarity * 100).toFixed(1)}%</span>
-</div>`;
-    					}
-                        if (this.shouldShowMetric(intensity, true)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label" title="${translations.intensityDesc}">${translations.intensity}:</span>
-<span class="value" style="text-align:right !important;float:right;">${(intensity * 100).toFixed(1)}%</span>
-</div>`;
-    					}
-                        if (this.shouldShowMetric(confidence, true)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label" title="${translations.confidenceDesc}">${translations.confidence}:</span>
-<span class="value" style="text-align:right !important;float:right;">${(confidence * 100).toFixed(1)}%</span>
-</div>`;
-    					}
-                        if (this.shouldShowMetric(consistency, true)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label" title="${translations.consistencyDesc}">${translations.consistency}:</span>
-<span class="value" style="text-align:right !important;float:right;">${(consistency * 100).toFixed(1)}%</span>
-</div>`;
-    					}
-                        if (this.shouldShowMetric(textComplexity, true)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label" title="${translations.textComplexityDesc}">${translations.textComplexity}:</span>
-<span class="value" style="text-align:right !important;float:right;">${(textComplexity * 100).toFixed(1)}%</span>
-</div>`;
-                        }
-                        if (this.shouldShowMetric(complexity, true)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label" title="${translations.complexityDesc}">${translations.complexity}:</span>
-<span class="value" style="text-align:right !important;float:right;">${(complexity * 100).toFixed(1)}%</span>
-</div>`;
-    					}
-                        if (this.shouldShowMetric(emotionalRange, true)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label" title="${translations.emotionalRangeDesc}">${translations.emotionalRange}:</span>
-<span class="value" style="text-align:right !important;float:right;">${(emotionalRange * 100).toFixed(1)}%</span>
-</div>`;
-    					}
-                        if (this.shouldShowMetric(emotionalDepth, true)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label" title="${translations.emotionalDepthDesc}">${translations.emotionalDepth}:</span>
-<span class="value" style="text-align:right !important;float:right;">${(emotionalDepth * 100).toFixed(1)}%</span>
-</div>`;
-    					}
-                        if (this.shouldShowMetric(ironyLevel, true)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label" title="${translations.ironyLevelDesc}">${translations.ironyLevel}:</span>
-<span class="value" style="text-align:right !important;float:right;">${(ironyLevel * 100).toFixed(1)}%</span>
-</div>`;
-    					}
-                        const emotionalMomentum = this.getNumber(this.getSafe(result, 'details.lexical.temporal.emotionalMomentum'));
-                        if (this.shouldShowMetric(emotionalMomentum, true)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label" title="${translations.emotionalMomentumDesc}">${translations.emotionalMomentum}:</span>
-<span class="value" style="text-align:right !important;float:right;">${(emotionalMomentum * 100).toFixed(1)}%</span>
-</div>`;
-    					}
-                        const avgEmotionalDensity = this.getNumber(this.getSafe(result, 'details.lexical.metrics.lexicalDensity'));
-                        if (this.shouldShowMetric(avgEmotionalDensity, true)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label" title="${translations.avgEmotionalDensityDesc}">${translations.avgEmotionalDensity}:</span>
-<span class="value" style="text-align:right !important;float:right;">${(avgEmotionalDensity * 100).toFixed(1)}%</span>
-</div>`;
-    					}
-                        const lexicalRichness = this.getNumber(this.getSafe(result, 'details.lexical.metrics.lexicalRichness'));
-                        if (this.shouldShowMetric(lexicalRichness, true)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label" title="${translations.lexicalRichnessDesc}">${translations.lexicalRichness}:</span>
-<span class="value" style="text-align:right !important;float:right;">${(lexicalRichness * 100).toFixed(1)}%</span>
-</div>`;
-    					}
-                        const contextualComplexity = this.getNumber(this.getSafe(result, 'details.contextual.scores.contextualComplexity'));
-                        if (this.shouldShowMetric(contextualComplexity, true)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label" title="${translations.contextualComplexityDesc}">${translations.contextualComplexity}:</span>
-<span class="value" style="text-align:right !important;float:right;">${(contextualComplexity * 100).toFixed(1)}%</span>
-</div>`;
-    					}
-                        const semanticRichness = this.getNumber(this.getSafe(result, 'details.semantic.semanticRichness'));
-                        if (this.shouldShowMetric(semanticRichness, true)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label" title="${translations.semanticRichnessDesc}">${translations.semanticRichness}:</span>
-<span class="value" style="text-align:right !important;float:right;">${(semanticRichness * 100).toFixed(1)}%</span>
-</div>`;
-    					}
-                        const psychologicalComplexity = this.getNumber(this.getSafe(result, 'details.psychological.psychologicalComplexity'));
-                        if (this.shouldShowMetric(psychologicalComplexity, true)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label" title="${translations.psychologicalComplexityDesc}">${translations.psychologicalComplexity}:</span>
-<span class="value" style="text-align:right !important;float:right;">${(psychologicalComplexity * 100).toFixed(1)}%</span>
-</div>`;
-    					}
-                        if (this.shouldShowMetric(emotionalTrend)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label" title="${translations.emotionalTrendDesc}">${translations.emotionalTrend}:</span>
-<span class="value" style="text-align:right !important;float:right;">${this.translateEmotionalTrend(emotionalTrend, currentLang)}</span>
-</div>`;
-    					}
-                        if (this.shouldShowMetric(emotionalArc)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label" title="${translations.emotionalArcDesc}">${translations.emotionalArc}:</span>
-<span class="value" style="text-align:right !important;float:right;">${this.translateEmotionalArc(emotionalArc, currentLang)}</span>
-</div>`;
-    					}
-                        if (this.shouldShowMetric(narrative)) {
-                            html += `
-<div class="emotion-metric">
-<span class="label" title="${translations.narrativeDesc}">${translations.narrative}:</span>
-<span class="value" style="text-align:right !important;float:right;">${this.translateNarrative(narrative, currentLang)}</span>
-</div>`;
-                        }
-                        html += `</div>`;
+		html += `
+			<div class="emotion-section">
+				<h3>${translations.primaryProfile}</h3>
+		`;
+
+		if (this.shouldShowMetric(primaryToneName)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.primaryToneDesc}">${translations.primaryTone}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${this.translateValue(primaryToneName, currentLang)}</span>
+					</div>
+				`;
+		}
+
+		if (this.shouldShowMetric(primaryToneDesc)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label">${translations.description}:</span>
+						<span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${this.translateValue(primaryToneDesc, currentLang)}</span>
+					</div>
+				`;
+		}
+
+		if (this.shouldShowMetric(polarity, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.polarityDesc}">${translations.polarity}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(polarity * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		if (this.shouldShowMetric(intensity, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.intensityDesc}">${translations.intensity}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(intensity * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		if (this.shouldShowMetric(confidence, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.confidenceDesc}">${translations.confidence}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(confidence * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		if (this.shouldShowMetric(consistency, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.consistencyDesc}">${translations.consistency}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(consistency * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		if (this.shouldShowMetric(textComplexity, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.textComplexityDesc}">${translations.textComplexity}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(textComplexity * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		if (this.shouldShowMetric(complexity, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.complexityDesc}">${translations.complexity}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(complexity * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		if (this.shouldShowMetric(emotionalRange, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionalRangeDesc}">${translations.emotionalRange}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionalRange * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		if (this.shouldShowMetric(emotionalDepth, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionalDepthDesc}">${translations.emotionalDepth}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionalDepth * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		if (this.shouldShowMetric(ironyLevel, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.ironyLevelDesc}">${translations.ironyLevel}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(ironyLevel * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		const emotionalMomentum = this.getNumber(this.getSafe(result, 'details.lexical.temporal.emotionalMomentum'));
+		if (this.shouldShowMetric(emotionalMomentum, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionalMomentumDesc}">${translations.emotionalMomentum}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionalMomentum * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		const avgEmotionalDensity = this.getNumber(this.getSafe(result, 'details.lexical.metrics.lexicalDensity'));
+		if (this.shouldShowMetric(avgEmotionalDensity, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.avgEmotionalDensityDesc}">${translations.avgEmotionalDensity}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(avgEmotionalDensity * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		const emotionBalance = this.getNumber(this.getSafe(result, 'details.intensityProfile.balance'));
+		if (this.shouldShowMetric(emotionBalance, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionBalanceDesc}">${translations.emotionBalance}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionBalance * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		const emotionDominance = this.getNumber(this.getSafe(result, 'details.intensityProfile.dominance'));
+		if (this.shouldShowMetric(emotionDominance, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionDominanceDesc}">${translations.emotionDominance}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionDominance * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		const emotionContrast = this.getNumber(this.getSafe(result, 'details.intensityProfile.contrast'));
+		if (this.shouldShowMetric(emotionContrast, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionContrastDesc}">${translations.emotionContrast}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionContrast * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		const emotionConcentration = this.getNumber(this.getSafe(result, 'details.intensityProfile.concentration'));
+		if (this.shouldShowMetric(emotionConcentration, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionConcentrationDesc}">${translations.emotionConcentration}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionConcentration * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		const emotionVolatility = this.getNumber(this.getSafe(result, 'details.progression.metrics.volatility'));
+		if (this.shouldShowMetric(emotionVolatility, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionVolatilityDesc}">${translations.emotionVolatility}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionVolatility * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		const emotionMomentum = this.getNumber(this.getSafe(result, 'details.progression.metrics.momentum'));
+		if (this.shouldShowMetric(emotionMomentum, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionMomentumDesc}">${translations.emotionMomentum}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionMomentum * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		const peakIntensity = this.getNumber(this.getSafe(result, 'details.progression.metrics.peakIntensity'));
+		if (this.shouldShowMetric(peakIntensity, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.peakIntensityDesc}">${translations.peakIntensity}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(peakIntensity * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		const valleyDepth = this.getNumber(this.getSafe(result, 'details.progression.metrics.valleyDepth'));
+		if (this.shouldShowMetric(valleyDepth, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.valleyDepthDesc}">${translations.valleyDepth}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(Math.abs(valleyDepth) * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		const phaseCount = this.getNumber(this.getSafe(result, 'details.progression.metrics.phaseCount'));
+		if (this.shouldShowMetric(phaseCount, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.phaseCountDesc}">${translations.phaseCount}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${phaseCount.toFixed(0)}</span>
+					</div>
+				`;
+		}
+
+		const peakCount = this.getNumber(this.getSafe(result, 'details.progression.peaks.length'));
+		if (this.shouldShowMetric(peakCount, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.peakCountDesc}">${translations.peakCount}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${peakCount.toFixed(0)}</span>
+					</div>
+				`;
+		}
+
+		const valleyCount = this.getNumber(this.getSafe(result, 'details.progression.valleys.length'));
+		if (this.shouldShowMetric(valleyCount, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.valleyCountDesc}">${translations.valleyCount}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${valleyCount.toFixed(0)}</span>
+					</div>
+				`;
+		}
+
+		const clusterCount = this.getNumber(this.getSafe(result, 'details.clusters.length'));
+		if (this.shouldShowMetric(clusterCount, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.clusterCountDesc}">${translations.clusterCount}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${clusterCount.toFixed(0)}</span>
+					</div>
+				`;
+		}
+
+		const avgClusterSize = this.getNumber(this.getSafe(result, 'details.clusters.length')) > 0 
+				? this.getSafe(result, 'details.clusters').reduce((sum, c) => sum + c.size, 0) / this.getSafe(result, 'details.clusters.length')
+				: 0;
+		if (this.shouldShowMetric(avgClusterSize, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.avgClusterSizeDesc}">${translations.avgClusterSize}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${avgClusterSize.toFixed(1)}</span>
+					</div>
+				`;
+		}
+
+		if (this.shouldShowMetric(emotionalTrend)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionalTrendDesc}">${translations.emotionalTrend}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${this.translateEmotionalTrend(emotionalTrend, currentLang)}</span>
+					</div>
+				`;
+		}
+
+		if (this.shouldShowMetric(emotionalArc)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionalArcDesc}">${translations.emotionalArc}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${this.translateEmotionalArc(emotionalArc, currentLang)}</span>
+					</div>
+				`;
+		}
+
+		if (this.shouldShowMetric(narrative)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.narrativeDesc}">${translations.narrative}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${this.translateNarrative(narrative, currentLang)}</span>
+					</div>
+				`;
+		}
+
+		html += `
+			</div>
+		`;
     }
 
     if (this.hasArrayContent(keywords)) {
@@ -2257,6 +2393,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
