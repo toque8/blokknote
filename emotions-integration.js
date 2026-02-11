@@ -587,27 +587,8 @@ renderResult(result) {
 				`;
 		}
 
-		const emotionalMomentum = this.getNumber(this.getSafe(result, 'details.lexical.temporal.emotionalMomentum'));
-		if (this.shouldShowMetric(emotionalMomentum, true)) {
-				html += `
-					<div class="emotion-metric">
-						<span class="label" title="${translations.emotionalMomentumDesc}">${translations.emotionalMomentum}:</span>
-						<span class="value" style="text-align:right !important;float:right;">${(emotionalMomentum * 100).toFixed(1)}%</span>
-					</div>
-				`;
-		}
-
-		const avgEmotionalDensity = this.getNumber(this.getSafe(result, 'details.lexical.metrics.lexicalDensity'));
-		if (this.shouldShowMetric(avgEmotionalDensity, true)) {
-				html += `
-					<div class="emotion-metric">
-						<span class="label" title="${translations.avgEmotionalDensityDesc}">${translations.avgEmotionalDensity}:</span>
-						<span class="value" style="text-align:right !important;float:right;">${(avgEmotionalDensity * 100).toFixed(1)}%</span>
-					</div>
-				`;
-		}
-
-		const emotionBalance = this.getNumber(this.getSafe(result, 'details.intensityProfile.balance'));
+		const intensityProfile = this.getSafe(result, 'details.lexical.intensityProfile', {});
+		const emotionBalance = this.getNumber(intensityProfile.balance);
 		if (this.shouldShowMetric(emotionBalance, true)) {
 				html += `
 					<div class="emotion-metric">
@@ -617,7 +598,7 @@ renderResult(result) {
 				`;
 		}
 
-		const emotionDominance = this.getNumber(this.getSafe(result, 'details.intensityProfile.dominance'));
+		const emotionDominance = this.getNumber(intensityProfile.dominance);
 		if (this.shouldShowMetric(emotionDominance, true)) {
 				html += `
 					<div class="emotion-metric">
@@ -627,7 +608,7 @@ renderResult(result) {
 				`;
 		}
 
-		const emotionContrast = this.getNumber(this.getSafe(result, 'details.intensityProfile.contrast'));
+		const emotionContrast = this.getNumber(intensityProfile.contrast);
 		if (this.shouldShowMetric(emotionContrast, true)) {
 				html += `
 					<div class="emotion-metric">
@@ -637,7 +618,7 @@ renderResult(result) {
 				`;
 		}
 
-		const emotionConcentration = this.getNumber(this.getSafe(result, 'details.intensityProfile.concentration'));
+		const emotionConcentration = this.getNumber(intensityProfile.concentration);
 		if (this.shouldShowMetric(emotionConcentration, true)) {
 				html += `
 					<div class="emotion-metric">
@@ -647,7 +628,19 @@ renderResult(result) {
 				`;
 		}
 
-		const emotionVolatility = this.getNumber(this.getSafe(result, 'details.progression.metrics.volatility'));
+		const temporal = this.getSafe(result, 'details.lexical.temporal', {});
+		const emotionalMomentum = this.getNumber(temporal.emotionalMomentum);
+		if (this.shouldShowMetric(emotionalMomentum, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionalMomentumDesc}">${translations.emotionalMomentum}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionalMomentum * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
+
+		const progression = this.getSafe(result, 'details.lexical.temporal', {});
+		const emotionVolatility = this.getNumber(progression.volatility);
 		if (this.shouldShowMetric(emotionVolatility, true)) {
 				html += `
 					<div class="emotion-metric">
@@ -657,17 +650,7 @@ renderResult(result) {
 				`;
 		}
 
-		const emotionMomentum = this.getNumber(this.getSafe(result, 'details.progression.metrics.momentum'));
-		if (this.shouldShowMetric(emotionMomentum, true)) {
-				html += `
-					<div class="emotion-metric">
-						<span class="label" title="${translations.emotionMomentumDesc}">${translations.emotionMomentum}:</span>
-						<span class="value" style="text-align:right !important;float:right;">${(emotionMomentum * 100).toFixed(1)}%</span>
-					</div>
-				`;
-		}
-
-		const peakIntensity = this.getNumber(this.getSafe(result, 'details.progression.metrics.peakIntensity'));
+		const peakIntensity = this.getNumber(progression.peakIntensity);
 		if (this.shouldShowMetric(peakIntensity, true)) {
 				html += `
 					<div class="emotion-metric">
@@ -677,7 +660,7 @@ renderResult(result) {
 				`;
 		}
 
-		const valleyDepth = this.getNumber(this.getSafe(result, 'details.progression.metrics.valleyDepth'));
+		const valleyDepth = this.getNumber(progression.valleyDepth);
 		if (this.shouldShowMetric(valleyDepth, true)) {
 				html += `
 					<div class="emotion-metric">
@@ -687,7 +670,7 @@ renderResult(result) {
 				`;
 		}
 
-		const phaseCount = this.getNumber(this.getSafe(result, 'details.progression.metrics.phaseCount'));
+		const phaseCount = this.getNumber(progression.phaseCount);
 		if (this.shouldShowMetric(phaseCount, true)) {
 				html += `
 					<div class="emotion-metric">
@@ -697,8 +680,8 @@ renderResult(result) {
 				`;
 		}
 
-		const peakCount = this.getNumber(this.getSafe(result, 'details.progression.peaks.length'));
-		if (this.shouldShowMetric(peakCount, true)) {
+		const peakCount = this.getNumber(this.getSafe(result, 'details.lexical.temporal.peaks', []).length);
+		if (this.shouldShowMetric(peakCount, true) && peakCount > 0) {
 				html += `
 					<div class="emotion-metric">
 						<span class="label" title="${translations.peakCountDesc}">${translations.peakCount}:</span>
@@ -707,8 +690,8 @@ renderResult(result) {
 				`;
 		}
 
-		const valleyCount = this.getNumber(this.getSafe(result, 'details.progression.valleys.length'));
-		if (this.shouldShowMetric(valleyCount, true)) {
+		const valleyCount = this.getNumber(this.getSafe(result, 'details.lexical.temporal.valleys', []).length);
+		if (this.shouldShowMetric(valleyCount, true) && valleyCount > 0) {
 				html += `
 					<div class="emotion-metric">
 						<span class="label" title="${translations.valleyCountDesc}">${translations.valleyCount}:</span>
@@ -717,8 +700,9 @@ renderResult(result) {
 				`;
 		}
 
-		const clusterCount = this.getNumber(this.getSafe(result, 'details.clusters.length'));
-		if (this.shouldShowMetric(clusterCount, true)) {
+		const clusters = this.getSafe(result, 'details.lexical.clusters', []);
+		const clusterCount = clusters.length;
+		if (this.shouldShowMetric(clusterCount, true) && clusterCount > 0) {
 				html += `
 					<div class="emotion-metric">
 						<span class="label" title="${translations.clusterCountDesc}">${translations.clusterCount}:</span>
@@ -726,11 +710,8 @@ renderResult(result) {
 					</div>
 				`;
 		}
-
-		const avgClusterSize = this.getNumber(this.getSafe(result, 'details.clusters.length')) > 0 
-				? this.getSafe(result, 'details.clusters').reduce((sum, c) => sum + c.size, 0) / this.getSafe(result, 'details.clusters.length')
-				: 0;
-		if (this.shouldShowMetric(avgClusterSize, true)) {
+		if (clusterCount > 0) {
+				const avgClusterSize = clusters.reduce((sum, c) => sum + (c.size || 1), 0) / clusterCount;
 				html += `
 					<div class="emotion-metric">
 						<span class="label" title="${translations.avgClusterSizeDesc}">${translations.avgClusterSize}:</span>
@@ -769,7 +750,7 @@ renderResult(result) {
 		html += `
 			</div>
 		`;
-    }
+	}
 
     if (this.hasArrayContent(keywords)) {
         html += `
@@ -2393,6 +2374,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
