@@ -4357,6 +4357,41 @@
                     
                     return Math.min(0.95, Math.max(0.3, normalizedConfidence));
         }
+
+        calculateProgressionComplexity(progression) {
+                    const factors = [];
+                    
+                    const volatility = progression.metrics.volatility || 0;
+                    factors.push(volatility * 0.3);
+                    
+                    const transitions = progression.transitions.length || 0;
+                    const phases = progression.phases.length || 1;
+                    const transitionRatio = transitions / phases;
+                    factors.push(transitionRatio * 0.3);
+                    
+                    const phaseCount = progression.phases.length || 0;
+                    const normalizedPhases = Math.min(1, phaseCount / 10);
+                    factors.push(normalizedPhases * 0.2);
+                    
+                    const peaks = progression.peaks.length || 0;
+                    const valleys = progression.valleys.length || 0;
+                    const peakValleyRatio = (peaks + valleys) / Math.max(1, phases);
+                    factors.push(peakValleyRatio * 0.2);
+                    
+                    const validFactors = factors.filter(f => !isNaN(f) && f !== undefined && f !== null);
+                    
+                    if (validFactors.length === 0) {
+                        return 0.3;
+                    }
+                    
+                    const rawComplexity = validFactors.reduce((a, b) => a + b, 0) / validFactors.length;
+                    
+                    const nonLinearComplexity = Math.pow(rawComplexity, 1.2);
+                    
+                    const finalComplexity = Math.min(0.99, Math.max(0.05, nonLinearComplexity));
+                    
+                    return Math.round(finalComplexity * 100) / 100;
+        }
         
         getWordContext(text, position, length, contextSize = 30) {
             const start = Math.max(0, position - contextSize);
@@ -4670,10 +4705,10 @@
         
         calculateLengthDistribution(lengths) {
             const distribution = {
-                short: 0,      // 1-5 words
-                medium: 0,     // 6-15 words
-                long: 0,       // 16-25 words
-                veryLong: 0    // 26+ words
+                short: 0,      
+                medium: 0,     
+                long: 0,       
+                veryLong: 0    
             };
             
             lengths.forEach(length => {
@@ -8645,6 +8680,7 @@
     
 
 })();
+
 
 
 
