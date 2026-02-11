@@ -4069,77 +4069,293 @@
                     return inflections.slice(0, 10);
         }
                 
-        calculateProgressionComplexity(progression) {
-                    const factors = [
-                        progression.metrics.volatility * 0.3,
-                        progression.transitions.length / (progression.phases.length || 1) * 0.3,
-                        progression.metrics.phaseCount / 10 * 0.2,
-                        progression.peaks.length * 0.1,
-                        progression.valleys.length * 0.1
-                    ];
-                    return Math.min(1, factors.reduce((a, b) => a + b, 0));
-        }
-        
         createIntensityProfile(categories) {
-            const profile = {
-                overall: 0,
-                positive: 0,
-                negative: 0,
-                complex: 0,
-                distribution: {}
-            };
-            
-            const positiveCats = ['ecstasy', 'joy', 'love', 'peace', 'hope', 'gratitude', 'inspiration', 'pride'];
-            const negativeCats = ['sadness', 'grief', 'anger', 'fear', 'disgust', 'shame', 'guilt', 'loneliness', 'envy', 'despair'];
-            const complexCats = ['ambivalence', 'irony', 'nostalgiaMixed', 'bittersweet', 'nostalgia', 'aesthetic'];
-            
-            let totalIntensity = 0;
-            let positiveIntensity = 0;
-            let negativeIntensity = 0;
-            let complexIntensity = 0;
-            
-            for (const [category, data] of Object.entries(categories)) {
-                const intensity = data.intensity || 0;
-                totalIntensity += intensity;
-                
-                if (positiveCats.includes(category)) {
-                    positiveIntensity += intensity;
-                } else if (negativeCats.includes(category)) {
-                    negativeIntensity += intensity;
-                } else if (complexCats.includes(category)) {
-                    complexIntensity += intensity;
-                }
-                
-                profile.distribution[category] = intensity;
-            }
-            
-            profile.overall = totalIntensity;
-            profile.positive = positiveIntensity;
-            profile.negative = negativeIntensity;
-            profile.complex = complexIntensity;
-            
-            if (totalIntensity > 0) {
-                profile.positive = positiveIntensity / totalIntensity;
-                profile.negative = negativeIntensity / totalIntensity;
-                profile.complex = complexIntensity / totalIntensity;
-            }
-            
-            return profile;
+                    const profile = {
+                        overall: 0,
+                        positive: 0,
+                        negative: 0,
+                        complex: 0,
+                        distribution: {},
+                        balance: 0,
+                        dominance: 0,
+                        contrast: 0,
+                        weightedOverall: 0,
+                        intensityDistribution: {
+                            high: 0,
+                            medium: 0,
+                            low: 0
+                        },
+                        polarityRatio: 0,
+                        complexityScore: 0,
+                        concentration: 0
+                    };
+                    
+                    const positiveCats = ['ecstasy', 'joy', 'love', 'peace', 'hope', 'gratitude', 'inspiration', 'pride', 'surprise', 'curiosity', 'aesthetic', 'triumph', 'liberation', 'connection', 'calmness', 'vulnerability', 'resilience'];
+                    const negativeCats = ['sadness', 'grief', 'anger', 'fear', 'disgust', 'shame', 'guilt', 'loneliness', 'envy', 'despair', 'contempt', 'bitterness', 'anxiety', 'emptiness', 'confusion'];
+                    const complexCats = ['ambivalence', 'irony', 'nostalgiaMixed', 'bittersweet', 'nostalgia', 'intensity'];
+                    
+                    let totalIntensity = 0;
+                    let weightedTotalIntensity = 0;
+                    let positiveIntensity = 0;
+                    let negativeIntensity = 0;
+                    let complexIntensity = 0;
+                    let totalCount = 0;
+                    let maxIntensity = 0;
+                    let highIntensityCount = 0;
+                    let mediumIntensityCount = 0;
+                    let lowIntensityCount = 0;
+                    
+                    const categoryScores = [];
+                    
+                    for (const [category, data] of Object.entries(categories)) {
+                        const rawIntensity = data.intensity || 0;
+                        const weight = data.weight || 1.0;
+                        const count = data.count || 0;
+                        const weightedIntensity = rawIntensity * weight;
+                        
+                        totalIntensity += rawIntensity;
+                        weightedTotalIntensity += weightedIntensity;
+                        totalCount += count;
+                        
+                        if (rawIntensity > maxIntensity) {
+                            maxIntensity = rawIntensity;
+                        }
+                        
+                        if (rawIntensity > 0.7) {
+                            highIntensityCount++;
+                        } else if (rawIntensity > 0.3) {
+                            mediumIntensityCount++;
+                        } else {
+                            lowIntensityCount++;
+                        }
+                        
+                        if (positiveCats.includes(category)) {
+                            positiveIntensity += weightedIntensity;
+                        } else if (negativeCats.includes(category)) {
+                            negativeIntensity += weightedIntensity;
+                        } else if (complexCats.includes(category)) {
+                            complexIntensity += weightedIntensity;
+                        }
+                        
+                        profile.distribution[category] = {
+                            raw: rawIntensity,
+                            weighted: weightedIntensity,
+                            count: count,
+                            weight: weight,
+                            dominance: data.dominance || 'medium'
+                        };
+                        
+                        categoryScores.push({
+                            category: category,
+                            score: weightedIntensity,
+                            intensity: rawIntensity,
+                            count: count
+                        });
+                    }
+                    
+                    profile.overall = totalIntensity;
+                    profile.weightedOverall = weightedTotalIntensity;
+                    
+                    if (totalIntensity > 0) {
+                        profile.positive = positiveIntensity / totalIntensity;
+                        profile.negative = negativeIntensity / totalIntensity;
+                        profile.complex = complexIntensity / totalIntensity;
+                    }
+                    
+                    if (weightedTotalIntensity > 0) {
+                        const polarityDifference = Math.abs(profile.positive - profile.negative);
+                        const polaritySum = profile.positive + profile.negative;
+                        profile.balance = polaritySum > 0 ? 1 - (polarityDifference / polaritySum) : 0;
+                        profile.contrast = polarityDifference;
+                        profile.polarityRatio = profile.negative > 0 ? profile.positive / profile.negative : profile.positive > 0 ? Infinity : 1;
+                    }
+                    
+                    if (categoryScores.length > 0) {
+                        categoryScores.sort((a, b) => b.score - a.score);
+                        const topScore = categoryScores[0].score;
+                        const secondScore = categoryScores.length > 1 ? categoryScores[1].score : 0;
+                        profile.dominance = topScore > 0 ? 1 - (secondScore / topScore) : 0;
+                    }
+                    
+                    const totalCategories = categoryScores.length;
+                    if (totalCategories > 0) {
+                        profile.intensityDistribution.high = highIntensityCount / totalCategories;
+                        profile.intensityDistribution.medium = mediumIntensityCount / totalCategories;
+                        profile.intensityDistribution.low = lowIntensityCount / totalCategories;
+                    }
+                    
+                    const complexCategoriesFound = categoryScores.filter(s => complexCats.includes(s.category)).length;
+                    profile.complexityScore = totalCategories > 0 ? complexCategoriesFound / totalCategories : 0;
+                    
+                    const intensityValues = categoryScores.map(s => s.intensity);
+                    if (intensityValues.length > 0) {
+                        const avgIntensity = intensityValues.reduce((a, b) => a + b, 0) / intensityValues.length;
+                        const variance = intensityValues.reduce((sum, val) => sum + Math.pow(val - avgIntensity, 2), 0) / intensityValues.length;
+                        profile.concentration = 1 - Math.min(1, variance * 2);
+                    }
+                    
+                    return profile;
         }
-        
+                
         findDominantCategory(categoryData) {
-            let maxScore = 0;
-            let dominant = 'neutral';
-            
-            for (const [category, data] of Object.entries(categoryData)) {
-                const score = data.score || data.count * data.weight;
-                if (score > maxScore) {
-                    maxScore = score;
-                    dominant = category;
-                }
-            }
-            
-            return dominant;
+                    if (!categoryData || Object.keys(categoryData).length === 0) {
+                        return 'neutral';
+                    }
+                    
+                    let maxScore = 0;
+                    let dominant = 'neutral';
+                    let dominantData = null;
+                    
+                    for (const [category, data] of Object.entries(categoryData)) {
+                        const baseScore = data.score || (data.count * (data.weight || 1.0));
+                        const intensity = data.intensity || 0;
+                        const dominance = data.dominance || 'medium';
+                        
+                        let adjustedScore = baseScore;
+                        
+                        if (intensity > 0.7) {
+                            adjustedScore *= 1.3;
+                        } else if (intensity > 0.5) {
+                            adjustedScore *= 1.1;
+                        }
+                        
+                        if (dominance === 'high') {
+                            adjustedScore *= 1.2;
+                        } else if (dominance === 'medium') {
+                            adjustedScore *= 1.0;
+                        } else if (dominance === 'low') {
+                            adjustedScore *= 0.8;
+                        }
+                        
+                        const positionFactor = this.calculateCategoryPositionFactor(data, categoryData);
+                        adjustedScore *= positionFactor;
+                        
+                        const clusterFactor = this.calculateCategoryClusterFactor(data);
+                        adjustedScore *= clusterFactor;
+                        
+                        if (adjustedScore > maxScore) {
+                            maxScore = adjustedScore;
+                            dominant = category;
+                            dominantData = data;
+                        }
+                    }
+                    
+                    if (maxScore === 0) {
+                        return 'neutral';
+                    }
+                    
+                    const secondaryCandidates = this.findSecondaryCategories(categoryData, dominant, maxScore);
+                    
+                    return {
+                        primary: dominant,
+                        score: maxScore,
+                        confidence: this.calculateDominanceConfidence(categoryData, dominant, maxScore),
+                        secondary: secondaryCandidates,
+                        data: dominantData
+                    };
+        }
+                
+        calculateCategoryPositionFactor(categoryData, allCategories) {
+                    if (!categoryData.positions || categoryData.positions.length === 0) {
+                        return 1.0;
+                    }
+                    
+                    const positions = categoryData.positions.map(p => p.position);
+                    const firstPosition = Math.min(...positions);
+                    const lastPosition = Math.max(...positions);
+                    
+                    let positionScore = 1.0;
+                    
+                    if (firstPosition < 100) {
+                        positionScore *= 1.2;
+                    }
+                    
+                    if (lastPosition > 500) {
+                        positionScore *= 1.1;
+                    }
+                    
+                    const positionSpan = lastPosition - firstPosition;
+                    if (positionSpan > 1000) {
+                        positionScore *= 1.15;
+                    }
+                    
+                    return positionScore;
+        }
+                
+        calculateCategoryClusterFactor(categoryData) {
+                    if (!categoryData.clusters || categoryData.clusters.length === 0) {
+                        return 1.0;
+                    }
+                    
+                    const clusterCount = categoryData.clusters.length;
+                    const avgClusterSize = categoryData.clusters.reduce((sum, c) => sum + c.size, 0) / clusterCount;
+                    
+                    let clusterScore = 1.0;
+                    
+                    if (clusterCount >= 3) {
+                        clusterScore *= 1.3;
+                    } else if (clusterCount >= 2) {
+                        clusterScore *= 1.15;
+                    }
+                    
+                    if (avgClusterSize > 3) {
+                        clusterScore *= 1.2;
+                    }
+                    
+                    return clusterScore;
+        }
+                
+        findSecondaryCategories(categoryData, primaryCategory, primaryScore) {
+                    const secondary = [];
+                    
+                    for (const [category, data] of Object.entries(categoryData)) {
+                        if (category === primaryCategory) continue;
+                        
+                        const score = data.score || (data.count * (data.weight || 1.0));
+                        const ratio = score / primaryScore;
+                        
+                        if (ratio > 0.5) {
+                            secondary.push({
+                                category: category,
+                                score: score,
+                                ratio: ratio,
+                                intensity: data.intensity || 0
+                            });
+                        }
+                    }
+                    
+                    secondary.sort((a, b) => b.score - a.score);
+                    
+                    return secondary.slice(0, 3);
+        }
+                
+        calculateDominanceConfidence(categoryData, dominantCategory, dominantScore) {
+                    if (Object.keys(categoryData).length === 1) {
+                        return 0.95;
+                    }
+                    
+                    let secondHighestScore = 0;
+                    
+                    for (const [category, data] of Object.entries(categoryData)) {
+                        if (category === dominantCategory) continue;
+                        
+                        const score = data.score || (data.count * (data.weight || 1.0));
+                        if (score > secondHighestScore) {
+                            secondHighestScore = score;
+                        }
+                    }
+                    
+                    if (dominantScore === 0) {
+                        return 0.3;
+                    }
+                    
+                    const ratio = secondHighestScore / dominantScore;
+                    const confidence = 0.5 + (0.5 * (1 - ratio));
+                    
+                    const categoryCount = Object.keys(categoryData).length;
+                    const normalizedConfidence = confidence * (1 - (0.2 / categoryCount));
+                    
+                    return Math.min(0.95, Math.max(0.3, normalizedConfidence));
         }
         
         getWordContext(text, position, length, contextSize = 30) {
@@ -8429,6 +8645,7 @@
     
 
 })();
+
 
 
 
