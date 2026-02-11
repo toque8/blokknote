@@ -629,18 +629,17 @@ renderResult(result) {
 		}
 
 		const temporal = this.getSafe(result, 'details.lexical.temporal', {});
-		const emotionalMomentum = this.getNumber(temporal.emotionalMomentum);
-		if (this.shouldShowMetric(emotionalMomentum, true)) {
+		const emotionMomentum = this.getNumber(this.getSafe(temporal, 'metrics.momentum'));
+		if (this.shouldShowMetric(emotionMomentum, true)) {
 				html += `
 					<div class="emotion-metric">
-						<span class="label" title="${translations.emotionalMomentumDesc}">${translations.emotionalMomentum}:</span>
-						<span class="value" style="text-align:right !important;float:right;">${(emotionalMomentum * 100).toFixed(1)}%</span>
+						<span class="label" title="${translations.emotionMomentumDesc}">${translations.emotionMomentum}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionMomentum * 100).toFixed(1)}%</span>
 					</div>
 				`;
 		}
 
-		const progression = this.getSafe(result, 'details.lexical.temporal', {});
-		const emotionVolatility = this.getNumber(progression.volatility);
+		const emotionVolatility = this.getNumber(this.getSafe(temporal, 'metrics.volatility'));
 		if (this.shouldShowMetric(emotionVolatility, true)) {
 				html += `
 					<div class="emotion-metric">
@@ -650,7 +649,7 @@ renderResult(result) {
 				`;
 		}
 
-		const peakIntensity = this.getNumber(progression.peakIntensity);
+		const peakIntensity = this.getNumber(this.getSafe(temporal, 'metrics.peakIntensity'));
 		if (this.shouldShowMetric(peakIntensity, true)) {
 				html += `
 					<div class="emotion-metric">
@@ -660,7 +659,7 @@ renderResult(result) {
 				`;
 		}
 
-		const valleyDepth = this.getNumber(progression.valleyDepth);
+		const valleyDepth = this.getNumber(this.getSafe(temporal, 'metrics.valleyDepth'));
 		if (this.shouldShowMetric(valleyDepth, true)) {
 				html += `
 					<div class="emotion-metric">
@@ -670,7 +669,7 @@ renderResult(result) {
 				`;
 		}
 
-		const phaseCount = this.getNumber(progression.phaseCount);
+		const phaseCount = this.getNumber(this.getSafe(temporal, 'metrics.phaseCount'));
 		if (this.shouldShowMetric(phaseCount, true)) {
 				html += `
 					<div class="emotion-metric">
@@ -680,7 +679,7 @@ renderResult(result) {
 				`;
 		}
 
-		const peakCount = this.getNumber(this.getSafe(result, 'details.lexical.temporal.peaks', []).length);
+		const peakCount = this.getNumber(this.getSafe(temporal, 'peaks', []).length);
 		if (this.shouldShowMetric(peakCount, true) && peakCount > 0) {
 				html += `
 					<div class="emotion-metric">
@@ -690,7 +689,7 @@ renderResult(result) {
 				`;
 		}
 
-		const valleyCount = this.getNumber(this.getSafe(result, 'details.lexical.temporal.valleys', []).length);
+		const valleyCount = this.getNumber(this.getSafe(temporal, 'valleys', []).length);
 		if (this.shouldShowMetric(valleyCount, true) && valleyCount > 0) {
 				html += `
 					<div class="emotion-metric">
@@ -2374,6 +2373,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
