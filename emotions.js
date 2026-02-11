@@ -17,17 +17,18 @@
             this.dictionaries = {        
                 ru: {
                     ecstasy: [
-                        'экстаз', 'восторг', 'ликование', 'эйфория', 'упоение', 'исступление', 'воодушевление',
-                        'блаженство', 'восхищение', 'опьянение', 'торжество', 'триумф', 'празднество', 'литургия',
-                        'апофеоз', 'пафос', 'патетика', 'экзальтация', 'упоенье', 'распаление', 'накал', 'напряжение',
-                        'парения', 'взлёт', 'подъём', 'возвышение', 'одухотворение', 'вдохновенность', 'горение'
+                        'экстаз', 'восторг', 'ликование', 'эйфория', 'упоение', 'кульминация', 'грандиозность', 'безграничность', 
+                        'блаженство', 'восхищение', 'опьянение', 'торжество', 'триумф', 'кураж', 'катарсис', 'феерия', 'чудо', 'великолепие', 
+                        'апофеоз', 'накал', 'транс', 'нирвана', 'преображение', 'вознесение', 'апогей', 'самозабвение', 'наваждение', 'совершенство',
+                        'взлёт', 'подъём', 'одухотворение', 'просветление', 'озарение', 'жар', 'неистовство', 'оргазм', 'фурор', 'сенсация',
+                        'идеал', 'вечность', 'бесконечность', 'гармония', 'величие', 'рай', 'дзен', 'раздолье', 'свобода', 'простор', 'изобилие',
+                        'всепоглощение', 'запредельность'
                     ],
                     joy: [
-                        'радость', 'счастье', 'веселье', 'упоение', 'ликбезность', 'торжество', 'триумф',
+                        'радость', 'счастье', 'веселье', 'упоение', 'ликбезность',
                         'блаженство', 'наслаждение', 'удовольствие', 'утеха', 'утешение', 'забава', 'увеселение',
-                        'праздник', 'празднество', 'ликование', 'торжество', 'радостность', 'счастливость', 'веселость',
-                        'жизнерадостность', 'оптимизм', 'восторженность', 'восхитительность', 'прелесть', 'очарование',
-                        'благодушие', 'благополучие', 'процветание', 'расцвет', 'распускание', 'цветение'
+                        'праздник', 'празднество', 'веселость', 'жизнерадостность', 'оптимизм', 'восторженность', 'восхитительность', 'прелесть', 
+                        'очарование', 'благодушие', 'благополучие', 'процветание', 'расцвет', 'цветение'
                     ],
                     love: [
                         'любовь', 'обожание', 'преклонение', 'обожествление', 'симпатия', 'привязанность', 'нежность',
@@ -50,7 +51,7 @@
                     gratitude: [
                         'благодарность', 'признательность', 'благодарение', 'спасибо', 'благодать', 'ценность',
                         'признание', 'оценка', 'уважение', 'почитание', 'почет', 'восхищение', 'преклонение',
-                        'обожание', 'благоговение', 'трепет', 'восторг', 'воодушевление', 'вдохновение'
+                        'обожание', 'благоговение', 'трепет', 'воодушевление', 'вдохновение'
                     ],
                     inspiration: [
                         'вдохновение', 'одушевление', 'воодушевление', 'порыв', 'импульс', 'побуждение',
@@ -3672,72 +3673,107 @@
         }
         
         detectEmotionalClusters(categories, data) {
-            const clusters = [];
-            const emotionalPositions = [];
-            
-            for (const [category, categoryData] of Object.entries(categories)) {
-                if (categoryData.positions) {
-                    categoryData.positions.forEach(pos => {
-                        emotionalPositions.push({
-                            category: category,
-                            position: pos.position,
-                            length: pos.length,
-                            context: pos.context
-                        });
-                    });
-                }
-            }
-            
-            emotionalPositions.sort((a, b) => a.position - b.position);
-            
-            let currentCluster = [];
-            const clusterDistance = 50; // characters
-            
-            for (let i = 0; i < emotionalPositions.length; i++) {
-                if (currentCluster.length === 0) {
-                    currentCluster.push(emotionalPositions[i]);
-                } else {
-                    const lastPosition = currentCluster[currentCluster.length - 1];
-                    const currentPosition = emotionalPositions[i];
+                    const clusters = [];
+                    const emotionalPositions = [];
                     
-                    if (currentPosition.position - (lastPosition.position + lastPosition.length) < clusterDistance) {
-                        currentCluster.push(currentPosition);
-                    } else {
-                        if (currentCluster.length > 1) {
-                            clusters.push({
-                                positions: [...currentCluster],
-                                size: currentCluster.length,
-                                categories: [...new Set(currentCluster.map(p => p.category))],
-                                intensity: currentCluster.length * 2,
-                                center: this.calculateClusterCenter(currentCluster)
+                    for (const [category, categoryData] of Object.entries(categories)) {
+                        if (categoryData.positions) {
+                            categoryData.positions.forEach(pos => {
+                                emotionalPositions.push({
+                                    category: category,
+                                    position: pos.position,
+                                    length: pos.length,
+                                    context: pos.context,
+                                    weight: this.categoryWeights[category] || 1.0
+                                });
                             });
                         }
-                        currentCluster = [currentPosition];
                     }
-                }
-            }
-            
-            if (currentCluster.length > 1) {
-                clusters.push({
-                    positions: [...currentCluster],
-                    size: currentCluster.length,
-                    categories: [...new Set(currentCluster.map(p => p.category))],
-                    intensity: currentCluster.length * 2,
-                    center: this.calculateClusterCenter(currentCluster)
-                });
-            }
-            
-            return clusters;
+                    
+                    emotionalPositions.sort((a, b) => a.position - b.position);
+                    
+                    let currentCluster = [];
+                    const clusterDistance = 50;
+                    const minWordsForCluster = 2;
+                    
+                    for (let i = 0; i < emotionalPositions.length; i++) {
+                        if (currentCluster.length === 0) {
+                            currentCluster.push(emotionalPositions[i]);
+                        } else {
+                            const lastPosition = currentCluster[currentCluster.length - 1];
+                            const currentPosition = emotionalPositions[i];
+                            const gap = currentPosition.position - (lastPosition.position + lastPosition.length);
+                            
+                            if (gap < clusterDistance) {
+                                currentCluster.push(currentPosition);
+                            } else {
+                                if (currentCluster.length >= minWordsForCluster) {
+                                    clusters.push({
+                                        positions: [...currentCluster],
+                                        size: currentCluster.length,
+                                        categories: [...new Set(currentCluster.map(p => p.category))],
+                                        intensity: this.calculateClusterIntensity(currentCluster),
+                                        center: this.calculateClusterCenter(currentCluster),
+                                        emotionalWeight: this.calculateClusterWeight(currentCluster),
+                                        diversity: this.calculateClusterDiversity(currentCluster)
+                                    });
+                                }
+                                currentCluster = [currentPosition];
+                            }
+                        }
+                    }
+                    
+                    if (currentCluster.length >= minWordsForCluster) {
+                        clusters.push({
+                            positions: [...currentCluster],
+                            size: currentCluster.length,
+                            categories: [...new Set(currentCluster.map(p => p.category))],
+                            intensity: this.calculateClusterIntensity(currentCluster),
+                            center: this.calculateClusterCenter(currentCluster),
+                            emotionalWeight: this.calculateClusterWeight(currentCluster),
+                            diversity: this.calculateClusterDiversity(currentCluster)
+                        });
+                    }
+                    
+                    return clusters.sort((a, b) => b.intensity - a.intensity);
         }
-        
+                
         calculateClusterCenter(positions) {
-            const avgPosition = positions.reduce((sum, p) => sum + p.position, 0) / positions.length;
-            const avgLength = positions.reduce((sum, p) => sum + p.length, 0) / positions.length;
-            return {
-                position: avgPosition,
-                length: avgLength,
-                density: positions.length / (positions[positions.length - 1].position - positions[0].position)
-            };
+                    const avgPosition = positions.reduce((sum, p) => sum + p.position, 0) / positions.length;
+                    const avgLength = positions.reduce((sum, p) => sum + p.length, 0) / positions.length;
+                    const span = positions[positions.length - 1].position - positions[0].position;
+                    const density = span > 0 ? positions.length / span : 0;
+                    
+                    const weightedPosition = positions.reduce((sum, p) => sum + p.position * (p.weight || 1), 0) / positions.reduce((sum, p) => sum + (p.weight || 1), 0);
+                    
+                    return {
+                        position: avgPosition,
+                        weightedPosition: weightedPosition,
+                        length: avgLength,
+                        density: density,
+                        span: span,
+                        concentration: positions.length / (span + 1)
+                    };
+        }
+                
+        calculateClusterIntensity(cluster) {
+                    const baseIntensity = cluster.length * 1.5;
+                    const categoryCount = new Set(cluster.map(p => p.category)).size;
+                    const diversityBonus = Math.min(2.0, categoryCount * 0.3);
+                    const weightSum = cluster.reduce((sum, p) => sum + (p.weight || 1), 0);
+                    const weightFactor = weightSum / cluster.length;
+                    
+                    return baseIntensity * (1 + diversityBonus) * weightFactor;
+        }
+                
+        calculateClusterWeight(cluster) {
+                    return cluster.reduce((sum, p) => sum + (p.weight || 1), 0) / cluster.length;
+        }
+                
+        calculateClusterDiversity(cluster) {
+                    const categories = new Set(cluster.map(p => p.category));
+                    const totalCategories = 30;
+                    return categories.size / totalCategories;
         }
         
         analyzeEmotionalProgression(categories, data) {
@@ -8201,6 +8237,7 @@
     
 
 })();
+
 
 
 
