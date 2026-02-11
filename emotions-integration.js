@@ -483,115 +483,261 @@ renderResult(result) {
                             this.shouldShowMetric(intensity, true);
 
     if (hasPrimaryProfile) {
-        html += `
-             <div class="emotion-section">
-                 <h3>${translations.primaryProfile}</h3>`;
-        
-        if (this.shouldShowMetric(primaryToneName)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.primaryToneDesc}">${translations.primaryTone}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${this.translateValue(primaryToneName, currentLang)}</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(primaryToneDesc)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label">${translations.description}:</span>
-                     <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${this.translateValue(primaryToneDesc, currentLang)}</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(polarity, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.polarityDesc}">${translations.polarity}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(polarity * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(intensity, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.intensityDesc}">${translations.intensity}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(intensity * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(confidence, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.confidenceDesc}">${translations.confidence}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(confidence * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(consistency, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.consistencyDesc}">${translations.consistency}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(consistency * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(textComplexity, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.textComplexityDesc}">${translations.textComplexity}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(textComplexity * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(complexity, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.complexityDesc}">${translations.complexity}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(complexity * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(emotionalRange, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.emotionalRangeDesc}">${translations.emotionalRange}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(emotionalRange * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(emotionalDepth, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.emotionalDepthDesc}">${translations.emotionalDepth}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(emotionalDepth * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(emotionalTrend)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.emotionalTrendDesc}">${translations.emotionalTrend}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${this.translateEmotionalTrend(emotionalTrend, currentLang)}</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(emotionalArc)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.emotionalArcDesc}">${translations.emotionalArc}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${this.translateEmotionalArc(emotionalArc, currentLang)}</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(narrative)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.narrativeDesc}">${translations.narrative}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${this.translateNarrative(narrative, currentLang)}</span>
-                 </div>`;
-        }
-        
-        html += `</div>`;
+		html += `
+			<div class="emotion-section">
+				<h3>${translations.primaryProfile}</h3>;
+
+		if (this.shouldShowMetric(primaryToneName)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.primaryToneDesc}">${translations.primaryTone}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${this.translateValue(primaryToneName, currentLang)}</span>
+					</div>;
+		}
+
+		if (this.shouldShowMetric(primaryToneDesc)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label">${translations.description}:</span>
+						<span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${this.translateValue(primaryToneDesc, currentLang)}</span>
+					</div>;
+		}
+
+		if (this.shouldShowMetric(polarity, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.polarityDesc}">${translations.polarity}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(polarity * 100).toFixed(1)}%</span>
+					</div>;
+		}
+
+		if (this.shouldShowMetric(intensity, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.intensityDesc}">${translations.intensity}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(intensity * 100).toFixed(1)}%</span>
+					</div>;
+		}
+
+		if (this.shouldShowMetric(confidence, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.confidenceDesc}">${translations.confidence}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(confidence * 100).toFixed(1)}%</span>
+					</div>;
+		}
+
+		if (this.shouldShowMetric(consistency, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.consistencyDesc}">${translations.consistency}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(consistency * 100).toFixed(1)}%</span>
+					</div>;
+		}
+
+		if (this.shouldShowMetric(textComplexity, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.textComplexityDesc}">${translations.textComplexity}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(textComplexity * 100).toFixed(1)}%</span>
+					</div>;
+		}
+
+		if (this.shouldShowMetric(complexity, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.complexityDesc}">${translations.complexity}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(complexity * 100).toFixed(1)}%</span>
+					</div>;
+		}
+
+		if (this.shouldShowMetric(emotionalRange, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionalRangeDesc}">${translations.emotionalRange}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionalRange * 100).toFixed(1)}%</span>
+					</div>;
+		}
+
+		if (this.shouldShowMetric(emotionalDepth, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionalDepthDesc}">${translations.emotionalDepth}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionalDepth * 100).toFixed(1)}%</span>
+					</div>;
+		}
+
+		if (this.shouldShowMetric(ironyLevel, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.ironyLevelDesc}">${translations.ironyLevel}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(ironyLevel * 100).toFixed(1)}%</span>
+					</div>;
+		}
+
+		const emotionalMomentum = this.getNumber(this.getSafe(result, 'details.lexical.temporal.emotionalMomentum'));
+		if (this.shouldShowMetric(emotionalMomentum, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionalMomentumDesc}">${translations.emotionalMomentum}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionalMomentum * 100).toFixed(1)}%</span>
+					</div>;
+		}
+
+		const avgEmotionalDensity = this.getNumber(this.getSafe(result, 'details.lexical.metrics.lexicalDensity'));
+		if (this.shouldShowMetric(avgEmotionalDensity, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.avgEmotionalDensityDesc}">${translations.avgEmotionalDensity}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(avgEmotionalDensity * 100).toFixed(1)}%</span>
+					</div>;
+		}
+
+		const emotionBalance = this.getNumber(this.getSafe(result, 'details.intensityProfile.balance'));
+		if (this.shouldShowMetric(emotionBalance, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionBalanceDesc}">${translations.emotionBalance}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionBalance * 100).toFixed(1)}%</span>
+					</div>;
+		}
+
+		const emotionDominance = this.getNumber(this.getSafe(result, 'details.intensityProfile.dominance'));
+		if (this.shouldShowMetric(emotionDominance, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionDominanceDesc}">${translations.emotionDominance}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionDominance * 100).toFixed(1)}%</span>
+					</div>;
+		}
+
+		const emotionContrast = this.getNumber(this.getSafe(result, 'details.intensityProfile.contrast'));
+		if (this.shouldShowMetric(emotionContrast, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionContrastDesc}">${translations.emotionContrast}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionContrast * 100).toFixed(1)}%</span>
+					</div>;
+		}
+
+		const emotionConcentration = this.getNumber(this.getSafe(result, 'details.intensityProfile.concentration'));
+		if (this.shouldShowMetric(emotionConcentration, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionConcentrationDesc}">${translations.emotionConcentration}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionConcentration * 100).toFixed(1)}%</span>
+					</div>;
+		}
+
+		const emotionVolatility = this.getNumber(this.getSafe(result, 'details.progression.metrics.volatility'));
+		if (this.shouldShowMetric(emotionVolatility, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionVolatilityDesc}">${translations.emotionVolatility}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionVolatility * 100).toFixed(1)}%</span>
+					</div>;
+		}
+
+		const emotionMomentum = this.getNumber(this.getSafe(result, 'details.progression.metrics.momentum'));
+		if (this.shouldShowMetric(emotionMomentum, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionMomentumDesc}">${translations.emotionMomentum}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(emotionMomentum * 100).toFixed(1)}%</span>
+					</div>;
+		}
+
+		const peakIntensity = this.getNumber(this.getSafe(result, 'details.progression.metrics.peakIntensity'));
+		if (this.shouldShowMetric(peakIntensity, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.peakIntensityDesc}">${translations.peakIntensity}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(peakIntensity * 100).toFixed(1)}%</span>
+					</div>;
+		}
+
+		const valleyDepth = this.getNumber(this.getSafe(result, 'details.progression.metrics.valleyDepth'));
+		if (this.shouldShowMetric(valleyDepth, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.valleyDepthDesc}">${translations.valleyDepth}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(Math.abs(valleyDepth) * 100).toFixed(1)}%</span>
+					</div>;
+		}
+
+		const phaseCount = this.getNumber(this.getSafe(result, 'details.progression.metrics.phaseCount'));
+		if (this.shouldShowMetric(phaseCount, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.phaseCountDesc}">${translations.phaseCount}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${phaseCount.toFixed(0)}</span>
+					</div>;
+		}
+
+		const peakCount = this.getNumber(this.getSafe(result, 'details.progression.peaks.length'));
+		if (this.shouldShowMetric(peakCount, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.peakCountDesc}">${translations.peakCount}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${peakCount.toFixed(0)}</span>
+					</div>;
+		}
+
+		const valleyCount = this.getNumber(this.getSafe(result, 'details.progression.valleys.length'));
+		if (this.shouldShowMetric(valleyCount, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.valleyCountDesc}">${translations.valleyCount}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${valleyCount.toFixed(0)}</span>
+					</div>;
+		}
+
+		const clusterCount = this.getNumber(this.getSafe(result, 'details.clusters.length'));
+		if (this.shouldShowMetric(clusterCount, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.clusterCountDesc}">${translations.clusterCount}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${clusterCount.toFixed(0)}</span>
+					</div>;
+		}
+
+		const avgClusterSize = this.getNumber(this.getSafe(result, 'details.clusters.length')) > 0 
+				? this.getSafe(result, 'details.clusters').reduce((sum, c) => sum + c.size, 0) / this.getSafe(result, 'details.clusters.length')
+				: 0;
+		if (this.shouldShowMetric(avgClusterSize, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.avgClusterSizeDesc}">${translations.avgClusterSize}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${avgClusterSize.toFixed(1)}</span>
+					</div>;
+		}
+
+		if (this.shouldShowMetric(emotionalTrend)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionalTrendDesc}">${translations.emotionalTrend}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${this.translateEmotionalTrend(emotionalTrend, currentLang)}</span>
+					</div>;
+		}
+
+		if (this.shouldShowMetric(emotionalArc)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.emotionalArcDesc}">${translations.emotionalArc}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${this.translateEmotionalArc(emotionalArc, currentLang)}</span>
+					</div>;
+		}
+
+		if (this.shouldShowMetric(narrative)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.narrativeDesc}">${translations.narrative}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${this.translateNarrative(narrative, currentLang)}</span>
+					</div>;
+		}
+
+		html += `
+			</div>;
     }
 
     if (this.hasArrayContent(keywords)) {
@@ -1919,7 +2065,7 @@ getTranslations(lang) {
             therapeuticApproaches: 'Терапевтические подходы',
             therapeuticApproachesDesc: 'Рекомендуемые терапевтические подходы',
             colorPalette: 'Цветовая палитра',
-             processingInfo: 'Информация об обработке',
+            processingInfo: 'Информация об обработке',
             language: 'Язык',
             readingTime: 'Время чтения',
             timestamp: 'Время анализа',
@@ -1927,16 +2073,42 @@ getTranslations(lang) {
             analysisVersion: 'Версия анализа',
             repetitionsTitle: 'Повторы слов',
             repetitionsDesc: 'Повторяющиеся слова в тексте',
-             repetitionCount: 'раз',
+            repetitionCount: 'раз',
             repetitionSeverity: 'критичность',
-            criticalRepetitions: 'Критические повторы'
+            criticalRepetitions: 'Критические повторы',
+            emotionBalance: 'Баланс эмоций',
+            emotionBalanceDesc: 'Сбалансированность позитивных и негативных эмоций',
+            emotionDominance: 'Доминирование',
+            emotionDominanceDesc: 'Степень доминирования одной эмоции над другими',
+            emotionContrast: 'Контраст',
+            emotionContrastDesc: 'Разница между позитивными и негативными эмоциями',
+            emotionConcentration: 'Концентрация',
+            emotionConcentrationDesc: 'Насколько эмоции сосредоточены',
+            emotionVolatility: 'Волатильность',
+            emotionVolatilityDesc: 'Степень колебаний эмоций',
+            emotionMomentum: 'Эмоциональный импульс',
+            emotionMomentumDesc: 'Общая эмоциональная энергия',
+            peakIntensity: 'Пиковая интенсивность',
+            peakIntensityDesc: 'Максимальная интенсивность положительных эмоций',
+            valleyDepth: 'Глубина провалов',
+            valleyDepthDesc: 'Максимальная интенсивность отрицательных эмоций',
+            phaseCount: 'Количество фаз',
+            phaseCountDesc: 'Сколько эмоциональных фаз в тексте',
+            peakCount: 'Количество пиков',
+            peakCountDesc: 'Сколько пиков положительных эмоций',
+            valleyCount: 'Количество провалов',
+            valleyCountDesc: 'Сколько провалов отрицательных эмоций',
+            clusterCount: 'Количество кластеров',
+            clusterCountDesc: 'Сколько эмоциональных кластеров',
+            avgClusterSize: 'Средний размер кластера',
+            avgClusterSizeDesc: 'Среднее количество эмоций в кластере',
         },
         en: {
             primaryProfile: 'Primary Profile',
             primaryTone: 'Emotional Spectrum',
             primaryToneDesc: 'Main emotional tone of the text',
             description: 'Description',
-             polarity: 'Polarity',
+            polarity: 'Polarity',
             polarityDesc: 'Overall emotional direction (-100% = negative, +100% = positive)',
             intensity: 'Intensity',
             intensityDesc: 'Strength of emotional expression',
@@ -1946,7 +2118,7 @@ getTranslations(lang) {
             consistencyDesc: 'Emotional consistency of text',
             emotionalRange: 'Emotional Range',
             emotionalRangeDesc: 'Range of emotional fluctuations',
-             emotionalDepth: 'Emotional Depth',
+            emotionalDepth: 'Emotional Depth',
             emotionalDepthDesc: 'Depth of emotional experience',
             ironyLevel: 'Irony Level',
             ironyLevelDesc: 'Degree of irony in text',
@@ -1957,7 +2129,7 @@ getTranslations(lang) {
             keywords: 'Keywords',
             lexicalAnalysis: 'Lexical Analysis',
             totalChars: 'Total Characters',
-             totalCharsDesc: 'Total number of characters in text',
+            totalCharsDesc: 'Total number of characters in text',
             totalWords: 'Total Words',
             totalWordsDesc: 'Total number of words in text',
             paragraphs: 'Paragraphs',
@@ -1983,15 +2155,15 @@ getTranslations(lang) {
             positive: 'positive',
             negative: 'negative',
             neutral: 'neutral',
-             complex: 'complex',
+            complex: 'complex',
             syntacticAnalysis: 'Syntactic Analysis',
             sentences: 'Sentences',
             sentencesDesc: 'Number of sentences',
-             avgLength: 'Average Length',
+            avgLength: 'Average Length',
             avgLengthDesc: 'Average sentence length in words',
             words: 'words',
             totalPunctuation: 'Total Punctuation',
-             totalPunctuationDesc: 'Total number of punctuation marks in text',
+            totalPunctuationDesc: 'Total number of punctuation marks in text',
             emotionalPunctuation: 'Punctuation Marks',
             emotionalPunctuationDesc: 'Total number of punctuation marks in text',
             exclamatory: 'Exclamatory',
@@ -2001,7 +2173,7 @@ getTranslations(lang) {
             hesitant: 'Hesitant',
             hesitantDesc: 'Sentences with ellipsis',
             emphatic: 'Emphatic',
-             emphaticDesc: 'Sentences with emphatic punctuation',
+            emphaticDesc: 'Sentences with emphatic punctuation',
             imperative: 'Imperative',
             imperativeDesc: 'Imperative sentences',
             hyperbolic: 'Hyperbolic',
@@ -2016,7 +2188,7 @@ getTranslations(lang) {
             rhythmPatternDesc: 'Type of rhythm pattern',
             rhythmFlow: 'Rhythm Flow',
             rhythmFlowDesc: 'Smoothness of rhythm',
-             readability: 'Readability',
+            readability: 'Readability',
             readabilityDesc: 'Text readability level',
             syntacticCoherence: 'Syntactic Coherence',
             syntacticCoherenceDesc: 'Coherence of syntactic structures',
@@ -2026,7 +2198,7 @@ getTranslations(lang) {
             intensifiers: 'Intensifiers',
             intensifiersDesc: 'Emotion amplifying words (very, extremely)',
             diminutives: 'Diminutives',
-             diminutivesDesc: 'Diminutive forms',
+            diminutivesDesc: 'Diminutive forms',
             augmentatives: 'Augmentatives',
             augmentativesDesc: 'Augmentative forms',
             irony: 'Irony',
@@ -2041,10 +2213,10 @@ getTranslations(lang) {
             understatementDesc: 'Understatements in text',
             contextualCoherence: 'Contextual Coherence',
             contextualCoherenceDesc: 'Coherence of contextual elements',
-             contextualConsistency: 'Contextual Consistency',
+            contextualConsistency: 'Contextual Consistency',
             contextualConsistencyDesc: 'Consistency of contextual markers',
             toneVariation: 'Tone Variation',
-             toneVariationDesc: 'Degree of emotional tone variation',
+            toneVariationDesc: 'Degree of emotional tone variation',
             culturalAnalysis: 'Cultural Analysis',
             literary: 'Literary',
             literaryDesc: 'Literary references',
@@ -2074,7 +2246,7 @@ getTranslations(lang) {
             abstractionLevel: 'Abstraction Level',
             abstractionLevelDesc: 'Degree of text abstraction',
             semanticClusters: 'Semantic Clusters',
-             semanticClustersDesc: 'Groups of semantically related words',
+            semanticClustersDesc: 'Groups of semantically related words',
             emotionalArc: 'Emotional Arc',
             emotionalArcDesc: 'Type of emotional narrative arc', 
             emotionalTrend: 'Emotional Trend',
@@ -2111,7 +2283,7 @@ getTranslations(lang) {
             psychologicalComplexity: 'Psychological Complexity',
             psychologicalComplexityDesc: 'Degree of psychological complexity',
             selfAwarenessLevel: 'Self-Awareness Level',
-             selfAwarenessLevelDesc: 'Degree of self-awareness',
+            selfAwarenessLevelDesc: 'Degree of self-awareness',
             selfAwarenessScore: 'Self-Awareness Score',
             selfAwarenessScoreDesc: 'Numerical score of self-awareness level',
             psychologicalInsights: 'Psychological Insights',
@@ -2120,13 +2292,13 @@ getTranslations(lang) {
             cognitiveStyle: 'Cognitive Style',
             cognitiveStyleDesc: 'Dominant cognitive style',
             relations: 'Relational Patterns',
-             relationsDesc: 'Characteristic relational patterns',
+            relationsDesc: 'Characteristic relational patterns',
             growthPaths: 'Growth Paths',
             growthPathsDesc: 'Recommended personal growth directions',
-             therapeuticApproaches: 'Therapeutic Approaches',
+            therapeuticApproaches: 'Therapeutic Approaches',
             therapeuticApproachesDesc: 'Recommended therapeutic approaches',
             colorPalette: 'Color Palette',
-             processingInfo: 'Processing Info',
+            processingInfo: 'Processing Info',
             language: 'Language',
             readingTime: 'Reading Time',
             timestamp: 'Timestamp',
@@ -2136,7 +2308,33 @@ getTranslations(lang) {
             repetitionsDesc: 'Repeated words in text',
              repetitionCount: 'times',
             repetitionSeverity: 'severity',
-            criticalRepetitions: 'Critical repetitions'
+            criticalRepetitions: 'Critical repetitions',
+            emotionBalance: 'Emotion Balance',
+            emotionBalanceDesc: 'Balance of positive and negative emotions',
+            emotionDominance: 'Dominance',
+            emotionDominanceDesc: 'Degree of one emotion dominating others',
+            emotionContrast: 'Contrast',
+            emotionContrastDesc: 'Difference between positive and negative emotions',
+            emotionConcentration: 'Concentration',
+            emotionConcentrationDesc: 'How concentrated emotions are',
+            emotionVolatility: 'Volatility',
+            emotionVolatilityDesc: 'Degree of emotion fluctuations',
+            emotionMomentum: 'Emotional Momentum',
+            emotionMomentumDesc: 'Overall emotional energy',
+            peakIntensity: 'Peak Intensity',
+            peakIntensityDesc: 'Maximum intensity of positive emotions',
+            valleyDepth: 'Valley Depth',
+            valleyDepthDesc: 'Maximum intensity of negative emotions',
+            phaseCount: 'Phase Count',
+            phaseCountDesc: 'Number of emotional phases in text',
+            peakCount: 'Peak Count',
+            peakCountDesc: 'Number of positive emotion peaks',
+            valleyCount: 'Valley Count',
+            valleyCountDesc: 'Number of negative emotion valleys',
+            clusterCount: 'Cluster Count',
+            clusterCountDesc: 'Number of emotional clusters',
+            avgClusterSize: 'Average Cluster Size',
+            avgClusterSizeDesc: 'Average number of emotions per cluster',
         }
     };
     return translations[lang] || translations.en;
@@ -2164,6 +2362,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
