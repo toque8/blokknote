@@ -1474,7 +1474,8 @@
                               if (m) coldScore += m.length;
                     });
                     const totalTempMarkers = heatScore + coldScore;
-                    metrics.weatherIndex = totalTempMarkers ? ((heatScore - coldScore) / totalTempMarkers * 40).toFixed(0) : 0;
+                    metrics.weatherIndex = totalTempMarkers + 2 ? 
+                        ((heatScore + 1 - (coldScore + 1)) / (totalTempMarkers + 2) * 40).toFixed(0) : 0;
                     
                     const quotesRegex = /«[^»]+»|"[^"]+"|„[^“]+“|'[^']+'|‘[^’]+’|“[^”]+”/g;
                     const quotesMatches = text.match(quotesRegex) || [];
@@ -8994,6 +8995,7 @@
     
 
 })();
+
 
 
 
