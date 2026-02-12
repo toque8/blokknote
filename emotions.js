@@ -3301,7 +3301,7 @@
                 if (count > 0) {
                     const weight = this.categoryWeights[category] || 1.0;
                     const frequency = count / words.length;
-                    const intensity = this.calculateCategoryIntensity(category, count, frequency);
+                    const intensity = this.calculateCategoryIntensity(category, count, frequency, data, { positions: positions });
                     
                     results[category] = {
                         count,
@@ -8782,6 +8782,7 @@
     
 
 })();
+
 
 
 
