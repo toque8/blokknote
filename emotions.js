@@ -3480,39 +3480,32 @@
                 
                 wordList.forEach(word => {
                         const regex = new RegExp(`\\b${this.escapeRegExp(word)}\\b`, 'gi');
-                        const matches = data.cleaned.match(regex);
-                        
-                        if (matches) {
-                            let match;
-                            while ((match = regex.exec(data.cleaned)) !== null) {
-                                const context = this.getWordContext(data.cleaned, match.index, word.length);
-                                let hasNegation = false;
-                                const negations = this.contextRules[this.language]?.negations || ['не', 'ни', 'нет', 'без'];
-                                const lowerContext = context.toLowerCase();
-                                for (const neg of negations) {
-                                    const pattern = new RegExp(`\\b${neg}\\b`, 'i');
-                                    if (pattern.test(lowerContext)) {
-                                        hasNegation = true;
-                                        break;
-                                    }
+                        let match;
+                        while ((match = regex.exec(data.cleaned)) !== null) {
+                            const context = this.getWordContext(data.cleaned, match.index, word.length, 20);
+                            let hasNegation = false;
+                            const negations = this.contextRules[this.language]?.negations || ['не', 'ни', 'нет', 'без', 'without', 'not', 'no', 'never'];
+                            const lowerContext = context.toLowerCase();
+                            for (const neg of negations) {
+                                if (lowerContext.includes(` ${neg} `) || lowerContext.startsWith(`${neg} `) || lowerContext.endsWith(` ${neg}`)) {
+                                    hasNegation = true;
+                                    break;
                                 }
-                                positions.push({
-                                    word: word,
-                                    position: match.index,
-                                    length: word.length,
-                                    context: context,
-                                    hasNegation: hasNegation,
-                                    weight: hasNegation ? 0.2 : 1.0
-                                });
-                                count += hasNegation ? 0.2 : 1.0;
-                                
-                                const sentenceIndex = this.findSentenceIndex(data.sentences, match.index);
-                                if (sentenceIndex !== -1) {
-                                    if (!sentenceOccurrences[sentenceIndex]) {
-                                        sentenceOccurrences[sentenceIndex] = [];
-                                    }
-                                    sentenceOccurrences[sentenceIndex].push(word);
+                            }
+                            positions.push({
+                                word: word,
+                                position: match.index,
+                                length: word.length,
+                                context: context,
+                                hasNegation: hasNegation
+                            });
+                            count += hasNegation ? 0.15 : 1.0;
+                            const sentenceIndex = this.findSentenceIndex(data.sentences, match.index);
+                            if (sentenceIndex !== -1) {
+                                if (!sentenceOccurrences[sentenceIndex]) {
+                                    sentenceOccurrences[sentenceIndex] = [];
                                 }
+                                sentenceOccurrences[sentenceIndex].push(word);
                             }
                         }
                 });
@@ -9001,6 +8994,7 @@
     
 
 })();
+
 
 
 
