@@ -2478,7 +2478,7 @@ getTranslations(lang) {
             writerDialogueHint: 'Percentage of text inside quotes (direct speech). High = dialogue-driven, low = narration',
             writerTimeHint: 'Future (+) vs past (-) orientation. Calculated from verb forms and tense markers',
             writerModalityHint: 'Frequency of uncertainty words (maybe, perhaps, probably) per 1000 words. Higher = more hypothetical',
-            writerEgoHint: 'Percentage of "I/we" among all personal pronouns. >50% means egocentric narration',
+            writerEgoHint: 'Percentage of \I/we\ among all personal pronouns. >50% means egocentric narration',
             writerFragmentationHint: '10 = each sentence starts a new paragraph, 1 = 10 sentences per paragraph, 0 = monolithic',
             writerImmersivenessHint: 'Sensory words (sight, hearing, touch, smell, taste) per 1000 words. High = immersive atmosphere',
             writerChaosHint: 'Rhythm entropy: uniformity of sentence length, paragraph length and punctuation. 0% = monotonous, 100% = chaotic/rich',
@@ -2509,6 +2509,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
