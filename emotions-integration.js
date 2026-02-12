@@ -307,7 +307,17 @@ translateValue(value, lang) {
             'когнитивно-поведенческая терапия': 'когнитивно-поведенческая терапия',
             'терапия принятия и ответственности': 'терапия принятия и ответственности',
             'глубинная психотерапия': 'глубинная психотерапия',
-            'общеукрепляющая психотерапия': 'общеукрепляющая психотерапия'
+            'общеукрепляющая психотерапия': 'общеукрепляющая психотерапия',
+			'Коэффициент Хемингуэя': 'Коэффициент Хемингуэя',
+            'Эффект тишины': 'Эффект тишины',
+            'Индекс погоды': 'Индекс погоды',
+            'Парадигма диалога': 'Парадигма диалога',
+            'Вектор времени': 'Вектор времени',
+            'Уровень модальности': 'Уровень модальности',
+            'Эго-фактор': 'Эго-фактор',
+            'Степень фрагментации': 'Степень фрагментации',
+            'Показатель иммерсивности': 'Показатель иммерсивности',
+            'Процент энтропии': 'Процент энтропии'
         };
         return translations[value] || value;
     } else if (lang === 'en') {
@@ -331,6 +341,16 @@ translateValue(value, lang) {
             'Сложное переплетение': 'Complex Intertwining',
             'Горько-сладкая симфония': 'Bittersweet Symphony',
             'Ностальгическое эхо': 'Nostalgic Echo',
+			'Коэффициент Хемингуэя': 'Hemingway Coefficient',
+            'Эффект тишины': 'Silence Effect',
+            'Индекс погоды': 'Weather Index',
+            'Парадигма диалога': 'Dialogue Paradigm',
+            'Вектор времени': 'Time Vector',
+            'Уровень модальности': 'Modality Level',
+            'Эго-фактор': 'Ego Factor',
+            'Степень фрагментации': 'Fragmentation Degree',
+            'Показатель иммерсивности': 'Immersiveness',
+            'Процент энтропии': 'Chaos Entropy',
             
             'Сдержанное богатое эмоциональное переживание': 'Restrained rich emotional experience',
             'Сдержанное спокойное принятие и удовлетворение текущим моментом': 'Restrained calm acceptance and satisfaction with the current moment',            'Состояние полного, всеобъемлющего счастья и духовного подъёма': 'A state of complete, all-encompassing happiness and spiritual upliftment',
@@ -750,6 +770,101 @@ renderResult(result) {
 			</div>
 		`;
 	}
+    
+    const writer = result.metrics?.writer || {};
+    const hasWriterMetrics = Object.keys(writer).length > 0;
+          
+    if (hasWriterMetrics) {
+                    const lang = this.getCurrentLanguage();
+                    const t = this.getTranslation(lang) || {};
+                    
+                    html += `<div class="metrics-section">`;
+                    html += `<h3>${this.translateValue('Для писателя', lang)}</h3>`;
+                    html += `<div class="metrics-grid">`;
+                    
+                    if (this.shouldShowMetric(writer.hemingwayCoefficient, true)) {
+                              html += `<div class="metric-item">`;
+                              html += `<span class="metric-label">${this.translateValue('Коэффициент Хемингуэя', lang)}</span>`;
+                              html += `<span class="metric-value">${writer.hemingwayCoefficient}%</span>`;
+                              html += `<span class="metric-hint" title="${t.writerHemingwayHint || ''}">ⓘ</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(writer.silenceEffect, true)) {
+                              html += `<div class="metric-item">`;
+                              html += `<span class="metric-label">${this.translateValue('Эффект тишины', lang)}</span>`;
+                              html += `<span class="metric-value">${writer.silenceEffect} ${this.translateValue('dB', lang)}</span>`;
+                              html += `<span class="metric-hint" title="${t.writerSilenceHint || ''}">ⓘ</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(writer.weatherIndex, true)) {
+                              html += `<div class="metric-item">`;
+                              html += `<span class="metric-label">${this.translateValue('Индекс погоды', lang)}</span>`;
+                              html += `<span class="metric-value">${writer.weatherIndex} ${this.translateValue('°C', lang)}</span>`;
+                              html += `<span class="metric-hint" title="${t.writerWeatherHint || ''}">ⓘ</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(writer.dialogueParadigm, true)) {
+                              html += `<div class="metric-item">`;
+                              html += `<span class="metric-label">${this.translateValue('Парадигма диалога', lang)}</span>`;
+                              html += `<span class="metric-value">${writer.dialogueParadigm}%</span>`;
+                              html += `<span class="metric-hint" title="${t.writerDialogueHint || ''}">ⓘ</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(writer.timeVector, true)) {
+                              html += `<div class="metric-item">`;
+                              html += `<span class="metric-label">${this.translateValue('Вектор времени', lang)}</span>`;
+                              html += `<span class="metric-value">${writer.timeVector}</span>`;
+                              html += `<span class="metric-hint" title="${t.writerTimeHint || ''}">ⓘ</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(writer.modalityLevel, true)) {
+                              html += `<div class="metric-item">`;
+                              html += `<span class="metric-label">${this.translateValue('Уровень модальности', lang)}</span>`;
+                              html += `<span class="metric-value">${writer.modalityLevel} ${this.translateValue('‰', lang)}</span>`;
+                              html += `<span class="metric-hint" title="${t.writerModalityHint || ''}">ⓘ</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(writer.egoFactor, true)) {
+                              html += `<div class="metric-item">`;
+                              html += `<span class="metric-label">${this.translateValue('Эго-фактор', lang)}</span>`;
+                              html += `<span class="metric-value">${writer.egoFactor}%</span>`;
+                              html += `<span class="metric-hint" title="${t.writerEgoHint || ''}">ⓘ</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(writer.fragmentationDegree, true)) {
+                              html += `<div class="metric-item">`;
+                              html += `<span class="metric-label">${this.translateValue('Степень фрагментации', lang)}</span>`;
+                              html += `<span class="metric-value">${writer.fragmentationDegree}</span>`;
+                              html += `<span class="metric-hint" title="${t.writerFragmentationHint || ''}">ⓘ</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(writer.immersiveness, true)) {
+                              html += `<div class="metric-item">`;
+                              html += `<span class="metric-label">${this.translateValue('Показатель иммерсивности', lang)}</span>`;
+                              html += `<span class="metric-value">${writer.immersiveness} ${this.translateValue('‰', lang)}</span>`;
+                              html += `<span class="metric-hint" title="${t.writerImmersivenessHint || ''}">ⓘ</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(writer.chaosEntropyPercent, true)) {
+                              html += `<div class="metric-item">`;
+                              html += `<span class="metric-label">${this.translateValue('Процент энтропии', lang)}</span>`;
+                              html += `<span class="metric-value">${writer.chaosEntropyPercent}%</span>`;
+                              html += `<span class="metric-hint" title="${t.writerChaosHint || ''}">ⓘ</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    html += `</div>`;
+                    html += `</div>`;
+    }
 
     if (this.hasArrayContent(keywords)) {
         html += `
@@ -2011,10 +2126,10 @@ getTranslations(lang) {
             idiomsDesc: 'Устойчивые выражения и фразеологизмы',
             culturalDepth: 'Глубина культуры',
             culturalDepthDesc: 'Глубина культурных отсылок',
-             intertextuality: 'Интертекстуальность',
+            intertextuality: 'Интертекстуальность',
             intertextualityDesc: 'Степень интертекстуальных связей',
             culturalCoherence: 'Культурная связность',
-             culturalCoherenceDesc: 'Связность культурных элементов',
+            culturalCoherenceDesc: 'Связность культурных элементов',
             dominantCulturalTheme: 'Доминирующая культурная тема',
             dominantCulturalThemeDesc: 'Основная культурная тема текста',
             semanticAnalysis: 'Семантический анализ',
@@ -2116,6 +2231,16 @@ getTranslations(lang) {
             clusterCountDesc: 'Сколько эмоциональных кластеров',
             avgClusterSize: 'Средний размер кластера',
             avgClusterSizeDesc: 'Среднее количество эмоций в кластере',
+            writerHemingwayHint: 'Доля предложений ≤5 слов без союзов «чтобы, который, because, which…». Высокий % — «рубленый» стиль',
+            writerSilenceHint: 'Плотность слов «тишина/молчание» и многоточий. дБ = 10·log₁₀(плотность). Высокое значение — текст полон пауз',
+            writerWeatherHint: 'Баланс между «жарой» и «холодом» в лексике. -40°C = ледяной, +40°C = знойный, 0°C = нейтрально',
+            writerDialogueHint: 'Доля текста внутри кавычек (прямая речь). Высокое значение — диалоговая проза, низкое — нарратив',
+            writerTimeHint: 'Преобладание будущего (+) или прошлого (-). Рассчитано по глагольным формам и маркерам времени',
+            writerModalityHint: 'Частота слов неуверенности (может быть, наверное, probably) на 1000 слов. Чем выше, тем текст гипотетичнее',
+            writerEgoHint: 'Доля «я/мы» среди всех личных местоимений. >50% — эгоцентричное повествование',
+            writerFragmentationHint: '10 = каждое предложение с абзаца, 1 = абзацы по 10 предложений, 0 = монолит',
+            writerImmersivenessHint: 'Сенсорная лексика (зрение, слух, осязание, запах, вкус) на 1000 слов. Погружение в сцену',
+            writerChaosHint: 'Энтропия ритма: равномерность распределения длин предложений, абзацев и знаков препинания. 0% — монотонно, 100% — богато/хаотично',
         },
         en: {
             primaryProfile: 'Primary Profile',
@@ -2349,6 +2474,16 @@ getTranslations(lang) {
             clusterCountDesc: 'Number of emotional clusters',
             avgClusterSize: 'Average Cluster Size',
             avgClusterSizeDesc: 'Average number of emotions per cluster',
+            writerHemingwayHint: 'Percentage of sentences ≤5 words without "that/which/because…". High % means choppy, Hemingway style',
+            writerSilenceHint: 'Density of silence words and ellipses. dB = 10·log₁₀(density). High value = text full of pauses',
+            writerWeatherHint: 'Balance between "hot" and "cold" vocabulary. -40°C = icy, +40°C = scorching, 0°C = neutral',
+            writerDialogueHint: 'Percentage of text inside quotes (direct speech). High = dialogue-driven, low = narration',
+            writerTimeHint: 'Future (+) vs past (-) orientation. Calculated from verb forms and tense markers',
+            writerModalityHint: 'Frequency of uncertainty words (maybe, perhaps, probably) per 1000 words. Higher = more hypothetical',
+            writerEgoHint: 'Percentage of "I/we" among all personal pronouns. >50% means egocentric narration',
+            writerFragmentationHint: '10 = each sentence starts a new paragraph, 1 = 10 sentences per paragraph, 0 = monolithic',
+            writerImmersivenessHint: 'Sensory words (sight, hearing, touch, smell, taste) per 1000 words. High = immersive atmosphere',
+            writerChaosHint: 'Rhythm entropy: uniformity of sentence length, paragraph length and punctuation. 0% = monotonous, 100% = chaotic/rich',
         }
     };
     return translations[lang] || translations.en;
@@ -2376,6 +2511,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
