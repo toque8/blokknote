@@ -3510,7 +3510,7 @@
                             count += hasNegation ? 0.2 : 1.0;
                         }
                             
-                            const sentenceIndex = this.findSentenceIndex(data.sentences, match.index);
+                        const sentenceIndex = this.findSentenceIndex(data.sentences, match.index);
                             if (sentenceIndex !== -1) {
                                 if (!sentenceOccurrences[sentenceIndex]) {
                                     sentenceOccurrences[sentenceIndex] = [];
@@ -9005,6 +9005,7 @@
     
 
 })();
+
 
 
 
