@@ -4394,9 +4394,70 @@
         }
         
         getWordContext(text, position, length, contextSize = 30) {
-            const start = Math.max(0, position - contextSize);
-            const end = Math.min(text.length, position + length + contextSize);
-            return text.substring(start, end);
+                    const startRaw = Math.max(0, position - contextSize);
+                    const endRaw = Math.min(text.length, position + length + contextSize);
+                    let start = startRaw;
+                    let end = endRaw;
+                    const beforeText = text.substring(0, position);
+                    const afterText = text.substring(position + length);
+                    const beforeWords = beforeText.split(/\s+/);
+                    const afterWords = afterText.split(/\s+/);
+                    const wordBeforeCount = Math.min(5, beforeWords.length);
+                    const wordAfterCount = Math.min(5, afterWords.length);
+                    if (wordBeforeCount > 0) {
+                        const searchStart = beforeText.lastIndexOf(beforeWords[beforeWords.length - wordBeforeCount]);
+                        if (searchStart !== -1) start = searchStart;
+                    }
+                    if (wordAfterCount > 0 && afterWords.length > 0) {
+                        const searchEnd = afterText.indexOf(afterWords[wordAfterCount - 1]);
+                        if (searchEnd !== -1) {
+                            end = position + length + searchEnd + afterWords[wordAfterCount - 1].length;
+                        }
+                    }
+                    const contextText = text.substring(start, end);
+                    const sentenceStart = beforeText.lastIndexOf(/[.!?…]+[\s\n]/);
+                    const sentenceEndMatch = afterText.match(/[.!?…]+/);
+                    const sentenceEnd = sentenceEndMatch ? position + length + sentenceEndMatch.index + sentenceEndMatch[0].length : -1;
+                    const emotionalWords = this.countEmotionalWordsInSentence(contextText);
+                    const hasNegation = /(?:не|ни|нет|без|without|not|no|never|none)\s+\S{3,}/i.test(contextText);
+                    const hasIntensifier = /(?:очень|крайне|чрезвычайно|невероятно|очень|extremely|incredibly|absolutely|very)\s+\S{3,}/i.test(contextText);
+                    const allCapsCount = (contextText.match(/\b[A-ZА-ЯЁ]{3,}\b/g) || []).length;
+                    const exclamationCount = (contextText.match(/!/g) || []).length;
+                    const questionCount = (contextText.match(/\?/g) || []).length;
+                    const isCrossingSentenceBoundary = (sentenceStart !== -1 && sentenceStart > start) || (sentenceEnd !== -1 && sentenceEnd < end);
+                    return {
+                        text: contextText,
+                        position: {
+                            start: start,
+                            end: end,
+                            wordStart: position - start,
+                            wordEnd: position + length - start,
+                            originalStart: position,
+                            originalEnd: position + length
+                        },
+                        boundaries: {
+                            sentenceStart: sentenceStart,
+                            sentenceEnd: sentenceEnd,
+                            crossesSentence: isCrossingSentenceBoundary,
+                            wordBeforeCount: wordBeforeCount,
+                            wordAfterCount: wordAfterCount
+                        },
+                        metrics: {
+                            emotionalWords: emotionalWords,
+                            hasNegation: hasNegation,
+                            hasIntensifier: hasIntensifier,
+                            allCapsCount: allCapsCount,
+                            exclamationCount: exclamationCount,
+                            questionCount: questionCount,
+                            length: contextText.length,
+                            wordCount: contextText.split(/\s+/).filter(w => w.length > 0).length
+                        },
+                        modifiers: {
+                            negationDetected: hasNegation,
+                            intensificationDetected: hasIntensifier,
+                            emphasisLevel: Math.min(1, (allCapsCount + exclamationCount * 0.5) / 3)
+                        }
+                    };
         }
         
         findSentenceIndex(sentences, position) {
@@ -8680,6 +8741,7 @@
     
 
 })();
+
 
 
 
