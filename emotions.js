@@ -1354,7 +1354,7 @@
                     const culturalAnalysis = this.enhancedCulturalAnalysis(preprocessing);
                     const semanticAnalysis = this.enhancedSemanticAnalysis(preprocessing);
                     const psychologicalAnalysis = this.psychologicalAnalysis(preprocessing);
-                    const repetitionAnalysis = this.detectWordRepetitions(preprocessing); // ВЫЗОВ ЕСТЬ
+                    const repetitionAnalysis = this.detectWordRepetitions(preprocessing); 
                     
                     const integratedResult = this.deepIntegration({
                         lexical: lexicalAnalysis,
@@ -1371,6 +1371,13 @@
                     const psychologicalInsights = this.generatePsychologicalInsights(integratedResult);
                     
                     const processingTime = performance.now() - startTime;
+
+                    let writerMetrics = {};
+                    try {
+                        writerMetrics = this.calculateWriterMetrics(text);
+                    } catch (e) {
+                        console.warn('Writer metrics calculation error:', e);
+                    }
                     
                     return {
                         success: true,
@@ -1385,7 +1392,8 @@
                             sentenceCount: preprocessing.sentences.length,
                             paragraphCount: preprocessing.paragraphs.length,
                             readingTime: preprocessing.words.length / 200,
-                            complexityScore: integratedResult.complexityScore
+                            complexityScore: integratedResult.complexityScore,
+                            writer: writerMetrics
                         },
                         details: {
                             lexical: lexicalAnalysis,
@@ -1410,6 +1418,206 @@
                         profile: this.getNeutralResult().profile
                     };
                 }
+        }
+
+        calculateWriterMetrics(text) {
+                    if (!text || typeof text !== 'string') return {};
+                    
+                    const sentences = text.split(/[.!?]+/).filter(Boolean);
+                    const words = text.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
+                    const chars = text.length;
+                    const totalSentences = sentences.length;
+                    const totalWords = words.length;
+                    
+                    const metrics = {};
+                    
+                    const subordConjRu = ['чтобы','потому','который','что','когда','если','так','как','будто','словно'];
+                    const subordConjEn = ['that','which','because','if','when','as','like','than','while','though'];
+                    let hemingwayCount = 0;
+                    sentences.forEach(s => {
+                              const sentWords = s.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
+                              if (sentWords.length <= 5) {
+                                        const lower = s.toLowerCase();
+                                        const hasSubord = subordConjRu.some(c => lower.includes(c)) || 
+                                                          subordConjEn.some(c => lower.includes(c));
+                                        if (!hasSubord) hemingwayCount++;
+                              }
+                    });
+                    metrics.hemingwayCoefficient = totalSentences ? (hemingwayCount / totalSentences * 100).toFixed(1) : 0;
+                    
+                    const silenceWordsRu = ['тишина','молчание','пауза','безмолвие','покой','тишь','затишье'];
+                    const silenceWordsEn = ['silence','quiet','stillness','pause','hush','calm'];
+                    let silenceCount = 0;
+                    const lowerText = text.toLowerCase();
+                    silenceWordsRu.concat(silenceWordsEn).forEach(w => {
+                              const re = new RegExp(w, 'g');
+                              const matches = lowerText.match(re);
+                              if (matches) silenceCount += matches.length;
+                    });
+                    const ellipsisCount = (text.match(/…|\.{3,}/g) || []).length;
+                    const silenceDensity = (silenceCount + ellipsisCount) / chars * 1000;
+                    metrics.silenceEffect = silenceDensity > 0 ? (10 * Math.log10(silenceDensity + 1)).toFixed(1) : 0;
+                    
+                    const heatRu = ['жар','огонь','солнце','тепл','горяч','зной','пекл','раскал'];
+                    const heatEn = ['hot','fire','sun','warm','heat','burn','scorch'];
+                    const coldRu = ['лед','мороз','холод','снег','стуж','холодн','мерз'];
+                    const coldEn = ['ice','frost','cold','snow','freeze','chill'];
+                    let heatScore = 0, coldScore = 0;
+                    heatRu.concat(heatEn).forEach(w => {
+                              const re = new RegExp(w, 'g');
+                              const m = lowerText.match(re);
+                              if (m) heatScore += m.length;
+                    });
+                    coldRu.concat(coldEn).forEach(w => {
+                              const re = new RegExp(w, 'g');
+                              const m = lowerText.match(re);
+                              if (m) coldScore += m.length;
+                    });
+                    const totalTempMarkers = heatScore + coldScore;
+                    metrics.weatherIndex = totalTempMarkers ? ((heatScore - coldScore) / totalTempMarkers * 40).toFixed(0) : 0;
+                    
+                    const quotesRegex = /«[^»]+»|"[^"]+"|„[^“]+“|'[^']+'|‘[^’]+’|“[^”]+”/g;
+                    const quotesMatches = text.match(quotesRegex) || [];
+                    const quotesChars = quotesMatches.join('').length;
+                    metrics.dialogueParadigm = chars ? (quotesChars / chars * 100).toFixed(1) : 0;
+                    
+                    const pastRu = /\b[а-яё]+(л|ла|ло|ли)\b/gi;
+                    const pastEnWords = ['went','saw','did','said','came','took','thought','made','felt','got','gave','found','knew','left','meant'];
+                    const pastEnEd = /\b[a-z]+ed\b/gi;
+                    let pastCount = 0;
+                    const pastRuMatches = text.match(pastRu);
+                    if (pastRuMatches) pastCount += pastRuMatches.length;
+                    pastEnWords.forEach(w => {
+                              const re = new RegExp('\\b' + w + '\\b', 'gi');
+                              const m = text.match(re);
+                              if (m) pastCount += m.length;
+                    });
+                    const pastEnEdMatches = text.match(pastEnEd);
+                    if (pastEnEdMatches) pastCount += pastEnEdMatches.length;
+                    
+                    const futureRu = /\b(будет|будут|буду|будешь|будем|будете|станет|станут)\b/gi;
+                    const futureEn = /\b(will|shall|\'ll)\b/gi;
+                    let futureCount = 0;
+                    const futureRuMatches = text.match(futureRu);
+                    if (futureRuMatches) futureCount += futureRuMatches.length;
+                    const futureEnMatches = text.match(futureEn);
+                    if (futureEnMatches) futureCount += futureEnMatches.length;
+                    
+                    metrics.timeVector = ((futureCount - pastCount) / (pastCount + futureCount + 1) * 100).toFixed(1);
+                    
+                    const modalityRu = ['может быть','наверное','возможно','вероятно','кажется','похоже','пожалуй','едва ли','вряд ли'];
+                    const modalityEn = ['probably','maybe','perhaps','possibly','apparently','seemingly','likely'];
+                    let modalityCount = 0;
+                    modalityRu.concat(modalityEn).forEach(w => {
+                              const re = new RegExp(w, 'gi');
+                              const m = lowerText.match(re);
+                              if (m) modalityCount += m.length;
+                    });
+                    metrics.modalityLevel = totalWords ? (modalityCount / totalWords * 1000).toFixed(1) : 0;
+                    
+                    const firstPersonRu = ['я','меня','мне','мной','мною','мы','нас','нам','нами'];
+                    const firstPersonEn = ['i','me','my','mine','we','us','our','ours'];
+                    const allPersonalRu = ['ты','тебя','тебе','тобой','вы','вас','вам','вами','он','его','ему','им','она','её','ей','ею','они','их','им'];
+                    const allPersonalEn = ['you','your','yours','he','him','his','she','her','hers','they','them','their','theirs'];
+                    let firstPersonCount = 0, totalPronounCount = 0;
+                    const wordRegex = /[a-zA-Zа-яА-ЯёЁ]+/g;
+                    const allWords = text.match(wordRegex) || [];
+                    allWords.forEach(w => {
+                              const lw = w.toLowerCase();
+                              if (firstPersonRu.includes(lw) || firstPersonEn.includes(lw)) firstPersonCount++;
+                              if (firstPersonRu.includes(lw) || firstPersonEn.includes(lw) || 
+                                  allPersonalRu.includes(lw) || allPersonalEn.includes(lw)) totalPronounCount++;
+                    });
+                    metrics.egoFactor = totalPronounCount ? ((firstPersonCount / totalPronounCount) * 100).toFixed(1) : 0;
+                    
+                    const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+                    const paragraphCount = paragraphs.length || 1;
+                    const avgSentPerParagraph = totalSentences / paragraphCount;
+                    metrics.fragmentationDegree = avgSentPerParagraph > 0 ? (10 / avgSentPerParagraph).toFixed(1) : 0;
+                    
+                    const sensoryRu = [
+                              'видеть','увидеть','взгляд','глаз','смотреть',
+                              'слышать','звук','слушать',
+                              'касаться','трогать','гладкий','шершавый',
+                              'пахнуть','запах','аромат',
+                              'вкус','горький','сладкий'
+                    ];
+                    const sensoryEn = [
+                              'see','look','gaze','eye','watch',
+                              'hear','sound','listen',
+                              'touch','feel','smooth','rough',
+                              'smell','scent',
+                              'taste','bitter','sweet'
+                    ];
+                    let sensoryCount = 0;
+                    sensoryRu.concat(sensoryEn).forEach(w => {
+                              const re = new RegExp('\\b' + w + '\\w*\\b', 'gi');
+                              const m = text.match(re);
+                              if (m) sensoryCount += m.length;
+                    });
+                    metrics.immersiveness = totalWords ? (sensoryCount / totalWords * 1000).toFixed(1) : 0;
+                    
+                    const sentLengths = sentences.map(s => (s.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || []).length);
+                    const sentFreq = {};
+                    sentLengths.forEach(len => sentFreq[len] = (sentFreq[len] || 0) + 1);
+                    let sentEntropy = 0;
+                    if (totalSentences > 0) {
+                              Object.values(sentFreq).forEach(f => {
+                                        const p = f / totalSentences;
+                                        sentEntropy -= p * Math.log2(p);
+                              });
+                    }
+                    const uniqueSentLengths = Object.keys(sentFreq).length;
+                    const maxSentEntropy = uniqueSentLengths > 1 ? Math.log2(uniqueSentLengths) : 0;
+                    const normSentEntropy = maxSentEntropy > 0 ? sentEntropy / maxSentEntropy : 0;
+                    
+                    const paraLengths = paragraphs.map(p => {
+                              const s = p.split(/[.!?]+/).filter(Boolean);
+                              return s.length;
+                    });
+                    if (paraLengths.length === 0) paraLengths.push(totalSentences);
+                    const paraFreq = {};
+                    paraLengths.forEach(len => paraFreq[len] = (paraFreq[len] || 0) + 1);
+                    let paraEntropy = 0;
+                    const totalParas = paraLengths.length;
+                    if (totalParas > 0) {
+                              Object.values(paraFreq).forEach(f => {
+                                        const p = f / totalParas;
+                                        paraEntropy -= p * Math.log2(p);
+                              });
+                    }
+                    const uniqueParaLengths = Object.keys(paraFreq).length;
+                    const maxParaEntropy = uniqueParaLengths > 1 ? Math.log2(uniqueParaLengths) : 0;
+                    const normParaEntropy = maxParaEntropy > 0 ? paraEntropy / maxParaEntropy : 0;
+                    
+                    const punctuationMarks = [
+                              '.', ',', '!', '?', ';', ':', '—', '…',
+                              '(', ')', '[', ']', '{', '}', '"', "'", '«', '»'
+                    ];
+                    const punctCounts = {};
+                    punctuationMarks.forEach(mark => punctCounts[mark] = 0);
+                    for (let i = 0; i < chars; i++) {
+                              const ch = text[i];
+                              if (punctCounts.hasOwnProperty(ch)) punctCounts[ch]++;
+                    }
+                    const totalPunct = Object.values(punctCounts).reduce((a, b) => a + b, 0);
+                    let punctEntropy = 0;
+                    if (totalPunct > 0) {
+                              Object.values(punctCounts).forEach(c => {
+                                        if (c > 0) {
+                                                  const p = c / totalPunct;
+                                                  punctEntropy -= p * Math.log2(p);
+                                        }
+                              });
+                    }
+                    const usedPunct = Object.keys(punctCounts).filter(m => punctCounts[m] > 0).length;
+                    const maxPunctEntropy = usedPunct > 1 ? Math.log2(usedPunct) : 0;
+                    const normPunctEntropy = maxPunctEntropy > 0 ? punctEntropy / maxPunctEntropy : 0;
+                    
+                    const chaosPercent = ((normSentEntropy + normParaEntropy + normPunctEntropy) / 3 * 100).toFixed(1);
+                    metrics.chaosEntropyPercent = chaosPercent;
+                    
+                    return metrics;
         }
         
         detectLanguageWithConfidence(text) {
@@ -8782,6 +8990,7 @@
     
 
 })();
+
 
 
 
