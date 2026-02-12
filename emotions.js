@@ -3487,13 +3487,28 @@
                         
                         let match;
                         const re = new RegExp(`\\b${this.escapeRegExp(word)}\\b`, 'gi');
-                        while ((match = re.exec(data.cleaned)) !== null) {
+                        while ((match = regex.exec(cleanedText)) !== null) {
+                            const context = this.getWordContext(data.cleaned, match.index, word.length);
+                            let hasNegation = false;
+                            const negations = this.contextRules[this.language]?.negations || ['не', 'ни', 'нет', 'без'];
+                            const lowerContext = context.toLowerCase();
+                            for (const neg of negations) {
+                                const pattern = new RegExp(`\\b${neg}\\b`, 'i');
+                                if (pattern.test(lowerContext)) {
+                                    hasNegation = true;
+                                    break;
+                                }
+                            }
                             positions.push({
                                 word: word,
                                 position: match.index,
                                 length: word.length,
-                                context: this.getWordContext(data.cleaned, match.index, word.length)
+                                context: context,
+                                hasNegation: hasNegation,
+                                weight: hasNegation ? 0.2 : 1.0
                             });
+                            count += hasNegation ? 0.2 : 1.0;
+                        }
                             
                             const sentenceIndex = this.findSentenceIndex(data.sentences, match.index);
                             if (sentenceIndex !== -1) {
@@ -8990,6 +9005,7 @@
     
 
 })();
+
 
 
 
