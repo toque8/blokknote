@@ -3,7 +3,7 @@
     
     class EmotionAnalyzer {
         constructor(language = 'auto') {
-            this.version = '1.0.0';
+            this.version = '1.1';
             this.language = language;
             this.metrics = {};
             this.initializeExtendedDictionaries();
@@ -9005,6 +9005,7 @@
     
 
 })();
+
 
 
 
