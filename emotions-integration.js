@@ -776,7 +776,7 @@ renderResult(result) {
           
     if (hasWriterMetrics) {
                     const lang = this.getCurrentLanguage();
-                    const t = this.getTranslation(lang) || {};
+                    const t = this.getTranslations(lang) || {};
                     
                     html += `<div class="metrics-section">`;
                     html += `<h3>${this.translateValue('Для писателя', lang)}</h3>`;
@@ -2511,6 +2511,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
