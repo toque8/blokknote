@@ -3484,10 +3484,10 @@
                         while ((match = regex.exec(data.cleaned)) !== null) {
                             const context = this.getWordContext(data.cleaned, match.index, word.length, 20);
                             let hasNegation = false;
-                            const negations = this.contextRules[this.language]?.negations || ['не', 'ни', 'нет', 'без', 'without', 'not', 'no', 'never'];
-                            const lowerContext = context.toLowerCase();
+                            const negations = this.contextRules[this.language]?.negations || ['не', 'ни', 'нет', 'без', 'безусловно', 'without', 'not', 'no', 'never', 'none'];
                             for (const neg of negations) {
-                                if (lowerContext.includes(` ${neg} `) || lowerContext.startsWith(`${neg} `) || lowerContext.endsWith(` ${neg}`)) {
+                                const pattern = new RegExp(`\\b${this.escapeRegExp(neg)}\\b`, 'i');
+                                if (pattern.test(context)) {
                                     hasNegation = true;
                                     break;
                                 }
@@ -8994,6 +8994,7 @@
     
 
 })();
+
 
 
 
