@@ -3391,6 +3391,25 @@
                   if (data && data.words && data.words.length > 0) {
                     textLengthFactor = Math.min(1.5, 1 + (100 / (data.words.length + 100)));
                   }
+                  let negationFactor = 1.0;
+                    if (categoryData && categoryData.positions && categoryData.positions.length > 0) {
+                        const negations = this.contextRules[this.language]?.negations || [];
+                        let negationCount = 0;
+                        categoryData.positions.forEach(pos => {
+                            if (pos.context) {
+                                const lowerContext = pos.context.toLowerCase();
+                                negations.forEach(neg => {
+                                    const negPattern = new RegExp(`\\b${this.escapeRegExp(neg)}\\b`, 'i');
+                                    if (negPattern.test(lowerContext)) {
+                                        negationCount++;
+                                    }
+                                });
+                            }
+                        });
+                        if (negationCount > 0) {
+                            negationFactor = 0.4;
+                        }
+                  }
                   let clusterBoost = 0;
                   if (categoryData && categoryData.clusters) {
                     clusterBoost = Math.min(0.5, categoryData.clusters.length * 0.1);
@@ -3417,7 +3436,7 @@
                     if (intensifierCount > 0) contextFactor *= (1 + Math.min(0.4, intensifierCount * 0.1));
                     if (allCapsCount > 0) contextFactor *= (1 + Math.min(0.3, allCapsCount * 0.05));
                   }
-                  const adjustedMultiplier = multiplier * textLengthFactor * contextFactor;
+                  const adjustedMultiplier = multiplier * textLengthFactor * negationFactor * contextFactor;
                   const contextualIntensity = baseIntensity * adjustedMultiplier * (1 + contextualBoost) * positionFactor;
                   const finalIntensity = Math.min(1, contextualIntensity + clusterBoost);
                   return finalIntensity;
@@ -8763,6 +8782,7 @@
     
 
 })();
+
 
 
 
