@@ -3395,7 +3395,29 @@
                   if (categoryData && categoryData.clusters) {
                     clusterBoost = Math.min(0.5, categoryData.clusters.length * 0.1);
                   }
-                  const adjustedMultiplier = multiplier * textLengthFactor;
+                  let contextFactor = 1.0;
+                  if (categoryData && categoryData.positions && categoryData.positions.length > 0) {
+                    let negationCount = 0;
+                    let intensifierCount = 0;
+                    let allCapsCount = 0;
+                    categoryData.positions.forEach(pos => {
+                        if (pos.context) {
+                            const lowerContext = pos.context.toLowerCase();
+                            const rules = this.contextRules[this.language];
+                            rules.negations.forEach(neg => {
+                                if (lowerContext.includes(` ${neg} `) || lowerContext.startsWith(`${neg} `)) negationCount++;
+                            });
+                            rules.intensifiers.forEach(int => {
+                                if (lowerContext.includes(` ${int} `) || lowerContext.startsWith(`${int} `)) intensifierCount++;
+                            });
+                            if (pos.context.match(/\b[A-ZА-ЯЁ]{3,}\b/)) allCapsCount++;
+                        }
+                    });
+                    if (negationCount > 0) contextFactor *= 0.6;
+                    if (intensifierCount > 0) contextFactor *= (1 + Math.min(0.4, intensifierCount * 0.1));
+                    if (allCapsCount > 0) contextFactor *= (1 + Math.min(0.3, allCapsCount * 0.05));
+                  }
+                  const adjustedMultiplier = multiplier * textLengthFactor * contextFactor;
                   const contextualIntensity = baseIntensity * adjustedMultiplier * (1 + contextualBoost) * positionFactor;
                   const finalIntensity = Math.min(1, contextualIntensity + clusterBoost);
                   return finalIntensity;
@@ -8741,6 +8763,7 @@
     
 
 })();
+
 
 
 
