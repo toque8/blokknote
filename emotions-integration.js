@@ -784,7 +784,7 @@ renderResult(result) {
                     const hemingwayVal = this.getNumber(writer.hemingwayCoefficient);
                     if (this.shouldShowMetric(hemingwayVal, true)) {
                               html += `<div class="emotion-metric">`;
-                              html += `<span class="label" title="${t.writerHemingwayHint || ''}">${this.translateValue('Коэффициент Хемингуэя', lang)}</span>`;
+                              html += `<span class="label" title="${t.writerHemingwayHint || ''}">${this.translateValue('Коэффициент Хемингуэя', lang)}:</span>`;
                               html += `<span class="value" style="text-align:right !important;float:right;">${writer.hemingwayCoefficient}%</span>`;
                               html += `</div>`;
                     }
@@ -792,7 +792,7 @@ renderResult(result) {
                     const silenceVal = this.getNumber(writer.silenceEffect);
                     if (this.shouldShowMetric(silenceVal, true)) {
                               html += `<div class="emotion-metric">`;
-                              html += `<span class="label" title="${t.writerSilenceHint || ''}">${this.translateValue('Эффект тишины', lang)}</span>`;
+                              html += `<span class="label" title="${t.writerSilenceHint || ''}">${this.translateValue('Эффект тишины', lang)}:</span>`;
                               html += `<span class="value" style="text-align:right !important;float:right;">${writer.silenceEffect} dB</span>`;
                               html += `</div>`;
                     }
@@ -800,7 +800,7 @@ renderResult(result) {
                     const weatherVal = this.getNumber(writer.weatherIndex);
                     if (this.shouldShowMetric(weatherVal, true)) {
                               html += `<div class="emotion-metric">`;
-                              html += `<span class="label" title="${t.writerWeatherHint || ''}">${this.translateValue('Индекс погоды', lang)}</span>`;
+                              html += `<span class="label" title="${t.writerWeatherHint || ''}">${this.translateValue('Индекс погоды', lang)}:</span>`;
                               html += `<span class="value" style="text-align:right !important;float:right;">${writer.weatherIndex} °C</span>`;
                               html += `</div>`;
                     }
@@ -808,7 +808,7 @@ renderResult(result) {
                     const dialogueVal = this.getNumber(writer.dialogueParadigm);
                     if (this.shouldShowMetric(dialogueVal, true)) {
                               html += `<div class="emotion-metric">`;
-                              html += `<span class="label" title="${t.writerDialogueHint || ''}">${this.translateValue('Парадигма диалога', lang)}</span>`;
+                              html += `<span class="label" title="${t.writerDialogueHint || ''}">${this.translateValue('Парадигма диалога', lang)}:</span>`;
                               html += `<span class="value" style="text-align:right !important;float:right;">${writer.dialogueParadigm}%</span>`;
                               html += `</div>`;
                     }
@@ -816,7 +816,7 @@ renderResult(result) {
                     const timeVal = this.getNumber(writer.timeVector);
                     if (this.shouldShowMetric(timeVal, true)) {
                               html += `<div class="emotion-metric">`;
-                              html += `<span class="label" title="${t.writerTimeHint || ''}">${this.translateValue('Вектор времени', lang)}</span>`;
+                              html += `<span class="label" title="${t.writerTimeHint || ''}">${this.translateValue('Вектор времени', lang)}:</span>`;
                               html += `<span class="value" style="text-align:right !important;float:right;">${writer.timeVector}</span>`;
                               html += `</div>`;
                     }
@@ -824,7 +824,7 @@ renderResult(result) {
                     const modalityVal = this.getNumber(writer.modalityLevel);
                     if (this.shouldShowMetric(modalityVal, true)) {
                               html += `<div class="emotion-metric">`;
-                              html += `<span class="label" title="${t.writerModalityHint || ''}">${this.translateValue('Уровень модальности', lang)}</span>`;
+                              html += `<span class="label" title="${t.writerModalityHint || ''}">${this.translateValue('Уровень модальности', lang)}:</span>`;
                               html += `<span class="value" style="text-align:right !important;float:right;">${writer.modalityLevel} ‰</span>`;
                               html += `</div>`;
                     }
@@ -832,7 +832,7 @@ renderResult(result) {
                     const egoVal = this.getNumber(writer.egoFactor);
                     if (this.shouldShowMetric(egoVal, true)) {
                               html += `<div class="emotion-metric">`;
-                              html += `<span class="label" title="${t.writerEgoHint || ''}">${this.translateValue('Эго-фактор', lang)}</span>`;
+                              html += `<span class="label" title="${t.writerEgoHint || ''}">${this.translateValue('Эго-фактор', lang)}:</span>`;
                               html += `<span class="value" style="text-align:right !important;float:right;">${writer.egoFactor}%</span>`;
                               html += `</div>`;
                     }
@@ -840,7 +840,7 @@ renderResult(result) {
                     const fragmentationVal = this.getNumber(writer.fragmentationDegree);
                     if (this.shouldShowMetric(fragmentationVal, true)) {
                               html += `<div class="emotion-metric">`;
-                              html += `<span class="label" title="${t.writerFragmentationHint || ''}">${this.translateValue('Степень фрагментации', lang)}</span>`;
+                              html += `<span class="label" title="${t.writerFragmentationHint || ''}">${this.translateValue('Степень фрагментации', lang)}:</span>`;
                               html += `<span class="value" style="text-align:right !important;float:right;">${writer.fragmentationDegree}</span>`;
                               html += `</div>`;
                     }
@@ -848,7 +848,7 @@ renderResult(result) {
                     const immersivenessVal = this.getNumber(writer.immersiveness);
                     if (this.shouldShowMetric(immersivenessVal, true)) {
                               html += `<div class="emotion-metric">`;
-                              html += `<span class="label" title="${t.writerImmersivenessHint || ''}">${this.translateValue('Показатель иммерсивности', lang)}</span>`;
+                              html += `<span class="label" title="${t.writerImmersivenessHint || ''}">${this.translateValue('Показатель иммерсивности', lang)}:</span>`;
                               html += `<span class="value" style="text-align:right !important;float:right;">${writer.immersiveness} ‰</span>`;
                               html += `</div>`;
                     }
@@ -856,7 +856,7 @@ renderResult(result) {
                     const chaosVal = this.getNumber(writer.chaosEntropyPercent);
                     if (this.shouldShowMetric(chaosVal, true)) {
                               html += `<div class="emotion-metric">`;
-                              html += `<span class="label" title="${t.writerChaosHint || ''}">${this.translateValue('Процент энтропии', lang)}</span>`;
+                              html += `<span class="label" title="${t.writerChaosHint || ''}">${this.translateValue('Процент энтропии', lang)}:</span>`;
                               html += `<span class="value" style="text-align:right !important;float:right;">${writer.chaosEntropyPercent}%</span>`;
                               html += `</div>`;
                     }
@@ -2509,6 +2509,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
