@@ -2610,7 +2610,7 @@ getTranslations(lang) {
             journalistFactMirror: 'Absence of subjective expressions. 100% = perfectly objective, 0% = opinion‑heavy',
             journalistFreshnessGauge: 'Markers like: today, yesterday, just in / per 1000 words. Indicates timeliness',
             journalistAntiYellow: 'Absence of clickbait vocabulary. 100% = clean, 0% = manipulative',
-            journalistOpinionPalette: 'Contrastive conjunctions (however, but, on the other hand) per 1000 words. Shows multiple viewpoints.',
+            journalistOpinionPalette: 'Contrastive conjunctions (however, but, on the other hand) per 1000 words. Shows multiple viewpoints',
             journalistBureaucraticNoise: 'Officialese per 1000 words. If 0, all right',
             journalistVerbalEcho: 'Tautologies (cognate repetitions) per 1000 words. If 0, all right',
             journalistFogZone: 'Vague wording (around, approximately, some) per 1000 words',
@@ -2642,6 +2642,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
