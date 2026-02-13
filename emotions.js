@@ -1381,7 +1381,7 @@
 
                     let journalistMetrics = {};
                     try {
-                        journalistMetrics = this._calculateJournalistMetrics(text);
+                        journalistMetrics = this.calculateJournalistMetrics(text);
                     } catch (e) {
                         console.warn('Journalist metrics calculation error:', e);
                     }
@@ -9134,6 +9134,7 @@
     
 
 })();
+
 
 
 
