@@ -1717,8 +1717,8 @@
                     });
                     metrics.freshnessGauge = totalWords ? (freshnessCount / totalWords * 1000).toFixed(1) : 0;
                     
-                    const clickbaitRu = ['шокирует','сенсация','сенсацией','сенсаций','секрет','тайна','невероятно','вы не поверите','скандал','ужас','кошмар','немедленно'];
-                    const clickbaitEn = ['shocking','unbelievable','you won\'t believe','secret','scandal','what happened next','viral'];
+                    const clickbaitRu = ['шокирует','сенсация','сенсацией','сенсаций','секрет','тайна','невероятно','вы не поверите','скандал','ужас','кошмар','немедленно','сенсационный','шокирующий','потрясающий','невероятный','фантастический','эксклюзив','срочно','только что','секретный','тайный','скандальный','ужасный','кошмарный','безумный','сумасшедший','эпичный','детали','подробности','шок','сенсационно','шокирующие','сенсационные','потрясающе','нереально','очевидец','видео','фото','расследование','разоблачение','инсайд','утечка','шокирующее','сенсационное','скандальное','громкое','резонансное','неожиданное','внезапное','экстренное','важное','спецвыпуск'];
+                    const clickbaitEn = ['shocking','unbelievable','you won\'t believe','secret','scandal','what happened next','viral','sensation','sensational','astonishing','incredible','mind-blowing','epic','crazy','jaw-dropping','dramatic','unexpected','exclusive','warning','urgent','must see','will shock you','what happens next'];
                     let clickbaitCount = 0;
                     clickbaitRu.concat(clickbaitEn).forEach(phrase => {
                               const re = new RegExp(phrase, 'gi');
@@ -9168,6 +9168,7 @@
     
 
 })();
+
 
 
 
