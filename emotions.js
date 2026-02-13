@@ -1490,7 +1490,7 @@
                     const quotesChars = quotesMatches.join('').length;
                     metrics.dialogueParadigm = chars ? (quotesChars / chars * 100).toFixed(1) : 0;
                     
-                    const pastRu = /\b[а-яё]+(л|ла|ло|ли)\b/giu;
+                    const pastRu = /[а-яё]+(л|ла|ло|ли)/gi;
                     const pastEnWords = ['went','saw','did','said','came','took','thought','made','felt','got','gave','found','knew','left','meant'];
                     const pastEnEd = /\b[a-z]+ed\b/gi;
                     let pastCount = 0;
@@ -1593,7 +1593,7 @@
                     ];
                     let sensoryCount = 0;
                     sensoryRu.concat(sensoryEn).forEach(w => {
-                              const re = new RegExp('\\b' + w + '\\w*\\b', 'gi');
+                              const re = new RegExp(w, 'gi');
                               const m = text.match(re);
                               if (m) sensoryCount += m.length;
                     });
@@ -9167,6 +9167,7 @@
     
 
 })();
+
 
 
 
