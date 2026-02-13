@@ -134,6 +134,15 @@ countAllPunctuation(text) {
     return matches ? matches.length : 0;
 }
 
+pluralize(number, forms) {
+    const n = Math.abs(number) % 100;
+    const n1 = n % 10;
+    if (n > 10 && n < 20) return forms[2];
+    if (n1 > 1 && n1 < 5) return forms[1];
+    if (n1 === 1) return forms[0];
+    return forms[2];
+}
+
 getSafe(obj, path, defaultValue = null) {
     return path.split('.').reduce((acc, part) => {
         if (acc === null || acc === undefined || acc[part] === undefined) {
@@ -329,8 +338,8 @@ translateValue(value, lang) {
             'Зона тумана': 'Зона тумана',
             'Категоричный тон': 'Категоричный тон',
 			'Ещё кофе, пожалуйста': 'Ещё кофе, пожалуйста',
-            'В поисках утраченного...': 'В поисках утраченного...',
-            'Я падаю?': 'Я падаю?',
+			'В поисках утраченного...': 'В поисках утраченного',
+            'Падение в кроличью нору': 'Я падаю?', 
             'Криминальное чтиво': 'Криминальное чтиво',
             'Копия, снятая с копии': 'Копия, снятая с копии',
             'Пора в Скрантон': 'Пора в Скрантон',
@@ -349,7 +358,7 @@ translateValue(value, lang) {
             'джедаев': 'джедаев',
             'хоббитов': 'хоббитов',
             'кобейнов': 'кобейнов',
-            'титаников': 'титаников'
+            'титаник': 'титаник'
         };
         return translations[value] || value;
     } else if (lang === 'en') {
@@ -394,8 +403,8 @@ translateValue(value, lang) {
             'Зона тумана': 'Fog Zone',
             'Категоричный тон': 'Categorical Tone',
 			'Ещё кофе, пожалуйста': 'Another Coffee, Please',
-            'В поисках утраченного...': 'In Search of Lost Time',
-            'Я падаю?': 'Am I falling?',
+            'В поисках утраченного...': 'In Search of Lost Time'
+            'Падение в кроличью нору': 'Am I Falling?',
             'Криминальное чтиво': 'Pulp Fiction',
             'Копия, снятая с копии': 'A Copy of a Copy',
             'Пора в Скрантон': 'Time for Scranton',
@@ -414,7 +423,7 @@ translateValue(value, lang) {
             'джедаев': 'jedis',
             'хоббитов': 'hobbits',
             'кобейнов': 'cobains',
-            'титаников': 'titanics',
+            'титаник': 'titanic',
             
             'Сдержанное богатое эмоциональное переживание': 'Restrained rich emotional experience',
             'Сдержанное спокойное принятие и удовлетворение текущим моментом': 'Restrained calm acceptance and satisfaction with the current moment',            'Состояние полного, всеобъемлющего счастья и духовного подъёма': 'A state of complete, all-encompassing happiness and spiritual upliftment',
@@ -1032,79 +1041,101 @@ renderResult(result) {
                     html += `<h3>${lang === 'ru' ? 'Для настроения' : 'For Fun'}</h3>`;
                     
                     if (this.shouldShowMetric(fun.moreCoffee, true)) {
+                              const val = fun.moreCoffee;
+                              const unit = lang === 'ru' ? this.pluralize(val, ['джармуш', 'джармуша', 'джармушей']) : 'Jarmuschs';
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funMoreCoffeeHint || ''}">${this.translateValue('Ещё кофе, пожалуйста', lang)}:</span>`;
-                              html += `<span class="value">${fun.moreCoffee} ${this.translateValue('джармушей', lang)}</span>`;
+                              html += `<span class="value">${val} ${unit}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.lostTime, true)) {
+                              const val = fun.lostTime;
+                              const unit = lang === 'ru' ? this.pluralize(val, ['пруст', 'пруста', 'прустов']) : 'Prousts';
                               html += `<div class="emotion-metric">`;
-                              html += `<span class="label" title="${t.funLostTimeHint || ''}">${this.translateValue('В поисках утраченного...', lang)}:</span>`;
-                              html += `<span class="value">${fun.lostTime} ${this.translateValue('прустов', lang)}</span>`;
+                              html += `<span class="label" title="${t.funLostTimeHint || ''}">${this.translateValue('В поисках утраченного', lang)}:</span>`;
+                              html += `<span class="value">${val} ${unit}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.rabbitHole, true)) {
+                              const val = fun.rabbitHole;
+                              const unit = lang === 'ru' ? this.pluralize(val, ['кролик', 'кролика', 'кроликов']) : 'rabbits';
                               html += `<div class="emotion-metric">`;
-                              html += `<span class="label" title="${t.funRabbitHoleHint || ''}">${this.translateValue('Падение в кроличью нору', lang)}:</span>`;
-                              html += `<span class="value">${fun.rabbitHole} ${this.translateValue('кроликов', lang)}</span>`;
+                              html += `<span class="label" title="${t.funRabbitHoleHint || ''}">${this.translateValue('Я падаю?', lang)}:</span>`;
+                              html += `<span class="value">${val} ${unit}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.pulpFiction, true)) {
+                              const val = fun.pulpFiction;
+                              const unit = lang === 'ru' ? this.pluralize(val, ['тарантинка', 'тарантинки', 'тарантинок']) : 'Tarantinos';
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funPulpFictionHint || ''}">${this.translateValue('Криминальное чтиво', lang)}:</span>`;
-                              html += `<span class="value">${fun.pulpFiction} ${this.translateValue('тарантинок', lang)}</span>`;
+                              html += `<span class="value">${val} ${unit}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.copyOfCopy, true)) {
+                              const val = fun.copyOfCopy;
+                              const unit = lang === 'ru' ? this.pluralize(val, ['паланик', 'паланика', 'палаников']) : 'Palahniuks';
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funCopyOfCopyHint || ''}">${this.translateValue('Копия, снятая с копии', lang)}:</span>`;
-                              html += `<span class="value">${fun.copyOfCopy} ${this.translateValue('палаников', lang)}</span>`;
+                              html += `<span class="value">${val} ${unit}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.scranton, true)) {
+                              const val = fun.scranton;
+                              const unit = lang === 'ru' ? this.pluralize(val, ['дандермиффлин', 'дандермиффлина', 'дандермиффлинов']) : 'Dunder Mifflins';
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funScrantonHint || ''}">${this.translateValue('Пора в Скрантон', lang)}:</span>`;
-                              html += `<span class="value">${fun.scranton} ${this.translateValue('дандермиффлинов', lang)}</span>`;
+                              html += `<span class="value">${val} ${unit}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.hogwarts, true)) {
+                              const val = fun.hogwarts;
+                              const unit = lang === 'ru' ? this.pluralize(val, ['философский камень', 'философских камня', 'философских камней']) : 'Philosopher\'s Stones';
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funHogwartsHint || ''}">${this.translateValue('Путешествие в Хогвартс', lang)}:</span>`;
-                              html += `<span class="value">${fun.hogwarts} ${this.translateValue('философских камней', lang)}</span>`;
+                              html += `<span class="value">${val} ${unit}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.unknownPlanets, true)) {
+                              const val = fun.unknownPlanets;
+                              const unit = lang === 'ru' ? this.pluralize(val, ['джедай', 'джедая', 'джедаев']) : 'Jedis';
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funUnknownPlanetsHint || ''}">${this.translateValue('На неведомых планетах', lang)}:</span>`;
-                              html += `<span class="value">${fun.unknownPlanets} ${this.translateValue('джедаев', lang)}</span>`;
+                              html += `<span class="value">${val} ${unit}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.mordor, true)) {
+                              const val = fun.mordor;
+                              const unit = lang === 'ru' ? this.pluralize(val, ['хоббит', 'хоббита', 'хоббитов']) : 'Hobbits';
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funMordorHint || ''}">${this.translateValue('Ещё чуть-чуть до Мордора', lang)}:</span>`;
-                              html += `<span class="value">${fun.mordor} ${this.translateValue('хоббитов', lang)}</span>`;
+                              html += `<span class="value">${val} ${unit}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.garageRock, true)) {
+                              const val = fun.garageRock;
+                              const unit = lang === 'ru' ? this.pluralize(val, ['кобейн', 'кобейна', 'кобейнов']) : 'Cobains';
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funGarageRockHint || ''}">${this.translateValue('Гаражный рок', lang)}:</span>`;
-                              html += `<span class="value">${fun.garageRock} ${this.translateValue('кобейнов', lang)}</span>`;
+                              html += `<span class="value">${val} ${unit}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.iceMelts, true)) {
+                              const val = fun.iceMelts;
+                              const unit = lang === 'ru' ? this.pluralize(val, ['титаник', 'титаника', 'титаников']) : 'Titanics';
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funIceMeltsHint || ''}">${this.translateValue('Между нами тает лёд', lang)}:</span>`;
-                              html += `<span class="value">${fun.iceMelts} ${this.translateValue('титаников', lang)}</span>`;
+                              html += `<span class="value">${val} ${unit}</span>`;
                               html += `</div>`;
                     }
                     
@@ -2799,6 +2830,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
