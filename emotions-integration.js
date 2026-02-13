@@ -403,7 +403,7 @@ translateValue(value, lang) {
             'Зона тумана': 'Fog Zone',
             'Категоричный тон': 'Categorical Tone',
 			'Ещё кофе, пожалуйста': 'Another Coffee, Please',
-            'В поисках утраченного...': 'In Search of Lost Time'
+            'В поисках утраченного...': 'In Search of Lost Time',
             'Падение в кроличью нору': 'Am I Falling?',
             'Криминальное чтиво': 'Pulp Fiction',
             'Копия, снятая с копии': 'A Copy of a Copy',
@@ -2830,6 +2830,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
