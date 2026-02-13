@@ -3657,7 +3657,8 @@
                             const context = this.getWordContext(data.cleaned, match.index, word.length, 20);
                             let hasNegation = false;
                             const negations = this.contextRules[this.language]?.negations || ['не', 'ни', 'нет', 'без', 'not', 'no', 'never', 'none', 'don\'t', 'doesn\'t', 'didn\'t', 'won\'t'];
-                            const lowerContext = ' ' + context.toLowerCase() + ' ';
+                            const contextStr = (context && typeof context === 'string') ? context : '';
+                            const lowerContext = ' ' + contextStr.toLowerCase() + ' ';
                             for (const neg of negations) {
                                 const searchPhrase = ' ' + neg.toLowerCase() + ' ';
                                 if (lowerContext.includes(searchPhrase)) {
@@ -9167,6 +9168,7 @@
     
 
 })();
+
 
 
 
