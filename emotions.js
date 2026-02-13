@@ -1490,7 +1490,7 @@
                     const quotesChars = quotesMatches.join('').length;
                     metrics.dialogueParadigm = chars ? (quotesChars / chars * 100).toFixed(1) : 0;
                     
-                    const pastRu = /\b[а-яё]+(л|ла|ло|ли)\b/gi;
+                    const pastRu = /\b[а-яё]+(л|ла|ло|ли)\b/giu;
                     const pastEnWords = ['went','saw','did','said','came','took','thought','made','felt','got','gave','found','knew','left','meant'];
                     const pastEnEd = /\b[a-z]+ed\b/gi;
                     let pastCount = 0;
@@ -1545,18 +1545,51 @@
                     metrics.fragmentationDegree = avgSentPerParagraph > 0 ? (10 / avgSentPerParagraph).toFixed(1) : 0;
                     
                     const sensoryRu = [
-                              'видеть','увидеть','взгляд','глаз','смотреть',
-                              'слышать','звук','слушать',
-                              'касаться','трогать','гладкий','шершавый',
-                              'пахнуть','запах','аромат',
-                              'вкус','горький','сладкий'
+                        'видеть', 'увидеть', 'взгляд', 'глаз', 'глаза', 'смотреть', 'посмотреть',
+                        'глядеть', 'поглядеть', 'заметить', 'приметить', 'наблюдать', 'лицезреть',
+                        'зоркий', 'зрение', 'видение', 'очертание', 'силуэт', 'краска', 'цвет',
+                        'свет', 'тьма', 'мрак', 'сияние', 'блеск', 'мерцание', 'вспышка',
+                        'облако', 'туман', 'дымка', 'пейзаж', 'ландшафт', 'картина',
+
+                        'слышать', 'услышать', 'слушать', 'прослушать', 'звук', 'звучание',
+                        'шум', 'грохот', 'стук', 'треск', 'скрип', 'шелест', 'шёпот', 'шорох',
+                        'голос', 'крик', 'вопль', 'плач', 'смех', 'хохот', 'кашель', 'вздох',
+                        'тишина', 'беззвучие', 'эхо', 'отзвук', 'аккорд', 'мелодия', 'песня',
+                        'разговор', 'речь', 'беседа', 'звон', 'звонок', 'бряцание',
+
+                        'касаться', 'прикасаться', 'трогать', 'потрогать', 'осязать', 'щупать',
+                        'гладкий', 'шершавый', 'шероховатый', 'мягкий', 'твёрдый', 'упругий',
+                        'колючий', 'острый', 'тупой', 'горячий', 'холодный', 'тёплый', 'прохладный',
+                        'ледяной', 'обжигающий', 'влажный', 'сухой', 'липкий', 'скользкий',
+                        'пушистый', 'ворсистый', 'шёлковый', 'бархатистый', 'жёсткий',
+
+                        'пахнуть', 'запахнуть', 'нюхать', 'понюхать', 'обонять', 'запах', 'аромат',
+                        'благоухание', 'амбре', 'дух', 'вонь', 'смрад', 'чад', 'дым', 'гар',
+                        'цветочный', 'пряный', 'гнилостный', 'свежий', 'душистый', 'пахучий',
+
+                        'вкус', 'вкушать', 'пробовать', 'отведать', 'кушать', 'есть', 'пить',
+                        'сладкий', 'горький', 'кислый', 'солёный', 'пресный', 'пряный', 'терпкий',
+                        'вкусный', 'невкусный', 'аппетитный', 'сочный', 'сухой'
                     ];
                     const sensoryEn = [
-                              'see','look','gaze','eye','watch',
-                              'hear','sound','listen',
-                              'touch','feel','smooth','rough',
-                              'smell','scent',
-                              'taste','bitter','sweet'
+                        'see', 'look', 'watch', 'view', 'gaze', 'stare', 'glance', 'peer',
+                        'eye', 'eyes', 'sight', 'vision', 'view', 'scene', 'landscape',
+                        'light', 'dark', 'shadow', 'shine', 'glow', 'flash', 'sparkle',
+                        'color', 'colour', 'bright', 'dim', 'clear', 'foggy', 'mist',
+
+                        'hear', 'listen', 'sound', 'noise', 'voice', 'tone', 'music', 'song',
+                        'silence', 'quiet', 'loud', 'soft', 'faint', 'rustle', 'whisper',
+                        'scream', 'shout', 'cry', 'laugh', 'footstep', 'step', 'ring', 'bang',
+                    
+                        'touch', 'feel', 'hand', 'finger', 'skin', 'soft', 'hard', 'smooth',
+                        'rough', 'warm', 'cold', 'hot', 'cool', 'icy', 'burning', 'wet',
+                        'dry', 'sticky', 'slippery', 'sharp', 'dull', 'furry', 'silky',
+                    
+                        'smell', 'scent', 'odor', 'aroma', 'perfume', 'fragrance', 'stink',
+                        'reek', 'whiff', 'musty', 'fresh', 'foul', 'sweet', 'pungent',
+                    
+                        'taste', 'flavor', 'sweet', 'sour', 'bitter', 'salty', 'savory',
+                        'delicious', 'yummy', 'spicy', 'hot', 'mild', 'juicy', 'dry'
                     ];
                     let sensoryCount = 0;
                     sensoryRu.concat(sensoryEn).forEach(w => {
@@ -9134,6 +9167,7 @@
     
 
 })();
+
 
 
 
