@@ -403,8 +403,8 @@ translateValue(value, lang) {
             'Зона тумана': 'Fog Zone',
             'Категоричный тон': 'Categorical Tone',
 			'Ещё кофе, пожалуйста': 'Another Coffee, Please',
-            'В поисках утраченного...': 'In Search of Lost Time',
-            'Падение в кроличью нору': 'Am I Falling?',
+            'В поисках утраченного': 'In Search of Lost Time',
+            'Я падаю?': 'Am I Falling?',
             'Криминальное чтиво': 'Pulp Fiction',
             'Копия, снятая с копии': 'A Copy of a Copy',
             'Пора в Скрантон': 'Time for Scranton',
@@ -1042,7 +1042,7 @@ renderResult(result) {
                     
                     if (this.shouldShowMetric(fun.moreCoffee, true)) {
                               const val = fun.moreCoffee;
-                              const unit = lang === 'ru' ? this.pluralize(val, ['джармуш', 'джармуша', 'джармушей']) : 'Jarmuschs';
+                              const unit = lang === 'ru' ? this.pluralize(val, ['джармуш', 'джармуша', 'джармушей']) : 'jarmuschs';
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funMoreCoffeeHint || ''}">${this.translateValue('Ещё кофе, пожалуйста', lang)}:</span>`;
                               html += `<span class="value">${val} ${unit}</span>`;
@@ -1051,7 +1051,7 @@ renderResult(result) {
                     
                     if (this.shouldShowMetric(fun.lostTime, true)) {
                               const val = fun.lostTime;
-                              const unit = lang === 'ru' ? this.pluralize(val, ['пруст', 'пруста', 'прустов']) : 'Prousts';
+                              const unit = lang === 'ru' ? this.pluralize(val, ['пруст', 'пруста', 'прустов']) : 'prousts';
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funLostTimeHint || ''}">${this.translateValue('В поисках утраченного', lang)}:</span>`;
                               html += `<span class="value">${val} ${unit}</span>`;
@@ -1069,7 +1069,7 @@ renderResult(result) {
                     
                     if (this.shouldShowMetric(fun.pulpFiction, true)) {
                               const val = fun.pulpFiction;
-                              const unit = lang === 'ru' ? this.pluralize(val, ['тарантинка', 'тарантинки', 'тарантинок']) : 'Tarantinos';
+                              const unit = lang === 'ru' ? this.pluralize(val, ['тарантинка', 'тарантинки', 'тарантинок']) : 'tarantinos';
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funPulpFictionHint || ''}">${this.translateValue('Криминальное чтиво', lang)}:</span>`;
                               html += `<span class="value">${val} ${unit}</span>`;
@@ -1078,7 +1078,7 @@ renderResult(result) {
                     
                     if (this.shouldShowMetric(fun.copyOfCopy, true)) {
                               const val = fun.copyOfCopy;
-                              const unit = lang === 'ru' ? this.pluralize(val, ['паланик', 'паланика', 'палаников']) : 'Palahniuks';
+                              const unit = lang === 'ru' ? this.pluralize(val, ['паланик', 'паланика', 'палаников']) : 'palahniuks';
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funCopyOfCopyHint || ''}">${this.translateValue('Копия, снятая с копии', lang)}:</span>`;
                               html += `<span class="value">${val} ${unit}</span>`;
@@ -1087,7 +1087,7 @@ renderResult(result) {
                     
                     if (this.shouldShowMetric(fun.scranton, true)) {
                               const val = fun.scranton;
-                              const unit = lang === 'ru' ? this.pluralize(val, ['дандермиффлин', 'дандермиффлина', 'дандермиффлинов']) : 'Dunder Mifflins';
+                              const unit = lang === 'ru' ? this.pluralize(val, ['дандермиффлин', 'дандермиффлина', 'дандермиффлинов']) : 'dundermifflins';
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funScrantonHint || ''}">${this.translateValue('Пора в Скрантон', lang)}:</span>`;
                               html += `<span class="value">${val} ${unit}</span>`;
@@ -1096,7 +1096,7 @@ renderResult(result) {
                     
                     if (this.shouldShowMetric(fun.hogwarts, true)) {
                               const val = fun.hogwarts;
-                              const unit = lang === 'ru' ? this.pluralize(val, ['философский камень', 'философских камня', 'философских камней']) : 'Philosopher\'s Stones';
+                              const unit = lang === 'ru' ? this.pluralize(val, ['философский камень', 'философских камня', 'философских камней']) : 'philosopher\'s stones';
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funHogwartsHint || ''}">${this.translateValue('Путешествие в Хогвартс', lang)}:</span>`;
                               html += `<span class="value">${val} ${unit}</span>`;
@@ -1105,7 +1105,7 @@ renderResult(result) {
                     
                     if (this.shouldShowMetric(fun.unknownPlanets, true)) {
                               const val = fun.unknownPlanets;
-                              const unit = lang === 'ru' ? this.pluralize(val, ['джедай', 'джедая', 'джедаев']) : 'Jedis';
+                              const unit = lang === 'ru' ? this.pluralize(val, ['джедай', 'джедая', 'джедаев']) : 'jedis';
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funUnknownPlanetsHint || ''}">${this.translateValue('На неведомых планетах', lang)}:</span>`;
                               html += `<span class="value">${val} ${unit}</span>`;
@@ -1114,7 +1114,7 @@ renderResult(result) {
                     
                     if (this.shouldShowMetric(fun.mordor, true)) {
                               const val = fun.mordor;
-                              const unit = lang === 'ru' ? this.pluralize(val, ['хоббит', 'хоббита', 'хоббитов']) : 'Hobbits';
+                              const unit = lang === 'ru' ? this.pluralize(val, ['хоббит', 'хоббита', 'хоббитов']) : 'hobbits';
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funMordorHint || ''}">${this.translateValue('Ещё чуть-чуть до Мордора', lang)}:</span>`;
                               html += `<span class="value">${val} ${unit}</span>`;
@@ -1123,7 +1123,7 @@ renderResult(result) {
                     
                     if (this.shouldShowMetric(fun.garageRock, true)) {
                               const val = fun.garageRock;
-                              const unit = lang === 'ru' ? this.pluralize(val, ['кобейн', 'кобейна', 'кобейнов']) : 'Cobains';
+                              const unit = lang === 'ru' ? this.pluralize(val, ['кобейн', 'кобейна', 'кобейнов']) : 'cobains';
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funGarageRockHint || ''}">${this.translateValue('Гаражный рок', lang)}:</span>`;
                               html += `<span class="value">${val} ${unit}</span>`;
@@ -1132,7 +1132,7 @@ renderResult(result) {
                     
                     if (this.shouldShowMetric(fun.iceMelts, true)) {
                               const val = fun.iceMelts;
-                              const unit = lang === 'ru' ? this.pluralize(val, ['титаник', 'титаника', 'титаников']) : 'Titanics';
+                              const unit = lang === 'ru' ? this.pluralize(val, ['титаник', 'титаника', 'титаников']) : 'titanic';
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funIceMeltsHint || ''}">${this.translateValue('Между нами тает лёд', lang)}:</span>`;
                               html += `<span class="value">${val} ${unit}</span>`;
@@ -2830,6 +2830,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
