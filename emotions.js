@@ -1864,7 +1864,7 @@
                     });
                     metrics.hogwarts = totalWords ? Math.min(10, Math.round((magicCount / totalWords * 1000))) : 0;
                     
-                    const spaceWords = ['космос','звезда','планета','луч','галактика','вселенная','спутник','орбита','ракета','пришелец','джедай','инопланетянин','space','star','planet','ray','galaxy','universe','satellite','orbit','rocket','alien','jedi];
+                    const spaceWords = ['космос','звезда','планета','луч','галактика','вселенная','спутник','орбита','ракета','пришелец','джедай','инопланетянин','space','star','planet','ray','galaxy','universe','satellite','orbit','rocket','alien','jedi'];
                     let spaceCount = 0;
                     spaceWords.forEach(w => {
                               const re = new RegExp(w, 'gi');
@@ -9266,6 +9266,7 @@
     
 
 })();
+
 
 
 
