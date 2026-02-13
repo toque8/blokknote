@@ -1378,6 +1378,13 @@
                     } catch (e) {
                         console.warn('Writer metrics calculation error:', e);
                     }
+
+                    let journalistMetrics = {};
+                    try {
+                        journalistMetrics = this._calculateJournalistMetrics(text);
+                    } catch (e) {
+                        console.warn('Journalist metrics calculation error:', e);
+                    }
                     
                     return {
                         success: true,
@@ -1393,7 +1400,8 @@
                             paragraphCount: preprocessing.paragraphs.length,
                             readingTime: preprocessing.words.length / 200,
                             complexityScore: integratedResult.complexityScore,
-                            writer: writerMetrics
+                            writer: writerMetrics,
+                            journalist: journalistMetrics
                         },
                         details: {
                             lexical: lexicalAnalysis,
@@ -1617,6 +1625,136 @@
                     
                     const chaosPercent = ((normSentEntropy + normParaEntropy + normPunctEntropy) / 3 * 100).toFixed(1);
                     metrics.chaosEntropyPercent = chaosPercent;
+                    
+                    return metrics;
+        }
+
+        calculateJournalistMetrics(text) {
+                    if (!text || typeof text !== 'string') return {};
+                    
+                    const words = text.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
+                    const totalWords = words.length;
+                    const lowerText = text.toLowerCase();
+                    
+                    const metrics = {};
+                    
+                    const numberRegex = /\b\d+([.,]\d+)?\b/g;
+                    const numbers = text.match(numberRegex) || [];
+                    const dateWordsRu = ['год','года','лет','месяц','месяца','месяцев','день','дня','дней','неделя','недели','недель'];
+                    const dateWordsEn = ['year','years','month','months','day','days','week','weeks'];
+                    let dateWordCount = 0;
+                    dateWordsRu.concat(dateWordsEn).forEach(w => {
+                              const re = new RegExp('\\b' + w + '\\w*\\b', 'gi');
+                              const m = text.match(re);
+                              if (m) dateWordCount += m.length;
+                    });
+                    metrics.digitalFootprint = totalWords ? ((numbers.length + dateWordCount) / totalWords * 1000).toFixed(1) : 0;
+                    
+                    const sentences = text.split(/[.!?]+/).filter(Boolean);
+                    let nameCount = 0;
+                    sentences.forEach(s => {
+                              const trimmed = s.trim();
+                              if (!trimmed) return;
+                              const firstWordEnd = trimmed.search(/\s/);
+                              const firstWord = firstWordEnd === -1 ? trimmed : trimmed.substring(0, firstWordEnd);
+                              const rest = firstWordEnd === -1 ? '' : trimmed.substring(firstWordEnd);
+                              const candidates = rest.match(/\b[A-ZА-Я][a-zа-яё]*\b/g) || [];
+                              nameCount += candidates.length;
+                    });
+                    metrics.nameIndex = totalWords ? (nameCount / totalWords * 1000).toFixed(1) : 0;
+                    
+                    const subjectiveRu = ['я думаю','я считаю','мне кажется','на мой взгляд','по моему мнению','полагаю','уверен','сомневаюсь'];
+                    const subjectiveEn = ['i think','i believe','in my opinion','it seems to me','i suppose','i guess'];
+                    let subjectiveCount = 0;
+                    subjectiveRu.concat(subjectiveEn).forEach(phrase => {
+                              const re = new RegExp(phrase, 'gi');
+                              const m = lowerText.match(re);
+                              if (m) subjectiveCount += m.length;
+                    });
+                    const subjectiveScore = totalWords ? (subjectiveCount / totalWords * 1000) : 0;
+                    metrics.factMirror = Math.max(0, 100 - subjectiveScore * 10).toFixed(1);
+                    
+                    const freshnessRu = ['сегодня','вчера','сейчас','только что','этой ночью','час назад','утром','в понедельник','на этой неделе'];
+                    const freshnessEn = ['today','yesterday','tonight','this morning','just in','breaking','hours ago'];
+                    let freshnessCount = 0;
+                    freshnessRu.concat(freshnessEn).forEach(w => {
+                              const re = new RegExp('\\b' + w + '\\b', 'gi');
+                              const m = lowerText.match(re);
+                              if (m) freshnessCount += m.length;
+                    });
+                    metrics.freshnessGauge = totalWords ? (freshnessCount / totalWords * 1000).toFixed(1) : 0;
+                    
+                    const clickbaitRu = ['шокирует','сенсация','секрет','тайна','невероятно','вы не поверите','скандал','ужас','кошмар','немедленно'];
+                    const clickbaitEn = ['shocking','unbelievable','you won\'t believe','secret','scandal','what happened next','viral'];
+                    let clickbaitCount = 0;
+                    clickbaitRu.concat(clickbaitEn).forEach(w => {
+                              const re = new RegExp('\\b' + w + '\\b', 'gi');
+                              const m = lowerText.match(re);
+                              if (m) clickbaitCount += m.length;
+                    });
+                    const clickbaitScore = totalWords ? (clickbaitCount / totalWords * 1000) : 0;
+                    metrics.antiYellow = Math.max(0, 100 - clickbaitScore * 20).toFixed(1);
+                    
+                    const contrastRu = ['однако','но','тем не менее','несмотря на','с другой стороны','вопреки'];
+                    const contrastEn = ['nevertheless','however','but','although','despite','on the other hand','whereas'];
+                    let contrastCount = 0;
+                    contrastRu.concat(contrastEn).forEach(w => {
+                              const re = new RegExp('\\b' + w + '\\b', 'gi');
+                              const m = lowerText.match(re);
+                              if (m) contrastCount += m.length;
+                    });
+                    metrics.opinionPalette = totalWords ? (contrastCount / totalWords * 1000).toFixed(1) : 0;
+                    
+                    const bureaucratRu = [
+                              'осуществление','мероприятие','взаимодействие','обеспечение','реализация','находится','является',
+                              'производится','за счёт','в целях','в рамках','на сегодняшний день','в настоящее время','с учётом',
+                              'в соответствии','исполнение','а также','данный','вышеуказанный'
+                    ];
+                    const bureaucratEn = [
+                              'implementation','provision','interaction','within the framework','in accordance','currently',
+                              'this','these','aforementioned'
+                    ];
+                    let bureaucratCount = 0;
+                    bureaucratRu.concat(bureaucratEn).forEach(w => {
+                              const re = new RegExp('\\b' + w + '\\b', 'gi');
+                              const m = lowerText.match(re);
+                              if (m) bureaucratCount += m.length;
+                    });
+                    metrics.bureaucraticNoise = totalWords ? (bureaucratCount / totalWords * 1000).toFixed(1) : 0;
+                    
+                    const wordsList = words.map(w => w.toLowerCase());
+                    let tautologyPairs = 0;
+                    for (let i = 0; i < wordsList.length - 1; i++) {
+                              for (let j = i + 1; j < Math.min(i + 50, wordsList.length); j++) {
+                                        if (wordsList[i].length > 3 && wordsList[j].length > 3 &&
+                                            wordsList[i] !== wordsList[j] &&
+                                            (wordsList[i].startsWith(wordsList[j].substring(0, 4)) ||
+                                             wordsList[j].startsWith(wordsList[i].substring(0, 4)))) {
+                                                  tautologyPairs++;
+                                        }
+                              }
+                    }
+                    metrics.verbalEcho = totalWords ? (tautologyPairs / totalWords * 1000).toFixed(1) : 0;
+                    
+                    const vagueRu = ['около','примерно','почти','где-то','несколько','некоторый','некий','какой-то'];
+                    const vagueEn = ['certain','some','several','around','approximately','almost','nearly','kind of','sort of'];
+                    let vagueCount = 0;
+                    vagueRu.concat(vagueEn).forEach(w => {
+                              const re = new RegExp('\\b' + w + '\\b', 'gi');
+                              const m = lowerText.match(re);
+                              if (m) vagueCount += m.length;
+                    });
+                    metrics.fogZone = totalWords ? (vagueCount / totalWords * 1000).toFixed(1) : 0;
+                    
+                    const absoluteRu = ['всегда','никогда','каждый','любой','никто','ничто','весь','абсолютно','совершенно','полностью'];
+                    const absoluteEn = ['always','never','every','anybody','nobody','nothing','all','absolutely','completely','entirely'];
+                    let absoluteCount = 0;
+                    absoluteRu.concat(absoluteEn).forEach(w => {
+                              const re = new RegExp('\\b' + w + '\\b', 'gi');
+                              const m = lowerText.match(re);
+                              if (m) absoluteCount += m.length;
+                    });
+                    metrics.categoricalTone = totalWords ? (absoluteCount / totalWords * 1000).toFixed(1) : 0;
                     
                     return metrics;
         }
@@ -8996,6 +9134,7 @@
     
 
 })();
+
 
 
 
