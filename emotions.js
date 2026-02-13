@@ -3806,7 +3806,7 @@
                     let intensifierCount = 0;
                     let allCapsCount = 0;
                     categoryData.positions.forEach(pos => {
-                        if (pos.context) {
+                        if (pos.context && typeof pos.context === 'string') {
                             const lowerContext = pos.context.toLowerCase();
                             const rules = this.contextRules[this.language];
                             rules.negations.forEach(neg => {
@@ -9168,6 +9168,7 @@
     
 
 })();
+
 
 
 
