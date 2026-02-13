@@ -338,7 +338,18 @@ translateValue(value, lang) {
             'На неведомых планетах': 'На неведомых планетах',
             'Ещё чуть-чуть до Мордора': 'Ещё чуть-чуть до Мордора',
             'Гаражный рок': 'Гаражный рок',
-            'Между нами тает лёд': 'Между нами тает лёд'
+            'Между нами тает лёд': 'Между нами тает лёд',
+			'джармушей': 'джармушей',
+            'прустов': 'прустов',
+            'кроликов': 'кроликов',
+            'тарантинок': 'тарантинок',
+            'палаников': 'палаников',
+            'дандермиффлинов': 'дандермиффлинов',
+            'философских камней': 'философских камней',
+            'джедаев': 'джедаев',
+            'хоббитов': 'хоббитов',
+            'кобейнов': 'кобейнов',
+            'титаников': 'титаников'
         };
         return translations[value] || value;
     } else if (lang === 'en') {
@@ -393,6 +404,17 @@ translateValue(value, lang) {
             'Ещё чуть-чуть до Мордора': 'Still a Bit to Mordor',
             'Гаражный рок': 'Garage Rock',
             'Между нами тает лёд': 'Between Us Melts Ice',
+			'джармушей': 'jarmuschs',
+            'прустов': 'prousts',
+            'кроликов': 'rabbits',
+            'тарантинок': 'tarantinos',
+            'палаников': 'palahniuks',
+            'дандермиффлинов': 'dundermifflins',
+            'философских камней': 'philosopherstones',
+            'джедаев': 'jedis',
+            'хоббитов': 'hobbits',
+            'кобейнов': 'cobains',
+            'титаников': 'titanics',
             
             'Сдержанное богатое эмоциональное переживание': 'Restrained rich emotional experience',
             'Сдержанное спокойное принятие и удовлетворение текущим моментом': 'Restrained calm acceptance and satisfaction with the current moment',            'Состояние полного, всеобъемлющего счастья и духовного подъёма': 'A state of complete, all-encompassing happiness and spiritual upliftment',
@@ -1012,77 +1034,77 @@ renderResult(result) {
                     if (this.shouldShowMetric(fun.moreCoffee, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funMoreCoffeeHint || ''}">${this.translateValue('Ещё кофе, пожалуйста', lang)}:</span>`;
-                              html += `<span class="value">${fun.moreCoffee} ☕</span>`;
+                              html += `<span class="value">${fun.moreCoffee} ${this.translateValue('джармушей', lang)}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.lostTime, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funLostTimeHint || ''}">${this.translateValue('В поисках утраченного...', lang)}:</span>`;
-                              html += `<span class="value">${fun.lostTime} 📚</span>`;
+                              html += `<span class="value">${fun.lostTime} ${this.translateValue('прустов', lang)}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.rabbitHole, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funRabbitHoleHint || ''}">${this.translateValue('Падение в кроличью нору', lang)}:</span>`;
-                              html += `<span class="value">${fun.rabbitHole} 🐇</span>`;
+                              html += `<span class="value">${fun.rabbitHole} ${this.translateValue('кроликов', lang)}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.pulpFiction, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funPulpFictionHint || ''}">${this.translateValue('Криминальное чтиво', lang)}:</span>`;
-                              html += `<span class="value">${fun.pulpFiction} 🎬</span>`;
+                              html += `<span class="value">${fun.pulpFiction} ${this.translateValue('тарантинок', lang)}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.copyOfCopy, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funCopyOfCopyHint || ''}">${this.translateValue('Копия, снятая с копии', lang)}:</span>`;
-                              html += `<span class="value">${fun.copyOfCopy} 💥</span>`;
+                              html += `<span class="value">${fun.copyOfCopy} ${this.translateValue('палаников', lang)}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.scranton, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funScrantonHint || ''}">${this.translateValue('Пора в Скрантон', lang)}:</span>`;
-                              html += `<span class="value">${fun.scranton} 🏢</span>`;
+                              html += `<span class="value">${fun.scranton} ${this.translateValue('дандермиффлинов', lang)}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.hogwarts, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funHogwartsHint || ''}">${this.translateValue('Путешествие в Хогвартс', lang)}:</span>`;
-                              html += `<span class="value">${fun.hogwarts} 💎</span>`;
+                              html += `<span class="value">${fun.hogwarts} ${this.translateValue('философских камней', lang)}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.unknownPlanets, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funUnknownPlanetsHint || ''}">${this.translateValue('На неведомых планетах', lang)}:</span>`;
-                              html += `<span class="value">${fun.unknownPlanets} ⚡</span>`;
+                              html += `<span class="value">${fun.unknownPlanets} ${this.translateValue('джедаев', lang)}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.mordor, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funMordorHint || ''}">${this.translateValue('Ещё чуть-чуть до Мордора', lang)}:</span>`;
-                              html += `<span class="value">${fun.mordor} 🧝</span>`;
+                              html += `<span class="value">${fun.mordor} ${this.translateValue('хоббитов', lang)}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.garageRock, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funGarageRockHint || ''}">${this.translateValue('Гаражный рок', lang)}:</span>`;
-                              html += `<span class="value">${fun.garageRock} 🎸</span>`;
+                              html += `<span class="value">${fun.garageRock} ${this.translateValue('кобейнов', lang)}</span>`;
                               html += `</div>`;
                     }
                     
                     if (this.shouldShowMetric(fun.iceMelts, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.funIceMeltsHint || ''}">${this.translateValue('Между нами тает лёд', lang)}:</span>`;
-                              html += `<span class="value">${fun.iceMelts} 🚢</span>`;
+                              html += `<span class="value">${fun.iceMelts} ${this.translateValue('титаников', lang)}</span>`;
                               html += `</div>`;
                     }
                     
@@ -2777,6 +2799,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
