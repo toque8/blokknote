@@ -1855,7 +1855,7 @@
                     });
                     metrics.scranton = totalWords ? Math.min(10, Math.round((officeCount / totalWords * 1000))) : 0;
                     
-                    const magicWords = ['магия','волшебство','чудо','эликсир','заклинание','волшебник','колдун','фея','дракон','Гарри','Поттер','Дамблдор','волшебная палочка','Хогсмит','Гермиона,'Рон','Гриффиндор','magic','wizard','witch','spell','elixir','miracle','fairy','dragon','Harry','Potter','Gryffindor','Dumbledore'];
+                    const magicWords = ['магия','волшебство','чудо','эликсир','заклинание','волшебник','колдун','фея','дракон','Гарри','Поттер','Дамблдор','волшебная палочка','Хогсмит','Гермиона','Рон','Гриффиндор','magic','wizard','witch','spell','elixir','miracle','fairy','dragon','Harry','Potter','Gryffindor','Dumbledore'];
                     let magicCount = 0;
                     magicWords.forEach(w => {
                               const re = new RegExp(w, 'gi');
@@ -9266,6 +9266,7 @@
     
 
 })();
+
 
 
 
