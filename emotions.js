@@ -3782,7 +3782,7 @@
                         const negations = this.contextRules[this.language]?.negations || [];
                         let negationCount = 0;
                         categoryData.positions.forEach(pos => {
-                            if (pos.context) {
+                            if (pos.context && typeof pos.context === 'string') {
                                 const lowerContext = pos.context.toLowerCase();
                                 negations.forEach(neg => {
                                     const negPattern = new RegExp(`\\b${this.escapeRegExp(neg)}\\b`, 'i');
@@ -9168,6 +9168,7 @@
     
 
 })();
+
 
 
 
