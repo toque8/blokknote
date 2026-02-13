@@ -327,7 +327,18 @@ translateValue(value, lang) {
             'Бюрократический шум': 'Бюрократический шум',
             'Словесное эхо': 'Словесное эхо',
             'Зона тумана': 'Зона тумана',
-            'Категоричный тон': 'Категоричный тон'
+            'Категоричный тон': 'Категоричный тон',
+			'Ещё кофе, пожалуйста': 'Ещё кофе, пожалуйста',
+            'В поисках утраченного...': 'В поисках утраченного...',
+            'Я падаю?': 'Я падаю?',
+            'Криминальное чтиво': 'Криминальное чтиво',
+            'Копия, снятая с копии': 'Копия, снятая с копии',
+            'Пора в Скрантон': 'Пора в Скрантон',
+            'Путешествие в Хогвартс': 'Путешествие в Хогвартс',
+            'На неведомых планетах': 'На неведомых планетах',
+            'Ещё чуть-чуть до Мордора': 'Ещё чуть-чуть до Мордора',
+            'Гаражный рок': 'Гаражный рок',
+            'Между нами тает лёд': 'Между нами тает лёд'
         };
         return translations[value] || value;
     } else if (lang === 'en') {
@@ -371,6 +382,17 @@ translateValue(value, lang) {
             'Словесное эхо': 'Verbal Echo',
             'Зона тумана': 'Fog Zone',
             'Категоричный тон': 'Categorical Tone',
+			'Ещё кофе, пожалуйста': 'Another Coffee, Please',
+            'В поисках утраченного...': 'In Search of Lost Time',
+            'Я падаю?': 'Am I falling?',
+            'Криминальное чтиво': 'Pulp Fiction',
+            'Копия, снятая с копии': 'A Copy of a Copy',
+            'Пора в Скрантон': 'Time for Scranton',
+            'Путешествие в Хогвартс': 'Journey to Hogwarts',
+            'На неведомых планетах': 'On Unknown Planets',
+            'Ещё чуть-чуть до Мордора': 'Still a Bit to Mordor',
+            'Гаражный рок': 'Garage Rock',
+            'Между нами тает лёд': 'Between Us Melts Ice',
             
             'Сдержанное богатое эмоциональное переживание': 'Restrained rich emotional experience',
             'Сдержанное спокойное принятие и удовлетворение текущим моментом': 'Restrained calm acceptance and satisfaction with the current moment',            'Состояние полного, всеобъемлющего счастья и духовного подъёма': 'A state of complete, all-encompassing happiness and spiritual upliftment',
@@ -971,6 +993,96 @@ renderResult(result) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.journalistCategoricalTone || ''}">${this.translateValue('Категоричный тон', lang)}:</span>`;
                               html += `<span class="value" style="text-align:right !important;float:right;">${journalist.categoricalTone} ‰</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    html += `</div>`;
+    }
+
+    const fun = result.metrics?.fun || {};
+    const hasFunMetrics = Object.keys(fun).length > 0;
+          
+    if (hasFunMetrics) {
+                    const lang = this.getCurrentLanguage();
+                    const t = this.getTranslations(lang);
+                    
+                    html += `<div class="emotion-section">`;
+                    html += `<h3>${lang === 'ru' ? 'Для настроения' : 'For Fun'}</h3>`;
+                    
+                    if (this.shouldShowMetric(fun.moreCoffee, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.funMoreCoffeeHint || ''}">${this.translateValue('Ещё кофе, пожалуйста', lang)}:</span>`;
+                              html += `<span class="value">${fun.moreCoffee} ☕</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(fun.lostTime, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.funLostTimeHint || ''}">${this.translateValue('В поисках утраченного...', lang)}:</span>`;
+                              html += `<span class="value">${fun.lostTime} 📚</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(fun.rabbitHole, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.funRabbitHoleHint || ''}">${this.translateValue('Падение в кроличью нору', lang)}:</span>`;
+                              html += `<span class="value">${fun.rabbitHole} 🐇</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(fun.pulpFiction, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.funPulpFictionHint || ''}">${this.translateValue('Криминальное чтиво', lang)}:</span>`;
+                              html += `<span class="value">${fun.pulpFiction} 🎬</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(fun.copyOfCopy, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.funCopyOfCopyHint || ''}">${this.translateValue('Копия, снятая с копии', lang)}:</span>`;
+                              html += `<span class="value">${fun.copyOfCopy} 💥</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(fun.scranton, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.funScrantonHint || ''}">${this.translateValue('Пора в Скрантон', lang)}:</span>`;
+                              html += `<span class="value">${fun.scranton} 🏢</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(fun.hogwarts, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.funHogwartsHint || ''}">${this.translateValue('Путешествие в Хогвартс', lang)}:</span>`;
+                              html += `<span class="value">${fun.hogwarts} 💎</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(fun.unknownPlanets, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.funUnknownPlanetsHint || ''}">${this.translateValue('На неведомых планетах', lang)}:</span>`;
+                              html += `<span class="value">${fun.unknownPlanets} ⚡</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(fun.mordor, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.funMordorHint || ''}">${this.translateValue('Ещё чуть-чуть до Мордора', lang)}:</span>`;
+                              html += `<span class="value">${fun.mordor} 🧝</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(fun.garageRock, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.funGarageRockHint || ''}">${this.translateValue('Гаражный рок', lang)}:</span>`;
+                              html += `<span class="value">${fun.garageRock} 🎸</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(fun.iceMelts, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.funIceMeltsHint || ''}">${this.translateValue('Между нами тает лёд', lang)}:</span>`;
+                              html += `<span class="value">${fun.iceMelts} 🚢</span>`;
                               html += `</div>`;
                     }
                     
@@ -2361,7 +2473,19 @@ getTranslations(lang) {
             journalistBureaucraticNoise: 'Канцеляризмы на 1000 слов. Если 0 — всё в порядке',
             journalistVerbalEcho: 'Тавтологии (однокоренные повторы) на 1000 слов. Если 0 — всё в порядке',
             journalistFogZone: 'Неопределённые формулировки (около, примерно, какой-то) на 1000 слов',
-            journalistCategoricalTone: 'Слова-абсолюты (всегда, никогда, каждый) на 1000 слов'
+            journalistCategoricalTone: 'Слова-абсолюты (всегда, никогда, каждый) на 1000 слов',
+			funMoreCoffeeHint: 'Упоминания кофе и кофейных напитков на 1000 слов. Один джармуш — одно упоминание',
+            funLostTimeHint: 'Количество длинных слов (≥10 букв) на 1000 слов. Чем больше прустов, тем зануднее текст',
+            funRabbitHoleHint: 'Предложения, которые сильно длиннее среднего. Сколько раз текст падает в кроличью нору на 1000 слов',
+            funPulpFictionHint: 'Тюремно-криминальная лексика',
+            funCopyOfCopyHint: 'Слова раздражения и злости',
+            funScrantonHint: 'Офисная лексика',
+            funHogwartsHint: 'Магическая лексика',
+            funUnknownPlanetsHint: 'Космическая лексика',
+            funMordorHint: 'Слова с двойными буквами',
+            funGarageRockHint: 'Доля согласных звуков',
+            funIceMeltsHint: 'Появляется только если в тексте есть фраза: я тебя люблю. Показывает количество таких фраз',
+			
         },
         en: {
             primaryProfile: 'Primary Profile',
@@ -2614,7 +2738,18 @@ getTranslations(lang) {
             journalistBureaucraticNoise: 'Officialese per 1000 words. If 0, all right',
             journalistVerbalEcho: 'Tautologies (cognate repetitions) per 1000 words. If 0, all right',
             journalistFogZone: 'Vague wording (around, approximately, some) per 1000 words',
-            journalistCategoricalTone: 'Absolutist words (always, never, every) per 1000 words'
+            journalistCategoricalTone: 'Absolutist words (always, never, every) per 1000 words',
+			funMoreCoffeeHint: 'Mentions of coffee and coffee drinks per 1000 words. One Jarmusch = one mention',
+            funLostTimeHint: 'Number of long words (≥10 letters) per 1000 words. More Prousts means more tedious text',
+            funRabbitHoleHint: 'Sentences much longer than average. How many times the text falls down the rabbit hole per 1000 words',
+            funPulpFictionHint: 'Prison/criminal slang',
+            funCopyOfCopyHint: 'Words of irritation and anger',
+            funScrantonHint: 'Office vocabulary',
+            funHogwartsHint: 'Magical vocabulary',
+            funUnknownPlanetsHint: 'Space vocabulary',
+            funMordorHint: 'Words with double letters',
+            funGarageRockHint: 'Proportion of consonant sounds',
+            funIceMeltsHint: 'Appears if the text contains: i love you. Shows the count',
         }
     };
     return translations[lang] || translations.en;
@@ -2642,6 +2777,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
