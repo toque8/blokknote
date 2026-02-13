@@ -2358,7 +2358,7 @@ getTranslations(lang) {
             journalistFreshnessGauge: 'Маркеры «сегодня, вчера, только что» на 1000 слов. Показатель оперативности',
             journalistAntiYellow: 'Отсутствие кликбейтной лексики. 100% = чисто, 0% = много манипуляций',
             journalistOpinionPalette: 'Контрастные союзы (однако, но, с другой стороны) на 1000 слов. Показатель многоголосия',
-            journalistBureaucraticNoise: 'Канцеляризмы на 1000 слов. Если 0 — всё в порядке.',
+            journalistBureaucraticNoise: 'Канцеляризмы на 1000 слов. Если 0 — всё в порядке',
             journalistVerbalEcho: 'Тавтологии (однокоренные повторы) на 1000 слов. Если 0 — всё в порядке',
             journalistFogZone: 'Неопределённые формулировки (около, примерно, какой-то) на 1000 слов',
             journalistCategoricalTone: 'Слова-абсолюты (всегда, никогда, каждый) на 1000 слов'
@@ -2608,10 +2608,10 @@ getTranslations(lang) {
 			journalistDigitalFootprint: 'Numbers, dates, percentages per 1000 words. Measures factual density',
             journalistNameIndex: 'Names of people, organizations, places per 1000 words. Higher means more specific sources',
             journalistFactMirror: 'Absence of subjective expressions. 100% = perfectly objective, 0% = opinion‑heavy',
-            journalistFreshnessGauge: 'Markers like "today, yesterday, just in" per 1000 words. Indicates timeliness',
+            journalistFreshnessGauge: 'Markers like: today, yesterday, just in / per 1000 words. Indicates timeliness',
             journalistAntiYellow: 'Absence of clickbait vocabulary. 100% = clean, 0% = manipulative',
             journalistOpinionPalette: 'Contrastive conjunctions (however, but, on the other hand) per 1000 words. Shows multiple viewpoints.',
-            journalistBureaucraticNoise: 'Officialese per 1000 words. If 0, all right.',
+            journalistBureaucraticNoise: 'Officialese per 1000 words. If 0, all right',
             journalistVerbalEcho: 'Tautologies (cognate repetitions) per 1000 words. If 0, all right',
             journalistFogZone: 'Vague wording (around, approximately, some) per 1000 words',
             journalistCategoricalTone: 'Absolutist words (always, never, every) per 1000 words'
@@ -2642,6 +2642,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
