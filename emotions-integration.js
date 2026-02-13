@@ -317,7 +317,17 @@ translateValue(value, lang) {
             'Эго-фактор': 'Эго-фактор',
             'Степень фрагментации': 'Степень фрагментации',
             'Показатель иммерсивности': 'Показатель иммерсивности',
-            'Процент энтропии': 'Процент энтропии'
+            'Процент энтропии': 'Процент энтропии',
+			'Цифровой след': 'Цифровой след',
+            'Именной указатель': 'Именной указатель',
+            'Зеркало фактов': 'Зеркало фактов',
+            'Показатель актуальности': 'Показатель актуальности',
+            'Анти-желтизна': 'Анти-желтизна',
+            'Спектр мнений': 'Спектр мнений',
+            'Бюрократический шум': 'Бюрократический шум',
+            'Словесное эхо': 'Словесное эхо',
+            'Зона тумана': 'Зона тумана',
+            'Категоричный тон': 'Категоричный тон'
         };
         return translations[value] || value;
     } else if (lang === 'en') {
@@ -351,6 +361,16 @@ translateValue(value, lang) {
             'Степень фрагментации': 'Fragmentation Degree',
             'Показатель иммерсивности': 'Immersiveness',
             'Процент энтропии': 'Chaos Entropy',
+			'Цифровой след': 'Digital Footprint',
+            'Именной указатель': 'Name Index',
+            'Зеркало фактов': 'Fact Mirror',
+            'Показатель актуальности': 'Freshness Gauge',
+            'Анти-желтизна': 'Anti‑Yellowness',
+            'Спектр мнений': 'Opinion Palette',
+            'Бюрократический шум': 'Bureaucratic Noise',
+            'Словесное эхо': 'Verbal Echo',
+            'Зона тумана': 'Fog Zone',
+            'Категоричный тон': 'Categorical Tone',
             
             'Сдержанное богатое эмоциональное переживание': 'Restrained rich emotional experience',
             'Сдержанное спокойное принятие и удовлетворение текущим моментом': 'Restrained calm acceptance and satisfaction with the current moment',            'Состояние полного, всеобъемлющего счастья и духовного подъёма': 'A state of complete, all-encompassing happiness and spiritual upliftment',
@@ -858,6 +878,99 @@ renderResult(result) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.writerChaosHint || ''}">${this.translateValue('Процент энтропии', lang)}:</span>`;
                               html += `<span class="value" style="text-align:right !important;float:right;">${writer.chaosEntropyPercent}%</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    html += `</div>`;
+    }
+
+    const journalist = result.metrics?.journalist || {};
+    const hasJournalistMetrics = Object.keys(journalist).length > 0;
+          
+    if (hasJournalistMetrics) {
+                    const lang = this.getCurrentLanguage();
+                    const t = this.getTranslations(lang);
+                    
+                    html += `<div class="emotion-section">`;
+                    html += `<h3>${lang === 'ru' ? 'Для журналиста' : 'For Journalist'}</h3>`;
+                    
+                    const digitalVal = this.getNumber(journalist.digitalFootprint);
+                    if (this.shouldShowMetric(digitalVal, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.journalistDigitalFootprint || ''}">${this.translateValue('Цифровой след', lang)}:</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.digitalFootprint} ‰</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    const nameVal = this.getNumber(journalist.nameIndex);
+                    if (this.shouldShowMetric(nameVal, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.journalistNameIndex || ''}">${this.translateValue('Именной указатель', lang)}:</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.nameIndex} ‰</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    const factMirrorVal = this.getNumber(journalist.factMirror);
+                    if (this.shouldShowMetric(factMirrorVal, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.journalistFactMirror || ''}">${this.translateValue('Зеркало фактов', lang)}:</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.factMirror}%</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    const freshnessVal = this.getNumber(journalist.freshnessGauge);
+                    if (this.shouldShowMetric(freshnessVal, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.journalistFreshnessGauge || ''}">${this.translateValue('Показатель актуальности', lang)}:</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.freshnessGauge} ‰</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    const antiYellowVal = this.getNumber(journalist.antiYellow);
+                    if (this.shouldShowMetric(antiYellowVal, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.journalistAntiYellow || ''}">${this.translateValue('Анти-желтизна', lang)}:</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.antiYellow}%</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    const opinionVal = this.getNumber(journalist.opinionPalette);
+                    if (this.shouldShowMetric(opinionVal, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.journalistOpinionPalette || ''}">${this.translateValue('Спектр мнений', lang)}:</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.opinionPalette} ‰</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    const bureauVal = this.getNumber(journalist.bureaucraticNoise);
+                    if (this.shouldShowMetric(bureauVal, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.journalistBureaucraticNoise || ''}">${this.translateValue('Бюрократический шум', lang)}:</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${bureauVal === 0 ? (lang === 'ru' ? 'Отсутствуют' : 'None') : bureauVal + ' ‰'}</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    const echoVal = this.getNumber(journalist.verbalEcho);
+                    if (this.shouldShowMetric(echoVal, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.journalistVerbalEcho || ''}">${this.translateValue('Словесное эхо', lang)}:</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${echoVal === 0 ? (lang === 'ru' ? 'Отсутствуют' : 'None') : echoVal + ' ‰'}</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    const fogVal = this.getNumber(journalist.fogZone);
+                    if (this.shouldShowMetric(fogVal, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.journalistFogZone || ''}">${this.translateValue('Зона тумана', lang)}:</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.fogZone} ‰</span>`;
+                              html += `</div>`;
+                    }
+                    
+                    const categVal = this.getNumber(journalist.categoricalTone);
+                    if (this.shouldShowMetric(categVal, true)) {
+                              html += `<div class="emotion-metric">`;
+                              html += `<span class="label" title="${t.journalistCategoricalTone || ''}">${this.translateValue('Категоричный тон', lang)}:</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.categoricalTone} ‰</span>`;
                               html += `</div>`;
                     }
                     
@@ -2239,6 +2352,16 @@ getTranslations(lang) {
             writerFragmentationHint: '10 = каждое предложение с абзаца, 1 = абзацы по 10 предложений, 0 = монолит',
             writerImmersivenessHint: 'Сенсорная лексика (зрение, слух, осязание, запах, вкус) на 1000 слов. Погружение в сцену',
             writerChaosHint: 'Энтропия ритма: равномерность распределения длин предложений, абзацев и знаков препинания. 0% — монотонно, 100% — богато/хаотично',
+	        journalistDigitalFootprint: 'Числа, даты, проценты на 1000 слов. Показатель фактологической насыщенности',
+            journalistNameIndex: 'Имена, фамилии, названия организаций и мест на 1000 слов. Чем выше, тем больше конкретных источников',
+            journalistFactMirror: 'Отсутствие субъективных выражений. 100% = идеально объективно, 0% = текст полон мнений',
+            journalistFreshnessGauge: 'Маркеры «сегодня, вчера, только что» на 1000 слов. Показатель оперативности',
+            journalistAntiYellow: 'Отсутствие кликбейтной лексики. 100% = чисто, 0% = много манипуляций',
+            journalistOpinionPalette: 'Контрастные союзы (однако, но, с другой стороны) на 1000 слов. Показатель многоголосия',
+            journalistBureaucraticNoise: 'Канцеляризмы на 1000 слов. Если 0 — всё в порядке.',
+            journalistVerbalEcho: 'Тавтологии (однокоренные повторы) на 1000 слов. Если 0 — всё в порядке',
+            journalistFogZone: 'Неопределённые формулировки (около, примерно, какой-то) на 1000 слов',
+            journalistCategoricalTone: 'Слова-абсолюты (всегда, никогда, каждый) на 1000 слов'
         },
         en: {
             primaryProfile: 'Primary Profile',
@@ -2482,6 +2605,16 @@ getTranslations(lang) {
             writerFragmentationHint: '10 = each sentence starts a new paragraph, 1 = 10 sentences per paragraph, 0 = monolithic',
             writerImmersivenessHint: 'Sensory words (sight, hearing, touch, smell, taste) per 1000 words. High = immersive atmosphere',
             writerChaosHint: 'Rhythm entropy: uniformity of sentence length, paragraph length and punctuation. 0% = monotonous, 100% = chaotic/rich',
+			journalistDigitalFootprint: 'Numbers, dates, percentages per 1000 words. Measures factual density',
+            journalistNameIndex: 'Names of people, organizations, places per 1000 words. Higher means more specific sources',
+            journalistFactMirror: 'Absence of subjective expressions. 100% = perfectly objective, 0% = opinion‑heavy',
+            journalistFreshnessGauge: 'Markers like "today, yesterday, just in" per 1000 words. Indicates timeliness',
+            journalistAntiYellow: 'Absence of clickbait vocabulary. 100% = clean, 0% = manipulative',
+            journalistOpinionPalette: 'Contrastive conjunctions (however, but, on the other hand) per 1000 words. Shows multiple viewpoints.',
+            journalistBureaucraticNoise: 'Officialese per 1000 words. If 0, all right.',
+            journalistVerbalEcho: 'Tautologies (cognate repetitions) per 1000 words. If 0, all right',
+            journalistFogZone: 'Vague wording (around, approximately, some) per 1000 words',
+            journalistCategoricalTone: 'Absolutist words (always, never, every) per 1000 words'
         }
     };
     return translations[lang] || translations.en;
@@ -2509,6 +2642,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
