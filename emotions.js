@@ -1684,7 +1684,7 @@
                     });
                     metrics.freshnessGauge = totalWords ? (freshnessCount / totalWords * 1000).toFixed(1) : 0;
                     
-                    const clickbaitRu = ['шокирует','сенсация','секрет','тайна','невероятно','вы не поверите','скандал','ужас','кошмар','немедленно'];
+                    const clickbaitRu = ['шокирует','сенсация','сенсацией','сенсаций','секрет','тайна','невероятно','вы не поверите','скандал','ужас','кошмар','немедленно'];
                     const clickbaitEn = ['shocking','unbelievable','you won\'t believe','secret','scandal','what happened next','viral'];
                     let clickbaitCount = 0;
                     clickbaitRu.concat(clickbaitEn).forEach(phrase => {
@@ -9134,6 +9134,7 @@
     
 
 })();
+
 
 
 
