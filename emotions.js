@@ -1385,6 +1385,13 @@
                     } catch (e) {
                         console.warn('Journalist metrics calculation error:', e);
                     }
+
+                    let funMetrics = {};
+                    try {
+                        funMetrics = this.calculateFunMetrics(text);
+                    } catch (e) {
+                        console.warn('Fun metrics calculation error:', e);
+                    }
                     
                     return {
                         success: true,
@@ -1401,7 +1408,8 @@
                             readingTime: preprocessing.words.length / 200,
                             complexityScore: integratedResult.complexityScore,
                             writer: writerMetrics,
-                            journalist: journalistMetrics
+                            journalist: journalistMetrics,
+                            fun: funMetrics
                         },
                         details: {
                             lexical: lexicalAnalysis,
@@ -1788,6 +1796,96 @@
                               if (m) absoluteCount += m.length;
                     });
                     metrics.categoricalTone = totalWords ? (absoluteCount / totalWords * 1000).toFixed(1) : 0;
+                    
+                    return metrics;
+        }
+
+        calculateFunMetrics(text) {
+                    if (!text || typeof text !== 'string') return {};
+                    
+                    const words = text.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
+                    const totalWords = words.length;
+                    const lowerText = text.toLowerCase();
+                    const sentences = text.split(/[.!?]+/).filter(Boolean);
+                    const totalSentences = sentences.length;
+                    
+                    const metrics = {};
+                    
+                    const coffeeWords = ['кофе','эспрессо','капучино','латте','американо','coffee','espresso','cappuccino','latte','americano'];
+                    let coffeeCount = 0;
+                    coffeeWords.forEach(w => {
+                              const re = new RegExp(w, 'gi');
+                              const m = lowerText.match(re);
+                              if (m) coffeeCount += m.length;
+                    });
+                    metrics.moreCoffee = totalWords ? Math.min(10, Math.round((coffeeCount / totalWords * 1000))) : 0;
+                    
+                    const longWords = words.filter(w => w.length >= 10).length;
+                    metrics.lostTime = totalWords ? Math.min(10, Math.round((longWords / totalWords * 1000))) : 0;
+                    
+                    const sentLengths = sentences.map(s => (s.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || []).length);
+                    const avgSentLength = sentLengths.length > 0 ? sentLengths.reduce((a,b)=>a+b,0) / sentLengths.length : 0;
+                    const longSentCount = sentLengths.filter(l => l > avgSentLength * 1.5).length;
+                    metrics.rabbitHole = totalWords ? Math.min(10, Math.round((longSentCount / totalWords * 1000))) : 0;
+                    
+                    const crimeWords = ['тюрьма','вор','мент','бандит','разборка','киллер','мафия','оружие','криминал','преступление','пушка','ограбление','prison','thief','cop','gangster','murder','weapon','crime','robbery','criminal','mob'];
+                    let crimeCount = 0;
+                    crimeWords.forEach(w => {
+                              const re = new RegExp(w, 'gi');
+                              const m = lowerText.match(re);
+                              if (m) crimeCount += m.length;
+                    });
+                    metrics.pulpFiction = totalWords ? Math.min(10, Math.round((crimeCount / totalWords * 1000))) : 0;
+                    
+                    const angerWords = ['бесит','злит','ненавижу','достало','надоело','ужасно','раздражает','терпеть','hate','annoying','frustrating','sick of','terrible','awful','irritating','cannot stand','fed up'];
+                    let angerCount = 0;
+                    angerWords.forEach(w => {
+                              const re = new RegExp(w, 'gi');
+                              const m = lowerText.match(re);
+                              if (m) angerCount += m.length;
+                    });
+                    metrics.copyOfCopy = totalWords ? Math.min(10, Math.round((angerCount / totalWords * 1000))) : 0;
+                    
+                    const officeWords = ['офис','кулер','бумага','принтер','переговорка','дедлайн','отчёт','договор','совещание','планёрка','менеджер','скрентон','босс','office','printer','paper','scranton','meeting','deadline','report','copier','cubicle','boss','manager'];
+                    let officeCount = 0;
+                    officeWords.forEach(w => {
+                              const re = new RegExp(w, 'gi');
+                              const m = lowerText.match(re);
+                              if (m) officeCount += m.length;
+                    });
+                    metrics.scranton = totalWords ? Math.min(10, Math.round((officeCount / totalWords * 1000))) : 0;
+                    
+                    const magicWords = ['магия','волшебство','чудо','эликсир','заклинание','волшебник','колдун','фея','дракон','Гарри','Поттер','Дамблдор','волшебная палочка','Хогсмит','Гермиона,'Рон','Гриффиндор','magic','wizard','witch','spell','elixir','miracle','fairy','dragon','Harry','Potter','Gryffindor','Dumbledore'];
+                    let magicCount = 0;
+                    magicWords.forEach(w => {
+                              const re = new RegExp(w, 'gi');
+                              const m = lowerText.match(re);
+                              if (m) magicCount += m.length;
+                    });
+                    metrics.hogwarts = totalWords ? Math.min(10, Math.round((magicCount / totalWords * 1000))) : 0;
+                    
+                    const spaceWords = ['космос','звезда','планета','луч','галактика','вселенная','спутник','орбита','ракета','пришелец','джедай','инопланетянин','space','star','planet','ray','galaxy','universe','satellite','orbit','rocket','alien','jedi];
+                    let spaceCount = 0;
+                    spaceWords.forEach(w => {
+                              const re = new RegExp(w, 'gi');
+                              const m = lowerText.match(re);
+                              if (m) spaceCount += m.length;
+                    });
+                    metrics.unknownPlanets = totalWords ? Math.min(10, Math.round((spaceCount / totalWords * 1000))) : 0;
+                    
+                    const doubleLetterWords = words.filter(w => /(.)\1/.test(w)).length;
+                    metrics.mordor = totalWords ? Math.min(10, Math.round((doubleLetterWords / totalWords * 1000))) : 0;
+                    
+                    const allLetters = text.match(/[a-zA-Zа-яА-ЯёЁ]/g) || [];
+                    const totalLetters = allLetters.length;
+                    const vowels = /[аеёиоуыэюяaeiouy]/gi;
+                    const consonantCount = allLetters.filter(ch => !ch.match(vowels)).length;
+                    const consonantRatio = totalLetters ? consonantCount / totalLetters : 0;
+                    metrics.garageRock = totalLetters ? Math.min(10, Math.round(consonantRatio * 10)) : 0;
+                    
+                    const lovePattern = /я тебя люблю|i love you/gi;
+                    const loveMatches = text.match(lovePattern) || [];
+                    metrics.iceMelts = loveMatches.length > 0 ? Math.min(10, loveMatches.length) : 0;
                     
                     return metrics;
         }
@@ -9168,6 +9266,7 @@
     
 
 })();
+
 
 
 
