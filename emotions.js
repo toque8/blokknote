@@ -1644,7 +1644,7 @@
                     const dateWordsEn = ['year','years','month','months','day','days','week','weeks'];
                     let dateWordCount = 0;
                     dateWordsRu.concat(dateWordsEn).forEach(w => {
-                              const re = new RegExp('\\b' + w + '\\w*\\b', 'gi');
+                              const re = new RegExp(w, 'gi');
                               const m = text.match(re);
                               if (m) dateWordCount += m.length;
                     });
@@ -1677,8 +1677,8 @@
                     const freshnessRu = ['сегодня','вчера','сейчас','только что','этой ночью','час назад','утром','в понедельник','на этой неделе'];
                     const freshnessEn = ['today','yesterday','tonight','this morning','just in','breaking','hours ago'];
                     let freshnessCount = 0;
-                    freshnessRu.concat(freshnessEn).forEach(w => {
-                              const re = new RegExp('\\b' + w + '\\b', 'gi');
+                    freshnessRu.concat(freshnessEn).forEach(phrase => {
+                              const re = new RegExp(phrase, 'gi');
                               const m = lowerText.match(re);
                               if (m) freshnessCount += m.length;
                     });
@@ -1687,8 +1687,8 @@
                     const clickbaitRu = ['шокирует','сенсация','секрет','тайна','невероятно','вы не поверите','скандал','ужас','кошмар','немедленно'];
                     const clickbaitEn = ['shocking','unbelievable','you won\'t believe','secret','scandal','what happened next','viral'];
                     let clickbaitCount = 0;
-                    clickbaitRu.concat(clickbaitEn).forEach(w => {
-                              const re = new RegExp('\\b' + w + '\\b', 'gi');
+                    clickbaitRu.concat(clickbaitEn).forEach(phrase => {
+                              const re = new RegExp(phrase, 'gi');
                               const m = lowerText.match(re);
                               if (m) clickbaitCount += m.length;
                     });
@@ -1698,8 +1698,8 @@
                     const contrastRu = ['однако','но','тем не менее','несмотря на','с другой стороны','вопреки'];
                     const contrastEn = ['nevertheless','however','but','although','despite','on the other hand','whereas'];
                     let contrastCount = 0;
-                    contrastRu.concat(contrastEn).forEach(w => {
-                              const re = new RegExp('\\b' + w + '\\b', 'gi');
+                    contrastRu.concat(contrastEn).forEach(phrase => {
+                              const re = new RegExp(phrase, 'gi');
                               const m = lowerText.match(re);
                               if (m) contrastCount += m.length;
                     });
@@ -1708,15 +1708,15 @@
                     const bureaucratRu = [
                               'осуществление','мероприятие','взаимодействие','обеспечение','реализация','находится','является',
                               'производится','за счёт','в целях','в рамках','на сегодняшний день','в настоящее время','с учётом',
-                              'в соответствии','исполнение','а также','данный','вышеуказанный'
+                              'в соответствии','во исполнение','а также','данный','вышеуказанный'
                     ];
                     const bureaucratEn = [
                               'implementation','provision','interaction','within the framework','in accordance','currently',
                               'this','these','aforementioned'
                     ];
                     let bureaucratCount = 0;
-                    bureaucratRu.concat(bureaucratEn).forEach(w => {
-                              const re = new RegExp('\\b' + w + '\\b', 'gi');
+                    bureaucratRu.concat(bureaucratEn).forEach(phrase => {
+                              const re = new RegExp(phrase, 'gi');
                               const m = lowerText.match(re);
                               if (m) bureaucratCount += m.length;
                     });
@@ -1739,8 +1739,8 @@
                     const vagueRu = ['около','примерно','почти','где-то','несколько','некоторый','некий','какой-то'];
                     const vagueEn = ['certain','some','several','around','approximately','almost','nearly','kind of','sort of'];
                     let vagueCount = 0;
-                    vagueRu.concat(vagueEn).forEach(w => {
-                              const re = new RegExp('\\b' + w + '\\b', 'gi');
+                    vagueRu.concat(vagueEn).forEach(phrase => {
+                              const re = new RegExp(phrase, 'gi');
                               const m = lowerText.match(re);
                               if (m) vagueCount += m.length;
                     });
@@ -1749,8 +1749,8 @@
                     const absoluteRu = ['всегда','никогда','каждый','любой','никто','ничто','весь','абсолютно','совершенно','полностью'];
                     const absoluteEn = ['always','never','every','anybody','nobody','nothing','all','absolutely','completely','entirely'];
                     let absoluteCount = 0;
-                    absoluteRu.concat(absoluteEn).forEach(w => {
-                              const re = new RegExp('\\b' + w + '\\b', 'gi');
+                    absoluteRu.concat(absoluteEn).forEach(phrase => {
+                              const re = new RegExp(phrase, 'gi');
                               const m = lowerText.match(re);
                               if (m) absoluteCount += m.length;
                     });
@@ -9134,6 +9134,7 @@
     
 
 })();
+
 
 
 
