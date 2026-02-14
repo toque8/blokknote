@@ -5636,149 +5636,154 @@
         }
         
         enhancedContextualAnalysis(data) {
-            const text = data.cleaned.toLowerCase();
-            const sentences = data.sentences;
-            const rules = this.contextRules[this.language];
-            
-            const analysis = {
-                indicators: {
-                    negations: 0,
-                    intensifiers: 0,
-                    diminutives: 0,
-                    augmentatives: 0,
-                    irony: 0,
-                    contrasts: 0,
-                    rhetorical: 0,
-                    hyperbole: 0,
-                    understatement: 0
-                },
-                scores: {
-                    negationImpact: 0,
-                    intensification: 0,
-                    emotionalModulation: 0,
-                    contextualComplexity: 0
-                },
-                patterns: {
-                    ironyPatterns: [],
-                    contrastPatterns: [],
-                    rhetoricalPatterns: []
-                }
-            };
-            
-            rules.negations.forEach(negation => {
-                const regex = new RegExp(`\\b${this.escapeRegExp(negation)}\\b`, 'gi');
-                const matches = text.match(regex);
-                if (matches) {
-                    analysis.indicators.negations += matches.length;
-                    const weight = negation.includes('отнюдь') || negation.includes('вовсе') ? 1.5 : 1.0;
-                    analysis.scores.negationImpact -= matches.length * 0.3 * weight;
-                }
-            });
-            
-            rules.intensifiers.forEach(intensifier => {
-                const regex = new RegExp(`\\b${this.escapeRegExp(intensifier)}\\b`, 'gi');
-                const matches = text.match(regex);
-                if (matches) {
-                    analysis.indicators.intensifiers += matches.length;
-                    const weight = intensifier.includes('чрезвычайно') || intensifier.includes('невероятно') ? 1.5 : 
-                                  intensifier.includes('очень') || intensifier.includes('сильно') ? 1.0 : 1.2;
-                    analysis.scores.intensification += matches.length * 0.2 * weight;
-                }
-            });
-            
-            if (this.language === 'ru') {
-                rules.diminutives.forEach(suffix => {
-                    const regex = new RegExp(`[а-яё]+${suffix}[а-яё]*`, 'gi');
-                    const matches = text.match(regex);
-                    if (matches) {
-                        analysis.indicators.diminutives += matches.length;
-                        analysis.scores.emotionalModulation += matches.length * 0.1;
+                    const text = data.cleaned.toLowerCase();
+                    const sentences = data.sentences;
+                    const rules = this.contextRules[this.language];
+                    
+                    const analysis = {
+                        indicators: {
+                            negations: 0,
+                            intensifiers: 0,
+                            diminutives: 0,
+                            augmentatives: 0,
+                            irony: 0,
+                            contrasts: 0,
+                            rhetorical: 0,
+                            hyperbole: 0,
+                            understatement: 0
+                        },
+                        scores: {
+                            negationImpact: 0,
+                            intensification: 0,
+                            emotionalModulation: 0,
+                            contextualComplexity: 0
+                        },
+                        patterns: {
+                            ironyPatterns: [],
+                            contrastPatterns: [],
+                            rhetoricalPatterns: []
+                        }
+                    };
+                    
+                    rules.negations.forEach(negation => {
+                        const regex = new RegExp(`\\b${this.escapeRegExp(negation)}\\b`, this.language === 'ru' ? 'gui' : 'gi');
+                        const matches = text.match(regex);
+                        if (matches) {
+                            analysis.indicators.negations += matches.length;
+                            const weight = negation.includes('отнюдь') || negation.includes('вовсе') || negation.includes('ни') ? 1.5 : 
+                                          negation.includes('не') ? 1.0 : 1.2;
+                            analysis.scores.negationImpact -= matches.length * 0.3 * weight;
+                        }
+                    });
+                    
+                    rules.intensifiers.forEach(intensifier => {
+                        const regex = new RegExp(`\\b${this.escapeRegExp(intensifier)}\\b`, this.language === 'ru' ? 'gui' : 'gi');
+                        const matches = text.match(regex);
+                        if (matches) {
+                            analysis.indicators.intensifiers += matches.length;
+                            const weight = intensifier.includes('чрезвычайно') || intensifier.includes('невероятно') || intensifier.includes('абсолютно') ? 1.5 : 
+                                          intensifier.includes('очень') || intensifier.includes('сильно') || intensifier.includes('крайне') ? 1.0 : 1.2;
+                            analysis.scores.intensification += matches.length * 0.2 * weight;
+                        }
+                    });
+                    
+                    if (this.language === 'ru') {
+                        const diminutiveSuffixes = ['-еньк', '-оньк', '-ечк', '-ичк', '-ушк', '-юшк', '-ышк', '-ат', '-ят', '-ик', '-ок', '-ек', '-ёк', '-чик', '-щик'];
+                        diminutiveSuffixes.forEach(suffix => {
+                            const regex = new RegExp(`\\b[а-яё]+${this.escapeRegExp(suffix)}(?:[а-яё]*)?\\b`, 'gui');
+                            const matches = text.match(regex);
+                            if (matches) {
+                                analysis.indicators.diminutives += matches.length;
+                                analysis.scores.emotionalModulation += matches.length * 0.1;
+                            }
+                        });
+                        
+                        const augmentativeSuffixes = ['-ищ', '-ин', '-ищн', '-ющ', '-ющ', '-ач', '-яч', '-ух', '-юх'];
+                        augmentativeSuffixes.forEach(suffix => {
+                            const regex = new RegExp(`\\b[а-яё]+${this.escapeRegExp(suffix)}(?:[а-яё]*)?\\b`, 'gui');
+                            const matches = text.match(regex);
+                            if (matches) {
+                                analysis.indicators.augmentatives += matches.length;
+                                analysis.scores.emotionalModulation += matches.length * 0.15;
+                            }
+                        });
                     }
-                });
-                
-                rules.augmentatives.forEach(suffix => {
-                    const regex = new RegExp(`[а-яё]+${suffix}[а-яё]*`, 'gi');
-                    const matches = text.match(regex);
-                    if (matches) {
-                        analysis.indicators.augmentatives += matches.length;
-                        analysis.scores.emotionalModulation += matches.length * 0.15;
-                    }
-                });
-            }
-            
-            sentences.forEach((sentenceObj, index) => {
-                const sentence = typeof sentenceObj === 'object' ? sentenceObj.text : sentenceObj;
-                const lowerSentence = sentence.toLowerCase();
-                
-                let ironyDetected = false;
-                rules.ironyIndicators.forEach(indicator => {
-                    if (lowerSentence.includes(indicator)) {
-                        if (sentence.includes('?') || sentence.includes('!')) {
-                            const positiveAfterNegative = this.checkIronyPattern(sentence);
-                            if (positiveAfterNegative) {
-                                analysis.indicators.irony++;
-                                analysis.scores.contextualComplexity += 0.5;
-                                ironyDetected = true;
-                                analysis.patterns.ironyPatterns.push({
+                    
+                    sentences.forEach((sentenceObj, index) => {
+                        const sentence = typeof sentenceObj === 'object' ? sentenceObj.text : sentenceObj;
+                        const lowerSentence = sentence.toLowerCase();
+                        
+                        let ironyDetected = false;
+                        rules.ironyIndicators.forEach(indicator => {
+                            const regex = new RegExp(`\\b${this.escapeRegExp(indicator)}\\b`, this.language === 'ru' ? 'iu' : 'i');
+                            if (regex.test(lowerSentence)) {
+                                if (sentence.includes('?') || sentence.includes('!') || sentence.includes('…')) {
+                                    const ironyPattern = this.checkIronyPattern(sentence);
+                                    if (ironyPattern.isIrony) {
+                                        analysis.indicators.irony++;
+                                        analysis.scores.contextualComplexity += 0.5;
+                                        ironyDetected = true;
+                                        analysis.patterns.ironyPatterns.push({
+                                            sentenceIndex: index,
+                                            pattern: ironyPattern.pattern,
+                                            text: sentence.substring(0, 100) + '...'
+                                        });
+                                    }
+                                }
+                            }
+                        });
+                        
+                        rules.rhetoricalQuestions.forEach(marker => {
+                            const regex = new RegExp(`\\b${this.escapeRegExp(marker)}\\b`, this.language === 'ru' ? 'iu' : 'i');
+                            if (regex.test(lowerSentence) && sentence.includes('?')) {
+                                analysis.indicators.rhetorical++;
+                                analysis.scores.contextualComplexity += 0.3;
+                                analysis.patterns.rhetoricalPatterns.push({
                                     sentenceIndex: index,
-                                    pattern: `irony indicator: ${indicator}`,
+                                    marker: marker,
                                     text: sentence.substring(0, 100) + '...'
                                 });
                             }
-                        }
-                    }
-                });
-                
-                rules.rhetoricalQuestions.forEach(marker => {
-                    if (lowerSentence.includes(marker) && sentence.includes('?')) {
-                        analysis.indicators.rhetorical++;
-                        analysis.scores.contextualComplexity += 0.3;
-                        analysis.patterns.rhetoricalPatterns.push({
-                            sentenceIndex: index,
-                            marker: marker,
-                            text: sentence.substring(0, 100) + '...'
                         });
-                    }
-                });
-                
-                rules.contrastMarkers.forEach(marker => {
-                    if (lowerSentence.includes(marker)) {
-                        analysis.indicators.contrasts++;
-                        analysis.scores.contextualComplexity += 0.2;
-                        analysis.patterns.contrastPatterns.push({
-                            sentenceIndex: index,
-                            marker: marker,
-                            text: sentence.substring(0, 100) + '...'
+                        
+                        rules.contrastMarkers.forEach(marker => {
+                            const regex = new RegExp(`\\b${this.escapeRegExp(marker)}\\b`, this.language === 'ru' ? 'iu' : 'i');
+                            if (regex.test(lowerSentence)) {
+                                analysis.indicators.contrasts++;
+                                analysis.scores.contextualComplexity += 0.2;
+                                analysis.patterns.contrastPatterns.push({
+                                    sentenceIndex: index,
+                                    marker: marker,
+                                    text: sentence.substring(0, 100) + '...'
+                                });
+                            }
                         });
-                    }
-                });
-                
-                rules.hyperbole.forEach(marker => {
-                    if (lowerSentence.includes(marker)) {
-                        analysis.indicators.hyperbole++;
-                        analysis.scores.intensification += 0.3;
-                    }
-                });
-                
-                rules.understatement.forEach(marker => {
-                    if (lowerSentence.includes(marker)) {
-                        analysis.indicators.understatement++;
-                        analysis.scores.emotionalModulation += 0.2;
-                    }
-                });
-            });
-            
-            analysis.overallScore = 
-                analysis.scores.negationImpact +
-                analysis.scores.intensification +
-                analysis.scores.emotionalModulation +
-                analysis.scores.contextualComplexity;
-            
-            analysis.coherence = this.calculateAdvancedCoherence(sentences);
-            
-            analysis.consistency = this.analyzeEmotionalConsistency(data);
-            
-            return analysis;
+                        
+                        rules.hyperbole.forEach(marker => {
+                            const regex = new RegExp(`\\b${this.escapeRegExp(marker)}\\b`, this.language === 'ru' ? 'iu' : 'i');
+                            if (regex.test(lowerSentence)) {
+                                analysis.indicators.hyperbole++;
+                                analysis.scores.intensification += 0.3;
+                            }
+                        });
+                        
+                        rules.understatement.forEach(marker => {
+                            const regex = new RegExp(`\\b${this.escapeRegExp(marker)}\\b`, this.language === 'ru' ? 'iu' : 'i');
+                            if (regex.test(lowerSentence)) {
+                                analysis.indicators.understatement++;
+                                analysis.scores.emotionalModulation += 0.2;
+                            }
+                        });
+                    });
+                    
+                    analysis.overallScore = analysis.scores.negationImpact + analysis.scores.intensification + analysis.scores.emotionalModulation + analysis.scores.contextualComplexity;
+                    analysis.overallScore = Math.min(1.0, Math.max(-1.0, analysis.overallScore / 10));
+                    
+                    analysis.coherence = this.calculateAdvancedCoherence(sentences);
+                    
+                    analysis.consistency = this.analyzeEmotionalConsistency(data);
+                    
+                    return analysis;
         }
         
         checkIronyPattern(sentence) {
@@ -9476,6 +9481,7 @@
     
 
 })();
+
 
 
 
