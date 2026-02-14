@@ -5465,69 +5465,122 @@
         }
         
         extractSentenceStructure(sentence) {
-            const words = sentence.split(/\s+/).length;
-            const commas = (sentence.match(/,/g) || []).length;
-            const conjunctions = (sentence.match(/\b(and|but|or|because|although|while|since|if|when|where|that|which|who)\b/gi) || []).length;
-            
-            return `${words}_${commas}_${conjunctions}`;
+                    const words = sentence.split(/\s+/).length;
+                    const commas = (sentence.match(/,/gu) || []).length;
+                    const semicolons = (sentence.match(/;/gu) || []).length;
+                    const dashes = (sentence.match(/—|–/gu) || []).length;
+                    const question = sentence.includes('?') ? 1 : 0;
+                    const exclamation = sentence.includes('!') ? 1 : 0;
+                    const ellipsis = /…|\.{3,}/.test(sentence) ? 1 : 0;
+                    
+                    const enConjunctions = (sentence.match(/\b(and|but|or|because|although|while|since|if|when|where|that|which|who|as|until|unless|yet|so|for|nor|either|neither)\b/giu) || []).length;
+                    const ruConjunctions = (sentence.match(/\b(и|а|но|или|зато|однако|да|либо|то|не|только|но и|как|так и|ни|если|когда|пока|хотя|несмотря на то что|потому что|так как|поскольку|чтобы|дабы|едва|лишь|в то время как)\b/giu) || []).length;
+                    const conjunctions = enConjunctions + ruConjunctions;
+                    
+                    const hasIntroductory = /\b(однако|тем не менее|впрочем|итак|следовательно|например|в самом деле|конечно|безусловно|по-видимому|вероятно|кажется|похоже|к счастью|к сожалению|к удивлению)\b/i.test(sentence) ? 1 : 0;
+                    
+                    return `${words}_${commas}_${semicolons}_${dashes}_${question}${exclamation}${ellipsis}_${conjunctions}_${hasIntroductory}`;
         }
         
         calculateReadabilityMetrics(data) {
-            const text = data.cleaned;
-            const words = data.words.length;
-            const sentences = data.sentences.length;
-            
-            if (words === 0 || sentences === 0) {
-                return { fleschReadingEase: 0, fleschKincaidGrade: 0, gunningFog: 0 };
-            }
-            
-            let syllables = 0;
-            data.words.forEach(word => {
-                syllables += this.countSyllables(word);
-            });
-            
-            const avgWordsPerSentence = words / sentences;
-            const avgSyllablesPerWord = syllables / words;
-            
-            const fleschReadingEase = 206.835 - (1.015 * avgWordsPerSentence) - (84.6 * avgSyllablesPerWord);
-            
-            const fleschKincaidGrade = 0.39 * avgWordsPerSentence + 11.8 * avgSyllablesPerWord - 15.59;
-            
-            const complexWords = data.words.filter(word => {
-                const syllableCount = this.countSyllables(word);
-                return syllableCount >= 3;
-            }).length;
-            const percentComplexWords = (complexWords / words) * 100;
-            const gunningFog = 0.4 * (avgWordsPerSentence + percentComplexWords);
-            
-            return {
-                fleschReadingEase: Math.max(0, Math.min(100, fleschReadingEase)),
-                fleschKincaidGrade: Math.max(0, fleschKincaidGrade),
-                gunningFog: Math.max(0, gunningFog),
-                readingLevel: this.determineReadingLevel(fleschReadingEase)
-            };
+                    const text = data.cleaned;
+                    const words = data.words.length;
+                    const sentences = data.sentences.length;
+                    
+                    if (words === 0 || sentences === 0) {
+                        return { fleschReadingEase: 0, fleschKincaidGrade: 0, gunningFog: 0, readingLevel: this.language === 'ru' ? 'очень легко' : 'very easy' };
+                    }
+                    
+                    let syllables = 0;
+                    data.words.forEach(word => {
+                        syllables += this.countSyllables(word);
+                    });
+                    
+                    const avgWordsPerSentence = words / sentences;
+                    const avgSyllablesPerWord = syllables / words;
+                    
+                    let fleschReadingEase;
+                    let fleschKincaidGrade;
+                    let gunningFog;
+                    
+                    if (this.language === 'ru') {
+                        fleschReadingEase = 206.835 - (1.3 * avgWordsPerSentence) - (60.1 * avgSyllablesPerWord);
+                        fleschKincaidGrade = 0.5 * avgWordsPerSentence + 8.4 * avgSyllablesPerWord - 15.59;
+                    } else {
+                        fleschReadingEase = 206.835 - (1.015 * avgWordsPerSentence) - (84.6 * avgSyllablesPerWord);
+                        fleschKincaidGrade = 0.39 * avgWordsPerSentence + 11.8 * avgSyllablesPerWord - 15.59;
+                    }
+                    
+                    const complexWords = data.words.filter(word => {
+                        const syllableCount = this.countSyllables(word);
+                        return syllableCount >= 3;
+                    }).length;
+                    const percentComplexWords = (complexWords / words) * 100;
+                    gunningFog = 0.4 * (avgWordsPerSentence + percentComplexWords);
+                    
+                    return {
+                        fleschReadingEase: Math.max(0, Math.min(100, fleschReadingEase)),
+                        fleschKincaidGrade: Math.max(0, fleschKincaidGrade),
+                        gunningFog: Math.max(0, gunningFog),
+                        readingLevel: this.determineReadingLevel(fleschReadingEase)
+                    };
         }
         
         countSyllables(word) {
-            word = word.toLowerCase();
-            
-            if (word.length <= 3) return 1;
-            
-            word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
-            word = word.replace(/^y/, '');
-            
-            const syllables = word.match(/[aeiouy]{1,2}/g);
-            return syllables ? syllables.length : 1;
+                    if (!word || word.length === 0) return 1;
+                    const lower = word.toLowerCase();
+                    
+                    if (this.language === 'ru') {
+                        const vowels = 'аеёиоуыэюя';
+                        let count = 0;
+                        let prevWasVowel = false;
+                        
+                        for (let i = 0; i < lower.length; i++) {
+                            const isVowel = vowels.includes(lower[i]);
+                            if (isVowel && !prevWasVowel) {
+                                count++;
+                            }
+                            prevWasVowel = isVowel;
+                        }
+                        
+                        if (count === 0) return 1;
+                        if (lower.endsWith('ь') || lower.endsWith('ъ')) {
+                            count = Math.max(1, count - 1);
+                        }
+                        if (lower.endsWith('ия') || lower.endsWith('ие') || lower.endsWith('ий') || lower.endsWith('ие')) {
+                            count = Math.max(1, count - 1);
+                        }
+                        
+                        return count;
+                    } else {
+                        if (lower.length <= 3) return 1;
+                        
+                        let clean = lower.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+                        clean = clean.replace(/^y/, '');
+                        
+                        const syllables = clean.match(/[aeiouy]{1,2}/g);
+                        return syllables ? syllables.length : 1;
+                    }
         }
         
         determineReadingLevel(fleschScore) {
-            if (fleschScore >= 90) return 'very easy';
-            if (fleschScore >= 80) return 'easy';
-            if (fleschScore >= 70) return 'fairly easy';
-            if (fleschScore >= 60) return 'standard';
-            if (fleschScore >= 50) return 'fairly difficult';
-            if (fleschScore >= 30) return 'difficult';
-            return 'very difficult';
+                    if (this.language === 'ru') {
+                        if (fleschScore >= 85) return 'очень легко';
+                        if (fleschScore >= 75) return 'легко';
+                        if (fleschScore >= 65) return 'довольно легко';
+                        if (fleschScore >= 55) return 'стандартно';
+                        if (fleschScore >= 45) return 'довольно сложно';
+                        if (fleschScore >= 30) return 'сложно';
+                        return 'очень сложно';
+                    } else {
+                        if (fleschScore >= 90) return 'very easy';
+                        if (fleschScore >= 80) return 'easy';
+                        if (fleschScore >= 70) return 'fairly easy';
+                        if (fleschScore >= 60) return 'standard';
+                        if (fleschScore >= 50) return 'fairly difficult';
+                        if (fleschScore >= 30) return 'difficult';
+                        return 'very difficult';
+                    }
         }
         
         calculateTextCoherence(sentences) {
@@ -9401,6 +9454,7 @@
     
 
 })();
+
 
 
 
