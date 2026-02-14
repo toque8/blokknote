@@ -6140,7 +6140,7 @@
         }
         
         enhancedCulturalAnalysis(data) {
-                    const text = data.cleaned;
+                    const text = data.cleaned.toLowerCase();
                     const language = this.language;
                     const cultural = this.culturalContext[language];
                     
@@ -6166,18 +6166,19 @@
                     };
                     
                     cultural.literaryReferences.forEach(ref => {
-                        const regex = new RegExp(`\\b${this.escapeRegExp(ref)}\\b`, 'gi');
+                        const lowerRef = ref.toLowerCase();
+                        const regex = new RegExp(`\\b${this.escapeRegExp(lowerRef)}\\b`, 'gi');
                         const matches = text.match(regex);
                         if (matches) {
                             analysis.references.literary.count += matches.length;
                             analysis.references.literary.items.push({
                                 reference: ref,
                                 count: matches.length,
-                                contexts: this.findReferenceContexts(text, ref)
+                                contexts: this.findReferenceContexts ? this.findReferenceContexts(text, lowerRef) : []
                             });
                             analysis.scores.culturalDepth += matches.length * 0.5;
                             
-                            if (this.isIntertextualReference(ref, text)) {
+                            if (this.isIntertextualReference && this.isIntertextualReference(lowerRef, text)) {
                                 analysis.scores.intertextuality += 0.3;
                                 analysis.patterns.intertextualReferences.push(ref);
                             }
@@ -6185,39 +6186,42 @@
                     });
                     
                     cultural.historicalReferences.forEach(ref => {
-                        const regex = new RegExp(`\\b${this.escapeRegExp(ref)}\\b`, 'gi');
+                        const lowerRef = ref.toLowerCase();
+                        const regex = new RegExp(`\\b${this.escapeRegExp(lowerRef)}\\b`, 'gi');
                         const matches = text.match(regex);
                         if (matches) {
                             analysis.references.historical.count += matches.length;
                             analysis.references.historical.items.push({
                                 reference: ref,
                                 count: matches.length,
-                                period: this.determineHistoricalPeriod(ref)
+                                period: this.determineHistoricalPeriod ? this.determineHistoricalPeriod(ref) : 'unknown'
                             });
                             analysis.scores.culturalDepth += matches.length * 0.4;
                         }
                     });
                     
                     cultural.mythologicalReferences.forEach(ref => {
-                        const regex = new RegExp(`\\b${this.escapeRegExp(ref)}\\b`, 'gi');
+                        const lowerRef = ref.toLowerCase();
+                        const regex = new RegExp(`\\b${this.escapeRegExp(lowerRef)}\\b`, 'gi');
                         const matches = text.match(regex);
                         if (matches) {
                             analysis.references.mythological.count += matches.length;
                             analysis.references.mythological.items.push({
                                 reference: ref,
                                 count: matches.length,
-                                archetype: this.determineMythologicalArchetype(ref)
+                                archetype: this.determineMythologicalArchetype ? this.determineMythologicalArchetype(ref) : 'unknown'
                             });
                             analysis.scores.culturalDepth += matches.length * 0.3;
                             
-                            if (this.isMythologicalPattern(ref, text)) {
+                            if (this.isMythologicalPattern && this.isMythologicalPattern(lowerRef, text)) {
                                 analysis.patterns.culturalThemes.push(`mythological: ${ref}`);
                             }
                         }
                     });
                     
                     cultural.idioms.forEach(idiom => {
-                        const escapedIdiom = this.escapeRegExp(idiom);
+                        const lowerIdiom = idiom.toLowerCase();
+                        const escapedIdiom = this.escapeRegExp(lowerIdiom);
                         const regex = new RegExp(`\\b${escapedIdiom}\\b`, 'gi');
                         const matches = text.match(regex);
                         if (matches) {
@@ -6225,7 +6229,7 @@
                             analysis.references.idioms.items.push({
                                 idiom: idiom,
                                 count: matches.length,
-                                literalMeaning: this.getLiteralMeaning(idiom, language)
+                                literalMeaning: this.getLiteralMeaning ? this.getLiteralMeaning(idiom, language) : ''
                             });
                             analysis.scores.culturalRichness += matches.length * 0.3;
                         }
@@ -6238,7 +6242,7 @@
                             analysis.references.poetic.items.push({
                                 pattern: pattern.toString(),
                                 count: matches.length,
-                                type: this.classifyPoeticPattern(pattern)
+                                type: this.classifyPoeticPattern ? this.classifyPoeticPattern(pattern) : 'unknown'
                             });
                             analysis.scores.culturalRichness += matches.length * 0.2;
                             
@@ -6262,9 +6266,9 @@
                     
                     analysis.culturalDensity = totalReferences / (data.words.length || 1);
                     
-                    analysis.culturalCoherence = this.calculateCulturalCoherence(analysis.references);
+                    analysis.culturalCoherence = this.calculateCulturalCoherence ? this.calculateCulturalCoherence(analysis.references) : 1;
                     
-                    analysis.dominantCulturalTheme = this.detectDominantCulturalTheme(analysis.references);
+                    analysis.dominantCulturalTheme = this.detectDominantCulturalTheme ? this.detectDominantCulturalTheme(analysis.references) : 'none';
                     
                     return analysis;
         }
@@ -9462,6 +9466,7 @@
     
 
 })();
+
 
 
 
