@@ -5293,112 +5293,135 @@
         }
         
         detectEnhancedRhythmPattern(lengths) {
-            if (lengths.length < 4) return 'undefined';
-            
-            let isAscending = true;
-            for (let i = 1; i < lengths.length; i++) {
-                if (lengths[i] < lengths[i - 1]) {
-                    isAscending = false;
-                    break;
-                }
-            }
-            
-            let isDescending = true;
-            for (let i = 1; i < lengths.length; i++) {
-                if (lengths[i] > lengths[i - 1]) {
-                    isDescending = false;
-                    break;
-                }
-            }
-            
-            const waveScore = this.calculateWavePatternScore(lengths);
-            const isWavy = waveScore > 0.7;
-            
-            const symmetricScore = this.calculateSymmetryScore(lengths);
-            const isSymmetric = symmetricScore > 0.8;
-            
-            if (isAscending) return 'ascending';
-            if (isDescending) return 'descending';
-            if (isSymmetric) return 'symmetric';
-            if (isWavy) return 'wavy';
-            
-            if (this.isCrescendoPattern(lengths)) return 'crescendo';
-            
-            if (this.isDecrescendoPattern(lengths)) return 'decrescendo';
-            
-            return 'irregular';
+                    if (lengths.length < 4) return 'undefined';
+                    
+                    const tolerance = 0.1;
+                    let isAscending = true;
+                    for (let i = 1; i < lengths.length; i++) {
+                        if (lengths[i] < lengths[i - 1] * (1 - tolerance)) {
+                            isAscending = false;
+                            break;
+                        }
+                    }
+                    
+                    let isDescending = true;
+                    for (let i = 1; i < lengths.length; i++) {
+                        if (lengths[i] > lengths[i - 1] * (1 + tolerance)) {
+                            isDescending = false;
+                            break;
+                        }
+                    }
+                    
+                    const waveScore = this.calculateWavePatternScore(lengths);
+                    const isWavy = waveScore > 0.5;
+                    
+                    const symmetricScore = this.calculateSymmetryScore(lengths);
+                    const isSymmetric = symmetricScore > 0.65;
+                    
+                    if (isAscending) return 'ascending';
+                    if (isDescending) return 'descending';
+                    if (isSymmetric) return 'symmetric';
+                    if (isWavy) return 'wavy';
+                    
+                    if (this.isCrescendoPattern(lengths)) return 'crescendo';
+                    
+                    if (this.isDecrescendoPattern(lengths)) return 'decrescendo';
+                    
+                    return 'irregular';
         }
         
         calculateWavePatternScore(lengths) {
-            let directionChanges = 0;
-            
-            for (let i = 1; i < lengths.length - 1; i++) {
-                const prevDiff = lengths[i] - lengths[i - 1];
-                const nextDiff = lengths[i + 1] - lengths[i];
-                
-                if (prevDiff * nextDiff < 0) {
-                    directionChanges++;
-                }
-            }
-            
-            return directionChanges / (lengths.length - 2);
+                    if (lengths.length < 4) return 0;
+                    let directionChanges = 0;
+                    let significantChanges = 0;
+                    
+                    for (let i = 1; i < lengths.length - 1; i++) {
+                        const prevDiff = lengths[i] - lengths[i - 1];
+                        const nextDiff = lengths[i + 1] - lengths[i];
+                        
+                        if (prevDiff * nextDiff < 0) {
+                            directionChanges++;
+                            const avgLength = (lengths[i - 1] + lengths[i] + lengths[i + 1]) / 3;
+                            const minAmplitude = avgLength * 0.15;
+                            if (Math.abs(prevDiff) > minAmplitude && Math.abs(nextDiff) > minAmplitude) {
+                                significantChanges++;
+                            }
+                        }
+                    }
+                    
+                    if (directionChanges === 0) return 0;
+                    return significantChanges / directionChanges;
         }
         
         calculateSymmetryScore(lengths) {
-            if (lengths.length % 2 !== 0) return 0;
-            
-            const mid = lengths.length / 2;
-            let symmetry = 0;
-            
-            for (let i = 0; i < mid; i++) {
-                const diff = Math.abs(lengths[i] - lengths[lengths.length - 1 - i]);
-                const maxLength = Math.max(lengths[i], lengths[lengths.length - 1 - i]);
-                symmetry += 1 - (diff / (maxLength || 1));
-            }
-            
-            return symmetry / mid;
+                    if (lengths.length < 4) return 0;
+                    const start = lengths.length % 2 === 0 ? 0 : 1;
+                    const mid = Math.floor(lengths.length / 2);
+                    let symmetry = 0;
+                    let pairs = 0;
+                    
+                    for (let i = 0; i < mid; i++) {
+                        const left = lengths[i + start];
+                        const right = lengths[lengths.length - 1 - i];
+                        const diff = Math.abs(left - right);
+                        const maxLength = Math.max(left, right);
+                        if (maxLength > 0) {
+                            symmetry += 1 - (diff / maxLength);
+                            pairs++;
+                        }
+                    }
+                    
+                    return pairs > 0 ? symmetry / pairs : 0;
         }
         
         isCrescendoPattern(lengths) {
-            if (lengths.length < 5) return false;
-            
-            const firstHalf = lengths.slice(0, Math.floor(lengths.length / 2));
-            const secondHalf = lengths.slice(Math.floor(lengths.length / 2));
-            
-            let increasing = true;
-            for (let i = 1; i < firstHalf.length; i++) {
-                if (firstHalf[i] < firstHalf[i - 1] * 0.8) {
-                    increasing = false;
-                    break;
-                }
-            }
-            
-            const maxFirstHalf = Math.max(...firstHalf);
-            const minSecondHalf = Math.min(...secondHalf);
-            const significantDrop = minSecondHalf < maxFirstHalf * 0.5;
-            
-            return increasing && significantDrop;
+                    if (lengths.length < 5) return false;
+                    
+                    const firstHalf = lengths.slice(0, Math.floor(lengths.length / 2));
+                    const secondHalf = lengths.slice(Math.floor(lengths.length / 2));
+                    
+                    let increasing = true;
+                    for (let i = 1; i < firstHalf.length; i++) {
+                        if (firstHalf[i] < firstHalf[i - 1] * 0.9) {
+                            increasing = false;
+                            break;
+                        }
+                    }
+                    
+                    if (!increasing) return false;
+                    
+                    const maxFirstHalf = Math.max(...firstHalf);
+                    const minSecondHalf = Math.min(...secondHalf);
+                    const avgSecondHalf = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
+                    
+                    const significantDrop = avgSecondHalf < maxFirstHalf * 0.65;
+                    
+                    return significantDrop;
         }
         
         isDecrescendoPattern(lengths) {
-            if (lengths.length < 5) return false;
-            
-            const firstHalf = lengths.slice(0, Math.floor(lengths.length / 2));
-            const secondHalf = lengths.slice(Math.floor(lengths.length / 2));
-            
-            let decreasing = true;
-            for (let i = 1; i < firstHalf.length; i++) {
-                if (firstHalf[i] > firstHalf[i - 1] * 1.2) {
-                    decreasing = false;
-                    break;
-                }
-            }
-            
-            const minFirstHalf = Math.min(...firstHalf);
-            const maxSecondHalf = Math.max(...secondHalf);
-            const significantRise = maxSecondHalf > minFirstHalf * 1.5;
-            
-            return decreasing && significantRise;
+                    if (lengths.length < 5) return false;
+                    
+                    const firstHalf = lengths.slice(0, Math.floor(lengths.length / 2));
+                    const secondHalf = lengths.slice(Math.floor(lengths.length / 2));
+                    
+                    let decreasing = true;
+                    for (let i = 1; i < firstHalf.length; i++) {
+                        if (firstHalf[i] > firstHalf[i - 1] * 1.1) {
+                            decreasing = false;
+                            break;
+                        }
+                    }
+                    
+                    if (!decreasing) return false;
+                    
+                    const minFirstHalf = Math.min(...firstHalf);
+                    const maxSecondHalf = Math.max(...secondHalf);
+                    const avgSecondHalf = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
+                    
+                    const significantRise = avgSecondHalf > minFirstHalf * 1.4;
+                    
+                    return significantRise;
         }
         
         calculateLengthDistribution(lengths) {
@@ -9378,6 +9401,7 @@
     
 
 })();
+
 
 
 
