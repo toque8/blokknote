@@ -5584,33 +5584,55 @@
         }
         
         calculateTextCoherence(sentences) {
-            if (sentences.length < 2) return 1;
-            
-            const allWords = [];
-            const sentenceWords = [];
-            
-            sentences.forEach(s => {
-                const text = typeof s === 'object' ? s.text : s;
-                const words = this.enhancedTokenization(text).filter(w => w.length > 3);
-                allWords.push(...words);
-                sentenceWords.push(new Set(words));
-            });
-            
-            let totalOverlap = 0;
-            for (let i = 0; i < sentenceWords.length - 1; i++) {
-                const current = sentenceWords[i];
-                const next = sentenceWords[i + 1];
-                
-                let overlap = 0;
-                current.forEach(word => {
-                    if (next.has(word)) overlap++;
-                });
-                
-                const maxSize = Math.max(current.size, next.size);
-                totalOverlap += maxSize > 0 ? overlap / maxSize : 0;
-            }
-            
-            return totalOverlap / (sentenceWords.length - 1);
+                    if (sentences.length < 2) return 1;
+                    
+                    const allWords = [];
+                    const sentenceWords = [];
+                    
+                    sentences.forEach(s => {
+                        const text = typeof s === 'object' ? s.text : s;
+                        const words = this.enhancedTokenization(text);
+                        if (this.language === 'ru') {
+                            words.filter(w => w.length > 0);
+                        } else {
+                            words.filter(w => w.length > 3);
+                        }
+                        allWords.push(...words);
+                        sentenceWords.push(new Set(words));
+                    });
+                    
+                    let totalOverlap = 0;
+                    let pairsCount = 0;
+                    
+                    for (let i = 0; i < sentenceWords.length - 1; i++) {
+                        const current = sentenceWords[i];
+                        const next = sentenceWords[i + 1];
+                        
+                        let overlap = 0;
+                        current.forEach(word => {
+                            if (next.has(word)) overlap++;
+                        });
+                        
+                        const avgSize = (current.size + next.size) / 2;
+                        const overlapRatio = avgSize > 0 ? overlap / avgSize : 0;
+                        
+                        totalOverlap += overlapRatio;
+                        pairsCount++;
+                        
+                        if (i + 2 < sentenceWords.length) {
+                            const nextNext = sentenceWords[i + 2];
+                            let overlap2 = 0;
+                            current.forEach(word => {
+                                if (nextNext.has(word)) overlap2++;
+                            });
+                            const avgSize2 = (current.size + nextNext.size) / 2;
+                            const overlapRatio2 = avgSize2 > 0 ? overlap2 / avgSize2 : 0;
+                            totalOverlap += overlapRatio2 * 0.5;
+                            pairsCount += 0.5;
+                        }
+                    }
+                    
+                    return pairsCount > 0 ? totalOverlap / pairsCount : 0;
         }
         
         enhancedContextualAnalysis(data) {
@@ -9454,6 +9476,7 @@
     
 
 })();
+
 
 
 
