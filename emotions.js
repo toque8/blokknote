@@ -6167,7 +6167,7 @@
                     
                     cultural.literaryReferences.forEach(ref => {
                         const lowerRef = ref.toLowerCase();
-                        const regex = new RegExp(`\\b${this.escapeRegExp(lowerRef)}\\b`, 'gi');
+                        const regex = new RegExp(`${this.escapeRegExp(lowerRef)}`, this.language === 'ru' ? 'gui' : 'gi');
                         const matches = text.match(regex);
                         if (matches) {
                             analysis.references.literary.count += matches.length;
@@ -6187,7 +6187,7 @@
                     
                     cultural.historicalReferences.forEach(ref => {
                         const lowerRef = ref.toLowerCase();
-                        const regex = new RegExp(`\\b${this.escapeRegExp(lowerRef)}\\b`, 'gi');
+                        const regex = new RegExp(`${this.escapeRegExp(lowerRef)}`, this.language === 'ru' ? 'gui' : 'gi');
                         const matches = text.match(regex);
                         if (matches) {
                             analysis.references.historical.count += matches.length;
@@ -6202,7 +6202,7 @@
                     
                     cultural.mythologicalReferences.forEach(ref => {
                         const lowerRef = ref.toLowerCase();
-                        const regex = new RegExp(`\\b${this.escapeRegExp(lowerRef)}\\b`, 'gi');
+                        const regex = new RegExp(`${this.escapeRegExp(lowerRef)}`, this.language === 'ru' ? 'gui' : 'gi');
                         const matches = text.match(regex);
                         if (matches) {
                             analysis.references.mythological.count += matches.length;
@@ -6222,7 +6222,7 @@
                     cultural.idioms.forEach(idiom => {
                         const lowerIdiom = idiom.toLowerCase();
                         const escapedIdiom = this.escapeRegExp(lowerIdiom);
-                        const regex = new RegExp(`\\b${escapedIdiom}\\b`, 'gi');
+                        const regex = new RegExp(`${escapedIdiom}`, this.language === 'ru' ? 'gui' : 'gi');
                         const matches = text.match(regex);
                         if (matches) {
                             analysis.references.idioms.count += matches.length;
@@ -9466,6 +9466,7 @@
     
 
 })();
+
 
 
 
