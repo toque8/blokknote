@@ -5666,29 +5666,33 @@
                     };
                     
                     rules.negations.forEach(negation => {
-                        const regex = new RegExp(`\\b${this.escapeRegExp(negation)}\\b`, 'gi');
+                        const lowerNeg = negation.toLowerCase();
+                        const regex = new RegExp(`${this.escapeRegExp(lowerNeg)}`, 'gi');
                         const matches = text.match(regex);
                         if (matches) {
                             analysis.indicators.negations += matches.length;
-                            const weight = negation.includes('отнюдь') || negation.includes('вовсе') || negation.includes('ни') ? 1.5 : 1.0;
+                            const weight = lowerNeg.includes('отнюдь') || lowerNeg.includes('вовсе') || lowerNeg.includes('ни') ? 1.5 : 1.0;
                             analysis.scores.negationImpact -= matches.length * 0.3 * weight;
                         }
                     });
                     
                     rules.intensifiers.forEach(intensifier => {
-                        const regex = new RegExp(`\\b${this.escapeRegExp(intensifier)}\\b`, 'gi');
+                        const lowerInt = intensifier.toLowerCase();
+                        const regex = new RegExp(`${this.escapeRegExp(lowerInt)}`, 'gi');
                         const matches = text.match(regex);
                         if (matches) {
                             analysis.indicators.intensifiers += matches.length;
-                            const weight = intensifier.includes('чрезвычайно') || intensifier.includes('невероятно') || intensifier.includes('абсолютно') ? 1.5 : 
-                                          intensifier.includes('очень') || intensifier.includes('сильно') || intensifier.includes('крайне') ? 1.0 : 1.2;
+                            const weight = lowerInt.includes('чрезвычайно') || lowerInt.includes('невероятно') || lowerInt.includes('абсолютно') ? 1.5 : 
+                                          lowerInt.includes('очень') || lowerInt.includes('сильно') || lowerInt.includes('крайне') ? 1.0 : 1.2;
                             analysis.scores.intensification += matches.length * 0.2 * weight;
                         }
                     });
                     
                     if (this.language === 'ru') {
                         rules.diminutives.forEach(suffix => {
-                            const regex = new RegExp(`[а-яё]+${suffix}[а-яё]*`, 'gi');
+                            const cleanSuffix = suffix.replace(/^-+|-+$/g, '');
+                            if (!cleanSuffix) return;
+                            const regex = new RegExp(`[а-яё]+${this.escapeRegExp(cleanSuffix)}[а-яё]*`, 'gi');
                             const matches = text.match(regex);
                             if (matches) {
                                 analysis.indicators.diminutives += matches.length;
@@ -5697,7 +5701,9 @@
                         });
                         
                         rules.augmentatives.forEach(suffix => {
-                            const regex = new RegExp(`[а-яё]+${suffix}[а-яё]*`, 'gi');
+                            const cleanSuffix = suffix.replace(/^-+|-+$/g, '');
+                            if (!cleanSuffix) return;
+                            const regex = new RegExp(`[а-яё]+${this.escapeRegExp(cleanSuffix)}[а-яё]*`, 'gi');
                             const matches = text.match(regex);
                             if (matches) {
                                 analysis.indicators.augmentatives += matches.length;
@@ -5712,10 +5718,11 @@
                         
                         let ironyDetected = false;
                         rules.ironyIndicators.forEach(indicator => {
-                            if (lowerSentence.includes(indicator)) {
+                            const lowerInd = indicator.toLowerCase();
+                            if (lowerSentence.includes(lowerInd)) {
                                 if (sentence.includes('?') || sentence.includes('!')) {
-                                    const positiveAfterNegative = this.checkIronyPattern(sentence);
-                                    if (positiveAfterNegative) {
+                                    const isIrony = this.checkIronyPattern(sentence);
+                                    if (isIrony) {
                                         analysis.indicators.irony++;
                                         analysis.scores.contextualComplexity += 0.5;
                                         ironyDetected = true;
@@ -5730,7 +5737,8 @@
                         });
                         
                         rules.rhetoricalQuestions.forEach(marker => {
-                            if (lowerSentence.includes(marker) && sentence.includes('?')) {
+                            const lowerMarker = marker.toLowerCase();
+                            if (lowerSentence.includes(lowerMarker) && sentence.includes('?')) {
                                 analysis.indicators.rhetorical++;
                                 analysis.scores.contextualComplexity += 0.3;
                                 analysis.patterns.rhetoricalPatterns.push({
@@ -5742,7 +5750,8 @@
                         });
                         
                         rules.contrastMarkers.forEach(marker => {
-                            if (lowerSentence.includes(marker)) {
+                            const lowerMarker = marker.toLowerCase();
+                            if (lowerSentence.includes(lowerMarker)) {
                                 analysis.indicators.contrasts++;
                                 analysis.scores.contextualComplexity += 0.2;
                                 analysis.patterns.contrastPatterns.push({
@@ -5754,14 +5763,16 @@
                         });
                         
                         rules.hyperbole.forEach(marker => {
-                            if (lowerSentence.includes(marker)) {
+                            const lowerMarker = marker.toLowerCase();
+                            if (lowerSentence.includes(lowerMarker)) {
                                 analysis.indicators.hyperbole++;
                                 analysis.scores.intensification += 0.3;
                             }
                         });
                         
                         rules.understatement.forEach(marker => {
-                            if (lowerSentence.includes(marker)) {
+                            const lowerMarker = marker.toLowerCase();
+                            if (lowerSentence.includes(lowerMarker)) {
                                 analysis.indicators.understatement++;
                                 analysis.scores.emotionalModulation += 0.2;
                             }
@@ -5774,9 +5785,9 @@
                         analysis.scores.emotionalModulation +
                         analysis.scores.contextualComplexity;
                     
-                    analysis.coherence = this.calculateAdvancedCoherence(sentences);
+                    analysis.coherence = this.calculateAdvancedCoherence ? this.calculateAdvancedCoherence(sentences) : 1;
                     
-                    analysis.consistency = this.analyzeEmotionalConsistency(data);
+                    analysis.consistency = this.analyzeEmotionalConsistency ? this.analyzeEmotionalConsistency(data) : 1;
                     
                     return analysis;
         }
@@ -9466,6 +9477,7 @@
     
 
 })();
+
 
 
 
