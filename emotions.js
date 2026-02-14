@@ -4516,11 +4516,29 @@
                 
         calculateEmotionalVolatility(sentenceEmotions) {
                     if (sentenceEmotions.length < 2) return 0;
-                    let volatility = 0;
+                    let totalChange = 0;
+                    let maxChange = 0;
+                    let sharpTransitions = 0;
+                    let directionChanges = 0;
+                    let prevDirection = null;
                     for (let i = 1; i < sentenceEmotions.length; i++) {
-                        volatility += Math.abs(sentenceEmotions[i].score - sentenceEmotions[i - 1].score);
+                        const diff = sentenceEmotions[i].score - sentenceEmotions[i - 1].score;
+                        const absDiff = Math.abs(diff);
+                        totalChange += absDiff;
+                        maxChange = Math.max(maxChange, absDiff);
+                        if (absDiff > 0.4) sharpTransitions++;
+                        const currentDirection = diff > 0 ? 1 : (diff < 0 ? -1 : 0);
+                        if (prevDirection !== null && currentDirection !== 0 && prevDirection !== currentDirection) {
+                            directionChanges++;
+                        }
+                        prevDirection = currentDirection;
                     }
-                    return volatility / (sentenceEmotions.length - 1);
+                    const avgChange = totalChange / (sentenceEmotions.length - 1);
+                    const sharpnessFactor = 1 + (sharpTransitions / (sentenceEmotions.length - 1)) * 0.5;
+                    const directionFactor = 1 + (directionChanges / (sentenceEmotions.length - 1)) * 0.3;
+                    const maxImpact = maxChange > 0.6 ? 1.2 : 1.0;
+                    const volatility = avgChange * sharpnessFactor * directionFactor * maxImpact;
+                    return Math.min(1.0, volatility);
         }
                 
         calculateEmotionalMomentum(sentenceEmotions) {
@@ -5090,94 +5108,188 @@
         }
         
         calculateSentenceComplexity(sentence) {
-            const words = sentence.split(/\s+/).filter(w => w.length > 0).length;
-            const clauses = (sentence.match(/,|;|:|—|\s+[а-яa-z]+\s+(который|которая|которое|которые|that|which|who|whom|whose)/gi) || []).length + 1;
-            const subordinating = (sentence.match(/\b(потому что|так как|поскольку|although|though|because|since|if|when|while|where|unless|provided that)\b/gi) || []).length;
-            const coordinating = (sentence.match(/\b(и|а|но|или|зато|однако|and|but|or|yet|so|for|nor)\b/gi) || []).length;
-            const wordComplexity = words > 20 ? 1 : words > 15 ? 0.8 : words > 10 ? 0.6 : words > 5 ? 0.4 : 0.2;
-            const structureComplexity = (clauses * 0.3 + subordinating * 0.4 + coordinating * 0.2 + wordComplexity * 0.1);
-            const normalizedComplexity = Math.min(1, structureComplexity / 3);
-            return normalizedComplexity;
+                    if (!sentence || sentence.length === 0) return 0;
+                    const lower = sentence.toLowerCase();
+                    const words = sentence.split(/\s+/).filter(w => w.length > 0);
+                    const wordCount = words.length;
+                    const wordLengths = words.map(w => w.length);
+                    const avgWordLength = wordLengths.reduce((a, b) => a + b, 0) / wordCount;
+                    const longWords = wordLengths.filter(len => len > 7).length;
+                    const clauses = (sentence.match(/,|;|:|—/gu) || []).length;
+                    const relativeClauses = (sentence.match(/\b(который|которая|которое|которые|которому|которой|которых|которыми|that|which|who|whom|whose)\b/giu) || []).length;
+                    const subordinating = (sentence.match(/\b(потому что|так как|поскольку|если|когда|пока|хотя|несмотря на то что|в то время как|although|though|because|since|if|when|while|where|unless|provided that|whereas|even though)\b/giu) || []).length;
+                    const coordinating = (sentence.match(/\b(и|а|но|или|зато|однако|зато|да|либо|либо|то|то|не|только|но и|как|так и|ни|ни|не только|но и|and|but|or|yet|so|for|nor|either|or|neither|nor|not only|but also)\b/giu) || []).length;
+                    const participialPhrases = (sentence.match(/\b([а-яё]+(ший|шая|шее|шие|вший|вшая|вшее|вши|вши|вшим|вшими|вшего|вшую|вшее|вше|вшем|вшему|вшими|вшими|ем|ом|ым|им|ая|яя|ое|ее|ый|ий|ой|ему|ем|ом|ом|ым|им|ую|юю|ого|его|ому|ему|ыми|ими|ем|ем|ом|ом))\b/giu) || []).length;
+                    const gerundialPhrases = (sentence.match(/\b([а-яё]+(а|я|в|вши|ши))[,.\s]/giu) || []).length;
+                    const passiveVoice = (sentence.match(/\b(был|была|было|были|является|являются|считается|считаются|называется|называются|являлся|являлась|являлось|являлись|is|are|was|were|has been|have been|had been|being|been)\b/giu) || []).length;
+                    const inversion = (sentence.match(/^(ни|не|только|лишь|едва|едва ли|вот|вот и|здесь|там|тут|тогда|тогда-то|тогда как|тогда когда|тогда если|тогда хотя|тогда потому что|тогда так как|тогда поскольку|тогда если|тогда когда|тогда пока|тогда хотя|тогда несмотря на то что|тогда в то время как)\b/giu) || []).length;
+                    const complexPrepositions = (sentence.match(/\b(вместо|вследствие|ввиду|вопреки|наперекор|насчет|относительно|согласно|в течение|в продолжение|в заключение|в отличие от|в связи с|в сравнении с|в дополнение к|в противоположность|взамен|вместо того чтобы|вместо того чтоб|вместо того чтоб|вместо того чтоб|вместо того чтоб|in addition to|according to|because of|due to|instead of|in spite of|in case of|in front of|in back of|in the middle of|in the center of|in the beginning of|in the end of|in the course of|in the process of|in the event of|in the absence of|in the presence of)\b/giu) || []).length;
+                    const nestedClauses = Math.max(0, (sentence.match(/\(/gu) || []).length + (sentence.match(/\)/gu) || []).length - 1);
+                    const wordComplexityScore = Math.min(1, (longWords / wordCount) * 0.7 + (avgWordLength / 10) * 0.3);
+                    const structureScore = (clauses * 0.15 + relativeClauses * 0.25 + subordinating * 0.20 + coordinating * 0.10 + participialPhrases * 0.15 + gerundialPhrases * 0.10 + passiveVoice * 0.08 + inversion * 0.07 + complexPrepositions * 0.05 + nestedClauses * 0.10);
+                    const baseComplexity = wordComplexityScore * 0.4 + structureScore * 0.6;
+                    const lengthFactor = Math.min(1, wordCount / 25);
+                    const finalComplexity = baseComplexity * (0.7 + lengthFactor * 0.3);
+                    return Math.min(1, Math.max(0, finalComplexity));
         }
         
         calculatePunctuationEmotionalWeight(punctuation) {
-            let weight = 0;
-            const weights = this.metricsConfig.punctuationWeight;
-            
-            for (const [mark, count] of Object.entries(punctuation)) {
-                  const markWeight = weights[mark] || 1.0;
-                  weight += count * markWeight;
-            }
-            
-            const totalPunctuationCount = Object.values(punctuation).reduce((a, b) => a + b, 0);
-            
-            if (totalPunctuationCount === 0) return 0;
-            
-            return weight / totalPunctuationCount;
+                    if (!punctuation || Object.keys(punctuation).length === 0) return 0;
+                    const weights = this.metricsConfig.punctuationWeight || {};
+                    let totalWeight = 0;
+                    let totalCount = 0;
+                    let clusterBonus = 0;
+                    let comboBonus = 0;
+                    for (const [mark, count] of Object.entries(punctuation)) {
+                        const baseWeight = weights[mark] || 1.0;
+                        let markWeight = baseWeight * count;
+                        if (mark === '!' && count >= 3) {
+                            clusterBonus += (count - 2) * 0.3;
+                        }
+                        if (mark === '?' && count >= 3) {
+                            clusterBonus += (count - 2) * 0.2;
+                        }
+                        if ((mark === '!' || mark === '?') && count >= 2) {
+                            markWeight *= 1.2;
+                        }
+                        totalWeight += markWeight;
+                        totalCount += count;
+                    }
+                    const exclamationCount = punctuation['!'] || 0;
+                    const questionCount = punctuation['?'] || 0;
+                    const periodCount = punctuation['.'] || 0;
+                    if (exclamationCount > 0 && questionCount > 0) {
+                        comboBonus = Math.min(exclamationCount, questionCount) * 0.4;
+                    }
+                    if (exclamationCount > questionCount * 2) {
+                        comboBonus += 0.3;
+                    }
+                    if (questionCount > exclamationCount * 2) {
+                        comboBonus += 0.2;
+                    }
+                    if (totalCount > 10 && periodCount === 0) {
+                        clusterBonus += 0.5;
+                    }
+                    const baseAverage = totalWeight / totalCount;
+                    const intensityFactor = 1 + (clusterBonus + comboBonus) / Math.max(1, totalCount);
+                    const finalWeight = baseAverage * intensityFactor;
+                    return Math.min(1.0, Math.max(0, finalWeight));
         }
         
         calculatePunctuationDensity(text) {
-            const punctuationCount = (text.match(/[.!?…,:;—\-]/g) || []).length;
-            const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
-            
-            return wordCount > 0 ? punctuationCount / wordCount : 0;
+                    if (!text || text.length === 0) return 0;
+                    const emotionalPunctuation = (text.match(/[!?…‼⁇⁈⁉]+/gu) || []);
+                    const neutralPunctuation = (text.match(/[.,:;—\-]+/gu) || []);
+                    let emotionalCount = 0;
+                    let neutralCount = 0;
+                    emotionalPunctuation.forEach(match => {
+                        const len = match.length;
+                        emotionalCount += len;
+                        if (len >= 3) emotionalCount += (len - 2) * 0.5;
+                        if (match.includes('!') && match.includes('?')) emotionalCount += len * 0.3;
+                    });
+                    neutralPunctuation.forEach(match => {
+                        neutralCount += match.length;
+                    });
+                    const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
+                    if (wordCount === 0) return 0;
+                    const emotionalDensity = emotionalCount / wordCount;
+                    const neutralDensity = neutralCount / wordCount;
+                    const weightedDensity = emotionalDensity * 0.7 + neutralDensity * 0.3;
+                    const intensityBonus = Math.min(0.3, emotionalDensity * 0.5);
+                    const finalDensity = weightedDensity * (1 + intensityBonus);
+                    return Math.min(1.0, finalDensity);
         }
         
         detectPunctuationPatterns(sentences) {
-            const patterns = {
-                repetitiveExclamation: 0,
-                questionExclamation: 0,
-                ellipsisClusters: 0,
-                mixedPunctuation: 0
-            };
-            
-            sentences.forEach(s => {
-                const text = typeof s === 'object' ? s.text : s;
-                
-                if (text.match(/!{2,}/)) patterns.repetitiveExclamation++;
-                if (text.match(/\?!|!\?/)) patterns.questionExclamation++;
-                if (text.match(/…{2,}|\.{4,}/)) patterns.ellipsisClusters++;
-                if (text.match(/[!?…]{2,}/)) patterns.mixedPunctuation++;
-            });
-            
-            return patterns;
+                    const patterns = {
+                        repetitiveExclamation: 0,
+                        questionExclamation: 0,
+                        ellipsisClusters: 0,
+                        mixedPunctuation: 0,
+                        trailingEllipsis: 0,
+                        excessiveDashes: 0
+                    };
+                    
+                    sentences.forEach(s => {
+                        const text = typeof s === 'object' ? s.text : s;
+                        const lower = text.toLowerCase();
+                        
+                        const exclMatches = lower.match(/!+/gu) || [];
+                        exclMatches.forEach(match => {
+                            if (match.length >= 2) {
+                                patterns.repetitiveExclamation += 1 + (match.length - 2) * 0.3;
+                            }
+                        });
+                        
+                        const qeMatches = lower.match(/\?+!+|!+\?+/gu) || [];
+                        qeMatches.forEach(match => {
+                            patterns.questionExclamation += 1 + (match.length - 2) * 0.2;
+                        });
+                        
+                        const ellipsisMatches = lower.match(/\.{3,}|…/gu) || [];
+                        ellipsisMatches.forEach(match => {
+                            patterns.ellipsisClusters += 1;
+                            if (match.endsWith('…') || match.endsWith('...') || match.endsWith('....')) {
+                                patterns.trailingEllipsis += 0.8;
+                            }
+                        });
+                        
+                        const mixedMatches = lower.match(/[!?…]{3,}/gu) || [];
+                        mixedMatches.forEach(match => {
+                            if (!qeMatches.some(qe => match.includes(qe))) {
+                                patterns.mixedPunctuation += 1 + (match.length - 3) * 0.25;
+                            }
+                        });
+                        
+                        const dashMatches = lower.match(/—{2,}|-{3,}/gu) || [];
+                        dashMatches.forEach(match => {
+                            patterns.excessiveDashes += 1 + (match.length - 2) * 0.2;
+                        });
+                    });
+                    
+                    return patterns;
         }
         
         enhancedRhythmAnalysis(sentences) {
-            if (sentences.length < 3) {
-                return { regularity: 1, pattern: 'undefined', variability: 0, flow: 'smooth' };
-            }
-            
-            const lengths = sentences.map(s => {
-                const text = typeof s === 'object' ? s.text : s;
-                return text.split(/\s+/).length;
-            });
-            
-            const differences = [];
-            for (let i = 0; i < lengths.length - 1; i++) {
-                differences.push(Math.abs(lengths[i] - lengths[i + 1]));
-            }
-            
-            const avgDifference = differences.reduce((a, b) => a + b, 0) / differences.length;
-            const maxLength = Math.max(...lengths);
-            const minLength = Math.min(...lengths);
-            const range = maxLength - minLength;
-            
-            const pattern = this.detectEnhancedRhythmPattern(lengths);
-            
-            const variability = avgDifference / (maxLength || 1);
-            const flow = variability < 0.3 ? 'smooth' : 
-                        variability < 0.6 ? 'moderate' : 'choppy';
-            
-            return {
-                regularity: 1 - variability,
-                pattern,
-                variability,
-                flow,
-                range,
-                avgLength: lengths.reduce((a, b) => a + b, 0) / lengths.length,
-                lengthDistribution: this.calculateLengthDistribution(lengths)
-            };
+                    if (sentences.length < 3) {
+                        return { regularity: 1, pattern: 'undefined', variability: 0, flow: 'smooth' };
+                    }
+                    
+                    const lengths = sentences.map(s => {
+                        const text = typeof s === 'object' ? s.text : s;
+                        return text.split(/\s+/).filter(w => w.length > 0).length;
+                    });
+                    
+                    const avgLength = lengths.reduce((a, b) => a + b, 0) / lengths.length;
+                    const stdDev = Math.sqrt(lengths.reduce((sum, len) => sum + Math.pow(len - avgLength, 2), 0) / lengths.length);
+                    const coefficientOfVariation = avgLength > 0 ? stdDev / avgLength : 0;
+                    
+                    const differences = [];
+                    for (let i = 0; i < lengths.length - 1; i++) {
+                        differences.push(Math.abs(lengths[i] - lengths[i + 1]));
+                    }
+                    
+                    const avgDifference = differences.reduce((a, b) => a + b, 0) / differences.length;
+                    const maxLength = Math.max(...lengths);
+                    const minLength = Math.min(...lengths);
+                    const range = maxLength - minLength;
+                    
+                    const pattern = this.detectEnhancedRhythmPattern(lengths);
+                    
+                    const variability = coefficientOfVariation;
+                    const flow = variability < 0.3 ? 'smooth' : 
+                                variability < 0.6 ? 'moderate' : 'choppy';
+                    
+                    return {
+                        regularity: 1 - variability,
+                        pattern,
+                        variability,
+                        flow,
+                        range,
+                        avgLength: avgLength,
+                        lengthDistribution: this.calculateLengthDistribution(lengths)
+                    };
         }
         
         detectEnhancedRhythmPattern(lengths) {
@@ -9266,6 +9378,7 @@
     
 
 })();
+
 
 
 
