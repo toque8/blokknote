@@ -6140,134 +6140,133 @@
         }
         
         enhancedCulturalAnalysis(data) {
-            const text = data.cleaned;
-            const language = this.language;
-            const cultural = this.culturalContext[language];
-            
-            const analysis = {
-                references: {
-                    literary: { count: 0, items: [] },
-                    historical: { count: 0, items: [] },
-                    mythological: { count: 0, items: [] },
-                    traditional: { count: 0, items: [] },
-                    idioms: { count: 0, items: [] },
-                    poetic: { count: 0, items: [] }
-                },
-                scores: {
-                    culturalDepth: 0,
-                    intertextuality: 0,
-                    culturalRichness: 0
-                },
-                patterns: {
-                    literaryPatterns: [],
-                    culturalThemes: [],
-                    intertextualReferences: []
-                }
-            };
-            
-            cultural.literaryReferences.forEach(ref => {
-                const regex = new RegExp(`\\b${this.escapeRegExp(ref)}\\b`, 'gi');
-                const matches = text.match(regex);
-                if (matches) {
-                    analysis.references.literary.count += matches.length;
-                    analysis.references.literary.items.push({
-                        reference: ref,
-                        count: matches.length,
-                        contexts: this.findReferenceContexts(text, ref)
-                    });
-                    analysis.scores.culturalDepth += matches.length * 0.5;
+                    const text = data.cleaned;
+                    const language = this.language;
+                    const cultural = this.culturalContext[language];
                     
-                    // Check for intertextual patterns
-                    if (this.isIntertextualReference(ref, text)) {
-                        analysis.scores.intertextuality += 0.3;
-                        analysis.patterns.intertextualReferences.push(ref);
-                    }
-                }
-            });
-            
-            cultural.historicalReferences.forEach(ref => {
-                const regex = new RegExp(`\\b${this.escapeRegExp(ref)}\\b`, 'gi');
-                const matches = text.match(regex);
-                if (matches) {
-                    analysis.references.historical.count += matches.length;
-                    analysis.references.historical.items.push({
-                        reference: ref,
-                        count: matches.length,
-                        period: this.determineHistoricalPeriod(ref)
-                    });
-                    analysis.scores.culturalDepth += matches.length * 0.4;
-                }
-            });
-            
-            cultural.mythologicalReferences.forEach(ref => {
-                const regex = new RegExp(`\\b${this.escapeRegExp(ref)}\\b`, 'gi');
-                const matches = text.match(regex);
-                if (matches) {
-                    analysis.references.mythological.count += matches.length;
-                    analysis.references.mythological.items.push({
-                        reference: ref,
-                        count: matches.length,
-                        archetype: this.determineMythologicalArchetype(ref)
-                    });
-                    analysis.scores.culturalDepth += matches.length * 0.3;
+                    const analysis = {
+                        references: {
+                            literary: { count: 0, items: [] },
+                            historical: { count: 0, items: [] },
+                            mythological: { count: 0, items: [] },
+                            traditional: { count: 0, items: [] },
+                            idioms: { count: 0, items: [] },
+                            poetic: { count: 0, items: [] }
+                        },
+                        scores: {
+                            culturalDepth: 0,
+                            intertextuality: 0,
+                            culturalRichness: 0
+                        },
+                        patterns: {
+                            literaryPatterns: [],
+                            culturalThemes: [],
+                            intertextualReferences: []
+                        }
+                    };
                     
-                    if (this.isMythologicalPattern(ref, text)) {
-                        analysis.patterns.culturalThemes.push(`mythological: ${ref}`);
-                    }
-                }
-            });
-            
-            cultural.idioms.forEach(idiom => {
-                const escapedIdiom = this.escapeRegExp(idiom);
-                const regex = new RegExp(escapedIdiom, 'gi');
-                const matches = text.match(regex);
-                if (matches) {
-                    analysis.references.idioms.count += matches.length;
-                    analysis.references.idioms.items.push({
-                        idiom: idiom,
-                        count: matches.length,
-                        literalMeaning: this.getLiteralMeaning(idiom, language)
+                    cultural.literaryReferences.forEach(ref => {
+                        const regex = new RegExp(`\\b${this.escapeRegExp(ref)}\\b`, 'gi');
+                        const matches = text.match(regex);
+                        if (matches) {
+                            analysis.references.literary.count += matches.length;
+                            analysis.references.literary.items.push({
+                                reference: ref,
+                                count: matches.length,
+                                contexts: this.findReferenceContexts(text, ref)
+                            });
+                            analysis.scores.culturalDepth += matches.length * 0.5;
+                            
+                            if (this.isIntertextualReference(ref, text)) {
+                                analysis.scores.intertextuality += 0.3;
+                                analysis.patterns.intertextualReferences.push(ref);
+                            }
+                        }
                     });
-                    analysis.scores.culturalRichness += matches.length * 0.3;
-                }
-            });
-            
-            cultural.poeticPatterns.forEach((pattern, index) => {
-                const matches = text.match(pattern);
-                if (matches) {
-                    analysis.references.poetic.count += matches.length;
-                    analysis.references.poetic.items.push({
-                        pattern: pattern.toString(),
-                        count: matches.length,
-                        type: this.classifyPoeticPattern(pattern)
-                    });
-                    analysis.scores.culturalRichness += matches.length * 0.2;
                     
-                    matches.forEach(match => {
-                        analysis.patterns.literaryPatterns.push({
-                            pattern: `poetic_${index}`,
-                            example: match.substring(0, 50) + '...'
-                        });
+                    cultural.historicalReferences.forEach(ref => {
+                        const regex = new RegExp(`\\b${this.escapeRegExp(ref)}\\b`, 'gi');
+                        const matches = text.match(regex);
+                        if (matches) {
+                            analysis.references.historical.count += matches.length;
+                            analysis.references.historical.items.push({
+                                reference: ref,
+                                count: matches.length,
+                                period: this.determineHistoricalPeriod(ref)
+                            });
+                            analysis.scores.culturalDepth += matches.length * 0.4;
+                        }
                     });
-                }
-            });
-            
-            const totalReferences = Object.values(analysis.references)
-                .reduce((sum, ref) => sum + ref.count, 0);
-            
-            analysis.scores.culturalDepth = analysis.scores.culturalDepth / (totalReferences || 1);
-            analysis.scores.culturalRichness = analysis.scores.culturalRichness / (totalReferences || 1);
-            analysis.scores.overall = (analysis.scores.culturalDepth + 
-                                      analysis.scores.culturalRichness + 
-                                      analysis.scores.intertextuality) / 3;
-            
-            analysis.culturalDensity = totalReferences / (data.words.length || 1);
-            
-            analysis.culturalCoherence = this.calculateCulturalCoherence(analysis.references);
-            
-            analysis.dominantCulturalTheme = this.detectDominantCulturalTheme(analysis.references);
-            
-            return analysis;
+                    
+                    cultural.mythologicalReferences.forEach(ref => {
+                        const regex = new RegExp(`\\b${this.escapeRegExp(ref)}\\b`, 'gi');
+                        const matches = text.match(regex);
+                        if (matches) {
+                            analysis.references.mythological.count += matches.length;
+                            analysis.references.mythological.items.push({
+                                reference: ref,
+                                count: matches.length,
+                                archetype: this.determineMythologicalArchetype(ref)
+                            });
+                            analysis.scores.culturalDepth += matches.length * 0.3;
+                            
+                            if (this.isMythologicalPattern(ref, text)) {
+                                analysis.patterns.culturalThemes.push(`mythological: ${ref}`);
+                            }
+                        }
+                    });
+                    
+                    cultural.idioms.forEach(idiom => {
+                        const escapedIdiom = this.escapeRegExp(idiom);
+                        const regex = new RegExp(`\\b${escapedIdiom}\\b`, 'gi');
+                        const matches = text.match(regex);
+                        if (matches) {
+                            analysis.references.idioms.count += matches.length;
+                            analysis.references.idioms.items.push({
+                                idiom: idiom,
+                                count: matches.length,
+                                literalMeaning: this.getLiteralMeaning(idiom, language)
+                            });
+                            analysis.scores.culturalRichness += matches.length * 0.3;
+                        }
+                    });
+                    
+                    cultural.poeticPatterns.forEach((pattern, index) => {
+                        const matches = text.match(pattern);
+                        if (matches) {
+                            analysis.references.poetic.count += matches.length;
+                            analysis.references.poetic.items.push({
+                                pattern: pattern.toString(),
+                                count: matches.length,
+                                type: this.classifyPoeticPattern(pattern)
+                            });
+                            analysis.scores.culturalRichness += matches.length * 0.2;
+                            
+                            matches.forEach(match => {
+                                analysis.patterns.literaryPatterns.push({
+                                    pattern: `poetic_${index}`,
+                                    example: match.substring(0, 50) + '...'
+                                });
+                            });
+                        }
+                    });
+                    
+                    const totalReferences = Object.values(analysis.references)
+                        .reduce((sum, ref) => sum + ref.count, 0);
+                    
+                    analysis.scores.culturalDepth = totalReferences > 0 ? analysis.scores.culturalDepth / totalReferences : 0;
+                    analysis.scores.culturalRichness = totalReferences > 0 ? analysis.scores.culturalRichness / totalReferences : 0;
+                    analysis.scores.overall = (analysis.scores.culturalDepth + 
+                                              analysis.scores.culturalRichness + 
+                                              analysis.scores.intertextuality) / 3;
+                    
+                    analysis.culturalDensity = totalReferences / (data.words.length || 1);
+                    
+                    analysis.culturalCoherence = this.calculateCulturalCoherence(analysis.references);
+                    
+                    analysis.dominantCulturalTheme = this.detectDominantCulturalTheme(analysis.references);
+                    
+                    return analysis;
         }
         
         detectWordRepetitions(data) {
@@ -9463,6 +9462,7 @@
     
 
 })();
+
 
 
 
