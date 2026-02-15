@@ -318,7 +318,8 @@ translateCulturalTheme(theme, lang) {
 		'idioms': 'идиоматическая',
         'mixed': 'смешанная',
         'none': 'отсутствует',
-        'undefined': 'не определёна'
+        'undefined': 'не определёна',
+		'not defined': 'не определена'
     };
     return translations[theme] || theme;
 }
@@ -3446,6 +3447,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
