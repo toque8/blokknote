@@ -503,7 +503,63 @@ translateValue(value, lang) {
                             'Фет': 'Фет',
                             'Майков': 'Майков',
                             'Полонский': 'Полонский',
-                            'Апухтин': 'Апухтин'
+                            'Апухтин': 'Апухтин',
+			 				'other': 'не определён',
+                            'undefined': 'не определён',
+                            'not defined': 'не определён',
+                            'Пушкин': 'Пушкин',
+                            'Достоевский': 'Достоевский',
+                            'Толстой': 'Толстой',
+                            'Чехов': 'Чехов',
+                            'Гоголь': 'Гоголь',
+                            'Булгаков': 'Булгаков',
+                            'Есенин': 'Есенин',
+                            'Лермонтов': 'Лермонтов',
+                            'Тургенев': 'Тургенев',
+                            'Некрасов': 'Некрасов',
+                            'Блок': 'Блок',
+                            'Ахматова': 'Ахматова',
+                            'Цветаева': 'Цветаева',
+                            'Мандельштам': 'Мандельштам',
+                            'Пастернак': 'Пастернак',
+                            'Солженицын': 'Солженицын',
+                            'Бродский': 'Бродский',
+                            'Набоков': 'Набоков',
+                            'Шолохов': 'Шолохов',
+                            'Замятин': 'Замятин',
+                            'Платонов': 'Платонов',
+                            'Ильф и Петров': 'Ильф и Петров',
+                            'Грибоедов': 'Грибоедов',
+                            'Фонвизин': 'Фонвизин',
+                            'Радищев': 'Радищев',
+                            'Карамзин': 'Карамзин',
+                            'Жуковский': 'Жуковский',
+                            'Батюшков': 'Батюшков',
+                            'Баратынский': 'Баратынский',
+                            'Тютчев': 'Тютчев',
+                            'Фет': 'Фет',
+                            'Майков': 'Майков',
+                            'Полонский': 'Полонский',
+                            'Апухтин': 'Апухтин',
+                            'Frost': 'Фрост',
+                            'Shakespeare': 'Шекспир',
+                            'Dickens': 'Диккенс',
+                            'Homer': 'Гомер',
+                            'Twain': 'Твен',
+                            'Orwell': 'Оруэлл',
+                            'Hemingway': 'Хемингуэй',
+                            'Joyce': 'Джойс',
+                            'Wilde': 'Уайльд',
+                            'Poe': 'По',
+                            'Byron': 'Байрон',
+                            'Keats': 'Китс',
+                            'Wordsworth': 'Вордсворт',
+                            'Whitman': 'Уитмен',
+                            'Plato': 'Платон',
+                            'Aristotle': 'Аристотель',
+                            'Socrates': 'Сократ',
+                            'Virgil': 'Вергилий',
+                            'Ovid': 'Овидий'
         };
         return translations[value] || value;
     } else if (lang === 'en') {
@@ -729,7 +785,65 @@ translateValue(value, lang) {
                             'Фет': 'Fet',
                             'Майков': 'Maykov',
                             'Полонский': 'Polonsky',
-                            'Апухтин': 'Apukhtin'
+                            'Апухтин': 'Apukhtin',
+							'другой': 'undefined',
+                            'other': 'not defined',
+                            'undefined': 'not defined',
+                            'not defined': 'not defined',
+                            'Тип паттерна': 'Pattern Type',
+                            'Пушкин': 'Pushkin',
+                            'Достоевский': 'Dostoevsky',
+                            'Толстой': 'Tolstoy',
+                            'Чехов': 'Chekhov',
+                            'Гоголь': 'Gogol',
+                            'Булгаков': 'Bulgakov',
+                            'Есенин': 'Yesenin',
+                            'Лермонтов': 'Lermontov',
+                            'Тургенев': 'Turgenev',
+                            'Некрасов': 'Nekrasov',
+                            'Блок': 'Blok',
+                            'Ахматова': 'Akhmatova',
+                            'Цветаева': 'Tsvetaeva',
+                            'Мандельштам': 'Mandelstam',
+                            'Пастернак': 'Pasternak',
+                            'Солженицын': 'Solzhenitsyn',
+                            'Бродский': 'Brodsky',
+                            'Набоков': 'Nabokov',
+                            'Шолохов': 'Sholokhov',
+                            'Замятин': 'Zamyatin',
+                            'Платонов': 'Platonov',
+                            'Ильф и Петров': 'Ilf and Petrov',
+                            'Грибоедов': 'Griboyedov',
+                            'Фонвизин': 'Fonvizin',
+                            'Радищев': 'Radishchev',
+                            'Карамзин': 'Karamzin',
+                            'Жуковский': 'Zhukovsky',
+                            'Батюшков': 'Batjushkov',
+                            'Баратынский': 'Baratynsky',
+                            'Тютчев': 'Tyutchev',
+                            'Фет': 'Fet',
+                            'Майков': 'Maykov',
+                            'Полонский': 'Polonsky',
+                            'Апухтин': 'Apukhtin',
+                            'Фрост': 'Frost',
+                            'Шекспир': 'Shakespeare',
+                            'Диккенс': 'Dickens',
+                            'Гомер': 'Homer',
+                            'Твен': 'Twain',
+                            'Оруэлл': 'Orwell',
+                            'Хемингуэй': 'Hemingway',
+                            'Джойс': 'Joyce',
+                            'Уайльд': 'Wilde',
+                            'По': 'Poe',
+                            'Байрон': 'Byron',
+                            'Китс': 'Keats',
+                            'Вордсворт': 'Wordsworth',
+                            'Уитмен': 'Whitman',
+                            'Платон': 'Plato',
+                            'Аристотель': 'Aristotle',
+                            'Сократ': 'Socrates',
+                            'Вергилий': 'Virgil',
+                            'Овидий': 'Ovid'
         };
         return translations[value] || value;
     }
@@ -1940,14 +2054,14 @@ renderResult(result) {
                             <span class="value" style="text-align:right !important;float:right;">${culturalReferences.literary.count}</span>
                         </div>`;
                         if (culturalReferences.literary.items && culturalReferences.literary.items.length > 0) {
-                            const uniqueRefs = [...new Set(culturalReferences.literary.items.map(item => item.reference))];
-                            if (uniqueRefs.length > 0) {
-                                html += `<div class="emotion-metric">
-                                    <span class="label" title="${translations.literaryReferencesDesc}">${translations.literaryReferences}:</span>
-                                    <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${uniqueRefs.slice(0, 3).join(', ')}</span>
-                                </div>`;
-                            }
-                        }
+                        	const uniqueRefs = [...new Set(culturalReferences.literary.items.map(item => item.reference))];
+                        	if (uniqueRefs.length > 0) {
+                            	html += `<div class="emotion-metric">
+                                	<span class="label" title="${translations.literaryReferencesDesc}">${translations.literaryReferences}:</span>
+                                	<span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${uniqueRefs.slice(0, 3).map(ref => this.translateValue(ref, currentLang)).join(', ')}</span>
+                            	</div>`;
+                        	}
+                    	}
                     }
                     
                     if (culturalReferences.historical && this.shouldShowMetric(culturalReferences.historical.count, true)) {
@@ -3332,6 +3446,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
