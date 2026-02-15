@@ -5718,20 +5718,19 @@
                         
                         let ironyDetected = false;
                         rules.ironyIndicators.forEach(indicator => {
-                            const lowerInd = indicator.toLowerCase();
-                            if (lowerSentence.includes(lowerInd)) {
-                                if (sentence.includes('?') || sentence.includes('!')) {
-                                    const isIrony = this.checkIronyPattern(sentence);
-                                    if (isIrony) {
-                                        analysis.indicators.irony++;
-                                        analysis.scores.contextualComplexity += 0.5;
-                                        ironyDetected = true;
-                                        analysis.patterns.ironyPatterns.push({
-                                            sentenceIndex: index,
-                                            pattern: `irony indicator: ${indicator}`,
-                                            text: sentence.substring(0, 100) + '...'
-                                        });
-                                    }
+                            const lowerIndicator = indicator.toLowerCase();
+                            if (lowerSentence.includes(lowerIndicator)) {
+                                const hasPunctuation = sentence.includes('?') || sentence.includes('!') || sentence.includes('…') || sentence.includes('...');
+                                const isIrony = this.checkIronyPattern(sentence);
+                                if (isIrony || hasPunctuation) {
+                                    analysis.indicators.irony++;
+                                    analysis.scores.contextualComplexity += 0.5;
+                                    ironyDetected = true;
+                                    analysis.patterns.ironyPatterns.push({
+                                        sentenceIndex: index,
+                                        pattern: `irony indicator: ${indicator}`,
+                                        text: sentence.substring(0, 100) + '...'
+                                    });
                                 }
                             }
                         });
@@ -9477,6 +9476,7 @@
     
 
 })();
+
 
 
 
