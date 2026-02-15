@@ -1526,14 +1526,6 @@ renderResult(result) {
                  </div>`;
         }
         
-        if (this.shouldShowMetric(readingLevel)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.readabilityDesc}">${translations.readability}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${this.translateReadability(readingLevel, currentLang)}</span>
-                 </div>`;
-        }
-        
         if (this.shouldShowMetric(syntacticCoherence, true)) {
             html += `
                  <div class="emotion-metric">
@@ -3119,6 +3111,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
