@@ -591,7 +591,9 @@ translateValue(value, lang) {
             'интуитивный': 'intuitive',
             'сбалансированный': 'balanced',
             'креативный': 'creative',
-            'прагматичный': 'practical'
+            'прагматичный': 'practical',
+			'другой': 'undefined',
+			'Тип паттерна': 'Pattern Type'
         };
         return translations[value] || value;
     }
@@ -3111,6 +3113,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
