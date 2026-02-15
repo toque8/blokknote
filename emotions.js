@@ -1387,6 +1387,13 @@
                         console.warn('Journalist metrics calculation error:', e);
                     }
 
+                    let copywriterMetrics = {};
+                    try {
+                        copywriterMetrics = this.calculateCopywriterMetrics(text);
+                    } catch (e) {
+                        console.warn('Copywriter metrics calculation error:', e);
+                    }
+
                     let funMetrics = {};
                     try {
                         funMetrics = this.calculateFunMetrics(text);
@@ -1410,6 +1417,7 @@
                             complexityScore: integratedResult.complexityScore,
                             writer: writerMetrics,
                             journalist: journalistMetrics,
+                            copywriter: copywriterMetrics,
                             fun: funMetrics
                         },
                         details: {
@@ -1800,6 +1808,142 @@
                     metrics.categoricalTone = totalWords ? (absoluteCount / totalWords * 1000).toFixed(1) : 0;
                     
                     return metrics;
+        }
+
+        calculateCopywriterMetrics(text) {
+                            if (!text || typeof text !== 'string') return {};
+                  
+                            const sentences = text.split(/[.!?]+/).filter(Boolean);
+                            const words = text.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
+                            const totalWords = words.length;
+                            const lowerText = text.toLowerCase();
+                  
+                            const metrics = {};
+                  
+                            const stopWordsRu = ['и','в','во','не','что','он','на','я','с','со','как','а','то','все','она','так','его','но','да','ты','к','у','же','вы','за','бы','по','только','ее','мне','было','вот','от','меня','еще','нет','о','из','ему','теперь','когда','даже','ну','вдруг','ли','если','уже','или','ни','быть','был','него','до','вас','нибудь','опять','уж','вам','ведь','там','потом','себя','ничего','ей','может','они','тут','где','есть','надо','ней','для','мы','тем','кто','меня','сейчас','без','под','над','об','при','про','через','после','вокруг','около','мимо','среди','между','ради','благодаря','ввиду','вследствие','вроде','насчет','вместо','несмотря','спустя'];
+                            const stopWordsEn = ['i','me','my','myself','we','our','ours','ourselves','you','your','yours','yourself','yourselves','he','him','his','himself','she','her','hers','herself','it','its','itself','they','them','their','theirs','themselves','what','which','who','whom','this','that','these','those','am','is','are','was','were','be','been','being','have','has','had','having','do','does','did','doing','a','an','the','and','but','if','or','because','as','until','while','of','at','by','for','with','about','against','between','into','through','during','before','after','above','below','to','from','up','down','in','out','on','off','over','under','again','further','then','once','here','there','when','where','why','how','all','any','both','each','few','more','most','other','some','such','no','nor','not','only','own','same','so','than','too','very','s','t','can','will','just','don','should','now'];
+                  
+                            const ctaRu = ['купи','подпишись','жми','скачай','попробуй','закажи','оформи','введи','перейди','начни','получи','сэкономь','забронируй','запишись','кликни','позвони'];
+                            const ctaEn = ['buy','subscribe','click','download','try','order','enter','start','get','save','book','register','join','call','shop'];
+                  
+                            const clicheRu = ['инновационный','уникальный','качественный','профессиональный','оптимальный','эффективный','надёжный','доступный','выгодный','современный'];
+                            const clicheEn = ['innovative','unique','quality','professional','optimal','effective','reliable','affordable','beneficial','modern'];
+                  
+                            const superlativeRu = ['лучший','величайший','идеальный','совершенный','безупречный','первоклассный','топовый','ультимативный','превосходный'];
+                            const superlativeEn = ['best','greatest','perfect','ideal','ultimate','superior','top','prime','supreme','finest'];
+                  
+                            const fillerRu = ['ну','вообще','типа','как бы','короче','это самое','в общем','значит','так сказать','в принципе','в некотором роде'];
+                            const fillerEn = ['well','like','you know','actually','basically','literally','sort of','kind of','in a way','i mean'];
+                  
+                            const firstPersonRu = ['я','меня','мне','мной','мною','мы','нас','нам','нами'];
+                            const firstPersonEn = ['i','me','my','mine','we','us','our','ours'];
+                  
+                            const wordFreq = {};
+                            words.forEach(w => {
+                                      const lw = w.toLowerCase();
+                                      if ((this.language === 'ru' && !stopWordsRu.includes(lw)) || (this.language === 'en' && !stopWordsEn.includes(lw))) {
+                                                wordFreq[lw] = (wordFreq[lw] || 0) + 1;
+                                      }
+                            });
+                            const sorted = Object.entries(wordFreq).sort((a,b) => b[1] - a[1]);
+                            const top5 = sorted.slice(0,5);
+                            const top5Sum = top5.reduce((acc, [_, freq]) => acc + freq, 0);
+                            metrics.seoDensity = totalWords ? ((top5Sum / totalWords) * 100).toFixed(1) : 0;
+                  
+                            let ctaCount = 0;
+                            ctaRu.concat(ctaEn).forEach(phrase => {
+                                      const re = new RegExp(phrase, 'gi');
+                                      const m = lowerText.match(re);
+                                      if (m) ctaCount += m.length;
+                            });
+                            metrics.callToAction = totalWords ? Math.round((ctaCount / totalWords) * 1000) : 0;
+                  
+                            let clicheCount = 0;
+                            clicheRu.concat(clicheEn).forEach(phrase => {
+                                      const re = new RegExp(phrase, 'gi');
+                                      const m = lowerText.match(re);
+                                      if (m) clicheCount += m.length;
+                            });
+                            metrics.clicheMeter = totalWords ? Math.round((clicheCount / totalWords) * 1000) : 0;
+                  
+                            let superlativeCount = 0;
+                            superlativeRu.concat(superlativeEn).forEach(phrase => {
+                                      const re = new RegExp(phrase, 'gi');
+                                      const m = lowerText.match(re);
+                                      if (m) superlativeCount += m.length;
+                            });
+                            metrics.superlativeDegree = totalWords ? Math.round((superlativeCount / totalWords) * 1000) : 0;
+                  
+                            let firstPersonCount = 0;
+                            words.forEach(w => {
+                                      const lw = w.toLowerCase();
+                                      if (firstPersonRu.includes(lw) || firstPersonEn.includes(lw)) firstPersonCount++;
+                            });
+
+                            const pastRu = /[а-яё]+(л|ла|ло|ли)/gi;
+                            const pastEnWords = ['went','saw','did','said','came','took','thought','made','felt','got','gave','found','knew','left','meant','bought','told','became','began','broke','brought','built','bought','caught','chose','drank','drove','ate','fell','flew','forgot','froze','gave','grew','hung','hid','kept','led','left','let','lost','made','met','paid','put','ran','said','saw','sold','sent','sang','sat','slept','spoke','spent','stood','stole','swam','took','taught','thought','threw','understood','woke','won','wrote'];
+                            const pastEnEd = /\b[a-z]+ed\b/gi;
+                            let pastCount = 0;
+                            const pastRuMatches = text.match(pastRu);
+                            if (pastRuMatches) pastCount += pastRuMatches.length;
+                            pastEnWords.forEach(w => {
+                                      const re = new RegExp('\\b' + w + '\\b', 'gi');
+                                      const m = text.match(re);
+                                      if (m) pastCount += m.length;
+                            });
+                            const pastEnEdMatches = text.match(pastEnEd);
+                            if (pastEnEdMatches) pastCount += pastEnEdMatches.length;
+                            const properCandidates = text.match(/\b[A-ZА-Я][a-zа-яё]*\b/g) || [];
+                            const firstWords = sentences.map(s => {
+                                      const first = s.trim().split(/\s+/)[0];
+                                      return first ? first.replace(/[^a-zA-Zа-яА-ЯёЁ]/g, '') : '';
+                            }).filter(w => w.length > 0);
+                            const properNames = properCandidates.filter(word => !firstWords.includes(word));
+                            const properCount = properNames.length;
+                  
+                            const storytellingMarkers = firstPersonCount + pastCount + properCount;
+                            metrics.storytelling = totalWords ? Math.round((storytellingMarkers / totalWords) * 1000) : 0;
+                  
+                            let fillerCount = 0;
+                            fillerRu.concat(fillerEn).forEach(phrase => {
+                                      const re = new RegExp(phrase, 'gi');
+                                      const m = lowerText.match(re);
+                                      if (m) fillerCount += m.length;
+                            });
+                            metrics.fillerWords = totalWords ? Math.round((fillerCount / totalWords) * 1000) : 0;
+                  
+                            let stopWordsCount = 0;
+                            words.forEach(w => {
+                                      const lw = w.toLowerCase();
+                                      if ((this.language === 'ru' && stopWordsRu.includes(lw)) || (this.language === 'en' && stopWordsEn.includes(lw))) {
+                                                stopWordsCount++;
+                                      }
+                            });
+                            metrics.waterContent = totalWords ? ((stopWordsCount / totalWords) * 100).toFixed(1) : 0;
+                  
+                            const topFreq = sorted.length > 0 ? sorted[0][1] : 0;
+                            metrics.spamIndex = totalWords ? ((topFreq / totalWords) * 100).toFixed(1) : 0;
+                  
+                            // 9. Наличие списков
+                            const lines = text.split('\n');
+                            let listItems = 0;
+                            lines.forEach(line => {
+                                      const trimmed = line.trim();
+                                      if (/^[\*\-•]/.test(trimmed) || /^\d+\./.test(trimmed)) {
+                                                listItems++;
+                                      }
+                            });
+                            metrics.listDensity = totalWords ? Math.round((listItems / totalWords) * 1000) : 0;
+                  
+                            const allWordsFreq = {};
+                            words.forEach(w => {
+                                      const lw = w.toLowerCase();
+                                      allWordsFreq[lw] = (allWordsFreq[lw] || 0) + 1;
+                            });
+                            const uniqueOnce = Object.values(allWordsFreq).filter(f => f === 1).length;
+                            metrics.noveltyCoefficient = totalWords ? ((uniqueOnce / totalWords) * 100).toFixed(1) : 0;
+                  
+                            return metrics;
         }
 
         calculateFunMetrics(text) {
@@ -9598,6 +9742,7 @@
     
 
 })();
+
 
 
 
