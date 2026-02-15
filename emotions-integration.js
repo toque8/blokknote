@@ -388,14 +388,14 @@ translateValue(value, lang) {
             'Зона тумана': 'Зона тумана',
             'Категоричный тон': 'Категоричный тон',
 			'SEO-плотность': 'SEO-плотность',
-            'Призыв к действию': 'Призыв к действию',
+            'Призывы к действию': 'Призывы к действию',
             'Штампометр': 'Штампометр',
             'Превосходная степень': 'Превосходная степень',
             'Сторителлинг': 'Сторителлинг',
             'Детектор вредных слов': 'Детектор вредных слов',
             'Водность': 'Водность',
             'Индекс переспама': 'Индекс переспама',
-            'Наличие списков': 'Наличие списков',
+            'Списки': 'Списки',
             'Игра в уникальность': 'Игра в уникальность',
    
             'звонков': 'звонков',
@@ -404,6 +404,7 @@ translateValue(value, lang) {
             'историй': 'историй',
             'паразитов': 'паразитов',
             'списков': 'списков',
+			'маркеров': 'маркеров',
 			'Ещё кофе, пожалуйста': 'Ещё кофе, пожалуйста',
 			'В поисках утраченного...': 'В поисках утраченного',
             'Падение в кроличью нору': 'Я падаю?', 
@@ -492,14 +493,14 @@ translateValue(value, lang) {
             'Зона тумана': 'Fog Zone',
             'Категоричный тон': 'Categorical Tone',
 			'SEO-плотность': 'SEO Density',
-            'Призыв к действию': 'Call to Action',
+            'Призывы к действию': 'Calls to Action',
             'Штампометр': 'Cliche Meter',
             'Превосходная степень': 'Superlative Degree',
             'Сторителлинг': 'Storytelling',
             'Детектор вредных слов': 'Filler Words',
             'Водность': 'Water Content',
             'Индекс переспама': 'Spam Index',
-            'Наличие списков': 'List Density',
+            'Списки': 'Lists',
             'Игра в уникальность': 'Novelty Game',
 
             'звонков': 'calls',
@@ -508,6 +509,7 @@ translateValue(value, lang) {
             'историй': 'stories',
             'паразитов': 'parasites',
             'списков': 'lists',
+			'маркеров': 'markers',
 			'Ещё кофе, пожалуйста': 'Another Coffee, Please',
             'В поисках утраченного': 'In Search of Lost Time',
             'Я падаю?': 'Am I Falling?',
@@ -627,6 +629,7 @@ translateValue(value, lang) {
             'креативный': 'creative',
             'прагматичный': 'practical',
 			'другой': 'undefined',
+			'other': 'не определён',
 			'Тип паттерна': 'Pattern Type'
         };
         return translations[value] || value;
@@ -1156,35 +1159,29 @@ renderResult(result) {
                             }
                   
                             if (this.shouldShowMetric(copywriter.callToAction, true)) {
-                                      const val = copywriter.callToAction;
-                                      const unit = lang === 'ru' ? this.pluralize(val, ['звонок', 'звонка', 'звонков']) : 'calls';
                                       html += `<div class="emotion-metric">`;
-                                      html += `<span class="label" title="${t.copywriterCallToActionHint || ''}">${this.translateValue('Призыв к действию', lang)}:</span>`;
-                                      html += `<span class="value">${val} ${unit}</span>`;
+                                      html += `<span class="label" title="${t.copywriterCallToActionHint || ''}">${this.translateValue('Призывы к действию', lang)}:</span>`;
+                                      html += `<span class="value">${copywriter.callToAction}</span>`;
                                       html += `</div>`;
                             }
                   
                             if (this.shouldShowMetric(copywriter.clicheMeter, true)) {
-                                      const val = copywriter.clicheMeter;
-                                      const unit = lang === 'ru' ? this.pluralize(val, ['штамп', 'штампа', 'штампов']) : 'cliches';
                                       html += `<div class="emotion-metric">`;
                                       html += `<span class="label" title="${t.copywriterClicheMeterHint || ''}">${this.translateValue('Штампометр', lang)}:</span>`;
-                                      html += `<span class="value">${val} ${unit}</span>`;
+                                      html += `<span class="value">${copywriter.clicheMeter}</span>`;
                                       html += `</div>`;
                             }
                   
                             if (this.shouldShowMetric(copywriter.superlativeDegree, true)) {
-                                      const val = copywriter.superlativeDegree;
-                                      const unit = lang === 'ru' ? this.pluralize(val, ['убеждение', 'убеждения', 'убеждений']) : 'convictions';
                                       html += `<div class="emotion-metric">`;
                                       html += `<span class="label" title="${t.copywriterSuperlativeHint || ''}">${this.translateValue('Превосходная степень', lang)}:</span>`;
-                                      html += `<span class="value">${val} ${unit}</span>`;
+                                      html += `<span class="value">${copywriter.superlativeDegree}</span>`;
                                       html += `</div>`;
                             }
                   
                             if (this.shouldShowMetric(copywriter.storytelling, true)) {
                                       const val = copywriter.storytelling;
-                                      const unit = lang === 'ru' ? this.pluralize(val, ['история', 'истории', 'историй']) : 'stories';
+                                      const unit = lang === 'ru' ? this.pluralize(val, ['маркер', 'маркера', 'маркеров']) : 'markers';
                                       html += `<div class="emotion-metric">`;
                                       html += `<span class="label" title="${t.copywriterStorytellingHint || ''}">${this.translateValue('Сторителлинг', lang)}:</span>`;
                                       html += `<span class="value">${val} ${unit}</span>`;
@@ -1192,11 +1189,9 @@ renderResult(result) {
                             }
                   
                             if (this.shouldShowMetric(copywriter.fillerWords, true)) {
-                                      const val = copywriter.fillerWords;
-                                      const unit = lang === 'ru' ? this.pluralize(val, ['паразит', 'паразита', 'паразитов']) : 'parasites';
                                       html += `<div class="emotion-metric">`;
                                       html += `<span class="label" title="${t.copywriterFillerWordsHint || ''}">${this.translateValue('Детектор вредных слов', lang)}:</span>`;
-                                      html += `<span class="value">${val} ${unit}</span>`;
+                                      html += `<span class="value">${copywriter.fillerWords}</span>`;
                                       html += `</div>`;
                             }
                   
@@ -1215,11 +1210,11 @@ renderResult(result) {
                             }
                   
                             if (this.shouldShowMetric(copywriter.listDensity, true)) {
-                                      const val = copywriter.listDensity;
-                                      const unit = lang === 'ru' ? this.pluralize(val, ['список', 'списка', 'списков']) : 'lists';
+                                      const listPresent = copywriter.listDensity > 0;
+                                      const displayText = listPresent ? t.listPresent : t.listAbsent;
                                       html += `<div class="emotion-metric">`;
-                                      html += `<span class="label" title="${t.copywriterListDensityHint || ''}">${this.translateValue('Наличие списков', lang)}:</span>`;
-                                      html += `<span class="value">${val} ${unit}</span>`;
+                                      html += `<span class="label" title="${t.copywriterListDensityHint || ''}">${this.translateValue('Списки', lang)}:</span>`;
+                                      html += `<span class="value">${displayText}</span>`;
                                       html += `</div>`;
                             }
                   
@@ -1574,7 +1569,6 @@ renderResult(result) {
         const rhythmRegularity = this.getNumber(this.getSafe(result, 'details.syntactic.rhythm.regularity'));
         const rhythmPattern =  this.getSafe(result, 'details.syntactic.rhythm.pattern');
         const rhythmFlow = this.getSafe(result, 'details.syntactic.rhythm.flow');
-        const readingLevel = this.getSafe(result, 'details.syntactic.readability.readingLevel');
         const syntacticCoherence = this.getNumber(this.getSafe(result, 'details.syntactic.coherence'));
         
         if  (this.shouldShowMetric(sentenceTypes.exclamatory, true)) {
@@ -1682,13 +1676,6 @@ renderResult(result) {
 	if (hasReadabilityData) {
 		    html += `<div class="emotion-section"><h3>${translations.readability}</h3>`;
 		    
-		    if (this.shouldShowMetric(readingLevel)) {
-		        html += `<div class="emotion-metric">
-		            <span class="label" title="${translations.readingLevelDesc}">${translations.readingLevel}:</span>
-		            <span class="value" style="text-align:right !important;float:right;">${this.translateReadingLevel(readingLevel, currentLang)}</span>
-		        </div>`;
-		    }
-		    
 		    if (this.shouldShowMetric(fleschReadingEaseVal, true)) {
 		        html += `<div class="emotion-metric">
 		            <span class="label" title="${translations.fleschReadingEaseDesc}">${translations.fleschReadingEase}:</span>
@@ -1709,6 +1696,13 @@ renderResult(result) {
 		            <span class="value" style="text-align:right !important;float:right;">${fleschKincaidGradeVal.toFixed(1)}</span>
 		        </div>`;
 			}
+
+			if (this.shouldShowMetric(readingLevel)) {
+		        html += `<div class="emotion-metric">
+		            <span class="label" title="${translations.readingLevelDesc}">${translations.readingLevel}:</span>
+		            <span class="value" style="text-align:right !important;float:right;">${this.translateReadingLevel(readingLevel, currentLang)}</span>
+		        </div>`;
+		    }
 		    
 		    html += `</div>`;
 	}
@@ -2801,16 +2795,18 @@ getTranslations(lang) {
             journalistVerbalEcho: 'Тавтологии (однокоренные повторы) на 1000 слов. Если 0 — всё в порядке',
             journalistFogZone: 'Неопределённые формулировки (около, примерно, какой-то) на 1000 слов',
             journalistCategoricalTone: 'Слова-абсолюты (всегда, никогда, каждый) на 1000 слов',
-			copywriterSeoDensityHint: 'Суммарная доля топ‑5 самых частотных значимых слов. Показывает общую насыщенность ключевыми словами',
+			copywriterSeoDensityHint: 'Суммарная доля топ‑5 самых частотных слов. Показывает общую насыщенность ключевыми словами',
             copywriterCallToActionHint: 'Частота глаголов‑призывов (купи, подпишись, скачай) на 1000 слов',
             copywriterClicheMeterHint: 'Частота маркетинговых штампов (инновационный, уникальный, качественный) на 1000 слов',
             copywriterSuperlativeHint: 'Частота прилагательных в превосходной степени (лучший, идеальный, совершенный) на 1000 слов',
             copywriterStorytellingHint: 'Маркеры повествования (рассказ от первого лица, глаголы прошего времени, имена собственные) на 1000 слов',
             copywriterFillerWordsHint: 'Частота слов‑паразитов (ну, вообще, типа, как бы) на 1000 слов',
             copywriterWaterContentHint: 'Доля стоп‑слов (предлоги, союзы, частицы) в тексте. Высокий % – текст водянистый',
-            copywriterSpamIndexHint: 'Доля самого частотного значимого слова. Предупреждает о переспаме ключевых слов',
+            copywriterSpamIndexHint: 'Доля самого частотного слова. Предупреждает о переспаме ключевых слов',
             copywriterListDensityHint: 'Количество элементов списков (маркированных и нумерованных) на 1000 слов',
             copywriterNoveltyHint: 'Доля слов, которые встречаются в тексте только один раз. Показатель разнообразия',
+			listPresent: 'Присутствуют',
+            listAbsent: 'Отсутствуют',
 			funMoreCoffeeHint: 'Упоминания кофе и кофейных напитков на 1000 слов. Один джармуш — одно упоминание',
             funLostTimeHint: 'Количество длинных слов (≥10 букв) на 1000 слов. Чем больше прустов, тем зануднее текст',
             funRabbitHoleHint: 'Предложения, которые сильно длиннее среднего. Сколько раз текст падает в кроличью нору на 1000 слов',
@@ -2863,6 +2859,7 @@ getTranslations(lang) {
                         monster: 'монстр',
                         mystical: 'мистический',
                         other: 'не определён',
+						undefined: 'не определён',
                         idiomaticExpression: 'идиоматическое выражение',
 						literaryReferencesDesc: 'Литературные кумиры и отсылки',
 						historicalPeriod: 'Период',
@@ -2874,7 +2871,7 @@ getTranslations(lang) {
 						
 						readability: 'Читаемость текста',
         				readabilityDesc: 'Уровень сложности текста для восприятия',
-        				readingLevel: 'Конкретный уровень читаемости',
+        				readingLevel: 'Уровень читаемости',
 				        readingLevelDesc: 'Текстовая оценка читаемости',
 				        fleschReadingEase: 'Индекс Флеша',
 				        fleschReadingEaseDesc: 'Чем выше, тем легче читать (0-100)',
@@ -3153,6 +3150,8 @@ getTranslations(lang) {
             copywriterSpamIndexHint: 'Percentage of the most frequent content word. Warns against keyword stuffing',
             copywriterListDensityHint: 'Number of list items (bulleted or numbered) per 1000 words',
             copywriterNoveltyHint: 'Percentage of words that appear only once. Measures diversity',
+			listPresent: 'Present',
+            listAbsent: 'None',
 			funMoreCoffeeHint: 'Mentions of coffee and coffee drinks per 1000 words. One Jarmusch = one mention',
             funLostTimeHint: 'Number of long words (≥10 letters) per 1000 words. More Prousts means more tedious text',
             funRabbitHoleHint: 'Sentences much longer than average. How many times the text falls down the rabbit hole per 1000 words',
@@ -3214,7 +3213,7 @@ getTranslations(lang) {
 			historicalPeriodDesc: 'Historical period of the reference',
 			mythologicalArchetype: 'Archetype',
 			mythologicalArchetypeDesc: 'Mythological archetype of the character',
-			poeticPatternType: 'Pattern type',
+			poeticPatternType: 'Pattern Type',
 			poeticPatternTypeDesc: 'Classification of poetic device',
 
 			readability: 'Text Readability',
@@ -3262,6 +3261,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
