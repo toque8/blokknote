@@ -274,8 +274,11 @@ translateCulturalTheme(theme, lang) {
         'spiritual': 'духовная',
         'traditional': 'традиционная',
         'modern': 'современная',
-         'balanced': 'сбалансированная',
-        'none': 'отсутствует'
+        'balanced': 'сбалансированная',
+		idioms': 'идиоматическая',
+        'mixed': 'смешанная',
+        'none': 'отсутствует',
+        'undefined': 'не определёна'
     };
     return translations[theme] || theme;
 }
@@ -1588,99 +1591,147 @@ renderResult(result) {
 
     const culturalReferences = this.getSafe(result, 'details.cultural.references', {});
     const culturalScores = this.getSafe(result, 'details.cultural.scores', {});
-     const culturalCoherenceVal = this.getNumber(this.getSafe(result, 'details.cultural.culturalCoherence'));
+    const culturalCoherenceVal = this.getNumber(this.getSafe(result, 'details.cultural.culturalCoherence'));
+    const culturalDensityVal = this.getNumber(this.getSafe(result, 'details.cultural.culturalDensity'));
     const dominantCulturalTheme = this.getSafe(result, 'details.cultural.dominantCulturalTheme');
-
-    const hasCulturalData = Object.keys(culturalReferences).length > 0 || 
-                            Object.keys(culturalScores).length > 0 ||
-                            this.shouldShowMetric(culturalCoherenceVal, true);
-
+                
+    const hasCulturalData = Object.keys(culturalReferences).length > 0 ||
+                    Object.keys(culturalScores).length > 0 ||
+                    this.shouldShowMetric(culturalCoherenceVal, true) ||
+                    this.shouldShowMetric(culturalDensityVal, true) ||
+                    this.shouldShowMetric(dominantCulturalTheme);
+                
     if (hasCulturalData) {
-        html += `
-             <div class="emotion-section">
-                 <h3>${translations.culturalAnalysis}</h3>`;
-        
-        if (culturalReferences.literary && this.shouldShowMetric(culturalReferences.literary.count, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.literaryDesc}">${translations.literary}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${culturalReferences.literary.count}</span>
-                 </div>`;
-        }
-        
-        if (culturalReferences.historical && this.shouldShowMetric(culturalReferences.historical.count, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.historicalDesc}">${translations.historical}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${culturalReferences.historical.count}</span>
-                 </div>`;
-        }
-        
-        if (culturalReferences.mythological && this.shouldShowMetric(culturalReferences.mythological.count, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.mythologicalDesc}">${translations.mythological}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${culturalReferences.mythological.count}</span>
-                 </div>`;
-        }
-        
-        if (culturalReferences.traditional && this.shouldShowMetric(culturalReferences.traditional.count, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.traditionalDesc}">${translations.traditional}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${culturalReferences.traditional.count}</span>
-                 </div>`;
-        }
-        
-        if (culturalReferences.idioms && this.shouldShowMetric(culturalReferences.idioms.count, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.idiomsDesc}">${translations.idioms}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${culturalReferences.idioms.count}</span>
-                 </div>`;
-        }
-        
-        if (culturalReferences.poetic && this.shouldShowMetric(culturalReferences.poetic.count, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.poeticDesc}">${translations.poetic}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${culturalReferences.poetic.count}</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(culturalScores.culturalDepth, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.culturalDepthDesc}">${translations.culturalDepth}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(culturalScores.culturalDepth * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(culturalScores.intertextuality, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.intertextualityDesc}">${translations.intertextuality}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(culturalScores.intertextuality * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(culturalCoherenceVal, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.culturalCoherenceDesc}">${translations.culturalCoherence}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(culturalCoherenceVal * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(dominantCulturalTheme)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.dominantCulturalThemeDesc}">${translations.dominantCulturalTheme}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${this.translateCulturalTheme(dominantCulturalTheme, currentLang)}</span>
-                 </div>`;
-        }
-        
-        html += `</div>`;
+                    html += `<div class="emotion-section"><h3>${translations.culturalAnalysis}</h3>`;
+                    
+                    if (culturalReferences.literary && this.shouldShowMetric(culturalReferences.literary.count, true)) {
+                        html += `<div class="emotion-metric">
+                            <span class="label" title="${translations.literaryDesc}">${translations.literary}:</span>
+                            <span class="value" style="text-align:right !important;float:right;">${culturalReferences.literary.count}</span>
+                        </div>`;
+                        if (culturalReferences.literary.items && culturalReferences.literary.items.length > 0) {
+                            const uniqueRefs = [...new Set(culturalReferences.literary.items.map(item => item.reference))];
+                            if (uniqueRefs.length > 0) {
+                                html += `<div class="emotion-metric">
+                                    <span class="label" title="${translations.literaryReferencesDesc}">${translations.literaryReferences}:</span>
+                                    <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${uniqueRefs.slice(0, 3).join(', ')}</span>
+                                </div>`;
+                            }
+                        }
+                    }
+                    
+                    if (culturalReferences.historical && this.shouldShowMetric(culturalReferences.historical.count, true)) {
+                        html += `<div class="emotion-metric">
+                            <span class="label" title="${translations.historicalDesc}">${translations.historical}:</span>
+                            <span class="value" style="text-align:right !important;float:right;">${culturalReferences.historical.count}</span>
+                        </div>`;
+                        if (culturalReferences.historical.items && culturalReferences.historical.items.length > 0) {
+                            const uniquePeriods = [...new Set(culturalReferences.historical.items.map(item => item.period))];
+                            if (uniquePeriods.length > 0) {
+                                html += `<div class="emotion-metric">
+                                    <span class="label" title="${translations.historicalPeriodDesc}">${translations.historicalPeriod}:</span>
+                                    <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${uniquePeriods.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
+                                </div>`;
+                            }
+                        }
+                    }
+                    
+                    if (culturalReferences.mythological && this.shouldShowMetric(culturalReferences.mythological.count, true)) {
+                        html += `<div class="emotion-metric">
+                            <span class="label" title="${translations.mythologicalDesc}">${translations.mythological}:</span>
+                            <span class="value" style="text-align:right !important;float:right;">${culturalReferences.mythological.count}</span>
+                        </div>`;
+                        if (culturalReferences.mythological.items && culturalReferences.mythological.items.length > 0) {
+                            const uniqueArchetypes = [...new Set(culturalReferences.mythological.items.map(item => item.archetype))];
+                            if (uniqueArchetypes.length > 0) {
+                                html += `<div class="emotion-metric">
+                                    <span class="label" title="${translations.mythologicalArchetypeDesc}">${translations.mythologicalArchetype}:</span>
+                                    <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${uniqueArchetypes.map(a => this.translateValue(a, currentLang)).join(', ')}</span>
+                                </div>`;
+                            }
+                        }
+                    }
+                    
+                    if (culturalReferences.idioms && this.shouldShowMetric(culturalReferences.idioms.count, true)) {
+                        html += `<div class="emotion-metric">
+                            <span class="label" title="${translations.idiomsDesc}">${translations.idioms}:</span>
+                            <span class="value" style="text-align:right !important;float:right;">${culturalReferences.idioms.count}</span>
+                        </div>`;
+                        if (culturalReferences.idioms.items && culturalReferences.idioms.items.length > 0) {
+                            const uniqueIdioms = [...new Set(culturalReferences.idioms.items.map(item => item.idiom))];
+                            if (uniqueIdioms.length > 0) {
+                                html += `<div class="emotion-metric">
+                                    <span class="label" title="${translations.idiomMeaningDesc}">${translations.idiomMeaning}:</span>
+                                    <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${uniqueIdioms.slice(0, 3).map(idiom => {
+                                        const item = culturalReferences.idioms.items.find(i => i.idiom === idiom);
+                                        return item && item.literalMeaning && item.literalMeaning !== 'idiomatic expression' 
+                                            ? `${idiom} (${item.literalMeaning})` 
+                                            : idiom;
+                                    }).join(', ')}</span>
+                                </div>`;
+                            }
+                        }
+                    }
+                    
+                    if (culturalReferences.poetic && this.shouldShowMetric(culturalReferences.poetic.count, true)) {
+                        html += `<div class="emotion-metric">
+                            <span class="label" title="${translations.poeticDesc}">${translations.poetic}:</span>
+                            <span class="value" style="text-align:right !important;float:right;">${culturalReferences.poetic.count}</span>
+                        </div>`;
+                        if (culturalReferences.poetic.items && culturalReferences.poetic.items.length > 0) {
+                            const uniqueTypes = [...new Set(culturalReferences.poetic.items.map(item => item.type))];
+                            if (uniqueTypes.length > 0) {
+                                html += `<div class="emotion-metric">
+                                    <span class="label" title="${translations.poeticPatternTypeDesc}">${translations.poeticPatternType}:</span>
+                                    <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${uniqueTypes.map(t => this.translateValue(t, currentLang)).join(', ')}</span>
+                                </div>`;
+                            }
+                        }
+                    }
+                    
+                    if (this.shouldShowMetric(dominantCulturalTheme)) {
+                        html += `<div class="emotion-metric">
+                            <span class="label" title="${translations.dominantCulturalThemeDesc}">${translations.dominantTheme}:</span>
+                            <span class="value" style="text-align:right !important;float:right;">${this.translateCulturalTheme(dominantCulturalTheme, currentLang)}</span>
+                        </div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(culturalScores.culturalDepth, true)) {
+                        html += `<div class="emotion-metric">
+                            <span class="label" title="${translations.culturalDepthDesc}">${translations.culturalDepth}:</span>
+                            <span class="value" style="text-align:right !important;float:right;">${(culturalScores.culturalDepth * 100).toFixed(1)}%</span>
+                        </div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(culturalScores.intertextuality, true)) {
+                        html += `<div class="emotion-metric">
+                            <span class="label" title="${translations.intertextualityDesc}">${translations.intertextuality}:</span>
+                            <span class="value" style="text-align:right !important;float:right;">${(culturalScores.intertextuality * 100).toFixed(1)}%</span>
+                        </div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(culturalScores.culturalRichness, true)) {
+                        html += `<div class="emotion-metric">
+                            <span class="label" title="${translations.culturalRichnessDesc}">${translations.culturalRichness}:</span>
+                            <span class="value" style="text-align:right !important;float:right;">${(culturalScores.culturalRichness * 100).toFixed(1)}%</span>
+                        </div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(culturalCoherenceVal, true)) {
+                        html += `<div class="emotion-metric">
+                            <span class="label" title="${translations.culturalCoherenceDesc}">${translations.culturalCoherence}:</span>
+                            <span class="value" style="text-align:right !important;float:right;">${(culturalCoherenceVal * 100).toFixed(1)}%</span>
+                        </div>`;
+                    }
+                    
+                    if (this.shouldShowMetric(culturalDensityVal, true)) {
+                        html += `<div class="emotion-metric">
+                            <span class="label" title="${translations.culturalDensityDesc}">${translations.culturalDensity}:</span>
+                            <span class="value" style="text-align:right !important;float:right;">${(culturalDensityVal * 100).toFixed(1)}%</span>
+                        </div>`;
+                    }
+                    
+                    html += `</div>`;
     }
 
     const semanticDetails = this.getSafe(result, 'details.semantic', {});
@@ -2538,7 +2589,48 @@ getTranslations(lang) {
             funMordorHint: 'Слова с двойными буквами',
             funGarageRockHint: 'Доля согласных звуков',
             funIceMeltsHint: 'Появляется только если в тексте есть фраза: я тебя люблю. Показывает количество таких фраз',
-			
+			culturalAnalysis: 'Культурный анализ',
+           				literary: 'Литературные',
+                        literaryDesc: 'Литературные отсылки',
+                        historical: 'Исторические',
+                        historicalDesc: 'Исторические отсылки',
+                        mythological: 'Мифологические',
+                        mythologicalDesc: 'Мифологические отсылки',
+                        traditional: 'Традиционные',
+                        traditionalDesc: 'Традиционные отсылки',
+                        idioms: 'Идиомы',
+                        idiomsDesc: 'Устойчивые выражения',
+                        poetic: 'Поэтические',
+                        poeticDesc: 'Поэтические паттерны',
+                        literaryReferences: 'Отсылки',
+                        historicalPeriod: 'Период',
+                        mythologicalArchetype: 'Архетип',
+                        idiomMeaning: 'Значение',
+                        poeticPatternType: 'Тип паттерна',
+                        culturalDepth: 'Глубина культуры',
+                        culturalDepthDesc: 'Глубина культурных отсылок',
+                        intertextuality: 'Интертекстуальность',
+                        intertextualityDesc: 'Степень отсылок к другим текстам',
+                        culturalRichness: 'Культурное богатство',
+                        culturalRichnessDesc: 'Богатство культурных элементов',
+                        culturalCoherence: 'Культурная связность',
+                        culturalCoherenceDesc: 'Согласованность культурных элементов',
+                        culturalDensity: 'Культурная плотность',
+                        culturalDensityDesc: 'Плотность культурных отсылок',
+                        dominantTheme: 'Доминирующая тема',
+                        dominantCulturalThemeDesc: 'Основная культурная тема текста',
+                        simile: 'сравнение',
+                        contrast: 'контраст',
+                        repetition: 'повтор',
+                        comparison: 'образ',
+                        parallelism: 'параллелизм',
+                        poetic: 'поэтический',
+                        trickster: 'хитрец',
+                        hero: 'герой',
+                        monster: 'монстр',
+                        mystical: 'мистический',
+                        other: 'другой',
+                        idiomaticExpression: 'идиоматическое выражение'                         
         },
         en: {
             primaryProfile: 'Primary Profile',
@@ -2803,6 +2895,50 @@ getTranslations(lang) {
             funMordorHint: 'Words with double letters',
             funGarageRockHint: 'Proportion of consonant sounds',
             funIceMeltsHint: 'Appears if the text contains: i love you. Shows the count',
+			culturalAnalysis: 'Cultural Analysis',
+                        literary: 'Literary',
+                        literaryDesc: 'Literary references',
+                        historical: 'Historical',
+                        historicalDesc: 'Historical references',
+                        mythological: 'Mythological',
+                        mythologicalDesc: 'Mythological references',
+                        traditional: 'Traditional',
+                        traditionalDesc: 'Traditional references',
+                        idioms: 'Idioms',
+                        idiomsDesc: 'Idiomatic expressions',
+                        poetic: 'Poetic',
+                        poeticDesc: 'Poetic patterns',
+                        
+                        literaryReferences: 'References',
+                        historicalPeriod: 'Period',
+                        mythologicalArchetype: 'Archetype',
+                        idiomMeaning: 'Meaning',
+                        poeticPatternType: 'Pattern type',
+                        
+                        culturalDepth: 'Cultural Depth',
+                        culturalDepthDesc: 'Depth of cultural references',
+                        intertextuality: 'Intertextuality',
+                        intertextualityDesc: 'Degree of references to other texts',
+                        culturalRichness: 'Cultural Richness',
+                        culturalRichnessDesc: 'Richness of cultural elements',
+                        culturalCoherence: 'Cultural Coherence',
+                        culturalCoherenceDesc: 'Consistency of cultural elements',
+                        culturalDensity: 'Cultural Density',
+                        culturalDensityDesc: 'Density of cultural references',
+                        dominantTheme: 'Dominant Theme',
+                        dominantCulturalThemeDesc: 'Main cultural theme of the text',
+                        simile: 'simile',
+                        contrast: 'contrast',
+                        repetition: 'repetition',
+                        comparison: 'comparison',
+                        parallelism: 'parallelism',
+                        poetic: 'poetic',
+                        trickster: 'trickster',
+                        hero: 'hero',
+                        monster: 'monster',
+                        mystical: 'mystical',
+                        other: 'other',
+                        idiomaticExpression: 'idiomatic expression'
         }
     };
     return translations[lang] || translations.en;
@@ -2830,6 +2966,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
