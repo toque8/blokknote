@@ -361,7 +361,29 @@ translateValue(value, lang) {
             'джедаев': 'джедаев',
             'хоббитов': 'хоббитов',
             'кобейнов': 'кобейнов',
-            'титаник': 'титаник'
+            'титаник': 'титаник',
+			'undefined': 'не определён',
+                            'other': 'другой',
+                            'repetition': 'повтор',
+                            'simile': 'сравнение',
+                            'contrast': 'контраст',
+                            'comparison': 'сравнение',
+                            'parallelism': 'параллелизм',
+                            'poetic': 'Поэтические',
+                            'trickster': 'хитрец',
+                            'hero': 'герой',
+                            'monster': 'монстр',
+                            'mystical': 'мистический',
+                            'древнерусский': 'древнерусский',
+                            'средневековый': 'средневековый',
+                            'имперский': 'имперский',
+                            'советский': 'советский',
+                            'современный': 'современный',
+                            'ancient': 'древний',
+                            'medieval': 'средневековый',
+                            'renaissance': 'ренессанс',
+                            'industrial': 'индустриальный',
+                            'modern': 'современный'
         };
         return translations[value] || value;
     } else if (lang === 'en') {
@@ -1657,20 +1679,6 @@ renderResult(result) {
                             <span class="label" title="${translations.idiomsDesc}">${translations.idioms}:</span>
                             <span class="value" style="text-align:right !important;float:right;">${culturalReferences.idioms.count}</span>
                         </div>`;
-                        if (culturalReferences.idioms.items && culturalReferences.idioms.items.length > 0) {
-                            const uniqueIdioms = [...new Set(culturalReferences.idioms.items.map(item => item.idiom))];
-                            if (uniqueIdioms.length > 0) {
-                                html += `<div class="emotion-metric">
-                                    <span class="label" title="${translations.idiomMeaningDesc}">${translations.idiomMeaning}:</span>
-                                    <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${uniqueIdioms.slice(0, 3).map(idiom => {
-                                        const item = culturalReferences.idioms.items.find(i => i.idiom === idiom);
-                                        return item && item.literalMeaning && item.literalMeaning !== 'idiomatic expression' 
-                                            ? `${idiom} (${item.literalMeaning})` 
-                                            : idiom;
-                                    }).join(', ')}</span>
-                                </div>`;
-                            }
-                        }
                     }
                     
                     if (culturalReferences.poetic && this.shouldShowMetric(culturalReferences.poetic.count, true)) {
@@ -2630,7 +2638,14 @@ getTranslations(lang) {
                         monster: 'монстр',
                         mystical: 'мистический',
                         other: 'другой',
-                        idiomaticExpression: 'идиоматическое выражение'                         
+                        idiomaticExpression: 'идиоматическое выражение',
+						literaryReferencesDesc: 'Литературные кумиры и отсылки',
+						historicalPeriod: 'Период',
+						historicalPeriodDesc: 'Исторический период отсылки',
+						mythologicalArchetype: 'Архетип',
+						mythologicalArchetypeDesc: 'Мифологический архетип персонажа',
+						poeticPatternType: 'Тип паттерна',
+						poeticPatternTypeDesc: 'Классификация поэтического приёма',
         },
         en: {
             primaryProfile: 'Primary Profile',
@@ -2938,7 +2953,15 @@ getTranslations(lang) {
                         monster: 'monster',
                         mystical: 'mystical',
                         other: 'other',
-                        idiomaticExpression: 'idiomatic expression'
+                        idiomaticExpression: 'idiomatic expression',
+			literaryReferences: 'Idols',
+			literaryReferencesDesc: 'Literary idols and references',
+			historicalPeriod: 'Period',
+			historicalPeriodDesc: 'Historical period of the reference',
+			mythologicalArchetype: 'Archetype',
+			mythologicalArchetypeDesc: 'Mythological archetype of the character',
+			poeticPatternType: 'Pattern type',
+			poeticPatternTypeDesc: 'Classification of poetic device'
         }
     };
     return translations[lang] || translations.en;
@@ -2966,6 +2989,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
