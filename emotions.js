@@ -6558,66 +6558,130 @@
         }
         
         getLiteralMeaning(idiom, language) {
-            const meanings = {
-                ru: {
-                    'тянуть канитель': 'заниматься нудным, монотонным делом',
-                    'бить баклуши': 'бездельничать',
-                    'дело в шляпе': 'всё решено, успех обеспечен',
-                    'кот наплакал': 'очень мало',
-                    'собаку съел': 'имеет большой опыт в чем-либо'
-                },
-                en: {
-                    'break the ice': 'начать общение в неловкой ситуации',
-                    'piece of cake': 'очень легко',
-                    'hit the hay': 'идти спать',
-                    'spill the beans': 'выдать секрет',
-                    'cost an arm and a leg': 'очень дорого стоить'
-                }
-            };
-            
-            return meanings[language]?.[idiom] || 'idiomatic expression';
+                    const meanings = {
+                        ru: {
+                            'тянуть канитель': 'заниматься нудным, монотонным делом',
+                            'бить баклуши': 'бездельничать',
+                            'дело в шляпе': 'всё решено, успех обеспечен',
+                            'кот наплакал': 'очень мало',
+                            'собаку съел': 'имеет большой опыт в чем-либо',
+                            'водить за нос': 'обманывать, вводить в заблуждение',
+                            'вешать лапшу': 'обманывать, говорить неправду',
+                            'делать из мухи слона': 'преувеличивать значение чего-либо',
+                            'кровь с молоком': 'здоровый, полный сил',
+                            'сесть в лужу': 'попасть в неловкое положение',
+                            'пройти огонь и воду': 'пережить много трудностей',
+                            'ни пуха ни пера': 'пожелание удачи',
+                            'к шапочному разбору': 'опоздать, прийти слишком поздно',
+                            'семь пятниц на неделе': 'непостоянство, изменчивость',
+                            'когда рак на горе свистнет': 'никогда, в очень отдалённом будущем',
+                            'после дождичка в четверг': 'никогда',
+                            'два сапога пара': 'два человека, очень похожих друг на друга',
+                            'белая ворона': 'человек, отличающийся от окружающих',
+                            'стреляный воробей': 'опытный, искушённый человек',
+                            'косая сажень в плечах': 'очень высокий, широкоплечий человек',
+                            'семь верст до небес': 'очень много, бесконечно',
+                            'филькина грамота': 'недействительный, незаконный документ',
+                            'игра не стоит свеч': 'результат не оправдывает затрат',
+                            'мелкая сошка': 'незначительный, маловажный человек',
+                            'тертый калач': 'опытный, хитрый человек'
+                        },
+                        en: {
+                            'break the ice': 'начать общение в неловкой ситуации',
+                            'piece of cake': 'очень легко',
+                            'hit the hay': 'идти спать',
+                            'spill the beans': 'выдать секрет',
+                            'cost an arm and a leg': 'очень дорого стоить',
+                            'kick the bucket': 'умереть',
+                            'bite the bullet': 'стиснуть зубы и пережить что-то неприятное',
+                            'let the cat out of the bag': 'выдать секрет',
+                            'hit the nail on the head': 'попасть в точку',
+                            'burn the midnight oil': 'работать допоздна',
+                            'under the weather': 'чувствовать себя плохо',
+                            'once in a blue moon': 'очень редко',
+                            'the ball is in your court': 'теперь твоя очередь действовать',
+                            'barking up the wrong tree': 'ошибаться, искать не там',
+                            'beat around the bush': 'ходить вокруг да около',
+                            'call it a day': 'закончить на сегодня',
+                            'cut corners': 'делать что-то небрежно, экономя время',
+                            'every cloud has a silver lining': 'всё плохое имеет хорошую сторону',
+                            'get cold feet': 'струсить, испугаться',
+                            'give someone the cold shoulder': 'игнорировать кого-то',
+                            'go the extra mile': 'приложить дополнительные усилия',
+                            'hit the road': 'отправляться в путь',
+                            'jump on the bandwagon': 'присоединиться к популярному',
+                            'keep your chin up': 'не унывать, держаться',
+                            'let sleeping dogs lie': 'не будить спящих собак (не трогать то, что лучше оставить)'
+                        }
+                    };
+                    
+                    return meanings[language]?.[idiom] || 'idiomatic expression';
         }
-        
+                
         classifyPoeticPattern(pattern) {
-            const patternStr = pattern.toString();
-            if (patternStr.includes('как') || patternStr.includes('as')) {
-                return 'simile';
-            } else if (patternStr.includes('не.*а') || patternStr.includes('not.*but')) {
-                return 'contrast';
-            } else if (patternStr.includes('то.*то') || patternStr.includes('now.*now')) {
-                return 'repetition';
-            } else if (patternStr.includes('словно') || patternStr.includes('like')) {
-                return 'comparison';
-            }
-            return 'poetic';
+                    const patternStr = pattern.toString();
+                    
+                    if (/\\bкак\\b|\\bas\\b/.test(patternStr)) {
+                        return 'simile';
+                    } else if (/не.*\\bа\\b|not.*\\bbut\\b/.test(patternStr)) {
+                        return 'contrast';
+                    } else if (/то.*то|now.*now/.test(patternStr)) {
+                        return 'repetition';
+                    } else if (/\\bсловно\\b|\\bbudto\\b|\\bточно\\b|\\bподобно\\b|\\blike\\b|\\bas if\\b|\\bas though\\b/.test(patternStr)) {
+                        return 'comparison';
+                    } else if (/\\bи\\b.*\\bи\\b|\\bда\\b.*\\bда\\b|and.*and/.test(patternStr)) {
+                        return 'parallelism';
+                    }
+                    
+                    return 'poetic';
         }
-        
+                
         calculateCulturalCoherence(references) {
-            const referenceCounts = Object.values(references)
-                .map(ref => ref.count)
-                .filter(count => count > 0);
-            
-            if (referenceCounts.length < 2) return 1;
-            
-            const total = referenceCounts.reduce((a, b) => a + b, 0);
-            const max = Math.max(...referenceCounts);
-            const concentration = max / total;
-            
-            return concentration;
+                    if (!references || typeof references !== 'object') return 0;
+                    
+                    const referenceCounts = Object.values(references)
+                        .map(ref => ref?.count || 0)
+                        .filter(count => count > 0);
+                    
+                    if (referenceCounts.length < 2) return referenceCounts.length === 1 ? 0.5 : 0;
+                    
+                    const total = referenceCounts.reduce((a, b) => a + b, 0);
+                    const max = Math.max(...referenceCounts);
+                    const concentration = max / total;
+                    
+                    const entropy = referenceCounts.reduce((sum, count) => {
+                        const p = count / total;
+                        return sum - p * Math.log2(p);
+                    }, 0);
+                    
+                    const normalizedEntropy = entropy / Math.log2(referenceCounts.length);
+                    const coherence = concentration * (1 - normalizedEntropy * 0.3);
+                    
+                    return Math.min(1, Math.max(0, coherence));
         }
-        
+                
         detectDominantCulturalTheme(references) {
-            const themeCounts = [];
-            for (const [theme, data] of Object.entries(references)) {
-                if (data.count > 0) {
-                    themeCounts.push({ theme, count: data.count });
-                }
-            }
-            
-            if (themeCounts.length === 0) return 'none';
-            
-            themeCounts.sort((a, b) => b.count - a.count);
-            return themeCounts[0].theme;
+                    if (!references || typeof references !== 'object') return 'none';
+                    
+                    const themeCounts = [];
+                    for (const [theme, data] of Object.entries(references)) {
+                        if (data?.count > 0) {
+                            themeCounts.push({ theme, count: data.count });
+                        }
+                    }
+                    
+                    if (themeCounts.length === 0) return 'none';
+                    
+                    themeCounts.sort((a, b) => b.count - a.count);
+                    
+                    const total = themeCounts.reduce((sum, item) => sum + item.count, 0);
+                    const maxPercentage = themeCounts[0].count / total;
+                    
+                    if (maxPercentage < 0.3) {
+                        return 'mixed';
+                    }
+                    
+                    return themeCounts[0].theme;
         }
         
         enhancedSemanticAnalysis(data) {
@@ -9532,6 +9596,7 @@
     
 
 })();
+
 
 
 
