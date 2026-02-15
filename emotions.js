@@ -5720,9 +5720,8 @@
                         rules.ironyIndicators.forEach(indicator => {
                             const lowerIndicator = indicator.toLowerCase();
                             if (lowerSentence.includes(lowerIndicator)) {
-                                const hasPunctuation = sentence.includes('?') || sentence.includes('!') || sentence.includes('…') || sentence.includes('...');
                                 const isIrony = this.checkIronyPattern(sentence);
-                                if (isIrony || hasPunctuation) {
+                                if (isIrony) {
                                     analysis.indicators.irony++;
                                     analysis.scores.contextualComplexity += 0.5;
                                     ironyDetected = true;
@@ -9476,6 +9475,7 @@
     
 
 })();
+
 
 
 
