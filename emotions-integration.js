@@ -250,13 +250,13 @@ translateEmotionalArc(arc, lang) {
 translateReadingLevel(level, lang) {
     if (lang === 'ru') {
         const translations = {
-            'очень легко': 'очень легко',
-            'легко': 'легко',
-            'довольно легко': 'довольно легко',
-            'стандартно': 'стандартно',
-            'довольно сложно': 'довольно сложно',
-            'сложно': 'сложно',
-            'очень сложно': 'очень сложно',
+            'very easy': 'очень легко',
+            'easy': 'легко',
+            'fairly easy': 'довольно легко',
+            'standard': 'стандартно',
+            'fairly difficult': 'довольно сложно',
+            'difficult': 'сложно',
+            'very difficult': 'очень сложно',
             'очень легко': 'очень легко',
             'легко': 'легко',
             'довольно легко': 'довольно легко',
@@ -268,13 +268,6 @@ translateReadingLevel(level, lang) {
         return translations[level] || level;
     } else {
         const translations = {
-            'очень легко': 'very easy',
-            'легко': 'easy',
-            'довольно легко': 'fairly easy',
-            'стандартно': 'standard',
-            'довольно сложно': 'fairly difficult',
-            'сложно': 'difficult',
-            'очень сложно': 'very difficult',
             'очень легко': 'very easy',
             'легко': 'easy',
             'довольно легко': 'fairly easy',
@@ -448,7 +441,9 @@ translateValue(value, lang) {
                             'medieval': 'средневековый',
                             'renaissance': 'ренессанс',
                             'industrial': 'индустриальный',
-                            'modern': 'современный'
+                            'modern': 'современный',
+							'other': 'не определён',
+							'undefined': 'не определён'
         };
         return translations[value] || value;
     } else if (lang === 'en') {
@@ -1161,21 +1156,21 @@ renderResult(result) {
                             if (this.shouldShowMetric(copywriter.callToAction, true)) {
                                       html += `<div class="emotion-metric">`;
                                       html += `<span class="label" title="${t.copywriterCallToActionHint || ''}">${this.translateValue('Призывы к действию', lang)}:</span>`;
-                                      html += `<span class="value">${copywriter.callToAction}</span>`;
+                                      html += `<span class="value">${copywriter.callToAction}‰</span>`;
                                       html += `</div>`;
                             }
                   
                             if (this.shouldShowMetric(copywriter.clicheMeter, true)) {
                                       html += `<div class="emotion-metric">`;
                                       html += `<span class="label" title="${t.copywriterClicheMeterHint || ''}">${this.translateValue('Штампометр', lang)}:</span>`;
-                                      html += `<span class="value">${copywriter.clicheMeter}</span>`;
+                                      html += `<span class="value">${copywriter.clicheMeter}‰</span>`;
                                       html += `</div>`;
                             }
                   
                             if (this.shouldShowMetric(copywriter.superlativeDegree, true)) {
                                       html += `<div class="emotion-metric">`;
                                       html += `<span class="label" title="${t.copywriterSuperlativeHint || ''}">${this.translateValue('Превосходная степень', lang)}:</span>`;
-                                      html += `<span class="value">${copywriter.superlativeDegree}</span>`;
+                                      html += `<span class="value">${copywriter.superlativeDegree}‰</span>`;
                                       html += `</div>`;
                             }
                   
@@ -1191,7 +1186,7 @@ renderResult(result) {
                             if (this.shouldShowMetric(copywriter.fillerWords, true)) {
                                       html += `<div class="emotion-metric">`;
                                       html += `<span class="label" title="${t.copywriterFillerWordsHint || ''}">${this.translateValue('Детектор вредных слов', lang)}:</span>`;
-                                      html += `<span class="value">${copywriter.fillerWords}</span>`;
+                                      html += `<span class="value">${copywriter.fillerWords}‰</span>`;
                                       html += `</div>`;
                             }
                   
@@ -1896,14 +1891,15 @@ renderResult(result) {
                             <span class="value" style="text-align:right !important;float:right;">${culturalReferences.poetic.count}</span>
                         </div>`;
                         if (culturalReferences.poetic.items && culturalReferences.poetic.items.length > 0) {
-                            const uniqueTypes = [...new Set(culturalReferences.poetic.items.map(item => item.type))];
-                            if (uniqueTypes.length > 0) {
-                                html += `<div class="emotion-metric">
-                                    <span class="label" title="${translations.poeticPatternTypeDesc}">${translations.poeticPatternType}:</span>
-                                    <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${uniqueTypes.map(t => this.translateValue(t, currentLang)).join(', ')}</span>
-                                </div>`;
-                            }
-                        }
+    						const uniqueTypes = [...new Set(culturalReferences.poetic.items.map(item => item.type))];
+    						const filteredTypes = uniqueTypes.filter(type => type !== 'poetic' && type !== 'unknown');
+    						if (filteredTypes.length > 0) {
+        						html += `<div class="emotion-metric">
+            						<span class="label" title="${translations.poeticPatternTypeDesc}">${translations.poeticPatternType}:</span>
+            						<span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${filteredTypes.map(t => this.translateValue(t, currentLang)).join(', ')}</span>
+        						</div>`;
+    						}
+						}
                     }
                     
                     if (this.shouldShowMetric(dominantCulturalTheme)) {
@@ -2317,7 +2313,9 @@ translateCategory(category, lang) {
         'calmness': 'спокойствие',
         'vulnerability': 'уязвимость',
         'resilience': 'стойкость',
-        'peacefulAdj': 'покой'
+        'peacefulAdj': 'покой',
+		'suffer': 'страдание',
+		'suffering': 'страдание'
     };
     return translations[category] || category;
 }
@@ -2373,20 +2371,6 @@ translateRhythmFlow(flow, lang) {
         'choppy': 'прерывистый'
     };
     return translations[flow] || flow;
-}
-
-translateReadability(level, lang) {
-    if (lang !== 'ru') return level;
-    const translations = {
-        'very easy': 'очень легко',
-        'easy': 'легко',
-         'fairly easy': 'довольно легко',
-        'standard': 'стандартно',
-        'fairly difficult': 'довольно сложно',
-        'difficult': 'сложно',
-        'very difficult': 'очень сложно'
-    };
-    return translations[level] || level;
 }
 
 translateEmotionalTrend(trend, lang) {
@@ -2803,10 +2787,10 @@ getTranslations(lang) {
             copywriterFillerWordsHint: 'Частота слов‑паразитов (ну, вообще, типа, как бы) на 1000 слов',
             copywriterWaterContentHint: 'Доля стоп‑слов (предлоги, союзы, частицы) в тексте. Высокий % – текст водянистый',
             copywriterSpamIndexHint: 'Доля самого частотного слова. Предупреждает о переспаме ключевых слов',
-            copywriterListDensityHint: 'Количество элементов списков (маркированных и нумерованных) на 1000 слов',
+            copywriterListDensityHint: 'Есть ли списки в представленном тексте (маркированные или нумерованные)',
             copywriterNoveltyHint: 'Доля слов, которые встречаются в тексте только один раз. Показатель разнообразия',
-			listPresent: 'Присутствуют',
-            listAbsent: 'Отсутствуют',
+			listPresent: 'присутствуют',
+            listAbsent: 'отсутствуют',
 			funMoreCoffeeHint: 'Упоминания кофе и кофейных напитков на 1000 слов. Один джармуш — одно упоминание',
             funLostTimeHint: 'Количество длинных слов (≥10 букв) на 1000 слов. Чем больше прустов, тем зануднее текст',
             funRabbitHoleHint: 'Предложения, которые сильно длиннее среднего. Сколько раз текст падает в кроличью нору на 1000 слов',
@@ -3148,10 +3132,10 @@ getTranslations(lang) {
             copywriterFillerWordsHint: 'Frequency of filler words (well, like, you know) per 1000 words',
             copywriterWaterContentHint: 'Percentage of stop words (prepositions, conjunctions, particles). High % means watery text',
             copywriterSpamIndexHint: 'Percentage of the most frequent content word. Warns against keyword stuffing',
-            copywriterListDensityHint: 'Number of list items (bulleted or numbered) per 1000 words',
+            copywriterListDensityHint: 'Lists in the presented text',
             copywriterNoveltyHint: 'Percentage of words that appear only once. Measures diversity',
-			listPresent: 'Present',
-            listAbsent: 'None',
+			listPresent: 'present',
+            listAbsent: 'none',
 			funMoreCoffeeHint: 'Mentions of coffee and coffee drinks per 1000 words. One Jarmusch = one mention',
             funLostTimeHint: 'Number of long words (≥10 letters) per 1000 words. More Prousts means more tedious text',
             funRabbitHoleHint: 'Sentences much longer than average. How many times the text falls down the rabbit hole per 1000 words',
@@ -3261,6 +3245,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
