@@ -6518,29 +6518,43 @@
         }
         
         determineMythologicalArchetype(reference) {
-            const archetypes = {
-                trickster: ['баба яга', 'леший', 'домовой', 'кикимора', 'кощей', 'дракон', 'тролль', 'гоблин'],
-                hero: ['богатырь', 'витязь', 'герой', 'hero', 'knight', 'warrior'],
-                monster: ['водяной', 'змей', 'василиск', 'минотавр', 'циклоп', 'гарпия'],
-                mystical: ['русалка', 'алконост', 'сирин', 'гамаюн', 'феникс', 'единорог', 'фея', 'эльф']
-            };
-            
-            for (const [archetype, refs] of Object.entries(archetypes)) {
-                if (refs.some(r => reference.toLowerCase().includes(r))) {
-                    return archetype;
-                }
-            }
-            return 'other';
+                    const lowerRef = reference.toLowerCase().trim();
+                    
+                    const archetypes = {
+                        trickster: ['баба яга', 'баба-яга', 'леший', 'домовой', 'кикимора', 'кощей', 'кощей бессмертный', 'гоблин', 'чёрт', 'бес', 'шутник', 'озорник', 'проказник'],
+                        hero: ['богатырь', 'витязь', 'герой', 'илья муромец', 'добрыня никитич', 'алёша попович', 'святогор', 'иван-царевич', 'рыцарь', 'паладин', 'воин', 'защитник', 'персей', 'геракл', 'одиссей', 'ахиллес', 'один', 'тор', 'архангел'],
+                        monster: ['водяной', 'змей горыныч', 'василиск', 'минотавр', 'циклоп', 'гарпия', 'цербер', 'химера', 'гиена', 'виверна', 'дракон', 'тролль', 'орк'],
+                        mystical: ['русалка', 'русалочка', 'алконост', 'сирин', 'гамаюн', 'феникс', 'единорог', 'фея', 'эльф', 'нимфа', 'дриада', 'наяда', 'океанида', 'нереида', 'амазонка', 'валькирия']
+                    };
+                    
+                    for (const [archetype, refs] of Object.entries(archetypes)) {
+                        for (const r of refs) {
+                            const regex = new RegExp(`\\b${this.escapeRegExp(r)}\\b`, this.language === 'ru' ? 'iu' : 'i');
+                            if (regex.test(lowerRef)) {
+                                return archetype;
+                            }
+                        }
+                    }
+                    return 'other';
         }
-        
+                
         isMythologicalPattern(reference, text) {
-            const patterns = [
-                new RegExp(`как\\s+${reference}[^.!?]*[.!?]`, 'i'),
-                new RegExp(`словно\\s+${reference}[^.!?]*[.!?]`, 'i'),
-                new RegExp(`подобно\\s+${reference}[^.!?]*[.!?]`, 'i')
-            ];
-            
-            return patterns.some(pattern => pattern.test(text));
+                    const lowerText = text.toLowerCase();
+                    const lowerRef = reference.toLowerCase().trim();
+                    const escapedRef = this.escapeRegExp(lowerRef);
+                    
+                    const patterns = [
+                        new RegExp(`\\bкак\\s+${escapedRef}\\b`, this.language === 'ru' ? 'iu' : 'i'),
+                        new RegExp(`\\bсловно\\s+${escapedRef}\\b`, this.language === 'ru' ? 'iu' : 'i'),
+                        new RegExp(`\\bподобно\\s+${escapedRef}\\b`, this.language === 'ru' ? 'iu' : 'i'),
+                        new RegExp(`\\bбудто\\s+${escapedRef}\\b`, this.language === 'ru' ? 'iu' : 'i'),
+                        new RegExp(`\\bточно\\s+${escapedRef}\\b`, this.language === 'ru' ? 'iu' : 'i'),
+                        new RegExp(`\\bнаподобие\\s+${escapedRef}\\b`, this.language === 'ru' ? 'iu' : 'i'),
+                        new RegExp(`\\bкак\\s+будто\\s+${escapedRef}\\b`, this.language === 'ru' ? 'iu' : 'i'),
+                        new RegExp(`\\bсловно\\s+бы\\s+${escapedRef}\\b`, this.language === 'ru' ? 'iu' : 'i')
+                    ];
+                    
+                    return patterns.some(pattern => pattern.test(lowerText));
         }
         
         getLiteralMeaning(idiom, language) {
@@ -9518,6 +9532,7 @@
     
 
 })();
+
 
 
 
