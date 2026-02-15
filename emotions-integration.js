@@ -2725,7 +2725,7 @@ getTranslations(lang) {
                         idiomaticExpression: 'идиоматическое выражение',
 						literaryReferencesDesc: 'Литературные кумиры и отсылки',
 						historicalPeriod: 'Период',
-						historicalPeriodDesc: 'Исторический период отсылки',
+						historicalPeriodDesc: 'Исторический период отсылок',
 						mythologicalArchetype: 'Архетип',
 						mythologicalArchetypeDesc: 'Мифологический архетип персонажа',
 						poeticPatternType: 'Тип паттерна',
@@ -3031,7 +3031,7 @@ getTranslations(lang) {
                         historicalPeriod: 'Period',
                         mythologicalArchetype: 'Archetype',
                         idiomMeaning: 'Meaning',
-                        poeticPatternType: 'Pattern type',
+                        poeticPatternType: 'Pattern Type',
                         
                         culturalDepth: 'Cultural Depth',
                         culturalDepthDesc: 'Depth of cultural references',
@@ -3055,7 +3055,7 @@ getTranslations(lang) {
                         hero: 'hero',
                         monster: 'monster',
                         mystical: 'mystical',
-                        other: 'other',
+                        other: 'undefined',
                         idiomaticExpression: 'idiomatic expression',
 			literaryReferences: 'Idols',
 			literaryReferencesDesc: 'Literary idols and references',
@@ -3111,6 +3111,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
