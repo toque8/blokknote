@@ -275,7 +275,7 @@ translateCulturalTheme(theme, lang) {
         'traditional': 'традиционная',
         'modern': 'современная',
         'balanced': 'сбалансированная',
-		idioms': 'идиоматическая',
+		'idioms': 'идиоматическая',
         'mixed': 'смешанная',
         'none': 'отсутствует',
         'undefined': 'не определёна'
@@ -2966,6 +2966,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
