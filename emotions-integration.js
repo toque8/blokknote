@@ -247,6 +247,53 @@ translateEmotionalArc(arc, lang) {
     return translations[arc] || arc;
 }
 
+translateReadingLevel(level, lang) {
+    if (lang === 'ru') {
+        const translations = {
+            'очень легко': 'очень легко',
+            'легко': 'легко',
+            'довольно легко': 'довольно легко',
+            'стандартно': 'стандартно',
+            'довольно сложно': 'довольно сложно',
+            'сложно': 'сложно',
+            'очень сложно': 'очень сложно',
+            'очень легко': 'очень легко',
+            'легко': 'легко',
+            'довольно легко': 'довольно легко',
+            'стандартно': 'стандартно',
+            'довольно сложно': 'довольно сложно',
+            'сложно': 'сложно',
+            'очень сложно': 'очень сложно'
+        };
+        return translations[level] || level;
+    } else {
+        const translations = {
+            'очень легко': 'very easy',
+            'легко': 'easy',
+            'довольно легко': 'fairly easy',
+            'стандартно': 'standard',
+            'довольно сложно': 'fairly difficult',
+            'сложно': 'difficult',
+            'очень сложно': 'very difficult',
+            'очень легко': 'very easy',
+            'легко': 'easy',
+            'довольно легко': 'fairly easy',
+            'стандартно': 'standard',
+            'довольно сложно': 'fairly difficult',
+            'сложно': 'difficult',
+            'очень сложно': 'very difficult',
+            'very easy': 'very easy',
+            'easy': 'easy',
+            'fairly easy': 'fairly easy',
+            'standard': 'standard',
+            'fairly difficult': 'fairly difficult',
+            'difficult': 'difficult',
+            'very difficult': 'very difficult'
+        };
+        return translations[level] || level;
+    }
+}
+	
 translateAbstraction(description, lang) {
     if (lang !== 'ru') return description;
      const translations = {
@@ -363,7 +410,7 @@ translateValue(value, lang) {
             'кобейнов': 'кобейнов',
             'титаник': 'титаник',
 			'undefined': 'не определён',
-                            'other': 'другой',
+                            'other': 'не определён',
                             'repetition': 'повтор',
                             'simile': 'сравнение',
                             'contrast': 'контраст',
@@ -1498,6 +1545,51 @@ renderResult(result) {
         html += `</div>`;
     }
 
+	const readability = this.getSafe(result, 'details.readability', {});
+	const readingLevel = this.getSafe(readability, 'readingLevel');
+	const fleschReadingEaseVal = this.getNumber(this.getSafe(readability, 'fleschReadingEase'));
+	const fleschKincaidGradeVal = this.getNumber(this.getSafe(readability, 'fleschKincaidGrade'));
+	const gunningFogVal = this.getNumber(this.getSafe(readability, 'gunningFog'));
+		
+	const hasReadabilityData = this.shouldShowMetric(readingLevel) ||
+		    this.shouldShowMetric(fleschReadingEaseVal, true) ||
+		    this.shouldShowMetric(fleschKincaidGradeVal, true) ||
+		    this.shouldShowMetric(gunningFogVal, true);
+		
+	if (hasReadabilityData) {
+		    html += `<div class="emotion-section"><h3>${translations.readability}</h3>`;
+		    
+		    if (this.shouldShowMetric(readingLevel)) {
+		        html += `<div class="emotion-metric">
+		            <span class="label" title="${translations.readingLevelDesc}">${translations.readingLevel}:</span>
+		            <span class="value" style="text-align:right !important;float:right;">${this.translateReadingLevel(readingLevel, currentLang)}</span>
+		        </div>`;
+		    }
+		    
+		    if (this.shouldShowMetric(fleschReadingEaseVal, true)) {
+		        html += `<div class="emotion-metric">
+		            <span class="label" title="${translations.fleschReadingEaseDesc}">${translations.fleschReadingEase}:</span>
+		            <span class="value" style="text-align:right !important;float:right;">${fleschReadingEaseVal.toFixed(1)}</span>
+		        </div>`;
+		    }
+		    
+		    if (this.shouldShowMetric(fleschKincaidGradeVal, true)) {
+		        html += `<div class="emotion-metric">
+		            <span class="label" title="${translations.fleschKincaidGradeDesc}">${translations.fleschKincaidGrade}:</span>
+		            <span class="value" style="text-align:right !important;float:right;">${fleschKincaidGradeVal.toFixed(1)}</span>
+		        </div>`;
+		    }
+		    
+		    if (this.shouldShowMetric(gunningFogVal, true)) {
+		        html += `<div class="emotion-metric">
+		            <span class="label" title="${translations.gunningFogDesc}">${translations.gunningFog}:</span>
+		            <span class="value" style="text-align:right !important;float:right;">${gunningFogVal.toFixed(1)}</span>
+		        </div>`;
+		    }
+		    
+		    html += `</div>`;
+	}
+
     const contextualIndicators = this.getSafe(result, 'details.contextual.indicators', {});
     const contextualCoherence = this.getNumber(this.getSafe(result, 'details.contextual.coherence'));
     const contextualConsistency = this.getNumber(this.getSafe(result, 'details.contextual.consistency.consistency'));
@@ -2610,7 +2702,7 @@ getTranslations(lang) {
                         idiomsDesc: 'Устойчивые выражения',
                         poetic: 'Поэтические',
                         poeticDesc: 'Поэтические паттерны',
-                        literaryReferences: 'Отсылки',
+                        literaryReferences: 'Кумиры',
                         historicalPeriod: 'Период',
                         mythologicalArchetype: 'Архетип',
                         idiomMeaning: 'Значение',
@@ -2632,12 +2724,12 @@ getTranslations(lang) {
                         repetition: 'повтор',
                         comparison: 'образ',
                         parallelism: 'параллелизм',
-                        poetic: 'поэтический',
+                        poetic: 'Поэтические',
                         trickster: 'хитрец',
                         hero: 'герой',
                         monster: 'монстр',
                         mystical: 'мистический',
-                        other: 'другой',
+                        other: 'не определён',
                         idiomaticExpression: 'идиоматическое выражение',
 						literaryReferencesDesc: 'Литературные кумиры и отсылки',
 						historicalPeriod: 'Период',
@@ -2646,6 +2738,25 @@ getTranslations(lang) {
 						mythologicalArchetypeDesc: 'Мифологический архетип персонажа',
 						poeticPatternType: 'Тип паттерна',
 						poeticPatternTypeDesc: 'Классификация поэтического приёма',
+						
+						readability: 'Общая читаемость текста',
+        				readabilityDesc: 'Уровень сложности текста для восприятия',
+        				readingLevel: 'Конкретный уровень читаемости',
+				        readingLevelDesc: 'Текстовая оценка читаемости',
+				        fleschReadingEase: 'Индекс Флеша',
+				        fleschReadingEaseDesc: 'Чем выше, тем легче читать (0-100)',
+				        fleschKincaidGrade: 'Школьный класс',
+				        fleschKincaidGradeDesc: 'Минимальный класс для понимания',
+				        gunningFog: 'Индекс Ганнинга-Фога',
+				        gunningFogDesc: 'Оценка читаемости текста по Ганнингу-Фогу',
+				        
+				        readingLevelVeryEasy: 'очень легко',
+				        readingLevelEasy: 'легко',
+				        readingLevelFairlyEasy: 'довольно легко',
+				        readingLevelStandard: 'стандартно',
+				        readingLevelFairlyDifficult: 'довольно сложно',
+				        readingLevelDifficult: 'сложно',
+				        readingLevelVeryDifficult: 'очень сложно'
         },
         en: {
             primaryProfile: 'Primary Profile',
@@ -2947,7 +3058,7 @@ getTranslations(lang) {
                         repetition: 'repetition',
                         comparison: 'comparison',
                         parallelism: 'parallelism',
-                        poetic: 'poetic',
+                        poetic: 'Poetic',
                         trickster: 'trickster',
                         hero: 'hero',
                         monster: 'monster',
@@ -2961,7 +3072,26 @@ getTranslations(lang) {
 			mythologicalArchetype: 'Archetype',
 			mythologicalArchetypeDesc: 'Mythological archetype of the character',
 			poeticPatternType: 'Pattern type',
-			poeticPatternTypeDesc: 'Classification of poetic device'
+			poeticPatternTypeDesc: 'Classification of poetic device',
+
+			readability: 'Text Readability',
+	        readabilityDesc: 'Text complexity level for comprehension',
+	        readingLevel: 'Reading Level',
+	        readingLevelDesc: 'Textual readability assessment',
+	        fleschReadingEase: 'Flesch Reading Ease',
+	        fleschReadingEaseDesc: 'Higher is easier to read (0-100)',
+	        fleschKincaidGrade: 'School Grade',
+	        fleschKincaidGradeDesc: 'Minimum grade level for understanding',
+	        gunningFog: 'Gunning Fog Index',
+	        gunningFogDesc: 'Textual readability score by Gunning Fog',
+	        
+	        readingLevelVeryEasy: 'very easy',
+	        readingLevelEasy: 'easy',
+	        readingLevelFairlyEasy: 'fairly easy',
+	        readingLevelStandard: 'standard',
+	        readingLevelFairlyDifficult: 'fairly difficult',
+	        readingLevelDifficult: 'difficult',
+	        readingLevelVeryDifficult: 'very difficult'
         }
     };
     return translations[lang] || translations.en;
@@ -2989,6 +3119,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
