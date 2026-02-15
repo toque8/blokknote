@@ -377,7 +377,7 @@ translateValue(value, lang) {
             'Анти-желтизна': 'Анти-желтизна',
             'Спектр мнений': 'Спектр мнений',
             'Бюрократический шум': 'Бюрократический шум',
-            'Словесное эхо': 'Словесное эхо',
+            'Вербальное эхо': 'Вербальное эхо',
             'Зона тумана': 'Зона тумана',
             'Категоричный тон': 'Категоричный тон',
 			'SEO-плотность': 'SEO-плотность',
@@ -443,7 +443,32 @@ translateValue(value, lang) {
                             'industrial': 'индустриальный',
                             'modern': 'современный',
 							'other': 'не определён',
-							'undefined': 'не определён'
+							'undefined': 'не определён',
+							'other': 'not defined',
+                            'undefined': 'not defined',
+							'Frost': 'Фрост',
+                            'Shakespeare': 'Шекспир',
+                            'Dickens': 'Диккенс',
+                            'Homer': 'Гомер',
+                            'Tolstoy': 'Толстой',
+                            'Dostoevsky': 'Достоевский',
+                            'Pushkin': 'Пушкин',
+                            'Chekhov': 'Чехов',
+                            'Twain': 'Твен',
+                            'Orwell': 'Оруэлл',
+                            'Hemingway': 'Хемингуэй',
+                            'Joyce': 'Джойс',
+                            'Wilde': 'Уайльд',
+                            'Poe': 'По',
+                            'Byron': 'Байрон',
+                            'Keats': 'Китс',
+                            'Wordsworth': 'Вордсворт',
+                            'Whitman': 'Уитмен',
+                            'Plato': 'Платон',
+                            'Aristotle': 'Аристотель',
+                            'Socrates': 'Сократ',
+                            'Virgil': 'Вергилий',
+                            'Ovid': 'Овидий'
         };
         return translations[value] || value;
     } else if (lang === 'en') {
@@ -625,7 +650,17 @@ translateValue(value, lang) {
             'прагматичный': 'practical',
 			'другой': 'undefined',
 			'other': 'не определён',
-			'Тип паттерна': 'Pattern Type'
+			'Тип паттерна': 'Pattern Type',
+			'other': 'not defined',
+            'undefined': 'not defined',
+							'Фрост': 'Frost',
+                            'Шекспир': 'Shakespeare',
+                            'Диккенс': 'Dickens',
+                            'Гомер': 'Homer',
+                            'Толстой': 'Tolstoy',
+                            'Достоевский': 'Dostoevsky',
+                            'Пушкин': 'Pushkin',
+                            'Чехов': 'Chekhov'
         };
         return translations[value] || value;
     }
@@ -1883,23 +1918,6 @@ renderResult(result) {
                             <span class="label" title="${translations.idiomsDesc}">${translations.idioms}:</span>
                             <span class="value" style="text-align:right !important;float:right;">${culturalReferences.idioms.count}</span>
                         </div>`;
-                    }
-                    
-                    if (culturalReferences.poetic && this.shouldShowMetric(culturalReferences.poetic.count, true)) {
-                        html += `<div class="emotion-metric">
-                            <span class="label" title="${translations.poeticDesc}">${translations.poetic}:</span>
-                            <span class="value" style="text-align:right !important;float:right;">${culturalReferences.poetic.count}</span>
-                        </div>`;
-                        if (culturalReferences.poetic.items && culturalReferences.poetic.items.length > 0) {
-    						const uniqueTypes = [...new Set(culturalReferences.poetic.items.map(item => item.type))];
-    						const filteredTypes = uniqueTypes.filter(type => type !== 'poetic' && type !== 'unknown');
-    						if (filteredTypes.length > 0) {
-        						html += `<div class="emotion-metric">
-            						<span class="label" title="${translations.poeticPatternTypeDesc}">${translations.poeticPatternType}:</span>
-            						<span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${filteredTypes.map(t => this.translateValue(t, currentLang)).join(', ')}</span>
-        						</div>`;
-    						}
-						}
                     }
                     
                     if (this.shouldShowMetric(dominantCulturalTheme)) {
@@ -3245,6 +3263,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
