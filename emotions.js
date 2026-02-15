@@ -1354,6 +1354,7 @@
                     const culturalAnalysis = this.enhancedCulturalAnalysis(preprocessing);
                     const semanticAnalysis = this.enhancedSemanticAnalysis(preprocessing);
                     const psychologicalAnalysis = this.psychologicalAnalysis(preprocessing);
+                    const readabilityMetrics = this.calculateReadabilityMetrics(preprocessing);
                     const repetitionAnalysis = this.detectWordRepetitions(preprocessing); 
                     
                     const integratedResult = this.deepIntegration({
@@ -1417,7 +1418,8 @@
                             contextual: contextualAnalysis,
                             cultural: culturalAnalysis,
                             semantic: semanticAnalysis,
-                            psychological: psychologicalAnalysis
+                            psychological: psychologicalAnalysis,
+                            readability: readabilityMetrics
                         },
                         writingQuality: { 
                             repetitions: repetitionAnalysis
@@ -9596,6 +9598,7 @@
     
 
 })();
+
 
 
 
