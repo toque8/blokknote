@@ -5995,7 +5995,7 @@
                     ['he', 'she', 'it', 'they', 'him', 'her', 'them', 'this', 'that'];
                 
                 const hasPronoun = pronouns.some(pronoun => 
-                    new RegExp(`\\b${pronoun}\\b`, 'i').test(curr)
+                    new RegExp(`\\b${pronoun}\\b`, this.language === 'ru' ? 'iu' : 'i').test(curr)
                 );
                 
                 if (hasPronoun) {
@@ -6036,32 +6036,39 @@
         }
         
         detectTense(text) {
-            const lower = text.toLowerCase();
-            
-            const pastMarkers = this.language === 'ru' ? 
-                ['был', 'была', 'было', 'были', 'прошл', 'вчера', 'раньше'] :
-                ['was', 'were', 'had', 'did', 'yesterday', 'ago', 'before'];
-            
-            const futureMarkers = this.language === 'ru' ?
-                ['будет', 'будут', 'завтра', 'потом', 'позже'] :
-                ['will', 'shall', 'going to', 'tomorrow', 'later'];
-            
-            const presentMarkers = this.language === 'ru' ?
-                ['есть', 'является', 'сейчас', 'теперь', 'в настоящее время'] :
-                ['is', 'are', 'am', 'do', 'does', 'now', 'currently'];
-            
-            const pastCount = pastMarkers.filter(m => lower.includes(m)).length;
-            const futureCount = futureMarkers.filter(m => lower.includes(m)).length;
-            const presentCount = presentMarkers.filter(m => lower.includes(m)).length;
-            
-            const max = Math.max(pastCount, futureCount, presentCount);
-            
-            if (max === 0) return 'unknown';
-            if (pastCount === futureCount && futureCount === presentCount) return 'mixed';
-            
-            if (pastCount === max) return 'past';
-            if (futureCount === max) return 'future';
-            return 'present';
+                    const lower = text.toLowerCase();
+                    
+                    const pastMarkers = this.language === 'ru' ? 
+                        ['был', 'была', 'было', 'были', 'прошл', 'вчера', 'раньше'] :
+                        ['was', 'were', 'had', 'did', 'yesterday', 'ago', 'before'];
+                    
+                    const futureMarkers = this.language === 'ru' ?
+                        ['будет', 'будут', 'завтра', 'потом', 'позже'] :
+                        ['will', 'shall', 'going to', 'tomorrow', 'later'];
+                    
+                    const presentMarkers = this.language === 'ru' ?
+                        ['есть', 'является', 'сейчас', 'теперь', 'в настоящее время'] :
+                        ['is', 'are', 'am', 'do', 'does', 'now', 'currently'];
+                    
+                    const countMarkers = (markers) => {
+                        return markers.filter(m => {
+                            const regex = new RegExp(`\\b${this.escapeRegExp(m)}\\b`, this.language === 'ru' ? 'iu' : 'i');
+                            return regex.test(lower);
+                        }).length;
+                    };
+                    
+                    const pastCount = countMarkers(pastMarkers);
+                    const futureCount = countMarkers(futureMarkers);
+                    const presentCount = countMarkers(presentMarkers);
+                    
+                    const max = Math.max(pastCount, futureCount, presentCount);
+                    
+                    if (max === 0) return 'unknown';
+                    if (pastCount === futureCount && futureCount === presentCount) return 'mixed';
+                    
+                    if (pastCount === max) return 'past';
+                    if (futureCount === max) return 'future';
+                    return 'present';
         }
         
         calculateStructuralCoherence(sentences) {
@@ -6111,30 +6118,31 @@
         }
         
         calculateSentenceEmotion(text) {
-            const words = this.enhancedTokenization(text.toLowerCase());
-            const dict = this.dictionaries[this.language];
-            let score = 0;
-            let count = 0;
-            
-            for (const [category, wordList] of Object.entries(dict)) {
-                const weight = this.categoryWeights[category] || 1.0;
-                
-                for (const word of wordList) {
-                    if (words.includes(word)) {
-                        const isPositive = ['ecstasy', 'joy', 'love', 'peace', 'hope', 
-                                          'gratitude', 'inspiration', 'pride'].includes(category);
-                        const isNegative = ['sadness', 'grief', 'anger', 'fear', 'disgust', 
-                                          'shame', 'guilt', 'loneliness', 'envy', 'despair'].includes(category);
+                    const words = this.enhancedTokenization(text.toLowerCase());
+                    const dict = this.dictionaries[this.language];
+                    let score = 0;
+                    let count = 0;
+                    
+                    for (const [category, wordList] of Object.entries(dict)) {
+                        const weight = this.categoryWeights[category] || 1.0;
                         
-                        if (isPositive) score += weight;
-                        if (isNegative) score -= weight;
-                        count++;
-                        break; // Count each category only once per sentence
+                        for (const word of wordList) {
+                            const hasWord = words.some(w => w.toLowerCase() === word.toLowerCase());
+                            if (hasWord) {
+                                const isPositive = ['ecstasy', 'joy', 'love', 'peace', 'hope', 
+                                                  'gratitude', 'inspiration', 'pride'].includes(category);
+                                const isNegative = ['sadness', 'grief', 'anger', 'fear', 'disgust', 
+                                                  'shame', 'guilt', 'loneliness', 'envy', 'despair'].includes(category);
+                                
+                                if (isPositive) score += weight;
+                                if (isNegative) score -= weight;
+                                count++;
+                                break;
+                            }
+                        }
                     }
-                }
-            }
-            
-            return count > 0 ? score / count : 0;
+                    
+                    return count > 0 ? score / count : 0;
         }
         
         calculateToneVariation(tones) {
@@ -6306,7 +6314,7 @@
             
             const repetitions = [];
             const stopWords = this.language === 'ru' ? 
-                ['и', 'в', 'на', 'с', 'к', 'а', 'но', 'или', 'не', 'то', 'что', 'как', 'это', 'он', 'она', 'оно', 'они'] :
+                ['и', 'в', 'на', 'с', 'к', 'а', 'но', 'или', 'не', 'то', 'он', 'она', 'оно', 'они'] :
                 ['and', 'in', 'on', 'with', 'to', 'but', 'or', 'not', 'that', 'what', 'how', 'this', 'he', 'she', 'it', 'they'];
             
             for (const [word, count] of Object.entries(wordFrequency)) {
@@ -6422,56 +6430,91 @@
         }
         
         findReferenceContexts(text, reference, contextSize = 100) {
-            const contexts = [];
-            const regex = new RegExp(`\\b${this.escapeRegExp(reference)}\\b`, 'gi');
-            let match;
-            
-            while ((match = regex.exec(text)) !== null) {
-                const start = Math.max(0, match.index - contextSize);
-                const end = Math.min(text.length, match.index + reference.length + contextSize);
-                contexts.push(text.substring(start, end));
-            }
-            
-            return contexts;
+                    const contexts = [];
+                    const regex = new RegExp(`\\b${this.escapeRegExp(reference)}\\b`, this.language === 'ru' ? 'gui' : 'gi');
+                    let match;
+                    
+                    while ((match = regex.exec(text)) !== null) {
+                        let start = Math.max(0, match.index - contextSize);
+                        let end = Math.min(text.length, match.index + reference.length + contextSize);
+                        
+                        const beforeText = text.substring(0, start);
+                        const afterText = text.substring(end);
+                        
+                        const lastSentenceEnd = beforeText.search(/[.!?…]+[\s]/);
+                        if (lastSentenceEnd !== -1 && lastSentenceEnd > match.index - 200) {
+                            start = lastSentenceEnd + 1;
+                        }
+                        
+                        const nextSentenceEnd = afterText.search(/[.!?…]+[\s]/);
+                        if (nextSentenceEnd !== -1 && nextSentenceEnd < 200) {
+                            end += nextSentenceEnd + 1;
+                        }
+                        
+                        const context = text.substring(start, end).trim();
+                        if (context.length > 0) {
+                            contexts.push(context);
+                        }
+                    }
+                    
+                    return contexts;
         }
         
         isIntertextualReference(reference, text) {
-            const literaryContexts = [
-                'как говорил', 'как писал', 'в духе', 'напоминает', 
-                'as said by', 'as written by', 'in the spirit of', 'reminiscent of'
-            ];
-            
-            const context = text.toLowerCase();
-            return literaryContexts.some(phrase => 
-                context.includes(phrase) && context.includes(reference.toLowerCase())
-            );
+                    const literaryContexts = this.language === 'ru' ? [
+                        'как говорил', 'как писал', 'в духе', 'напоминает', 'по словам', 
+                        'цитируя', 'в стиле', 'в манере', 'напоминающий', 'отсылая к',
+                        'отсылка к', 'аллюзия на', 'пародируя', 'имитируя', 'в подражание'
+                    ] : [
+                        'as said by', 'as written by', 'in the spirit of', 'reminiscent of',
+                        'according to', 'quoting', 'in the style of', 'in the manner of',
+                        'alluding to', 'parodying', 'imitating', 'in homage to'
+                    ];
+                    
+                    const lowerText = text.toLowerCase();
+                    const lowerRef = reference.toLowerCase();
+                    
+                    if (!lowerText.includes(lowerRef)) return false;
+                    
+                    return literaryContexts.some(phrase => {
+                        const regex = new RegExp(`\\b${this.escapeRegExp(phrase)}\\b`, this.language === 'ru' ? 'iu' : 'i');
+                        return regex.test(lowerText);
+                    });
         }
         
         determineHistoricalPeriod(reference) {
-            const periods = {
-                ru: {
-                    древний: ['царь', 'князь', 'боярин'],
-                    средневековый: ['крепостной', 'дворянин'],
-                    имперский: ['империя', 'царство', 'революция'],
-                    советский: ['советский', 'большевик', 'комиссар', 'колхоз'],
-                    современный: ['перестройка', 'рынок', 'приватизация']
-                },
-                en: {
-                    ancient: ['king', 'queen', 'empire'],
-                    medieval: ['feudal', 'crusade', 'kingdom'],
-                    renaissance: ['renaissance', 'enlightenment'],
-                    industrial: ['industrial', 'victorian'],
-                    modern: ['globalization', 'digital']
-                }
-            };
-            
-            const langPeriods = periods[this.language];
-            for (const [period, keywords] of Object.entries(langPeriods)) {
-                if (keywords.some(keyword => reference.toLowerCase().includes(keyword))) {
-                    return period;
-                }
-            }
-            return 'undefined';
+                    const lowerRef = reference.toLowerCase();
+                    
+                    const periods = {
+                        ru: {
+                            древнерусский: ['варяг', 'древняя русь', 'киевская русь', 'новгород', 'владимир', 'ольга', 'святослав', 'владимир мономах', 'летопись', 'былина', 'князь', 'княгиня', 'дружина', 'воевода', 'боярин', 'смерд', 'холоп', 'митрополит', 'епископ', 'патриарх', 'перун', 'язычество', 'славяне'],
+                            средневековый: ['орда', 'татаро-монгол', 'золотая орда', 'хан', 'батый', 'монгол', 'татарин', 'казань', 'астрахань', 'крым', 'казак', 'атаман', 'гетман', 'удельный князь', 'московское княжество', 'великое княжество', 'царь', 'царица', 'царевич', 'царевна', 'боярин', 'боярыня', 'дворянин', 'крепостной', 'поместье', 'вотчина'],
+                            имперский: ['петр', 'екатерина', 'александр', 'николай', 'романов', 'империя', 'император', 'императрица', 'пушкин', 'лермонтов', 'гоголь', 'достоевский', 'толстой', 'чехов', 'тургенев', 'дворянство', 'аристократия', 'чиновник', 'табель о рангах', 'крепостное право', 'отмена крепостного права', 'реформа', 'освобождение', 'промышленность', 'завод', 'фабрика', 'пароход', 'железная дорога', 'вокзал', 'университет', 'гимназия', 'лицей', 'сенат', 'синод'],
+                            советский: ['советский', 'большевик', 'ленин', 'сталин', 'троцкий', 'брежнев', 'хрущев', 'горбачев', 'кпсс', 'комсомол', 'пионер', 'колхоз', 'совхоз', 'пятилетка', 'план', 'индустриализация', 'коллективизация', 'голод', 'война', 'победа', 'фронт', 'блокада', 'герой', 'орден', 'медаль', 'космонавт', 'гагарин', 'терешкова', 'спутник', 'космос', 'холодная война', 'атомная бомба', 'водородная бомба', 'ядерное оружие', 'стахановец', 'передовик', 'ударник', 'коммунизм', 'социализм', 'пролетариат', 'рабочий класс', 'буржуазия'],
+                            современный: ['перестройка', 'гласность', 'ускорение', 'рынок', 'капитализм', 'приватизация', 'ваучер', 'биржа', 'доллар', 'рубль', 'инфляция', 'кризис', 'дефолт', 'санкции', 'импортозамещение', 'интернет', 'смартфон', 'соцсеть', 'постсоветский', 'российский', 'федерация', 'президент', 'демократия', 'выборы', 'парламент', 'дума', 'федерация', 'снг', 'содружество']
+                        },
+                        en: {
+                            ancient: ['ancient', 'rome', 'greek', 'egypt', 'pharaoh', 'pyramid', 'troy', 'homer', 'iliad', 'odyssey', 'zeus', 'jupiter', 'apollo', 'athena', 'roman', 'greek', 'egyptian', 'babylon', 'assyria', 'persia', 'alexander', 'caesar', 'augustus', 'nero', 'plato', 'aristotle', 'socrates'],
+                            medieval: ['medieval', 'middle ages', 'feudal', 'knight', 'castle', 'crusade', 'kingdom', 'monarchy', 'viking', 'norman', 'william conqueror', 'magna carta', 'black death', 'plague', 'hundred years war', 'templar', 'cathedral', 'gothic', 'byzantine', 'ottoman', 'mongol', 'genghis khan', 'charlemagne', 'vikings', 'vikings', 'vikings'],
+                            renaissance: ['renaissance', 'enlightenment', 'leonardo', 'michelangelo', 'raphael', 'shakespeare', 'cervantes', 'dante', 'petrarch', 'boccaccio', 'galileo', 'newton', 'copernicus', 'kepler', 'humanism', 'reformation', 'martin luther', 'calvin', 'printing press', 'gutenberg', 'voyage', 'columbus', 'magellan', 'da gama', 'exploration', 'discovery'],
+                            industrial: ['industrial', 'revolution', 'steam', 'engine', 'factory', 'mill', 'textile', 'coal', 'iron', 'steel', 'railway', 'train', 'locomotive', 'victorian', 'queen victoria', 'dickens', 'twain', 'darwin', 'evolution', 'marx', 'engels', 'communist manifesto', 'socialism', 'capitalism', 'urbanization', 'city', 'london', 'manchester', 'chicago', 'new york'],
+                            modern: ['modern', 'contemporary', 'world war', 'wwi', 'wwii', 'hitler', 'stalin', 'churchill', 'roosevelt', 'cold war', 'nuclear', 'atom', 'hydrogen bomb', 'space race', 'moon landing', 'armstrong', 'apollo', 'computer', 'internet', 'digital', 'globalization', 'facebook', 'twitter', 'smartphone', 'ai', 'artificial intelligence', 'climate change', 'environment', 'sustainability', 'postmodern', 'postmodernism']
+                        }
+                    };
+                    
+                    const langPeriods = periods[this.language] || periods.ru;
+                    
+                    for (const [period, keywords] of Object.entries(langPeriods)) {
+                        for (const keyword of keywords) {
+                            const lowerKeyword = keyword.toLowerCase();
+                            const regex = new RegExp(`\\b${this.escapeRegExp(lowerKeyword)}\\b`, 'i');
+                            if (regex.test(lowerRef)) {
+                                return period;
+                            }
+                        }
+                    }
+                    
+                    return 'undefined';
         }
         
         determineMythologicalArchetype(reference) {
@@ -9475,6 +9518,7 @@
     
 
 })();
+
 
 
 
