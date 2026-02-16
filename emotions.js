@@ -7626,42 +7626,45 @@
         }
         
         calculateAbstractionLevel(words) {
-            const abstractWords = [
-                'время', 'пространство', 'идея', 'мысль', 'чувство', 'эмоция', 'философия',
-                'time', 'space', 'idea', 'thought', 'feeling', 'emotion', 'philosophy'
-            ];
-            
-            const concreteWords = [
-                'стол', 'стул', 'дом', 'машина', 'книга', 'ручка',
-                'table', 'chair', 'house', 'car', 'book', 'pen'
-            ];
-            
-            const abstractCount = abstractWords.filter(word => 
-                words.some(w => w.includes(word))
-            ).length;
-            
-            const concreteCount = concreteWords.filter(word => 
-                words.some(w => w.includes(word))
-            ).length;
-            
-            const total = abstractCount + concreteCount;
-            
-            return {
-                abstract: total > 0 ? abstractCount / total : 0,
-                concrete: total > 0 ? concreteCount / total : 0,
-                level: total > 0 ? abstractCount / total : 0.5,
-                description: this.getAbstractionDescription(abstractCount, concreteCount)
-            };
+                        const abstractWords = [
+                            'время', 'пространство', 'идея', 'мысль', 'чувство', 'эмоция', 'философия', 'смысл', 'цель', 'существование', 'бытие', 'ничто', 'вечность', 'душа', 'разум', 'сознание', 'память', 'воображение', 'вера', 'надежда', 'любовь', 'свобода', 'справедливость', 'красота', 'гармония',
+                            'time', 'space', 'idea', 'thought', 'feeling', 'emotion', 'philosophy', 'meaning', 'purpose', 'existence', 'being', 'nothingness', 'eternity', 'soul', 'mind', 'consciousness', 'memory', 'imagination', 'faith', 'hope', 'love', 'freedom', 'justice', 'beauty', 'harmony'
+                        ];
+                        
+                        const concreteWords = [
+                            'стол', 'стул', 'дом', 'машина', 'книга', 'ручка', 'стена', 'окно', 'дверь', 'пол', 'потолок', 'стакан', 'тарелка', 'ложка', 'вилка', 'нож', 'яблоко', 'банан', 'дерево', 'цветок', 'собака', 'кошка', 'ключ', 'замок', 'часы', 'телефон', 'компьютер',
+                            'table', 'chair', 'house', 'car', 'book', 'pen', 'wall', 'window', 'door', 'floor', 'ceiling', 'glass', 'plate', 'spoon', 'fork', 'knife', 'apple', 'banana', 'tree', 'flower', 'dog', 'cat', 'key', 'lock', 'clock', 'phone', 'computer'
+                        ];
+                        
+                        const abstractCount = abstractWords.filter(word => 
+                            words.some(w => w.toLowerCase().includes(word.toLowerCase()))
+                        ).length;
+                        
+                        const concreteCount = concreteWords.filter(word => 
+                            words.some(w => w.toLowerCase().includes(word.toLowerCase()))
+                        ).length;
+                        
+                        const total = abstractCount + concreteCount;
+                        
+                        return {
+                            abstract: total > 0 ? abstractCount / total : 0,
+                            concrete: total > 0 ? concreteCount / total : 0,
+                            level: total > 0 ? abstractCount / total : 0.5,
+                            description: this.getAbstractionDescription(abstractCount, concreteCount)
+                        };
         }
-        
+                    
         getAbstractionDescription(abstract, concrete) {
-            const ratio = concrete > 0 ? abstract / concrete : abstract > 0 ? 2 : 0;
-            
-            if (ratio > 1.5) return 'highly abstract';
-            if (ratio > 1) return 'abstract';
-            if (ratio > 0.5) return 'balanced';
-            if (ratio > 0) return 'concrete';
-            return 'highly concrete';
+                        if (abstract === 0 && concrete === 0) {
+                            return 'balanced';
+                        }
+                        const ratio = concrete > 0 ? abstract / concrete : (abstract > 0 ? Infinity : 0);
+                        
+                        if (ratio > 1.5) return 'highly abstract';
+                        if (ratio > 1) return 'abstract';
+                        if (ratio > 0.5) return 'balanced';
+                        if (ratio > 0) return 'concrete';
+                        return 'very concrete';
         }
         
         calculateEnhancedSemanticRichness(words, uniqueWords) {
@@ -9754,6 +9757,7 @@
     
 
 })();
+
 
 
 
