@@ -7665,13 +7665,21 @@
         }
         
         calculateEnhancedSemanticRichness(words, uniqueWords) {
-            if (words.length === 0) return 0;
-            
-            const uniqueRatio = uniqueWords.length / words.length;
-            const avgWordLength = words.reduce((sum, w) => sum + w.length, 0) / words.length;
-            const longWords = words.filter(w => w.length > 7).length / words.length;
-            
-            return (uniqueRatio * 0.4) + (Math.log(avgWordLength + 1) * 0.3) + (longWords * 0.3);
+                        if (words.length === 0) return 0;
+                        
+                        const stopWords = this.language === 'ru' ? 
+                            ['и', 'в', 'на', 'с', 'к', 'а', 'но', 'или', 'не', 'то', 'он', 'она', 'оно', 'они', 'это', 'тот', 'такой', 'какой', 'который', 'свой', 'мой', 'твой', 'его', 'её', 'их', 'наш', 'ваш', 'этот', 'да', 'нет', 'же', 'бы', 'ли', 'что', 'чтобы', 'потому', 'когда', 'если', 'так', 'как'] :
+                            ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'this', 'that', 'these', 'those', 'it', 'its', 'he', 'she', 'they', 'we', 'you', 'i', 'my', 'your', 'his', 'her', 'our', 'their', 'as', 'by', 'from', 'so', 'if', 'then', 'than', 'too', 'very', 'can', 'will', 'just', 'don', 'should', 'now'];
+                        
+                        const filteredWords = words.filter(word => !stopWords.includes(word.toLowerCase()));
+                        if (filteredWords.length === 0) return 0;
+                        
+                        const filteredUnique = [...new Set(filteredWords)];
+                        const uniqueRatio = filteredUnique.length / filteredWords.length;
+                        const avgWordLength = filteredWords.reduce((sum, w) => sum + w.length, 0) / filteredWords.length;
+                        const longWords = filteredWords.filter(w => w.length > 7).length / filteredWords.length;
+                        
+                        return (uniqueRatio * 0.4) + (Math.log(avgWordLength + 1) * 0.3) + (longWords * 0.3);
         }
         
         calculateSemanticCoherence(sentences) {
@@ -9746,6 +9754,7 @@
     
 
 })();
+
 
 
 
