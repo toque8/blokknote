@@ -7675,24 +7675,28 @@
         }
         
         calculateSemanticCoherence(sentences) {
-            if (sentences.length < 2) return 1;
-            
-            let coherence = 0;
-            
-            for (let i = 1; i < sentences.length; i++) {
-                const prev = typeof sentences[i-1] === 'object' ? sentences[i-1].text : sentences[i-1];
-                const curr = typeof sentences[i] === 'object' ? sentences[i].text : sentences[i];
-                
-                const prevWords = this.enhancedTokenization(prev);
-                const currWords = this.enhancedTokenization(curr);
-                
-                const overlap = prevWords.filter(w => currWords.includes(w)).length;
-                const maxWords = Math.max(prevWords.length, currWords.length);
-                
-                coherence += maxWords > 0 ? overlap / maxWords : 0;
-            }
-            
-            return coherence / (sentences.length - 1);
+                        if (sentences.length < 2) return 1;
+                        
+                        const stopWords = this.language === 'ru' ? 
+                            ['и', 'в', 'на', 'с', 'к', 'а', 'но', 'или', 'не', 'то', 'он', 'она', 'оно', 'они', 'это', 'тот', 'такой', 'какой', 'который', 'свой', 'мой', 'твой', 'его', 'её', 'их', 'наш', 'ваш'] :
+                            ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'this', 'that', 'these', 'those', 'it', 'its', 'he', 'she', 'they', 'we', 'you', 'i', 'my', 'your', 'his', 'her', 'our', 'their'];
+                        
+                        let coherence = 0;
+                        
+                        for (let i = 1; i < sentences.length; i++) {
+                            const prev = typeof sentences[i-1] === 'object' ? sentences[i-1].text : sentences[i-1];
+                            const curr = typeof sentences[i] === 'object' ? sentences[i].text : sentences[i];
+                            
+                            const prevWords = this.enhancedTokenization(prev).filter(w => !stopWords.includes(w));
+                            const currWords = this.enhancedTokenization(curr).filter(w => !stopWords.includes(w));
+                            
+                            const overlap = prevWords.filter(w => currWords.includes(w)).length;
+                            const maxWords = Math.max(prevWords.length, currWords.length);
+                            
+                            coherence += maxWords > 0 ? overlap / maxWords : 0;
+                        }
+                        
+                        return coherence / (sentences.length - 1);
         }
 
         calculatePsychologicalDimensionScore(psychological) {
@@ -9742,6 +9746,7 @@
     
 
 })();
+
 
 
 
