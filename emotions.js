@@ -7878,16 +7878,77 @@
                         return coherence / (sentences.length - 1);
         }
 
-        calculatePsychologicalDimensionScore(psychological) {
-            const factors = [
-              psychological.psychologicalComplexity || 0,
-              (psychological.selfAwarenessLevel && psychological.selfAwarenessLevel.score) || 0,
-              (psychological.plutchik && psychological.plutchik.emotionalDiversity) || 0,
-              (psychological.bigFive && psychological.bigFive.complexity) || 0
-            ];
-            const validFactors = factors.filter(f => f > 0);
-            if (validFactors.length === 0) return 0.5;
-            return Math.min(1, validFactors.reduce((a, b) => a + b, 0) / validFactors.length);
+        calculateSemanticCoherence(sentences) {
+                        if (sentences.length < 2) return 1;
+                        
+                        const stopWords = this.language === 'ru' ? 
+                            ['и', 'в', 'на', 'с', 'к', 'а', 'но', 'или', 'не', 'то', 'он', 'она', 'оно', 'они', 'это', 'тот', 'такой', 'какой', 'который', 'свой', 'мой', 'твой', 'его', 'её', 'их', 'наш', 'ваш', 'этот', 'да', 'нет', 'же', 'бы', 'ли', 'что', 'чтобы', 'потому', 'когда', 'если', 'так', 'как'] :
+                            ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'this', 'that', 'these', 'those', 'it', 'its', 'he', 'she', 'they', 'we', 'you', 'i', 'my', 'your', 'his', 'her', 'our', 'their', 'as', 'by', 'from', 'so', 'if', 'then', 'than', 'too', 'very', 'can', 'will', 'just', 'don', 'should', 'now'];
+                        
+                        let coherence = 0;
+                        let validPairs = 0;
+                        
+                        for (let i = 1; i < sentences.length; i++) {
+                            const prev = typeof sentences[i-1] === 'object' ? sentences[i-1].text : sentences[i-1];
+                            const curr = typeof sentences[i] === 'object' ? sentences[i].text : sentences[i];
+                            
+                            const prevWords = this.enhancedTokenization(prev)
+                                .map(w => w.toLowerCase())
+                                .filter(w => !stopWords.includes(w));
+                            const currWords = this.enhancedTokenization(curr)
+                                .map(w => w.toLowerCase())
+                                .filter(w => !stopWords.includes(w));
+                            
+                            if (prevWords.length === 0 || currWords.length === 0) continue;
+                            
+                            const overlap = prevWords.filter(w => currWords.includes(w)).length;
+                            const maxWords = Math.max(prevWords.length, currWords.length);
+                            
+                            let pairCoherence = maxWords > 0 ? overlap / maxWords : 0;
+                            
+                            if (pairCoherence < 0.2) {
+                                const semanticBonus = this.calculateSemanticBonus(prevWords, currWords);
+                                pairCoherence = Math.min(0.4, pairCoherence + semanticBonus);
+                            }
+                            
+                            coherence += pairCoherence;
+                            validPairs++;
+                        }
+                        
+                        return validPairs > 0 ? coherence / validPairs : 0;
+        }
+                    
+        calculateSemanticBonus(prevWords, currWords) {
+                        const semanticGroups = {
+                            ru: {
+                                'действие': ['идти', 'ходить', 'бежать', 'ехать', 'лететь', 'плыть', 'двигаться', 'двигаться', 'двигаться', 'двигаться'],
+                                'место': ['дом', 'квартира', 'комната', 'здание', 'здание', 'здание', 'здание', 'здание'],
+                                'время': ['сейчас', 'теперь', 'сегодня', 'завтра', 'вчера', 'утром', 'вечером', 'ночью'],
+                                'эмоция': ['радость', 'грусть', 'счастье', 'печаль', 'любовь', 'ненависть', 'страх', 'гнев'],
+                                'человек': ['человек', 'мужчина', 'женщина', 'ребенок', 'друг', 'враг', 'родитель', 'ребенок']
+                            },
+                            en: {
+                                'action': ['go', 'walk', 'run', 'drive', 'fly', 'swim', 'move', 'travel'],
+                                'place': ['house', 'apartment', 'room', 'building', 'home', 'place', 'location'],
+                                'time': ['now', 'today', 'tomorrow', 'yesterday', 'morning', 'evening', 'night'],
+                                'emotion': ['joy', 'sadness', 'happiness', 'sorrow', 'love', 'hate', 'fear', 'anger'],
+                                'person': ['person', 'man', 'woman', 'child', 'friend', 'enemy', 'parent', 'child']
+                            }
+                        };
+                        
+                        const groups = semanticGroups[this.language] || semanticGroups.ru;
+                        let bonus = 0;
+                        
+                        for (const [groupName, groupWords] of Object.entries(groups)) {
+                            const prevInGroup = prevWords.filter(w => groupWords.includes(w)).length;
+                            const currInGroup = currWords.filter(w => groupWords.includes(w)).length;
+                            
+                            if (prevInGroup > 0 && currInGroup > 0) {
+                                bonus += 0.1;
+                            }
+                        }
+                        
+                        return Math.min(0.2, bonus);
         }
         
         psychologicalAnalysis(data) {
@@ -9925,6 +9986,7 @@
     
 
 })();
+
 
 
 
