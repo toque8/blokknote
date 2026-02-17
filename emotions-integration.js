@@ -879,13 +879,13 @@ detectTextType(metrics) {
                                       return 'poetry';
                             }
                             if (metrics.copywriter && 
-                                (metrics.copywriter.callToAction > 5 || 
-                                 metrics.copywriter.clicheMeter > 5)) {
+                                (metrics.copywriter.callToAction > 10 || 
+                                 metrics.copywriter.clicheMeter > 8)) {
                                       return 'copywriting';
                             }
                             if (metrics.journalist && 
-                                (metrics.journalist.digitalFootprint > 5 || 
-                                 metrics.journalist.nameIndex > 5)) {
+                                (metrics.journalist.digitalFootprint > 8 || 
+                                 metrics.journalist.nameIndex > 8)) {
                                       return 'journalism';
                             }
                             return 'fiction';
@@ -951,6 +951,21 @@ generateRecommendations(metrics, lang) {
                                                                               '▪ Multi‑syllable words – the verse sounds weighty');
                                                           }
                                                 }
+                                                const lineLen = this.getNumber(metrics.poetry.lineLength);
+                                                if (lineLen !== null && lineLen < 4) {
+                                                          recs.push(lang === 'ru' ? 
+                                                                    '▪ Очень короткие строки, подумайте о разнообразии' : 
+                                                                    '▪ Very short lines, consider varying length');
+                                                } else if (lineLen !== null && lineLen > 12) {
+                                                          recs.push(lang === 'ru' ? 
+                                                                    '▪ Строки длинные, следите за ритмом' : 
+                                                                    '▪ Long lines, watch the rhythm');
+                                                }
+                                                if (metrics.poetry.suitableMeter && metrics.poetry.suitableMeter !== 'смешанный') {
+                                                          recs.push(lang === 'ru' ? 
+                                                                    `▪ Преобладает размер: ${metrics.poetry.suitableMeter}` : 
+                                                                    `▪ Prevailing meter: ${metrics.poetry.suitableMeter}`);
+                                                }
                                       }
                             } else if (type === 'copywriting') {
                                       if (metrics.copywriter) {
@@ -960,11 +975,11 @@ generateRecommendations(metrics, lang) {
                                                                     recs.push(lang === 'ru' ? 
                                                                               '▪ Слишком мало призывов, добавьте глаголы в повелительном наклонении' : 
                                                                               '▪ Too few calls to action, add imperative verbs');
-                                                          } else if (cta > 10) {
+                                                          } else if (cta > 15) {
                                                                     recs.push(lang === 'ru' ? 
-                                                                              '▪ Много призывов – текст энергичный, но не перебарщивайте' : 
-                                                                              '▪ Many calls – energetic, but donʼt overdo it');
-                                                          } else {
+                                                                              '▪ Очень много призывов – текст может казаться агрессивным' : 
+                                                                              '▪ Too many calls – the text may seem aggressive');
+                                                          } else if (cta >= 3 && cta <= 15) {
                                                                     recs.push(lang === 'ru' ? 
                                                                               '▪ Хорошее количество призывов, текст побуждает к действию' : 
                                                                               '▪ Good number of calls, the text encourages action');
@@ -972,7 +987,7 @@ generateRecommendations(metrics, lang) {
                                                 }
                                                 const cliche = this.getNumber(metrics.copywriter.clicheMeter);
                                                 if (cliche !== null) {
-                                                          if (cliche > 10) {
+                                                          if (cliche > 12) {
                                                                     recs.push(lang === 'ru' ? 
                                                                               '▪ Слишком много штампов, пишите оригинальнее' : 
                                                                               '▪ Too many clichés, be more original');
@@ -995,19 +1010,19 @@ generateRecommendations(metrics, lang) {
                                                           }
                                                 }
                                                 const superlative = this.getNumber(metrics.copywriter.superlativeDegree);
-                                                if (superlative !== null && superlative > 8) {
+                                                if (superlative !== null && superlative > 10) {
                                                           recs.push(lang === 'ru' ? 
                                                                     '▪ Много превосходных степеней, текст может казаться хвастливым' : 
                                                                     '▪ Too many superlatives, the text may seem boastful');
                                                 }
                                                 const spam = this.getNumber(metrics.copywriter.spamIndex);
-                                                if (spam !== null && spam > 5) {
+                                                if (spam !== null && spam > 6) {
                                                           recs.push(lang === 'ru' ? 
                                                                     '▪ Одно слово слишком часто повторяется – риск переспама' : 
                                                                     '▪ One word repeats too often – risk of keyword stuffing');
                                                 }
                                                 const water = this.getNumber(metrics.copywriter.waterContent);
-                                                if (water !== null && water > 65) {
+                                                if (water !== null && water > 70) {
                                                           recs.push(lang === 'ru' ? 
                                                                     '▪ Высокая водность, уберите лишние слова' : 
                                                                     '▪ High water content, remove filler words');
@@ -1041,10 +1056,14 @@ generateRecommendations(metrics, lang) {
                                                                     recs.push(lang === 'ru' ? 
                                                                               '▪ Мало цифр и фактов – добавьте конкретики' : 
                                                                               '▪ Too few facts and figures – add specifics');
-                                                          } else if (digital > 15) {
+                                                          } else if (digital > 20) {
                                                                     recs.push(lang === 'ru' ? 
-                                                                              '▪ Отличная насыщенность данными' : 
-                                                                              '▪ Excellent data density');
+                                                                              '▪ Очень много цифр, не перегружайте читателя' : 
+                                                                              '▪ Too many numbers, donʼt overwhelm the reader');
+                                                          } else if (digital >= 3 && digital <= 20) {
+                                                                    recs.push(lang === 'ru' ? 
+                                                                              '▪ Хорошая насыщенность данными' : 
+                                                                              '▪ Good data density');
                                                           }
                                                 }
                                                 const mirror = this.getNumber(metrics.journalist.factMirror);
@@ -1061,7 +1080,7 @@ generateRecommendations(metrics, lang) {
                                                 }
                                                 const yellow = this.getNumber(metrics.journalist.antiYellow);
                                                 if (yellow !== null) {
-                                                          if (yellow < 80) {
+                                                          if (yellow < 70) {
                                                                     recs.push(lang === 'ru' ? 
                                                                               '▪ Текст содержит кликбейтные выражения, снизьте манипулятивность' : 
                                                                               '▪ Text contains clickbait, reduce manipulation');
@@ -1077,10 +1096,14 @@ generateRecommendations(metrics, lang) {
                                                                     recs.push(lang === 'ru' ? 
                                                                               '▪ Мало имён и названий, добавьте конкретных источников' : 
                                                                               '▪ Too few names and places, add specific sources');
-                                                          } else if (nameIdx > 10) {
+                                                          } else if (nameIdx > 15) {
                                                                     recs.push(lang === 'ru' ? 
-                                                                              '▪ Много имён – текст опирается на реальные факты' : 
-                                                                              '▪ Many names – the text is fact‑based');
+                                                                              '▪ Очень много имён, возможно, текст перегружен' : 
+                                                                              '▪ Too many names, the text may be overloaded');
+                                                          } else {
+                                                                    recs.push(lang === 'ru' ? 
+                                                                              '▪ Умеренное количество имён – хороший баланс' : 
+                                                                              '▪ Moderate number of names – good balance');
                                                           }
                                                 }
                                                 const freshness = this.getNumber(metrics.journalist.freshnessGauge);
@@ -1126,10 +1149,14 @@ generateRecommendations(metrics, lang) {
                                                                     recs.push(lang === 'ru' ? 
                                                                               '▪ Не хватает сенсорных деталей (звуки, запахи, ощущения)' : 
                                                                               '▪ Lack sensory details (sounds, smells, feelings)');
-                                                          } else if (immerse > 15) {
+                                                          } else if (immerse > 20) {
                                                                     recs.push(lang === 'ru' ? 
                                                                               '▪ Богатая сенсорика – отлично погружает' : 
                                                                               '▪ Rich sensory vocabulary – great immersion');
+                                                          } else {
+                                                                    recs.push(lang === 'ru' ? 
+                                                                              '▪ Умеренная сенсорика, можно добавить деталей' : 
+                                                                              '▪ Moderate sensory details, you could add more');
                                                           }
                                                 }
                                                 const silence = this.getNumber(metrics.writer.silenceEffect);
@@ -1154,6 +1181,10 @@ generateRecommendations(metrics, lang) {
                                                                     recs.push(lang === 'ru' ? 
                                                                               '▪ Текст «горячий», много жаркой лексики' : 
                                                                               '▪ Text feels "hot", lots of hot vocabulary');
+                                                          } else {
+                                                                    recs.push(lang === 'ru' ? 
+                                                                              '▪ Температурный баланс в норме' : 
+                                                                              '▪ Temperature balance is normal');
                                                           }
                                                 }
                                                 const dialogue = this.getNumber(metrics.writer.dialogueParadigm);
@@ -1188,7 +1219,7 @@ generateRecommendations(metrics, lang) {
                                                 }
                                                 const ego = this.getNumber(metrics.writer.egoFactor);
                                                 if (ego !== null) {
-                                                          if (ego > 60) {
+                                                          if (ego > 70) {
                                                                     recs.push(lang === 'ru' ? 
                                                                               '▪ Сильный эго-фактор – повествование от первого лица' : 
                                                                               '▪ Strong ego factor – first‑person narration');
@@ -1211,7 +1242,7 @@ generateRecommendations(metrics, lang) {
                                       }
                             }
                   
-                            return [...new Set(recs)].slice(0, 10); 
+                            return [...new Set(recs)].slice(0, 8);
 }
 
 renderResult(result) {
@@ -2882,14 +2913,14 @@ renderResult(result) {
     }
 
 	const recommendations = this.generateRecommendations(result.metrics, this.getCurrentLanguage());
-    if (recommendations.length > 0) {
+	if (recommendations.length > 0) {
                             html += `<div class="emotion-section">`;
                             html += `<h3>${this.getCurrentLanguage() === 'ru' ? 'Рекомендации' : 'Recommendations'}</h3>`;
-                            html += `<ul style="list-style-type: none; padding: 0; margin: 0;">`;
+                            html += `<div style="padding: 5px 0;">`;
                             recommendations.forEach(rec => {
-                                      html += `<li style="margin-bottom: 8px; font-size: 0.95em; line-height: 1.4; border-bottom: 1px dashed #eee; padding-bottom: 5px;">${rec}</li>`;
+                                      html += `<div style="margin-bottom: 8px; font-size: 0.95em; line-height: 1.4;">${rec}</div>`;
                             });
-                            html += `</ul>`;
+                            html += `</div>`;
                             html += `</div>`;
     }
 
@@ -3934,6 +3965,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
