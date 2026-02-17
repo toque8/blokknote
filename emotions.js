@@ -6995,7 +6995,7 @@
                         
                         const emotionalProgression = this.enhancedEmotionalProgression(sentences);
                         const semanticClusters = this.enhancedSemanticClustering(words, data.cleaned);
-                        const thematicAnalysis = this.multiDimensionalThematicAnalysis(words);
+                        const thematicAnalysis = this.multiDimensionalThematicAnalysis(words, sentences);
                         const semanticRelations = this.analyzeSemanticRelations(words);
                         const abstractionLevel = this.calculateAbstractionLevel(words);
                         
@@ -7416,8 +7416,7 @@
                 dimensions: dimensions,
                 dominant: dominantDimension,
                 evolution: thematicEvolution,
-                complexity: this.calculateThematicComplexity(dimensions),
-                coherence: this.calculateThematicCoherence(dimensions)
+                complexity: this.calculateThematicComplexity(dimensions)
             };
         }
         
@@ -9912,6 +9911,7 @@
     
 
 })();
+
 
 
 
