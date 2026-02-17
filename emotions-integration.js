@@ -872,29 +872,78 @@ translateValue(value, lang) {
 }
 
 detectTextType(metrics) {
-
-                            if (metrics.poetry && 
-                                metrics.poetry.totalLines > 4 && 
-                                metrics.poetry.rhymeCatcher > 0) {
-                                      return 'poetry';
+                            let fictionScore = 0;
+                            let copyScore = 0;
+                            let journScore = 0;
+                            let poetryScore = 0;
+                  
+                            if (metrics.poetry) {
+                                      const lines = this.getNumber(metrics.poetry.totalLines) || 0;
+                                      const rhyme = this.getNumber(metrics.poetry.rhymeCatcher) || 0;
+                                      if (lines > 4 && rhyme > 0) {
+                                                poetryScore += 5; 
+                                      }
+                            }
+                  
+                            if (metrics.writer) {
+                                      const immerse = this.getNumber(metrics.writer.immersiveness) || 0;
+                                      const silence = this.getNumber(metrics.writer.silenceEffect) || 0;
+                                      const dialogue = this.getNumber(metrics.writer.dialogueParadigm) || 0;
+                                      const ego = this.getNumber(metrics.writer.egoFactor) || 0;
+                                      const chaos = this.getNumber(metrics.writer.chaosEntropyPercent) || 0;
+                                      const timeVector = this.getNumber(metrics.writer.timeVector) || 0;
+                  
+                                      if (immerse > 5) fictionScore += 2;
+                                      if (silence > 2) fictionScore += 2;
+                                      if (dialogue > 1) fictionScore += 2;
+                                      if (ego > 30) fictionScore += 1; 
+                                      if (chaos > 60) fictionScore += 1; 
+                                      if (timeVector < -20 || timeVector > 20) fictionScore += 1; 
                             }
                   
                             if (metrics.copywriter) {
                                       const cta = this.getNumber(metrics.copywriter.callToAction) || 0;
                                       const cliche = this.getNumber(metrics.copywriter.clicheMeter) || 0;
-                                      if (cta > 10 || cliche > 10) {
-                                                return 'copywriting';
-                                      }
+                                      const filler = this.getNumber(metrics.copywriter.fillerWords) || 0;
+                                      const superlative = this.getNumber(metrics.copywriter.superlativeDegree) || 0;
+                                      const spam = this.getNumber(metrics.copywriter.spamIndex) || 0;
+                                      const water = this.getNumber(metrics.copywriter.waterContent) || 0;
+                  
+                                      if (cta > 8) copyScore += 2;
+                                      if (cliche > 8) copyScore += 2;
+                                      if (filler > 8) copyScore += 1;
+                                      if (superlative > 8) copyScore += 2;
+                                      if (spam > 5) copyScore += 2;
+                                      if (water > 65) copyScore += 1; 
                             }
                   
                             if (metrics.journalist) {
                                       const digital = this.getNumber(metrics.journalist.digitalFootprint) || 0;
                                       const nameIdx = this.getNumber(metrics.journalist.nameIndex) || 0;
-                                      if (digital > 10 || nameIdx > 10) {
-                                                return 'journalism';
-                                      }
+                                      const factMirror = this.getNumber(metrics.journalist.factMirror) || 0;
+                                      const antiYellow = this.getNumber(metrics.journalist.antiYellow) || 0;
+                                      const freshness = this.getNumber(metrics.journalist.freshnessGauge) || 0;
+                                      const categorical = this.getNumber(metrics.journalist.categoricalTone) || 0;
+                  
+                                      if (digital > 8) journScore += 2;
+                                      if (nameIdx > 8) journScore += 2;
+                                      if (factMirror > 80) journScore += 1; // высокая объективность
+                                      if (antiYellow > 80) journScore += 1; // отсутствие кликбейта
+                                      if (freshness > 3) journScore += 2; // свежесть
+                                      if (categorical > 8) journScore += 1; // категоричность (часто в новостях)
                             }
                   
+                            if (poetryScore >= 5) {
+                                      return 'poetry';
+                            }
+                  
+                            if (copyScore > fictionScore && copyScore > journScore) {
+                                      return 'copywriting';
+                            }
+                            if (journScore > fictionScore && journScore > copyScore) {
+                                      return 'journalism';
+                            }
+
                             return 'fiction';
 }
                   
@@ -3972,6 +4021,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
