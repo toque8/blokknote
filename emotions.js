@@ -7862,8 +7862,12 @@
                             const prev = typeof sentences[i-1] === 'object' ? sentences[i-1].text : sentences[i-1];
                             const curr = typeof sentences[i] === 'object' ? sentences[i].text : sentences[i];
                             
-                            const prevWords = this.enhancedTokenization(prev).filter(w => !stopWords.includes(w));
-                            const currWords = this.enhancedTokenization(curr).filter(w => !stopWords.includes(w));
+                            const prevWords = this.enhancedTokenization(prev)
+                                .map(w => w.toLowerCase())
+                                .filter(w => !stopWords.includes(w));
+                            const currWords = this.enhancedTokenization(curr)
+                                .map(w => w.toLowerCase())
+                                .filter(w => !stopWords.includes(w));
                             
                             const overlap = prevWords.filter(w => currWords.includes(w)).length;
                             const maxWords = Math.max(prevWords.length, currWords.length);
@@ -9921,6 +9925,7 @@
     
 
 })();
+
 
 
 
