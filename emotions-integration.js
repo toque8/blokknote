@@ -927,10 +927,10 @@ detectTextType(metrics) {
                   
                                       if (digital > 8) journScore += 2;
                                       if (nameIdx > 8) journScore += 2;
-                                      if (factMirror > 80) journScore += 1; // высокая объективность
-                                      if (antiYellow > 80) journScore += 1; // отсутствие кликбейта
-                                      if (freshness > 3) journScore += 2; // свежесть
-                                      if (categorical > 8) journScore += 1; // категоричность (часто в новостях)
+                                      if (factMirror > 80) journScore += 1; 
+                                      if (antiYellow > 80) journScore += 1; 
+                                      if (freshness > 3) journScore += 2; 
+                                      if (categorical > 8) journScore += 1; 
                             }
                   
                             if (poetryScore >= 5) {
@@ -4021,6 +4021,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
