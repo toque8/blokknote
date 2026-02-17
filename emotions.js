@@ -6979,32 +6979,36 @@
         }
         
         enhancedSemanticAnalysis(data) {
-            const sentences = data.sentences;
-            const words = data.words;
-            
-            const uniqueWords = [...new Set(words)];
-            const semanticDensity = uniqueWords.length / (words.length || 1);
-            
-            const emotionalProgression = this.enhancedEmotionalProgression(sentences);
-            
-            const semanticClusters = this.enhancedSemanticClustering(words, data.cleaned);
-            
-            const thematicAnalysis = this.multiDimensionalThematicAnalysis(words, sentences);
-            
-            const semanticRelations = this.analyzeSemanticRelations(words);
-            
-            const abstractionLevel = this.calculateAbstractionLevel(words);
-            
-            return {
-                density: semanticDensity,
-                progression: emotionalProgression,
-                clusters: semanticClusters,
-                thematic: thematicAnalysis,
-                relations: semanticRelations,
-                abstraction: abstractionLevel,
-                semanticRichness: this.calculateEnhancedSemanticRichness(words, uniqueWords),
-                coherence: this.calculateSemanticCoherence(sentences)
-            };
+                        const sentences = data.sentences;
+                        const words = data.words;
+                        const uniqueWords = [...new Set(words)];
+                        
+                        const stopWords = this.language === 'ru' ? 
+                            ['и', 'в', 'на', 'с', 'к', 'а', 'но', 'или', 'не', 'то', 'он', 'она', 'оно', 'они', 'это', 'тот', 'такой', 'какой', 'который', 'свой', 'мой', 'твой', 'его', 'её', 'их', 'наш', 'ваш', 'этот', 'да', 'нет', 'же', 'бы', 'ли', 'что', 'чтобы', 'потому', 'когда', 'если', 'так', 'как'] :
+                            ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'this', 'that', 'these', 'those', 'it', 'its', 'he', 'she', 'they', 'we', 'you', 'i', 'my', 'your', 'his', 'her', 'our', 'their', 'as', 'by', 'from', 'so', 'if', 'then', 'than', 'too', 'very', 'can', 'will', 'just', 'don', 'should', 'now'];
+                        
+                        const filteredWords = words.filter(word => !stopWords.includes(word.toLowerCase()));
+                        const filteredUniqueWords = [...new Set(filteredWords)];
+                        
+                        const semanticDensity = filteredWords.length > 0 ? 
+                            filteredUniqueWords.length / filteredWords.length : 0;
+                        
+                        const emotionalProgression = this.enhancedEmotionalProgression(sentences);
+                        const semanticClusters = this.enhancedSemanticClustering(words, data.cleaned);
+                        const thematicAnalysis = this.multiDimensionalThematicAnalysis(words, sentences);
+                        const semanticRelations = this.analyzeSemanticRelations(words);
+                        const abstractionLevel = this.calculateAbstractionLevel(words);
+                        
+                        return {
+                            density: semanticDensity,
+                            progression: emotionalProgression,
+                            clusters: semanticClusters,
+                            thematic: thematicAnalysis,
+                            relations: semanticRelations,
+                            abstraction: abstractionLevel,
+                            semanticRichness: this.calculateEnhancedSemanticRichness(words, uniqueWords),
+                            coherence: this.calculateSemanticCoherence(sentences)
+                        };
         }
         
         enhancedEmotionalProgression(sentences) {
@@ -7620,18 +7624,21 @@
         }
         
         calculateThematicComplexity(dimensions) {
-            const activeDimensions = Object.values(dimensions)
-                .filter(dim => dim.score > 0)
-                .length;
-            
-            return activeDimensions / Object.keys(dimensions).length;
-        }
-        
-        calculateThematicCoherence(dimensions) {
-            const scores = Object.values(dimensions).map(dim => dim.score);
-            const variance = this.calculateVariance(scores);
-            
-            return 1 - Math.min(1, variance * 10);
+                        const dimensionEntries = Object.entries(dimensions);
+                        const totalDimensions = dimensionEntries.length;
+                        
+                        if (totalDimensions === 0) return 0;
+                        
+                        let complexityScore = 0;
+                        
+                        dimensionEntries.forEach(([name, dim]) => {
+                            if (dim.score > 0) {
+                                const weightedScore = dim.score * (1 + (dim.markers ? Object.keys(dim.markers).length / 10 : 0));
+                                complexityScore += Math.min(1, weightedScore);
+                            }
+                        });
+                        
+                        return complexityScore / totalDimensions;
         }
         
         analyzeSemanticRelations(words) {
@@ -9905,6 +9912,7 @@
     
 
 })();
+
 
 
 
