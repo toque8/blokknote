@@ -872,22 +872,29 @@ translateValue(value, lang) {
 }
 
 detectTextType(metrics) {
+
                             if (metrics.poetry && 
-                                metrics.poetry.stropheMeter > 0 && 
-                                metrics.poetry.rhymeCatcher > 0 && 
-                                metrics.poetry.totalLines > 4) {
+                                metrics.poetry.totalLines > 4 && 
+                                metrics.poetry.rhymeCatcher > 0) {
                                       return 'poetry';
                             }
-                            if (metrics.copywriter && 
-                                (metrics.copywriter.callToAction > 10 || 
-                                 metrics.copywriter.clicheMeter > 8)) {
-                                      return 'copywriting';
+                  
+                            if (metrics.copywriter) {
+                                      const cta = this.getNumber(metrics.copywriter.callToAction) || 0;
+                                      const cliche = this.getNumber(metrics.copywriter.clicheMeter) || 0;
+                                      if (cta > 10 || cliche > 10) {
+                                                return 'copywriting';
+                                      }
                             }
-                            if (metrics.journalist && 
-                                (metrics.journalist.digitalFootprint > 8 || 
-                                 metrics.journalist.nameIndex > 8)) {
-                                      return 'journalism';
+                  
+                            if (metrics.journalist) {
+                                      const digital = this.getNumber(metrics.journalist.digitalFootprint) || 0;
+                                      const nameIdx = this.getNumber(metrics.journalist.nameIndex) || 0;
+                                      if (digital > 10 || nameIdx > 10) {
+                                                return 'journalism';
+                                      }
                             }
+                  
                             return 'fiction';
 }
                   
@@ -3965,6 +3972,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
