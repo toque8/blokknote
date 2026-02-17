@@ -1824,6 +1824,8 @@
                   
                             const uniqueLengths = new Set(lineLengths).size;
                             metrics.freedomWaves = totalLines ? ((uniqueLengths / totalLines) * 100).toFixed(1) : 0;
+
+                            metrics.totalLines = totalLines;
                   
                             return metrics;
         }
@@ -9919,6 +9921,7 @@
     
 
 })();
+
 
 
 
