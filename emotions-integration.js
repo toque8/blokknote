@@ -391,6 +391,16 @@ translateValue(value, lang) {
             'Индекс переспама': 'Индекс переспама',
             'Списки': 'Списки',
             'Игра в уникальность': 'Игра в уникальность',
+			'Анафорическая частота': 'Анафорическая частота',
+            'Эпифорическая частота': 'Эпифорическая частота',
+            'Шелест букв': 'Шелест букв',
+            'Ласка звуков': 'Ласка звуков',
+            'Слогопись': 'Слогопись',
+            'Строфамёт': 'Строфамёт',
+            'Ловец рифм': 'Ловец рифм',
+            'Подходящий размер': 'Подходящий размер',
+            'Длинностих': 'Длинностих',
+            'Вольноволны': 'Вольноволны',
    
             'звонков': 'звонков',
             'штампов': 'штампов',
@@ -644,6 +654,16 @@ translateValue(value, lang) {
             'хоббитов': 'hobbits',
             'кобейнов': 'cobains',
             'титаник': 'titanic',
+			'Анафорическая частота': 'Anaphoric Frequency',
+            'Эпифорическая частота': 'Epiphoric Frequency',
+            'Шелест букв': 'Consonant Whisper',
+            'Ласка звуков': 'Vowel Caress',
+            'Слогопись': 'Syllable Score',
+            'Строфамёт': 'Strophe Meter',
+            'Ловец рифм': 'Rhyme Catcher',
+            'Подходящий размер': 'Suitable Meter',
+            'Длинностих': 'Line Length',
+            'Вольноволны': 'Freedom Waves',
             
             'Сдержанное богатое эмоциональное переживание': 'Restrained rich emotional experience',
             'Сдержанное спокойное принятие и удовлетворение текущим моментом': 'Restrained calm acceptance and satisfaction with the current moment',            'Состояние полного, всеобъемлющего счастья и духовного подъёма': 'A state of complete, all-encompassing happiness and spiritual upliftment',
@@ -1260,6 +1280,89 @@ renderResult(result) {
                     }
                     
                     html += `</div>`;
+    }
+
+    const poetry = result.metrics?.poetry || {};
+    const hasPoetryMetrics = Object.keys(poetry).length > 0;
+                  
+    if (hasPoetryMetrics) {
+                            const lang = this.getCurrentLanguage();
+                            const t = this.getTranslations(lang);
+                  
+                            html += `<div class="emotion-section">`;
+                            html += `<h3>${lang === 'ru' ? 'Для поэта' : 'For Poet'}</h3>`;
+                  
+                            if (this.shouldShowMetric(poetry.anaphoraFreq, true)) {
+                                      html += `<div class="emotion-metric">`;
+                                      html += `<span class="label" title="${t.poetryAnaphoraHint || ''}">${this.translateValue('Анафорическая частота', lang)}:</span>`;
+                                      html += `<span class="value">${poetry.anaphoraFreq}%</span>`;
+                                      html += `</div>`;
+                            }
+                  
+                            if (this.shouldShowMetric(poetry.epiphoraFreq, true)) {
+                                      html += `<div class="emotion-metric">`;
+                                      html += `<span class="label" title="${t.poetryEpiphoraHint || ''}">${this.translateValue('Эпифорическая частота', lang)}:</span>`;
+                                      html += `<span class="value">${poetry.epiphoraFreq}%</span>`;
+                                      html += `</div>`;
+                            }
+                  
+                            if (this.shouldShowMetric(poetry.consonantWhisper, true)) {
+                                      html += `<div class="emotion-metric">`;
+                                      html += `<span class="label" title="${t.poetryConsonantHint || ''}">${this.translateValue('Шелест букв', lang)}:</span>`;
+                                      html += `<span class="value">${poetry.consonantWhisper}</span>`;
+                                      html += `</div>`;
+                            }
+                  
+                            if (this.shouldShowMetric(poetry.vowelCaress, true)) {
+                                      html += `<div class="emotion-metric">`;
+                                      html += `<span class="label" title="${t.poetryVowelHint || ''}">${this.translateValue('Ласка звуков', lang)}:</span>`;
+                                      html += `<span class="value">${poetry.vowelCaress}</span>`;
+                                      html += `</div>`;
+                            }
+                  
+                            if (this.shouldShowMetric(poetry.syllableScore, true)) {
+                                      html += `<div class="emotion-metric">`;
+                                      html += `<span class="label" title="${t.poetrySyllableHint || ''}">${this.translateValue('Слогопись', lang)}:</span>`;
+                                      html += `<span class="value">${poetry.syllableScore}</span>`;
+                                      html += `</div>`;
+                            }
+                  
+                            if (this.shouldShowMetric(poetry.stropheMeter, true)) {
+                                      html += `<div class="emotion-metric">`;
+                                      html += `<span class="label" title="${t.poetryStropheHint || ''}">${this.translateValue('Строфамёт', lang)}:</span>`;
+                                      html += `<span class="value">${poetry.stropheMeter}</span>`;
+                                      html += `</div>`;
+                            }
+
+							if (this.shouldShowMetric(poetry.lineLength, true)) {
+                                      html += `<div class="emotion-metric">`;
+                                      html += `<span class="label" title="${t.poetryLineLengthHint || ''}">${this.translateValue('Длинностих', lang)}:</span>`;
+                                      html += `<span class="value">${poetry.lineLength}</span>`;
+                                      html += `</div>`;
+                            }
+                  
+                            if (this.shouldShowMetric(poetry.rhymeCatcher, true)) {
+                                      html += `<div class="emotion-metric">`;
+                                      html += `<span class="label" title="${t.poetryRhymeHint || ''}">${this.translateValue('Ловец рифм', lang)}:</span>`;
+                                      html += `<span class="value">${poetry.rhymeCatcher}%</span>`;
+                                      html += `</div>`;
+                            }
+                  
+                            if (this.shouldShowMetric(poetry.suitableMeter)) {
+                                      html += `<div class="emotion-metric">`;
+                                      html += `<span class="label" title="${t.poetryMeterHint || ''}">${this.translateValue('Подходящий размер', lang)}:</span>`;
+                                      html += `<span class="value">${poetry.suitableMeter}</span>`;
+                                      html += `</div>`;
+                            }
+                  
+                            if (this.shouldShowMetric(poetry.freedomWaves, true)) {
+                                      html += `<div class="emotion-metric">`;
+                                      html += `<span class="label" title="${t.poetryFreedomHint || ''}">${this.translateValue('Вольноволны', lang)}:</span>`;
+                                      html += `<span class="value">${poetry.freedomWaves}%</span>`;
+                                      html += `</div>`;
+                            }
+                  
+                            html += `</div>`;
     }
 
     const journalist = result.metrics?.journalist || {};
@@ -2971,7 +3074,17 @@ getTranslations(lang) {
             writerFragmentationHint: '10 = каждое предложение с абзаца, 1 = абзацы по 10 предложений, 0 = монолит',
             writerImmersivenessHint: 'Сенсорная лексика (зрение, слух, осязание, запах, вкус) на 1000 слов. Погружение в сцену',
             writerChaosHint: 'Энтропия ритма: равномерность распределения длин предложений, абзацев и знаков препинания. 0% — монотонно, 100% — богато/хаотично',
-	        journalistDigitalFootprint: 'Числа, даты, проценты на 1000 слов. Показатель фактологической насыщенности',
+	        poetryAnaphoraHint: 'Доля строк, в которых первое слово совпадает с первым словом предыдущей строки',
+            poetryEpiphoraHint: 'Доля строк, в которых последнее слово совпадает с последним словом предыдущей строки',
+            poetryConsonantHint: 'Суммарное число повторяющихся согласных (каждая дополнительная встреча) на 100 слов',
+            poetryVowelHint: 'Суммарное число повторяющихся гласных на 100 слов',
+            poetrySyllableHint: 'Среднее число слогов на слово, умноженное на 100',
+            poetryStropheHint: 'Средняя длина строки в слогах',
+            poetryRhymeHint: 'Количество рифмующихся пар строк (совпадение последних 3 букв) на 100 строк',
+            poetryMeterHint: 'Наиболее частый размер четверостиший (длины строк в словах). Например, 8-8-8-8',
+            poetryLineLengthHint: 'Средняя длина строки в словах',
+            poetryFreedomHint: 'Доля строк с уникальной длиной. Чем выше, тем вольнее стих',
+			journalistDigitalFootprint: 'Числа, даты, проценты на 1000 слов. Показатель фактологической насыщенности',
             journalistNameIndex: 'Имена, фамилии, названия организаций и мест на 1000 слов. Чем выше, тем больше конкретных источников',
             journalistFactMirror: 'Отсутствие субъективных выражений. 100% = идеально объективно, 0% = текст полон мнений',
             journalistFreshnessGauge: 'Маркеры «сегодня, вчера, только что» на 1000 слов. Показатель оперативности',
@@ -3316,6 +3429,16 @@ getTranslations(lang) {
             writerFragmentationHint: '10 = each sentence starts a new paragraph, 1 = 10 sentences per paragraph, 0 = monolithic',
             writerImmersivenessHint: 'Sensory words (sight, hearing, touch, smell, taste) per 1000 words. High = immersive atmosphere',
             writerChaosHint: 'Rhythm entropy: uniformity of sentence length, paragraph length and punctuation. 0% = monotonous, 100% = chaotic/rich',
+			poetryAnaphoraHint: 'Percentage of lines where the first word matches the first word of the previous line',
+            poetryEpiphoraHint: 'Percentage of lines where the last word matches the last word of the previous line',
+            poetryConsonantHint: 'Total repetitions of consonants (each extra occurrence) per 100 words',
+            poetryVowelHint: 'Total repetitions of vowels per 100 words',
+            poetrySyllableHint: 'Average number of syllables per word, multiplied by 100',
+            poetryStropheHint: 'Average line length in syllables',
+            poetryRhymeHint: 'Number of rhyming line pairs (matching last 3 letters) per 100 lines',
+            poetryMeterHint: 'Most frequent quatrain pattern (word lengths per line). E.g., 8-8-8-8',
+            poetryLineLengthHint: 'Average line length in words',
+            poetryFreedomHint: 'Percentage of lines with unique length. Higher means freer verse',
 			journalistDigitalFootprint: 'Numbers, dates, percentages per 1000 words. Measures factual density',
             journalistNameIndex: 'Names of people, organizations, places per 1000 words. Higher means more specific sources',
             journalistFactMirror: 'Absence of subjective expressions. 100% = perfectly objective, 0% = opinion‑heavy',
@@ -3447,6 +3570,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
