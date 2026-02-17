@@ -7628,16 +7628,29 @@
                         
                         if (totalDimensions === 0) return 0;
                         
-                        let complexityScore = 0;
+                        let activeCount = 0;
+                        let totalScore = 0;
+                        let totalMarkers = 0;
                         
                         dimensionEntries.forEach(([name, dim]) => {
-                            if (dim.score > 0) {
-                                const weightedScore = dim.score * (1 + (dim.markers ? Object.keys(dim.markers).length / 10 : 0));
-                                complexityScore += Math.min(1, weightedScore);
+                            if (dim.score > 0.1) {
+                                activeCount++;
+                                totalScore += dim.score;
+                                if (dim.markers) {
+                                    totalMarkers += Object.keys(dim.markers).length;
+                                }
                             }
                         });
                         
-                        return complexityScore / totalDimensions;
+                        if (activeCount === 0) return 0;
+                        
+                        const activityRatio = activeCount / totalDimensions;
+                        const avgScore = totalScore / activeCount;
+                        const markerBonus = Math.min(0.3, totalMarkers / (activeCount * 5));
+                        
+                        const complexity = activityRatio * (0.6 + avgScore * 0.4) * (1 + markerBonus);
+                        
+                        return Math.min(1, Math.max(0, complexity));
         }
         
         analyzeSemanticRelations(words) {
@@ -9911,6 +9924,7 @@
     
 
 })();
+
 
 
 
