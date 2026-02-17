@@ -6995,7 +6995,7 @@
                         
                         const emotionalProgression = this.enhancedEmotionalProgression(sentences);
                         const semanticClusters = this.enhancedSemanticClustering(words, data.cleaned);
-                        const thematicAnalysis = this.multiDimensionalThematicAnalysis(words, sentences);
+                        const thematicAnalysis = this.multiDimensionalThematicAnalysis(words);
                         const semanticRelations = this.analyzeSemanticRelations(words);
                         const abstractionLevel = this.calculateAbstractionLevel(words);
                         
@@ -9912,6 +9912,7 @@
     
 
 })();
+
 
 
 
