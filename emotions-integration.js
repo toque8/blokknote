@@ -1292,70 +1292,79 @@ renderResult(result) {
                             html += `<div class="emotion-section">`;
                             html += `<h3>${lang === 'ru' ? 'Для поэта' : 'For Poet'}</h3>`;
                   
-                            if (this.shouldShowMetric(poetry.anaphoraFreq, true)) {
+                            const anaphoraVal = this.getNumber(poetry.anaphoraFreq);
+                            if (anaphoraVal !== null && anaphoraVal !== 0) {
                                       html += `<div class="emotion-metric">`;
                                       html += `<span class="label" title="${t.poetryAnaphoraHint || ''}">${this.translateValue('Анафорическая частота', lang)}:</span>`;
                                       html += `<span class="value">${poetry.anaphoraFreq}%</span>`;
                                       html += `</div>`;
                             }
                   
-                            if (this.shouldShowMetric(poetry.epiphoraFreq, true)) {
+                            const epiphoraVal = this.getNumber(poetry.epiphoraFreq);
+                            if (epiphoraVal !== null && epiphoraVal !== 0) {
                                       html += `<div class="emotion-metric">`;
                                       html += `<span class="label" title="${t.poetryEpiphoraHint || ''}">${this.translateValue('Эпифорическая частота', lang)}:</span>`;
                                       html += `<span class="value">${poetry.epiphoraFreq}%</span>`;
                                       html += `</div>`;
                             }
                   
-                            if (this.shouldShowMetric(poetry.consonantWhisper, true)) {
+                            const consVal = this.getNumber(poetry.consonantWhisper);
+                            if (consVal !== null && consVal !== 0) {
                                       html += `<div class="emotion-metric">`;
                                       html += `<span class="label" title="${t.poetryConsonantHint || ''}">${this.translateValue('Шелест букв', lang)}:</span>`;
                                       html += `<span class="value">${poetry.consonantWhisper}</span>`;
                                       html += `</div>`;
                             }
                   
-                            if (this.shouldShowMetric(poetry.vowelCaress, true)) {
+                            const vowelVal = this.getNumber(poetry.vowelCaress);
+                            if (vowelVal !== null && vowelVal !== 0) {
                                       html += `<div class="emotion-metric">`;
                                       html += `<span class="label" title="${t.poetryVowelHint || ''}">${this.translateValue('Ласка звуков', lang)}:</span>`;
                                       html += `<span class="value">${poetry.vowelCaress}</span>`;
                                       html += `</div>`;
                             }
                   
-                            if (this.shouldShowMetric(poetry.syllableScore, true)) {
+                            const syllVal = this.getNumber(poetry.syllableScore);
+                            if (syllVal !== null && syllVal !== 0) {
                                       html += `<div class="emotion-metric">`;
                                       html += `<span class="label" title="${t.poetrySyllableHint || ''}">${this.translateValue('Слогопись', lang)}:</span>`;
                                       html += `<span class="value">${poetry.syllableScore}</span>`;
                                       html += `</div>`;
                             }
                   
-                            if (this.shouldShowMetric(poetry.stropheMeter, true)) {
+                            const stropheVal = this.getNumber(poetry.stropheMeter);
+                            if (stropheVal !== null && stropheVal !== 0) {
                                       html += `<div class="emotion-metric">`;
                                       html += `<span class="label" title="${t.poetryStropheHint || ''}">${this.translateValue('Строфамёт', lang)}:</span>`;
                                       html += `<span class="value">${poetry.stropheMeter}</span>`;
                                       html += `</div>`;
                             }
-
-							if (this.shouldShowMetric(poetry.lineLength, true)) {
+                  
+                            const lineLenVal = this.getNumber(poetry.lineLength);
+                            if (lineLenVal !== null && lineLenVal !== 0) {
                                       html += `<div class="emotion-metric">`;
                                       html += `<span class="label" title="${t.poetryLineLengthHint || ''}">${this.translateValue('Длинностих', lang)}:</span>`;
                                       html += `<span class="value">${poetry.lineLength}</span>`;
                                       html += `</div>`;
                             }
                   
-                            if (this.shouldShowMetric(poetry.rhymeCatcher, true)) {
+                            const rhymeVal = this.getNumber(poetry.rhymeCatcher);
+                            if (rhymeVal !== null && rhymeVal !== 0) {
                                       html += `<div class="emotion-metric">`;
                                       html += `<span class="label" title="${t.poetryRhymeHint || ''}">${this.translateValue('Ловец рифм', lang)}:</span>`;
                                       html += `<span class="value">${poetry.rhymeCatcher}%</span>`;
                                       html += `</div>`;
                             }
                   
-                            if (this.shouldShowMetric(poetry.suitableMeter)) {
+                            if (poetry.suitableMeter) {
                                       html += `<div class="emotion-metric">`;
                                       html += `<span class="label" title="${t.poetryMeterHint || ''}">${this.translateValue('Подходящий размер', lang)}:</span>`;
                                       html += `<span class="value">${poetry.suitableMeter}</span>`;
                                       html += `</div>`;
                             }
                   
-                            if (this.shouldShowMetric(poetry.freedomWaves, true)) {
+                            const freedomVal = this.getNumber(poetry.freedomWaves);
+                            if (freedomVal !== null && freedomVal !== 0) {
                                       html += `<div class="emotion-metric">`;
                                       html += `<span class="label" title="${t.poetryFreedomHint || ''}">${this.translateValue('Вольноволны', lang)}:</span>`;
                                       html += `<span class="value">${poetry.freedomWaves}%</span>`;
@@ -3570,6 +3579,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
