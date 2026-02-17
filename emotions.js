@@ -8487,6 +8487,19 @@
             
             return Math.min(1, factors.reduce((a, b) => a + b, 0) / factors.length);
         }
+
+        calculatePsychologicalDimensionScore(psychological) {
+                        if (!psychological) return 0;
+                        const factors = [
+                            psychological.psychologicalComplexity || 0,
+                            (psychological.selfAwarenessLevel && psychological.selfAwarenessLevel.score) || 0,
+                            (psychological.emotionalIntelligence && psychological.emotionalIntelligence.score) || 0,
+                            (psychological.defenseMechanisms && psychological.defenseMechanisms.intensity) || 0
+                        ];
+                        const validFactors = factors.filter(f => !isNaN(f) && f !== null && f !== undefined);
+                        if (validFactors.length === 0) return 0;
+                        return Math.min(1, validFactors.reduce((a, b) => a + b, 0) / validFactors.length);
+        }
         
         calculateOverallComplexity(analyses) {
             const textFactors = [];
@@ -9986,6 +9999,7 @@
     
 
 })();
+
 
 
 
