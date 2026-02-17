@@ -1380,6 +1380,13 @@
                         console.warn('Writer metrics calculation error:', e);
                     }
 
+                    let poetryMetrics = {};
+                    try {
+                        poetryMetrics = this.calculatePoetryMetrics(text);
+                    } catch (e) {
+                        console.warn('Poetry metrics calculation error:', e);
+                    }
+
                     let journalistMetrics = {};
                     try {
                         journalistMetrics = this.calculateJournalistMetrics(text);
@@ -1416,6 +1423,7 @@
                             readingTime: preprocessing.words.length / 200,
                             complexityScore: integratedResult.complexityScore,
                             writer: writerMetrics,
+                            poetry: poetryMetrics,
                             journalist: journalistMetrics,
                             copywriter: copywriterMetrics,
                             fun: funMetrics
@@ -1678,6 +1686,146 @@
                     metrics.chaosEntropyPercent = chaosPercent;
                     
                     return metrics;
+        }
+
+        calculatePoetryMetrics(text) {
+                            if (!text || typeof text !== 'string') return {};
+                  
+                            const lines = text.split('\n').filter(line => line.trim().length > 0);
+                            const totalLines = lines.length;
+                            if (totalLines === 0) return {};
+                  
+                            const allWords = text.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
+                            const totalWords = allWords.length;
+                            if (totalWords === 0) return {};
+                  
+                            const vowelsRu = 'аеёиоуыэюя';
+                            const vowelsEn = 'aeiouy';
+                            const allVowels = vowelsRu + vowelsEn + vowelsRu.toUpperCase() + vowelsEn.toUpperCase();
+                  
+                            const metrics = {};
+                  
+                            let anaphoraCount = 0;
+                            for (let i = 1; i < totalLines; i++) {
+                                      const prevFirst = lines[i-1].match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu)?.[0]?.toLowerCase();
+                                      const currFirst = lines[i].match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu)?.[0]?.toLowerCase();
+                                      if (prevFirst && currFirst && prevFirst === currFirst) {
+                                                anaphoraCount++;
+                                      }
+                            }
+                            metrics.anaphoraFreq = totalLines ? ((anaphoraCount / totalLines) * 100).toFixed(1) : 0;
+                  
+                            let epiphoraCount = 0;
+                            for (let i = 1; i < totalLines; i++) {
+                                      const prevWords = lines[i-1].match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu);
+                                      const currWords = lines[i].match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu);
+                                      if (prevWords && currWords && prevWords.length > 0 && currWords.length > 0) {
+                                                const prevLast = prevWords[prevWords.length-1].toLowerCase();
+                                                const currLast = currWords[currWords.length-1].toLowerCase();
+                                                if (prevLast === currLast) {
+                                                          epiphoraCount++;
+                                                }
+                                      }
+                            }
+                            metrics.epiphoraFreq = totalLines ? ((epiphoraCount / totalLines) * 100).toFixed(1) : 0;
+                  
+                            const consonantsRu = 'бвгджзйклмнпрстфхцчшщ';
+                            const consonantsEn = 'bcdfghjklmnpqrstvwxz';
+                            const allConsonants = consonantsRu + consonantsEn + consonantsRu.toUpperCase() + consonantsEn.toUpperCase();
+                            let consRepetitions = 0;
+                            const consCounts = {};
+                            for (let char of text) {
+                                      if (allConsonants.includes(char)) {
+                                                consCounts[char] = (consCounts[char] || 0) + 1;
+                                      }
+                            }
+                            for (let count of Object.values(consCounts)) {
+                                      if (count > 1) consRepetitions += (count - 1);
+                            }
+                            metrics.consonantWhisper = totalWords ? ((consRepetitions / totalWords) * 100).toFixed(1) : 0;
+                  
+                            let vowelRepetitions = 0;
+                            const vowelCounts = {};
+                            for (let char of text) {
+                                      if (allVowels.includes(char)) {
+                                                vowelCounts[char] = (vowelCounts[char] || 0) + 1;
+                                      }
+                            }
+                            for (let count of Object.values(vowelCounts)) {
+                                      if (count > 1) vowelRepetitions += (count - 1);
+                            }
+                            metrics.vowelCaress = totalWords ? ((vowelRepetitions / totalWords) * 100).toFixed(1) : 0;
+                  
+                            let syllableCount = 0;
+                            for (let char of text) {
+                                      if (allVowels.includes(char)) syllableCount++;
+                            }
+                            metrics.syllableScore = totalWords ? ((syllableCount / totalWords) * 100).toFixed(1) : 0;
+                  
+                            let syllablesPerLine = [];
+                            for (let line of lines) {
+                                      let lineSyllables = 0;
+                                      for (let char of line) {
+                                                if (allVowels.includes(char)) lineSyllables++;
+                                      }
+                                      syllablesPerLine.push(lineSyllables);
+                            }
+                            const avgSyllablesPerLine = syllablesPerLine.reduce((a,b) => a+b, 0) / totalLines;
+                            metrics.stropheMeter = avgSyllablesPerLine.toFixed(1);
+                  
+                            let lineEndings = [];
+                            for (let line of lines) {
+                                      const words = line.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu);
+                                      if (words && words.length > 0) {
+                                                const lastWord = words[words.length-1].toLowerCase();
+                                                const ending = lastWord.slice(-3);
+                                                lineEndings.push(ending);
+                                      } else {
+                                                lineEndings.push('');
+                                      }
+                            }
+                            let rhymePairs = 0;
+                            const endingCounts = {};
+                            for (let end of lineEndings) {
+                                      if (end) {
+                                                endingCounts[end] = (endingCounts[end] || 0) + 1;
+                                      }
+                            }
+                            for (let count of Object.values(endingCounts)) {
+                                      if (count > 1) {
+                                                rhymePairs += count * (count - 1) / 2;
+                                      }
+                            }
+                            metrics.rhymeCatcher = totalLines ? ((rhymePairs / totalLines) * 100).toFixed(1) : 0;
+                  
+                            let patterns = {};
+                            for (let i = 0; i + 3 < totalLines; i += 4) {
+                                      const pattern = [];
+                                      for (let j = 0; j < 4; j++) {
+                                                const lineWords = lines[i+j].match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
+                                                pattern.push(lineWords.length);
+                                      }
+                                      const key = pattern.join('-');
+                                      patterns[key] = (patterns[key] || 0) + 1;
+                            }
+                            let bestPattern = 'смешанный';
+                            let maxCount = 0;
+                            for (let [pattern, count] of Object.entries(patterns)) {
+                                      if (count > maxCount) {
+                                                maxCount = count;
+                                                bestPattern = pattern;
+                                      }
+                            }
+                            metrics.suitableMeter = bestPattern;
+                  
+                            const lineLengths = lines.map(line => (line.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || []).length);
+                            const avgLineLength = lineLengths.reduce((a,b) => a+b, 0) / totalLines;
+                            metrics.lineLength = avgLineLength.toFixed(1);
+                  
+                            const uniqueLengths = new Set(lineLengths).size;
+                            metrics.freedomWaves = totalLines ? ((uniqueLengths / totalLines) * 100).toFixed(1) : 0;
+                  
+                            return metrics;
         }
 
         calculateJournalistMetrics(text) {
@@ -9757,6 +9905,7 @@
     
 
 })();
+
 
 
 
