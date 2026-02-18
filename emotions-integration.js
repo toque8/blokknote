@@ -1556,16 +1556,6 @@ renderResult(result) {
 				`;
 		}
 
-		const phaseCount = this.getNumber(this.getSafe(temporal, 'metrics.phaseCount'));
-		if (this.shouldShowMetric(phaseCount, true)) {
-				html += `
-					<div class="emotion-metric">
-						<span class="label" title="${translations.phaseCountDesc}">${translations.phaseCount}:</span>
-						<span class="value" style="text-align:right !important;float:right;">${phaseCount.toFixed(0)}</span>
-					</div>
-				`;
-		}
-
 		const peakCount = this.getNumber(this.getSafe(temporal, 'peaks', []).length);
 		if (this.shouldShowMetric(peakCount, true) && peakCount > 0) {
 				html += `
@@ -2191,14 +2181,6 @@ renderResult(result) {
                  </div>`;
         }
         
-        if (this.shouldShowMetric(languageConfidence, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.languageConfidenceDesc}">${translations.languageConfidence}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(languageConfidence * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
-        
         const emotionalWords = this.getNumber(this.getSafe(result, 'details.lexical.summary.totalEmotionalWords'));
         const lexicalDensity = this.getNumber(this.getSafe(result, 'details.lexical.summary.lexicalDensity'));
         const categoryCount = this.getNumber(this.getSafe(result, 'details.lexical.summary.categoryCount'));
@@ -2210,14 +2192,6 @@ renderResult(result) {
         const lexicalRichness = this.getNumber(this.getSafe(result, 'details.lexical.summary.lexicalRichness'));
         const emotionalClusters = this.getNumber(this.getSafe(result, 'details.lexical.clusters.length'));
         const emoticons = this.getSafe(result, 'details.lexical.emoticons', {});
-        
-        if (this.shouldShowMetric(emotionalWords, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.emotionalWordsDesc}">${translations.emotionalWords}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${emotionalWords}</span>
-                 </div>`;
-        }
         
         if (this.shouldShowMetric(lexicalDensity, true)) {
             html += `
@@ -2259,14 +2233,6 @@ renderResult(result) {
                  </div>`;
         }
         
-        if (this.shouldShowMetric(emotionalClusters, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.emotionalClustersDesc}">${translations.emotionalClusters}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${emotionalClusters}</span>
-                 </div>`;
-        }
-        
         if (Object.keys(emoticons).length > 0) {
             let emoticonsText = '';
             if (emoticons.positive > 0) emoticonsText += `${translations.positive}: ${emoticons.positive} `;
@@ -2281,6 +2247,14 @@ renderResult(result) {
                          <span class="value" style="text-align:right !important;float:right;">${emoticonsText}</span>
                      </div>`;
             }
+        }
+
+		if (this.shouldShowMetric(languageConfidence, true)) {
+            html += `
+                 <div class="emotion-metric">
+                     <span class="label" title="${translations.languageConfidenceDesc}">${translations.languageConfidence}:</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(languageConfidence * 100).toFixed(1)}%</span>
+                 </div>`;
         }
         
         html += `</div>`;
@@ -4032,6 +4006,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
