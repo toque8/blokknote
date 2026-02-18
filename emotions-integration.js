@@ -877,13 +877,30 @@ detectTextType(metrics) {
                             let journScore = 0;
                             let poetryScore = 0;
                   
-                            if (metrics.poetry) {
-                                      const lines = this.getNumber(metrics.poetry.totalLines) || 0;
-                                      const rhyme = this.getNumber(metrics.poetry.rhymeCatcher) || 0;
-                                      if (lines > 4 && rhyme > 0) {
-                                                poetryScore += 5; 
-                                      }
-                            }
+                  			if (metrics.poetry) {
+			                            const lines = this.getNumber(metrics.poetry.totalLines) || 0;
+			                            const rhyme = this.getNumber(metrics.poetry.rhymeCatcher) || 0;
+			                            const lineLen = this.getNumber(metrics.poetry.lineLength) || 0; 
+			                            const freedom = this.getNumber(metrics.poetry.freedomWaves) || 0;
+			                            const anaphora = this.getNumber(metrics.poetry.anaphoraFreq) || 0;
+			                            const epiphora = this.getNumber(metrics.poetry.epiphoraFreq) || 0;
+			                  
+			                            if (lines > 4) {
+			                                      if (rhyme > 5) poetryScore += 3;
+			                                      
+			                                      if (lineLen > 0 && lineLen < 10) poetryScore += 2;
+			                                      
+			                                      if (freedom < 40) poetryScore += 2;
+			                                      
+			                                      if (anaphora > 3) poetryScore += 1;
+			                                      if (epiphora > 2) poetryScore += 1;
+			                                      
+			                                      const cons = this.getNumber(metrics.poetry.consonantWhisper) || 0;
+			                                      const vowel = this.getNumber(metrics.poetry.vowelCaress) || 0;
+			                                      if (cons > 100) poetryScore += 1;
+			                                      if (vowel > 100) poetryScore += 1;
+			                            }
+			                }
                   
                             if (metrics.writer) {
                                       const immerse = this.getNumber(metrics.writer.immersiveness) || 0;
@@ -4021,6 +4038,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
