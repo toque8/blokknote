@@ -877,30 +877,33 @@ detectTextType(metrics) {
                             let journScore = 0;
                             let poetryScore = 0;
                   
-                  			if (metrics.poetry) {
-			                            const lines = this.getNumber(metrics.poetry.totalLines) || 0;
-			                            const rhyme = this.getNumber(metrics.poetry.rhymeCatcher) || 0;
-			                            const lineLen = this.getNumber(metrics.poetry.lineLength) || 0; 
-			                            const freedom = this.getNumber(metrics.poetry.freedomWaves) || 0;
-			                            const anaphora = this.getNumber(metrics.poetry.anaphoraFreq) || 0;
-			                            const epiphora = this.getNumber(metrics.poetry.epiphoraFreq) || 0;
-			                  
-			                            if (lines > 4) {
-			                                      if (rhyme > 5) poetryScore += 3;
-			                                      
-			                                      if (lineLen > 0 && lineLen < 10) poetryScore += 2;
-			                                      
-			                                      if (freedom < 40) poetryScore += 2;
-			                                      
-			                                      if (anaphora > 3) poetryScore += 1;
-			                                      if (epiphora > 2) poetryScore += 1;
-			                                      
-			                                      const cons = this.getNumber(metrics.poetry.consonantWhisper) || 0;
-			                                      const vowel = this.getNumber(metrics.poetry.vowelCaress) || 0;
-			                                      if (cons > 100) poetryScore += 1;
-			                                      if (vowel > 100) poetryScore += 1;
-			                            }
-			                }
+                            if (metrics.poetry) {
+                                      const lines = this.getNumber(metrics.poetry.totalLines) || 0;
+                                      const rhyme = this.getNumber(metrics.poetry.rhymeCatcher) || 0;
+                                      const lineLen = this.getNumber(metrics.poetry.lineLength) || 0; 
+                                      const freedom = this.getNumber(metrics.poetry.freedomWaves) || 0;
+                                      const anaphora = this.getNumber(metrics.poetry.anaphoraFreq) || 0;
+                                      const epiphora = this.getNumber(metrics.poetry.epiphoraFreq) || 0;
+                                      const cons = this.getNumber(metrics.poetry.consonantWhisper) || 0;
+                                      const vowel = this.getNumber(metrics.poetry.vowelCaress) || 0;
+                  
+                                      if (lines > 4) {
+                                                if (rhyme > 5) {
+                                                          poetryScore += 4; 
+                                                } else {
+                                                          poetryScore += 0; 
+                                                }
+                                                
+                                                if (rhyme > 5) {
+                                                          if (lineLen > 0 && lineLen < 8) poetryScore += 2;
+                                                          if (freedom < 30) poetryScore += 2;
+                                                          if (anaphora > 5) poetryScore += 1;
+                                                          if (epiphora > 3) poetryScore += 1;
+                                                          if (cons > 150) poetryScore += 1;
+                                                          if (vowel > 150) poetryScore += 1;
+                                                }
+                                      }
+                            }
                   
                             if (metrics.writer) {
                                       const immerse = this.getNumber(metrics.writer.immersiveness) || 0;
@@ -910,12 +913,12 @@ detectTextType(metrics) {
                                       const chaos = this.getNumber(metrics.writer.chaosEntropyPercent) || 0;
                                       const timeVector = this.getNumber(metrics.writer.timeVector) || 0;
                   
-                                      if (immerse > 5) fictionScore += 2;
-                                      if (silence > 2) fictionScore += 2;
-                                      if (dialogue > 1) fictionScore += 2;
-                                      if (ego > 30) fictionScore += 1; 
-                                      if (chaos > 60) fictionScore += 1; 
-                                      if (timeVector < -20 || timeVector > 20) fictionScore += 1; 
+                                      if (immerse > 5) fictionScore += 3;  
+                                      if (silence > 2) fictionScore += 3;  
+                                      if (dialogue > 1) fictionScore += 3; 
+                                      if (ego > 30) fictionScore += 2;      
+                                      if (chaos > 60) fictionScore += 2;   
+                                      if (timeVector < -20 || timeVector > 20) fictionScore += 2; 
                             }
                   
                             if (metrics.copywriter) {
@@ -931,7 +934,7 @@ detectTextType(metrics) {
                                       if (filler > 8) copyScore += 1;
                                       if (superlative > 8) copyScore += 2;
                                       if (spam > 5) copyScore += 2;
-                                      if (water > 65) copyScore += 1; 
+                                      if (water > 65) copyScore += 1;
                             }
                   
                             if (metrics.journalist) {
@@ -944,13 +947,13 @@ detectTextType(metrics) {
                   
                                       if (digital > 8) journScore += 2;
                                       if (nameIdx > 8) journScore += 2;
-                                      if (factMirror > 80) journScore += 1; 
-                                      if (antiYellow > 80) journScore += 1; 
-                                      if (freshness > 3) journScore += 2; 
-                                      if (categorical > 8) journScore += 1; 
+                                      if (factMirror > 80) journScore += 1;
+                                      if (antiYellow > 80) journScore += 1;
+                                      if (freshness > 3) journScore += 2;
+                                      if (categorical > 8) journScore += 1;
                             }
                   
-                            if (poetryScore >= 5) {
+                            if (poetryScore >= 8) {
                                       return 'poetry';
                             }
                   
@@ -960,7 +963,6 @@ detectTextType(metrics) {
                             if (journScore > fictionScore && journScore > copyScore) {
                                       return 'journalism';
                             }
-
                             return 'fiction';
 }
                   
@@ -4038,6 +4040,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
