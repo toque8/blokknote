@@ -1692,7 +1692,7 @@ renderResult(result) {
                     if (this.shouldShowMetric(modalityVal, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.writerModalityHint || ''}">${this.translateValue('Уровень модальности', lang)}:</span>`;
-                              html += `<span class="value" style="text-align:right !important;float:right;">${writer.modalityLevel} ‰</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${writer.modalityLevel}‰</span>`;
                               html += `</div>`;
                     }
                     
@@ -1716,7 +1716,7 @@ renderResult(result) {
                     if (this.shouldShowMetric(immersivenessVal, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.writerImmersivenessHint || ''}">${this.translateValue('Показатель иммерсивности', lang)}:</span>`;
-                              html += `<span class="value" style="text-align:right !important;float:right;">${writer.immersiveness} ‰</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${writer.immersiveness}‰</span>`;
                               html += `</div>`;
                     }
                     
@@ -1837,7 +1837,7 @@ renderResult(result) {
                     if (this.shouldShowMetric(digitalVal, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.journalistDigitalFootprint || ''}">${this.translateValue('Цифровой след', lang)}:</span>`;
-                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.digitalFootprint} ‰</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.digitalFootprint}‰</span>`;
                               html += `</div>`;
                     }
                     
@@ -1845,7 +1845,7 @@ renderResult(result) {
                     if (this.shouldShowMetric(nameVal, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.journalistNameIndex || ''}">${this.translateValue('Именной указатель', lang)}:</span>`;
-                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.nameIndex} ‰</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.nameIndex}‰</span>`;
                               html += `</div>`;
                     }
                     
@@ -1861,7 +1861,7 @@ renderResult(result) {
                     if (this.shouldShowMetric(freshnessVal, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.journalistFreshnessGauge || ''}">${this.translateValue('Показатель актуальности', lang)}:</span>`;
-                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.freshnessGauge} ‰</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.freshnessGauge}‰</span>`;
                               html += `</div>`;
                     }
                     
@@ -1877,7 +1877,7 @@ renderResult(result) {
                     if (this.shouldShowMetric(opinionVal, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.journalistOpinionPalette || ''}">${this.translateValue('Спектр мнений', lang)}:</span>`;
-                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.opinionPalette} ‰</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.opinionPalette}‰</span>`;
                               html += `</div>`;
                     }
                     
@@ -1885,7 +1885,7 @@ renderResult(result) {
                     if (this.shouldShowMetric(bureauVal, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.journalistBureaucraticNoise || ''}">${this.translateValue('Бюрократический шум', lang)}:</span>`;
-                              html += `<span class="value" style="text-align:right !important;float:right;">${bureauVal === 0 ? (lang === 'ru' ? 'Отсутствуют' : 'None') : bureauVal + ' ‰'}</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${bureauVal === 0 ? (lang === 'ru' ? 'Отсутствуют' : 'None') : bureauVal + '‰'}</span>`;
                               html += `</div>`;
                     }
                     
@@ -1893,7 +1893,7 @@ renderResult(result) {
                     if (this.shouldShowMetric(echoVal, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.journalistVerbalEcho || ''}">${this.translateValue('Словесное эхо', lang)}:</span>`;
-                              html += `<span class="value" style="text-align:right !important;float:right;">${echoVal === 0 ? (lang === 'ru' ? 'Отсутствуют' : 'None') : echoVal + ' ‰'}</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${echoVal === 0 ? (lang === 'ru' ? 'Отсутствуют' : 'None') : echoVal + '‰'}</span>`;
                               html += `</div>`;
                     }
                     
@@ -1901,7 +1901,7 @@ renderResult(result) {
                     if (this.shouldShowMetric(fogVal, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.journalistFogZone || ''}">${this.translateValue('Зона тумана', lang)}:</span>`;
-                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.fogZone} ‰</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.fogZone}‰</span>`;
                               html += `</div>`;
                     }
                     
@@ -1909,7 +1909,7 @@ renderResult(result) {
                     if (this.shouldShowMetric(categVal, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.journalistCategoricalTone || ''}">${this.translateValue('Категоричный тон', lang)}:</span>`;
-                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.categoricalTone} ‰</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${journalist.categoricalTone}‰</span>`;
                               html += `</div>`;
                     }
                     
@@ -2722,7 +2722,31 @@ renderResult(result) {
              <div class="emotion-section">
                  <h3>${translations.semanticAnalysis}</h3>`;
         
-        if (this.shouldShowMetric(semanticDetails.density, true)) {
+        if (semanticDetails.abstraction && semanticDetails.abstraction.description) {
+            html += `
+                 <div class="emotion-metric">
+                     <span class="label" title="${translations.abstractionLevelDesc}">${translations.abstractionLevel}:</span>
+                     <span class="value" style="text-align:right !important;float:right;">${this.translateAbstraction(semanticDetails.abstraction.description, currentLang)}</span>
+                 </div>`;
+        }
+
+		 if (semanticThematic.dominant) {
+            html += `
+                 <div class="emotion-metric">
+                     <span class="label" title="${translations.thematicDominantDesc}">${translations.thematicDominant}:</span>
+                     <span class="value" style="text-align:right !important;float:right;">${this.translateThematicDominant(semanticThematic.dominant, currentLang)}</span>
+                 </div>`;
+        }
+
+		if (this.shouldShowMetric(semanticThematic.complexity, true)) {
+            html += `
+                 <div class="emotion-metric">
+                     <span class="label" title="${translations.thematicComplexityDesc}">${translations.thematicComplexity}:</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(semanticThematic.complexity * 100).toFixed(1)}%</span>
+                 </div>`;
+        }
+		
+		if (this.shouldShowMetric(semanticDetails.density, true)) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.semanticDensityDesc}">${translations.semanticDensity}:</span>
@@ -2743,38 +2767,6 @@ renderResult(result) {
                  <div class="emotion-metric">
                      <span class="label" title="${translations.semanticCoherenceDesc}">${translations.semanticCoherence}:</span>
                      <span class="value" style="text-align:right !important;float:right;">${(semanticDetails.coherence * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
-        
-        if (semanticDetails.abstraction && semanticDetails.abstraction.description) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.abstractionLevelDesc}">${translations.abstractionLevel}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${this.translateAbstraction(semanticDetails.abstraction.description, currentLang)}</span>
-                 </div>`;
-        }
-        
-        if (semanticDetails.clusters && this.shouldShowMetric(semanticDetails.clusters.length, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.semanticClustersDesc}">${translations.semanticClusters}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${semanticDetails.clusters.length}</span>
-                 </div>`;
-        }
-        
-        if (semanticThematic.dominant) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.thematicDominantDesc}">${translations.thematicDominant}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${this.translateThematicDominant(semanticThematic.dominant, currentLang)}</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(semanticThematic.complexity, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.thematicComplexityDesc}">${translations.thematicComplexity}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(semanticThematic.complexity * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -3534,12 +3526,12 @@ getTranslations(lang) {
             clusterCountDesc: 'Сколько эмоциональных кластеров',
             avgClusterSize: 'Средний размер кластера',
             avgClusterSizeDesc: 'Среднее количество эмоций в кластере',
-            writerHemingwayHint: 'Доля предложений ≤5 слов без союзов «чтобы, который, because, which…». Высокий % — «рубленый» стиль',
+            writerHemingwayHint: 'Доля предложений ≤5 слов без союзов: чтобы, который. Высокий % — «рубленый» стиль',
             writerSilenceHint: 'Плотность слов «тишина/молчание» и многоточий. дБ = 10·log₁₀(плотность). Высокое значение — текст полон пауз',
             writerWeatherHint: 'Баланс между «жарой» и «холодом» в лексике. -40°C = ледяной, +40°C = знойный, 0°C = нейтрально',
             writerDialogueHint: 'Доля текста внутри кавычек (прямая речь). Высокое значение — диалоговая проза, низкое — нарратив',
             writerTimeHint: 'Преобладание будущего (+) или прошлого (-). Рассчитано по глагольным формам и маркерам времени',
-            writerModalityHint: 'Частота слов неуверенности (может быть, наверное, probably) на 1000 слов. Чем выше, тем текст гипотетичнее',
+            writerModalityHint: 'Частота слов неуверенности (может быть, наверное) на 1000 слов. Чем выше, тем текст гипотетичнее',
             writerEgoHint: 'Доля «я/мы» среди всех личных местоимений. >50% — эгоцентричное повествование',
             writerFragmentationHint: '10 = каждое предложение с абзаца, 1 = абзацы по 10 предложений, 0 = монолит',
             writerImmersivenessHint: 'Сенсорная лексика (зрение, слух, осязание, запах, вкус) на 1000 слов. Погружение в сцену',
@@ -4040,6 +4032,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
