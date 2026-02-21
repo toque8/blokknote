@@ -594,6 +594,17 @@ translateValue(value, lang) {
             'Сложное переплетение': 'Complex Intertwining',
             'Горько-сладкая симфония': 'Bittersweet Symphony',
             'Ностальгическое эхо': 'Nostalgic Echo',
+			                            'Эмоциональная гамма': 'Emotional Spectrum',
+                                        'Нежная грусть': 'Gentle Sadness',
+                                        'Тревожное ожидание': 'Anxious Anticipation',
+                                        'Многогранная сложность': 'Multifaceted Complexity',
+                                        'Сложное переплетение': 'Complex Intertwining',
+                                        'Глубокое размышление': 'Deep Reflection',
+                                        'Созерцательное спокойствие': 'Contemplative Calm',
+                                        'Смешанные чувства': 'Mixed Feelings',
+                                        'Ироничный взгляд': 'Ironic Gaze',
+                                        'Уязвимая нежность': 'Vulnerable Tenderness',
+                                        'Стойкая уверенность': 'Resilient Confidence',
 			'Коэффициент Хемингуэя': 'Hemingway Coefficient',
             'Эффект тишины': 'Silence Effect',
             'Индекс погоды': 'Weather Index',
@@ -4006,6 +4017,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
