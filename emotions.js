@@ -7008,7 +7008,7 @@
                             thematic: thematicAnalysis,
                             relations: semanticRelations,
                             abstraction: abstractionLevel,
-                            semanticRichness: this.calculateEnhancedSemanticRichness(words, uniqueWords),
+                            semanticRichness: this.calculateEnhancedSemanticRichness(filteredWords, filteredUniqueWords),
                             coherence: this.calculateSemanticCoherence(sentences)
                         };
         }
@@ -7853,8 +7853,8 @@
                         if (sentences.length < 2) return 1;
                         
                         const stopWords = this.language === 'ru' ? 
-                            ['и', 'в', 'на', 'с', 'к', 'а', 'но', 'или', 'не', 'то', 'он', 'она', 'оно', 'они', 'это', 'тот', 'такой', 'какой', 'который', 'свой', 'мой', 'твой', 'его', 'её', 'их', 'наш', 'ваш', 'этот', 'да', 'нет', 'же', 'бы', 'ли', 'что', 'чтобы', 'потому', 'когда', 'если', 'так', 'как'] :
-                            ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'this', 'that', 'these', 'those', 'it', 'its', 'he', 'she', 'they', 'we', 'you', 'i', 'my', 'your', 'his', 'her', 'our', 'their', 'as', 'by', 'from', 'so', 'if', 'then', 'than', 'too', 'very', 'can', 'will', 'just', 'don', 'should', 'now'];
+                            ['и', 'в', 'на', 'с', 'к', 'а', 'но', 'или', 'не', 'то', 'он', 'она', 'оно', 'они', 'это', 'тот', 'такой', 'какой', 'который', 'свой', 'мой', 'твой', 'его', 'её', 'их', 'наш', 'ваш'] :
+                            ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'this', 'that', 'these', 'those', 'it', 'its', 'he', 'she', 'they', 'we', 'you', 'i', 'my', 'your', 'his', 'her', 'our', 'their'];
                         
                         let coherence = 0;
                         let validPairs = 0;
@@ -7877,49 +7877,11 @@
                             
                             let pairCoherence = maxWords > 0 ? overlap / maxWords : 0;
                             
-                            if (pairCoherence < 0.2) {
-                                const semanticBonus = this.calculateSemanticBonus(prevWords, currWords);
-                                pairCoherence = Math.min(0.4, pairCoherence + semanticBonus);
-                            }
-                            
                             coherence += pairCoherence;
                             validPairs++;
                         }
                         
                         return validPairs > 0 ? coherence / validPairs : 0;
-        }
-                    
-        calculateSemanticBonus(prevWords, currWords) {
-                        const semanticGroups = {
-                            ru: {
-                                'действие': ['идти', 'ходить', 'бежать', 'ехать', 'лететь', 'плыть', 'двигаться', 'двигаться', 'двигаться', 'двигаться'],
-                                'место': ['дом', 'квартира', 'комната', 'здание', 'здание', 'здание', 'здание', 'здание'],
-                                'время': ['сейчас', 'теперь', 'сегодня', 'завтра', 'вчера', 'утром', 'вечером', 'ночью'],
-                                'эмоция': ['радость', 'грусть', 'счастье', 'печаль', 'любовь', 'ненависть', 'страх', 'гнев'],
-                                'человек': ['человек', 'мужчина', 'женщина', 'ребенок', 'друг', 'враг', 'родитель', 'ребенок']
-                            },
-                            en: {
-                                'action': ['go', 'walk', 'run', 'drive', 'fly', 'swim', 'move', 'travel'],
-                                'place': ['house', 'apartment', 'room', 'building', 'home', 'place', 'location'],
-                                'time': ['now', 'today', 'tomorrow', 'yesterday', 'morning', 'evening', 'night'],
-                                'emotion': ['joy', 'sadness', 'happiness', 'sorrow', 'love', 'hate', 'fear', 'anger'],
-                                'person': ['person', 'man', 'woman', 'child', 'friend', 'enemy', 'parent', 'child']
-                            }
-                        };
-                        
-                        const groups = semanticGroups[this.language] || semanticGroups.ru;
-                        let bonus = 0;
-                        
-                        for (const [groupName, groupWords] of Object.entries(groups)) {
-                            const prevInGroup = prevWords.filter(w => groupWords.includes(w)).length;
-                            const currInGroup = currWords.filter(w => groupWords.includes(w)).length;
-                            
-                            if (prevInGroup > 0 && currInGroup > 0) {
-                                bonus += 0.1;
-                            }
-                        }
-                        
-                        return Math.min(0.2, bonus);
         }
         
         psychologicalAnalysis(data) {
@@ -9970,6 +9932,7 @@
     
 
 })();
+
 
 
 
