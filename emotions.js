@@ -8914,52 +8914,65 @@
         }
         
         classifyPrimaryEmotion(dominantEmotion, totalScore, emotionalRange, intensity) {
-            const emotionMatrix = {
-                positive: {
-                    highIntensity: ['ecstatic', 'euphoric', 'exhilarated'],
-                    mediumIntensity: ['joyful', 'happy', 'content'],
-                    lowIntensity: ['pleased', 'satisfied', 'calm']
-                },
-                negative: {
-                    highIntensity: ['enraged', 'despairing', 'terrified'],
-                    mediumIntensity: ['angry', 'sad', 'anxious'],
-                    lowIntensity: ['subdued', 'pensive', 'resigned']
-                },
-                complex: {
-                    highComplexity: ['bittersweet', 'nostalgic', 'ambivalent'],
-                    mediumComplexity: ['reflective', 'contemplative', 'mixed'],
-                    lowComplexity: ['neutral', 'balanced', 'detached']
-                }
-            };
-            
-            let category = 'complex';
-            if (totalScore > 0.3) category = 'positive';
-            else if (totalScore < -0.3) category = 'negative';
-            let level = 'mediumIntensity';
-            if (intensity > 0.7) level = 'highIntensity';
-            else if (intensity < 0.3) level = 'lowIntensity';
-            if (Math.abs(totalScore) < 0.2 && emotionalRange > 0.4) {
-                category = 'complex';
-                level = emotionalRange > 0.6 ? 'highComplexity' : 
-                       emotionalRange > 0.3 ? 'mediumComplexity' : 'lowComplexity';
-            }
-            const emotions = emotionMatrix[category]?.[level] || ['balanced'];
-            const emotionMapping = {
-                'ecstasy': 'ecstatic',
-                'joy': 'joyful',
-                'love': 'content',
-                'peace': 'calm',
-                'sadness': 'sad',
-                'grief': 'despairing',
-                'anger': 'angry',
-                'fear': 'anxious',
-                'surprise': 'exhilarated'
-            };
-            
-            if (dominantEmotion !== 'neutral' && emotionMapping[dominantEmotion]) {
-                return emotionMapping[dominantEmotion];
-            }
-            return emotions[0];
+                              const emotionMatrix = {
+                                        positive: {
+                                                  highIntensity: ['ecstatic', 'euphoric', 'exhilarated'],
+                                                  mediumIntensity: ['joyful', 'happy', 'content'],
+                                                  lowIntensity: ['pleased', 'satisfied', 'calm']
+                                        },
+                                        negative: {
+                                                  highIntensity: ['enraged', 'despairing', 'terrified'],
+                                                  mediumIntensity: ['angry', 'sad', 'anxious'],
+                                                  lowIntensity: ['subdued', 'pensive', 'resigned']
+                                        },
+                                        complex: {
+                                                  highComplexity: ['bittersweet', 'nostalgic', 'ambivalent'],
+                                                  mediumComplexity: ['reflective', 'contemplative', 'mixed'],
+                                                  lowComplexity: ['neutral', 'balanced', 'detached']
+                                        }
+                              };
+
+                              let category = 'complex';
+                              if (totalScore > 0.1) category = 'positive';
+                              else if (totalScore < -0.1) category = 'negative';
+
+                              let level = 'mediumIntensity';
+                              if (intensity > 0.7) level = 'highIntensity';
+                              else if (intensity < 0.3) level = 'lowIntensity';
+
+                              if (Math.abs(totalScore) <= 0.1 && emotionalRange > 0.5) {
+                                        category = 'complex';
+                                        level = emotionalRange > 0.7 ? 'highComplexity' : 
+                                               emotionalRange > 0.4 ? 'mediumComplexity' : 'lowComplexity';
+                              }
+
+                              const emotions = emotionMatrix[category]?.[level] || ['balanced'];
+
+                              const emotionMapping = {
+                                        'ecstasy': 'ecstatic',
+                                        'joy': 'joyful',
+                                        'love': 'content',
+                                        'peace': 'calm',
+                                        'sadness': 'sad',
+                                        'grief': 'despairing',
+                                        'anger': 'angry',
+                                        'fear': 'anxious',
+                                        'surprise': 'exhilarated',
+                                        'anxiety': 'anxious',
+                                        'nostalgia': 'nostalgic',
+                                        'bittersweet': 'bittersweet',
+                                        'ambivalence': 'ambivalent',
+                                        'irony': 'ironic',
+                                        'calmness': 'calm',
+                                        'vulnerability': 'vulnerable',
+                                        'resilience': 'resilient'
+                              };
+
+                              if (dominantEmotion !== 'neutral' && emotionMapping[dominantEmotion]) {
+                                        return emotionMapping[dominantEmotion];
+                              }
+
+                              return emotions[0];
         }
         
         identifySecondaryEmotions(integratedResult) {
@@ -9533,22 +9546,27 @@
         }
         
         getAdvancedDisplayName(primaryEmotion, polarity, intensity, complexity) {
-            const names = {
-                ecstatic: polarity > 0.8 ? 'Божественный экстаз' : 'Всепоглощающая радость',
-                joyful: intensity > 0.7 ? 'Лучистая радость' : 'Тихий восторг',
-                happy: 'Счастливая гармония',
-                content: 'Умиротворённое удовлетворение',
-                calm: intensity < 0.2 ? 'Абсолютное спокойствие' : 'Гармоничное равновесие',
-                angry: intensity > 0.8 ? 'Яростный шторм' : 'Сдерживаемая буря',
-                sad: intensity > 0.6 ? 'Бездонная печаль' : 'Нежная грусть',
-                melancholic: 'Философская меланхолия',
-                anxious: 'Тревожное ожидание',
-                complex: complexity > 0.7 ? 'Многогранная сложность' : 'Сложное переплетение',
-                bittersweet: 'Горько-сладкая симфония',
-                nostalgic: 'Ностальгическое эхо'
-            };
-            
-            return names[primaryEmotion] || 'Эмоциональная гамма';
+                              const names = {
+                                        ecstatic: polarity > 0.8 ? 'Божественный экстаз' : 'Всепоглощающая радость',
+                                        joyful: intensity > 0.7 ? 'Лучистая радость' : 'Тихий восторг',
+                                        happy: 'Счастливая гармония',
+                                        content: 'Умиротворённое удовлетворение',
+                                        calm: intensity < 0.2 ? 'Абсолютное спокойствие' : 'Гармоничное равновесие',
+                                        angry: intensity > 0.8 ? 'Яростный шторм' : 'Сдерживаемая буря',
+                                        sad: intensity > 0.6 ? 'Бездонная печаль' : 'Нежная грусть',
+                                        melancholic: 'Философская меланхолия',
+                                        anxious: 'Тревожное ожидание',
+                                        complex: complexity > 0.7 ? 'Многогранная сложность' : 'Сложное переплетение',
+                                        bittersweet: 'Горько-сладкая симфония',
+                                        nostalgic: 'Ностальгическое эхо',
+                                        reflective: 'Глубокое размышление',
+                                        contemplative: 'Созерцательное спокойствие',
+                                        mixed: 'Смешанные чувства',
+                                        ironic: 'Ироничный взгляд',
+                                        vulnerable: 'Уязвимая нежность',
+                                        resilient: 'Стойкая уверенность'
+                              };
+                              return names[primaryEmotion] || 'Эмоциональная гамма';
         }
         
         getAdvancedDescription(primaryEmotion, polarity, intensity, complexity) {
@@ -10046,6 +10064,7 @@
     
 
 })();
+
 
 
 
