@@ -8854,9 +8854,11 @@
                 const emotionalDepth = integratedResult.emotionalDepth || 0.5;
                 
                 const primaryEmotion = this.classifyPrimaryEmotion(
-                    dominantEmotion.emotion,
+                    dominantEmotion.primary,
                     totalScore,
-                    emotionalRange
+                    emotionalRange,
+                    intensity,
+                    dominantEmotion.confidence
                 );
                 
                 const secondaryEmotions = this.identifySecondaryEmotions(integratedResult);
@@ -8913,7 +8915,32 @@
                 };
         }
         
-        classifyPrimaryEmotion(dominantEmotion, totalScore, emotionalRange, intensity) {
+        classifyPrimaryEmotion(dominantEmotion, totalScore, emotionalRange, intensity, confidence = 0.5) {
+                              if (dominantEmotion && dominantEmotion !== 'neutral' && confidence > 0.6) {
+                                        const emotionMapping = {
+                                                  'ecstasy': 'ecstatic',
+                                                  'joy': 'joyful',
+                                                  'love': 'content',
+                                                  'peace': 'calm',
+                                                  'sadness': 'sad',
+                                                  'grief': 'despairing',
+                                                  'anger': 'angry',
+                                                  'fear': 'anxious',
+                                                  'surprise': 'exhilarated',
+                                                  'anxiety': 'anxious',
+                                                  'nostalgia': 'nostalgic',
+                                                  'bittersweet': 'bittersweet',
+                                                  'ambivalence': 'ambivalent',
+                                                  'irony': 'ironic',
+                                                  'calmness': 'calm',
+                                                  'vulnerability': 'vulnerable',
+                                                  'resilience': 'resilient'
+                                        };
+                                        if (emotionMapping[dominantEmotion]) {
+                                                  return emotionMapping[dominantEmotion];
+                                        }
+                              }
+
                               const emotionMatrix = {
                                         positive: {
                                                   highIntensity: ['ecstatic', 'euphoric', 'exhilarated'],
@@ -8947,31 +8974,6 @@
                               }
 
                               const emotions = emotionMatrix[category]?.[level] || ['balanced'];
-
-                              const emotionMapping = {
-                                        'ecstasy': 'ecstatic',
-                                        'joy': 'joyful',
-                                        'love': 'content',
-                                        'peace': 'calm',
-                                        'sadness': 'sad',
-                                        'grief': 'despairing',
-                                        'anger': 'angry',
-                                        'fear': 'anxious',
-                                        'surprise': 'exhilarated',
-                                        'anxiety': 'anxious',
-                                        'nostalgia': 'nostalgic',
-                                        'bittersweet': 'bittersweet',
-                                        'ambivalence': 'ambivalent',
-                                        'irony': 'ironic',
-                                        'calmness': 'calm',
-                                        'vulnerability': 'vulnerable',
-                                        'resilience': 'resilient'
-                              };
-
-                              if (dominantEmotion !== 'neutral' && emotionMapping[dominantEmotion]) {
-                                        return emotionMapping[dominantEmotion];
-                              }
-
                               return emotions[0];
         }
         
@@ -9564,7 +9566,19 @@
                                         mixed: 'Смешанные чувства',
                                         ironic: 'Ироничный взгляд',
                                         vulnerable: 'Уязвимая нежность',
-                                        resilient: 'Стойкая уверенность'
+                                        resilient: 'Стойкая уверенность',
+                                        enraged: 'Неистовая ярость',
+                                        despairing: 'Всепоглощающее отчаяние',
+                                        terrified: 'Леденящий ужас',
+                                        subdued: 'Приглушённая тоска',
+                                        pensive: 'Задумчивая печаль',
+                                        resigned: 'Смиренное принятие',
+                                        euphoric: 'Эйфорический восторг',
+                                        exhilarated: 'Ошеломляющая радость',
+                                        pleased: 'Тихая радость',
+                                        satisfied: 'Довольное спокойствие',
+                                        balanced: 'Сбалансированное состояние',
+                                        detached: 'Отстранённое наблюдение'
                               };
                               return names[primaryEmotion] || 'Эмоциональная гамма';
         }
@@ -10064,6 +10078,7 @@
     
 
 })();
+
 
 
 
