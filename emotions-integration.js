@@ -605,6 +605,32 @@ translateValue(value, lang) {
                                         'Ироничный взгляд': 'Ironic Gaze',
                                         'Уязвимая нежность': 'Vulnerable Tenderness',
                                         'Стойкая уверенность': 'Resilient Confidence',
+			                            'Нежная грусть': 'Gentle Sadness',
+                                        'Тревожное ожидание': 'Anxious Anticipation',
+                                        'Яростный шторм': 'Furious Storm',
+                                        'Сдерживаемая буря': 'Contained Storm',
+                                        'Бездонная печаль': 'Bottomless Sadness',
+                                        'Философская меланхолия': 'Philosophical Melancholy',
+                                        'Многогранная сложность': 'Multifaceted Complexity',
+                                        'Сложное переплетение': 'Complex Intertwining',
+                                        'Глубокое размышление': 'Deep Reflection',
+                                        'Созерцательное спокойствие': 'Contemplative Calm',
+                                        'Смешанные чувства': 'Mixed Feelings',
+                                        'Ироничный взгляд': 'Ironic Gaze',
+                                        'Уязвимая нежность': 'Vulnerable Tenderness',
+                                        'Стойкая уверенность': 'Resilient Confidence',
+                                        'Неистовая ярость': 'Raging Fury',
+                                        'Всепоглощающее отчаяние': 'All-consuming Despair',
+                                        'Леденящий ужас': 'Chilling Horror',
+                                        'Приглушённая тоска': 'Muffled Longing',
+                                        'Задумчивая печаль': 'Thoughtful Sadness',
+                                        'Смиренное принятие': 'Humble Acceptance',
+                                        'Эйфорический восторг': 'Euphoric Delight',
+                                        'Ошеломляющая радость': 'Stunning Joy',
+                                        'Тихая радость': 'Quiet Joy',
+                                        'Довольное спокойствие': 'Content Calm',
+                                        'Сбалансированное состояние': 'Balanced State',
+                                        'Отстранённое наблюдение': 'Detached Observation',
 			'Коэффициент Хемингуэя': 'Hemingway Coefficient',
             'Эффект тишины': 'Silence Effect',
             'Индекс погоды': 'Weather Index',
@@ -4017,6 +4043,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
