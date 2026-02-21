@@ -7850,38 +7850,114 @@
         }
 
         calculateSemanticCoherence(sentences) {
-                        if (sentences.length < 2) return 1;
-                        
-                        const stopWords = this.language === 'ru' ? 
-                            ['и', 'в', 'на', 'с', 'к', 'а', 'но', 'или', 'не', 'то', 'он', 'она', 'оно', 'они', 'это', 'тот', 'такой', 'какой', 'который', 'свой', 'мой', 'твой', 'его', 'её', 'их', 'наш', 'ваш'] :
-                            ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'this', 'that', 'these', 'those', 'it', 'its', 'he', 'she', 'they', 'we', 'you', 'i', 'my', 'your', 'his', 'her', 'our', 'their'];
-                        
-                        let coherence = 0;
-                        let validPairs = 0;
-                        
-                        for (let i = 1; i < sentences.length; i++) {
-                            const prev = typeof sentences[i-1] === 'object' ? sentences[i-1].text : sentences[i-1];
-                            const curr = typeof sentences[i] === 'object' ? sentences[i].text : sentences[i];
-                            
-                            const prevWords = this.enhancedTokenization(prev)
-                                .map(w => w.toLowerCase())
-                                .filter(w => !stopWords.includes(w));
-                            const currWords = this.enhancedTokenization(curr)
-                                .map(w => w.toLowerCase())
-                                .filter(w => !stopWords.includes(w));
-                            
-                            if (prevWords.length === 0 || currWords.length === 0) continue;
-                            
-                            const overlap = prevWords.filter(w => currWords.includes(w)).length;
-                            const maxWords = Math.max(prevWords.length, currWords.length);
-                            
-                            let pairCoherence = maxWords > 0 ? overlap / maxWords : 0;
-                            
-                            coherence += pairCoherence;
-                            validPairs++;
-                        }
-                        
-                        return validPairs > 0 ? coherence / validPairs : 0;
+                              if (sentences.length < 2) return 1;
+
+                              const stopWords = this.language === 'ru' ? 
+                                        ['и', 'в', 'на', 'с', 'к', 'а', 'но', 'или', 'не', 'то', 'он', 'она', 'оно', 'они', 'это', 'тот', 'такой', 'какой', 'который', 'свой', 'мой', 'твой', 'его', 'её', 'их', 'наш', 'ваш', 'что', 'как', 'весь', 'этот'] :
+                                        ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'this', 'that', 'these', 'those', 'it', 'its', 'he', 'she', 'they', 'we', 'you', 'i', 'my', 'your', 'his', 'her', 'our', 'their'];
+
+                              const stem = (word) => {
+                                        if (this.language === 'ru') {
+                                                  if (word.length > 4) {
+                                                            if (word.endsWith('ого') || word.endsWith('его') || word.endsWith('ому') || word.endsWith('ему')) return word.slice(0, -3);
+                                                            if (word.endsWith('ыми') || word.endsWith('ими')) return word.slice(0, -3);
+                                                            if (word.endsWith('ая') || word.endsWith('яя') || word.endsWith('ое') || word.endsWith('ее') || word.endsWith('ые') || word.endsWith('ие')) return word.slice(0, -2);
+                                                            if (word.endsWith('ой') || word.endsWith('ий') || word.endsWith('ый')) return word.slice(0, -2);
+                                                            if (word.endsWith('ом') || word.endsWith('ем') || word.endsWith('ам') || word.endsWith('ям')) return word.slice(0, -2);
+                                                            if (word.endsWith('ов') || word.endsWith('ев') || word.endsWith('ин') || word.endsWith('ын')) return word.slice(0, -2);
+                                                            if (word.endsWith('ах') || word.endsWith('ях')) return word.slice(0, -2);
+                                                  }
+                                                  if (word.length > 3) {
+                                                            if (word.endsWith('ка') || word.endsWith('га') || word.endsWith('ха')) return word.slice(0, -1);
+                                                            if (word.endsWith('ть') || word.endsWith('ти')) return word.slice(0, -2);
+                                                  }
+                                        } else {
+                                                  if (word.length > 3) {
+                                                            if (word.endsWith('ing')) return word.slice(0, -3);
+                                                            if (word.endsWith('ed')) return word.slice(0, -2);
+                                                            if (word.endsWith('ly')) return word.slice(0, -2);
+                                                            if (word.endsWith('er')) return word.slice(0, -2);
+                                                            if (word.endsWith('est')) return word.slice(0, -3);
+                                                            if (word.endsWith('s') && !word.endsWith('ss') && !word.endsWith('us')) return word.slice(0, -1);
+                                                  }
+                                        }
+                                        return word;
+                              };
+
+                              const synonymGroups = this.language === 'ru' ? [
+                                        ['радость', 'счастье', 'веселье', 'восторг'],
+                                        ['грусть', 'печаль', 'тоска', 'уныние'],
+                                        ['гнев', 'злость', 'ярость', 'негодование'],
+                                        ['страх', 'ужас', 'боязнь', 'тревога'],
+                                        ['думать', 'мыслить', 'размышлять', 'полагать'],
+                                        ['говорить', 'сказать', 'произносить', 'вещать']
+                              ] : [
+                                        ['joy', 'happiness', 'delight', 'glee'],
+                                        ['sad', 'sorrow', 'melancholy', 'gloom'],
+                                        ['anger', 'rage', 'fury', 'wrath'],
+                                        ['fear', 'terror', 'dread', 'anxiety'],
+                                        ['think', 'believe', 'consider', 'ponder'],
+                                        ['speak', 'talk', 'say', 'utter']
+                              ];
+
+                              const processedSentences = sentences.map(s => {
+                                        const text = typeof s === 'object' ? s.text : s;
+                                        const words = this.enhancedTokenization(text)
+                                                  .map(w => w.toLowerCase())
+                                                  .filter(w => w.length > 1 && !stopWords.includes(w))
+                                                  .map(stem);
+                                        return new Set(words);
+                              });
+
+                              let totalCoherence = 0;
+                              let validPairs = 0;
+
+                              for (let i = 1; i < processedSentences.length; i++) {
+                                        const prevSet = processedSentences[i - 1];
+                                        const currSet = processedSentences[i];
+
+                                        if (prevSet.size === 0 || currSet.size === 0) {
+                                                  totalCoherence += 0.1;
+                                                  validPairs++;
+                                                  continue;
+                                        }
+
+                                        const exactOverlap = [...prevSet].filter(w => currSet.has(w)).length;
+
+                                        let synonymOverlap = 0;
+                                        for (const group of synonymGroups) {
+                                                  const groupSet = new Set(group);
+                                                  const prevInGroup = [...prevSet].filter(w => groupSet.has(w)).length;
+                                                  const currInGroup = [...currSet].filter(w => groupSet.has(w)).length;
+                                                  if (prevInGroup > 0 && currInGroup > 0) {
+                                                            synonymOverlap += Math.min(prevInGroup, currInGroup) * 0.5; 
+                                                  }
+                                        }
+
+                                        let thematicOverlap = 0;
+                                        const emotionCategories = Object.keys(this.dictionaries[this.language] || {});
+                                        for (const cat of emotionCategories) {
+                                                  const catWords = this.dictionaries[this.language][cat] || [];
+                                                  const catSet = new Set(catWords.map(w => stem(w.toLowerCase())));
+                                                  const prevInCat = [...prevSet].filter(w => catSet.has(w)).length;
+                                                  const currInCat = [...currSet].filter(w => catSet.has(w)).length;
+                                                  if (prevInCat > 0 && currInCat > 0) {
+                                                            thematicOverlap += Math.min(prevInCat, currInCat) * 0.3; 
+                                                  }
+                                        }
+
+                                        const totalOverlapWeight = exactOverlap + synonymOverlap + thematicOverlap;
+                                        const maxPossible = Math.min(prevSet.size, currSet.size); 
+                                        let pairCoherence = maxPossible > 0 ? totalOverlapWeight / maxPossible : 0;
+
+                                        pairCoherence = Math.min(1, pairCoherence);
+
+                                        totalCoherence += pairCoherence;
+                                        validPairs++;
+                              }
+
+                              const result = validPairs > 0 ? totalCoherence / validPairs : 0;
+                              return result;
         }
         
         psychologicalAnalysis(data) {
@@ -9932,6 +10008,7 @@
     
 
 })();
+
 
 
 
