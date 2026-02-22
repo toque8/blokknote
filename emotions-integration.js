@@ -226,6 +226,64 @@ translatePlutchikEmotion(emotion, lang) {
     return translations[emotion] || emotion;
 }
 
+translateBigFiveLevel(level, lang) {
+                              if (lang !== 'ru') return level;
+                              const translations = {
+                                        'high': 'высокий',
+                                        'medium': 'средний',
+                                        'low': 'низкий'
+                              };
+                              return translations[level] || level;
+}
+
+translateEIComponent(component, lang) {
+                              if (lang !== 'ru') return component;
+                              const translations = {
+                                        'selfAwareness': 'самосознание',
+                                        'empathy': 'эмпатия',
+                                        'emotionalRegulation': 'регуляция эмоций',
+                                        'socialSkills': 'социальные навыки'
+                              };
+                              return translations[component] || component;
+}
+
+translateCognitiveFactor(factor, lang) {
+                              if (lang !== 'ru') return factor;
+                              const translations = {
+                                        'analytical': 'аналитический',
+                                        'intuitive': 'интуитивный',
+                                        'reflective': 'рефлексивный',
+                                        'practical': 'практический'
+                              };
+                              return translations[factor] || factor;
+}
+
+translateCognitiveBias(bias, lang) {
+                              if (lang !== 'ru') return bias;
+                              const translations = {
+                                        'dichotomous': 'дихотомическое мышление',
+                                        'catastrophizing': 'катастрофизация',
+                                        'emotionalReasoning': 'эмоциональное обоснование',
+                                        'overgeneralization': 'сверхобобщение',
+                                        'mindReading': 'чтение мыслей',
+                                        'personalization': 'персонализация',
+                                        'fortuneTelling': 'гадание на будущее',
+                                        'minimization': 'минимизация'
+                              };
+                              return translations[bias] || bias;
+}
+
+translateCommunicationStyle(style, lang) {
+                              if (lang !== 'ru') return style;
+                              const translations = {
+                                        'assertive': 'ассертивный',
+                                        'passive': 'пассивный',
+                                        'aggressive': 'агрессивный',
+                                        'manipulative': 'манипулятивный'
+                              };
+                              return translations[style] || style;
+}
+
 translateEmotionalArc(arc, lang) {
     if (lang !== 'ru') return arc;
     const translations = {
@@ -2789,6 +2847,19 @@ renderResult(result) {
                      <span class="value" style="text-align:right !important;float:right;">${(plutchikDetails.emotionalDiversity * 100).toFixed(1)}%</span>
                  </div>`;
         }
+
+		const combinations = this.getSafe(plutchikDetails, 'combinations', []);
+        if (this.hasArrayContent(combinations)) {
+                                                  html += `<div class="emotion-subsection"><h4>${translations.plutchikCombinations}</h4>`;
+                                                  combinations.forEach(combo => {
+                                                            const comboName = `${this.translatePlutchikEmotion(combo.combination.split(' + ')[0], currentLang)} + ${this.translatePlutchikEmotion(combo.combination.split(' + ')[1], currentLang)} = ${this.translatePlutchikEmotion(combo.result, currentLang)}`;
+                                                            html += `<div class="emotion-metric" style="border-left:2px solid #aaa;margin:5px 0;padding-left:8px;">
+                                                                        <span class="label" title="${translations.plutchikCombinationDesc}">${comboName}:</span>
+                                                                        <span class="value">${(combo.intensity * 100).toFixed(1)}%</span>
+                                                                    </div>`;
+                                                  });
+                                                  html += `</div>`;
+        }
         
         if (maslowDetails.dominant && maslowDetails.dominant.level) {
             html += `
@@ -2804,6 +2875,20 @@ renderResult(result) {
                      <span class="label" title="${translations.hierarchyCompletionDesc}">${translations.hierarchyCompletion}:</span>
                      <span class="value" style="text-align:right !important;float:right;">${(maslowDetails.hierarchyCompletion * 100).toFixed(1)}%</span>
                  </div>`;
+        }
+
+		const needs = this.getSafe(maslowDetails, 'needs', {});
+        if (Object.keys(needs).length > 0) {
+                                                  html += `<div class="emotion-subsection"><h4>${translations.maslowNeeds}</h4>`;
+                                                  Object.entries(needs).forEach(([level, data]) => {
+                                                            const levelName = this.translateMaslowLevel(level, currentLang);
+                                                            const intensity = (data.score * 100).toFixed(1);
+                                                            html += `<div class="emotion-metric" style="border-left:2px solid #4a90e2;margin:5px 0;padding-left:8px;">
+                                                                        <span class="label" title="${translations.maslowNeedDesc}">${levelName}:</span>
+                                                                        <span class="value">${intensity}%</span>
+                                                                    </div>`;
+                                                  });
+                                                  html += `</div>`;
         }
         
         if (bigFiveDetails.profile && bigFiveDetails.profile.type) {
@@ -2823,6 +2908,21 @@ renderResult(result) {
                         this.translateBigFiveTrait(trait, currentLang)
                     ).join(', ')}</span>
                  </div>`;
+        }
+
+		const traits = this.getSafe(bigFiveDetails, 'traits', {});
+        if (Object.keys(traits).length > 0) {
+                                                  html += `<div class="emotion-subsection"><h4>${translations.bigFiveTraits}</h4>`;
+                                                  Object.entries(traits).forEach(([trait, data]) => {
+                                                            const traitName = this.translateBigFiveTrait(trait, currentLang);
+                                                            const score = (data.score * 100).toFixed(1);
+                                                            const level = this.translateBigFiveLevel(data.level, currentLang);
+                                                            html += `<div class="emotion-metric" style="border-left:2px solid #f39c12;margin:5px 0;padding-left:8px;">
+                                                                        <span class="label" title="${translations.bigFiveTraitDesc}">${traitName}:</span>
+                                                                        <span class="value">${score}% (${level})</span>
+                                                                    </div>`;
+                                                  });
+                                                  html += `</div>`;
         }
         
         if (this.shouldShowMetric(bigFiveDetails.complexity, true)) {
@@ -2848,6 +2948,19 @@ renderResult(result) {
                      <span class="value" style="text-align:right !important;float:right;">${(emotionalIntelligenceDetails.score * 100).toFixed(1)}%</span>
                  </div>`;
         }
+
+		const eiComponents = this.getSafe(emotionalIntelligenceDetails, 'components', {});
+        if (Object.keys(eiComponents).length > 0) {
+                                                  html += `<div class="emotion-subsection"><h4>${translations.eiComponents}</h4>`;
+                                                  Object.entries(eiComponents).forEach(([component, score]) => {
+                                                            const compName = this.translateEIComponent(component, currentLang);
+                                                            html += `<div class="emotion-metric" style="border-left:2px solid #2ecc71;margin:5px 0;padding-left:8px;">
+                                                                        <span class="label" title="${translations.eiComponentDesc}">${compName}:</span>
+                                                                        <span class="value">${(score * 100).toFixed(1)}%</span>
+                                                                    </div>`;
+                                                  });
+                                                  html += `</div>`;
+        }
         
         if (defenseMechanismsDetails.primaryMechanism) {
             html += `
@@ -2863,6 +2976,53 @@ renderResult(result) {
                      <span class="label" title="${translations.defenseIntensityDesc}">${translations.defenseIntensity}:</span>
                      <span class="value" style="text-align:right !important;float:right;">${(defenseMechanismsDetails.overallIntensity * 100).toFixed(1)}%</span>
                  </div>`;
+        }
+
+		const mechanismsList = this.getSafe(defenseMechanismsDetails, 'mechanisms', []);
+        if (this.hasArrayContent(mechanismsList)) {
+                                                  html += `<div class="emotion-subsection"><h4>${translations.defenseMechanisms}</h4>`;
+                                                  mechanismsList.forEach(mech => {
+                                                            const mechName = this.translateDefenseMechanism(mech.mechanism, currentLang);
+                                                            const intensity = (mech.intensity * 100).toFixed(1);
+                                                            html += `<div class="emotion-metric" style="border-left:2px solid #e67e22;margin:5px 0;padding-left:8px;">
+                                                                        <span class="label" title="${translations.defenseMechanismDesc}">${mechName}:</span>
+                                                                        <span class="value">${intensity}%</span>
+                                                                    </div>`;
+                                                  });
+                                                  html += `</div>`;
+        }
+
+        const cognitiveBiases = this.getSafe(psychologicalDetails, 'cognitiveBiases', {});
+    	if (cognitiveBiases && Object.keys(cognitiveBiases).length > 0) {
+                              html += `<div class="emotion-section"><h3>${translations.cognitiveBiases}</h3>`;
+                              Object.entries(cognitiveBiases).forEach(([bias, data]) => {
+                                        if (data && data.weight) {
+                                                  const biasName = this.translateCognitiveBias(bias, currentLang);
+                                                  const intensity = (data.weight * 100).toFixed(1);
+                                                  html += `<div class="emotion-metric">
+                                                            <span class="label" title="${translations.cognitiveBiasDesc}">${biasName}:</span>
+                                                            <span class="value" style="text-align:right !important;float:right;">${intensity}%</span>
+                                                      </div>`;
+                                        }
+                              });
+                              html += `</div>`;
+        }
+
+
+        const communicationStyles = this.getSafe(psychologicalDetails, 'communicationStyles', {});
+        if (communicationStyles && Object.keys(communicationStyles).length > 0) {
+                              html += `<div class="emotion-section"><h3>${translations.communicationStyles}</h3>`;
+                              Object.entries(communicationStyles).forEach(([style, data]) => {
+                                        if (data && data.weight) {
+                                                  const styleName = this.translateCommunicationStyle(style, currentLang);
+                                                  const intensity = (data.weight * 100).toFixed(1);
+                                                  html += `<div class="emotion-metric">
+                                                            <span class="label" title="${translations.communicationStyleDesc}">${styleName}:</span>
+                                                            <span class="value" style="text-align:right !important;float:right;">${intensity}%</span>
+                                                      </div>`;
+                                        }
+                              });
+                              html += `</div>`;
         }
         
         if (this.shouldShowMetric(psychologicalDetails.psychologicalComplexity, true)) {
@@ -2887,6 +3047,21 @@ renderResult(result) {
                      <span class="label" title="${translations.selfAwarenessScoreDesc}">${translations.selfAwarenessScore}:</span>
                      <span class="value" style="text-align:right !important;float:right;">${(selfAwarenessDetails.score * 100).toFixed(1)}%</span>
                  </div>`;
+        }
+
+		const selfReflection = this.getNumber(this.getSafe(selfAwarenessDetails, 'selfReflection'));
+        if (this.shouldShowMetric(selfReflection, true)) {
+                                                  html += `<div class="emotion-metric">
+                                                        <span class="label" title="${translations.selfReflectionDesc}">${translations.selfReflection}:</span>
+                                                        <span class="value" style="text-align:right !important;float:right;">${(selfReflection * 100).toFixed(1)}%</span>
+                                                    </div>`;
+                                        }
+                                        const metacognition = this.getNumber(this.getSafe(selfAwarenessDetails, 'metacognition'));
+                                        if (this.shouldShowMetric(metacognition, true)) {
+                                                  html += `<div class="emotion-metric">
+                                                        <span class="label" title="${translations.metacognitionDesc}">${translations.metacognition}:</span>
+                                                        <span class="value" style="text-align:right !important;float:right;">${(metacognition * 100).toFixed(1)}%</span>
+                                                    </div>`;
         }
         
         html += `</div>`;
@@ -2921,6 +3096,18 @@ renderResult(result) {
                          <span class="label" title="${translations.cognitiveStyleDesc}">${translations.cognitiveStyle}:</span>
                          <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${this.translateValue(insights.cognitiveStyle.style, currentLang)}</span>
                      </div>`;
+            }
+
+			if (insights.cognitiveStyle && insights.cognitiveStyle.factors) {
+                                                  html += `<div class="emotion-subsection"><h4>${translations.cognitiveStyleFactors}</h4>`;
+                                                  Object.entries(insights.cognitiveStyle.factors).forEach(([factor, value]) => {
+                                                            const factorName = this.translateCognitiveFactor(factor, currentLang);
+                                                            html += `<div class="emotion-metric" style="border-left:2px solid #9b59b6;margin:5px 0;padding-left:8px;">
+                                                                        <span class="label" title="${translations.cognitiveFactorDesc}">${factorName}:</span>
+                                                                        <span class="value">${(value * 100).toFixed(1)}%</span>
+                                                                    </div>`;
+                                                  });
+                                                  html += `</div>`;
             }
             
             if (this.hasArrayContent(insights.relationalPatterns)) {
@@ -3462,6 +3649,26 @@ getTranslations(lang) {
             selfAwarenessScore: 'Оценка самосознания',
             selfAwarenessScoreDesc: 'Числовая оценка уровня самосознания',
             psychologicalInsights: 'Психологические инсайты',
+			                            plutchikCombinations: 'Комбинации Плутчика',
+                                        plutchikCombinationDesc: 'Сочетания базовых эмоций, дающие сложные чувства',
+                                        maslowNeeds: 'Потребности по Маслоу',
+                                        maslowNeedDesc: 'Выраженность каждого уровня потребностей',
+                                        bigFiveTraits: 'Черты Большой пятёрки',
+                                        bigFiveTraitDesc: 'Выраженность каждой личностной черты',
+                                        eiComponents: 'Компоненты эмоционального интеллекта',
+                                        eiComponentDesc: 'Отдельные составляющие эмоционального интеллекта',
+                                        defenseMechanisms: 'Защитные механизмы',
+                                        defenseMechanismDesc: 'Обнаруженные психологические защиты',
+                                        selfReflection: 'Саморефлексия',
+                                        selfReflectionDesc: 'Способность к самоанализу',
+                                        metacognition: 'Метапознание',
+                                        metacognitionDesc: 'Осознание собственных мыслительных процессов',
+                                        cognitiveStyleFactors: 'Факторы когнитивного стиля',
+                                        cognitiveFactorDesc: 'Выраженность различных когнитивных стратегий',
+			                            cognitiveBiases: 'Когнитивные искажения',
+                                        cognitiveBiasDesc: 'Систематические ошибки мышления, влияющие на восприятие',
+                                        communicationStyles: 'Стили общения',
+                                        communicationStyleDesc: 'Преобладающие способы взаимодействия с другими',
             emotionalPatterns: 'Эмоциональные паттерны',
             emotionalPatternsDesc: 'Характерные эмоциональные паттерны',
              cognitiveStyle: 'Когнитивный стиль',
@@ -3817,6 +4024,26 @@ getTranslations(lang) {
             selfAwarenessScore: 'Self-Awareness Score',
             selfAwarenessScoreDesc: 'Numerical score of self-awareness level',
             psychologicalInsights: 'Psychological Insights',
+			                            plutchikCombinations: 'Plutchik Combinations',
+                                        plutchikCombinationDesc: 'Combinations of basic emotions forming complex feelings',
+                                        maslowNeeds: 'Maslow Needs',
+                                        maslowNeedDesc: 'Intensity of each need level',
+                                        bigFiveTraits: 'Big Five Traits',
+                                        bigFiveTraitDesc: 'Expression of each personality trait',
+                                        eiComponents: 'EI Components',
+                                        eiComponentDesc: 'Individual components of emotional intelligence',
+                                        defenseMechanisms: 'Defense Mechanisms',
+                                        defenseMechanismDesc: 'Detected psychological defenses',
+                                        selfReflection: 'Self-Reflection',
+                                        selfReflectionDesc: 'Capacity for introspection',
+                                        metacognition: 'Metacognition',
+                                        metacognitionDesc: 'Awareness of one\'s own thought processes',
+                                        cognitiveStyleFactors: 'Cognitive Style Factors',
+                                        cognitiveFactorDesc: 'Expression of different cognitive strategies',
+			                            cognitiveBiases: 'Cognitive Biases',
+                                        cognitiveBiasDesc: 'Systematic thinking errors that affect perception',
+                                        communicationStyles: 'Communication Styles',
+                                        communicationStyleDesc: 'Predominant ways of interacting with others',
             emotionalPatterns: 'Emotional Patterns',
             emotionalPatternsDesc: 'Characteristic emotional patterns',
             cognitiveStyle: 'Cognitive Style',
@@ -4016,6 +4243,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
