@@ -2189,6 +2189,8 @@ renderResult(result) {
                  </div>`;
         }
 
+		const emoticons = this.getSafe(result, 'details.lexical.emoticons', {});
+		
 		if (Object.keys(emoticons).length > 0) {
             let emoticonsText = '';
             if (emoticons.positive > 0) emoticonsText += `${translations.positive}: ${emoticons.positive} `;
@@ -2215,7 +2217,6 @@ renderResult(result) {
         const lexicalConcentration = this.getNumber(this.getSafe(result, 'details.lexical.summary.lexicalConcentration'));
         const lexicalRichness = this.getNumber(this.getSafe(result, 'details.lexical.summary.lexicalRichness'));
         const emotionalClusters = this.getNumber(this.getSafe(result, 'details.lexical.clusters.length'));
-        const emoticons = this.getSafe(result, 'details.lexical.emoticons', {});
         
         if (this.shouldShowMetric(dominantCategory)) {
             html += `
@@ -4015,6 +4016,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
