@@ -6625,86 +6625,93 @@
         }
         
         detectWordRepetitions(data) {
-            const words = data.words;
-            const sentences = data.sentences;
-            
-            if (words.length === 0) {
-                return {
-                    repetitions: [],
-                    metrics: {
-                        repetitionDensity: 0,
-                        averageDistance: 0,
-                        clusterCount: 0,
-                        severity: 0
-                    },
-                    recommendations: []
-                };
-            }
-            
-            const wordFrequency = {};
-            words.forEach(word => {
-                wordFrequency[word] = (wordFrequency[word] || 0) + 1;
-            });
-            
-            const repetitions = [];
-            const stopWords = this.language === 'ru' ? 
-                ['и', 'в', 'на', 'с', 'к', 'а', 'но', 'или', 'не', 'то', 'он', 'она', 'оно', 'они'] :
-                ['and', 'in', 'on', 'with', 'to', 'but', 'or', 'not', 'that', 'what', 'how', 'this', 'he', 'she', 'it', 'they'];
-            
-            for (const [word, count] of Object.entries(wordFrequency)) {
-                if (count >= 2 && !stopWords.includes(word)) {
-                    const positions = [];
-                    words.forEach((w, idx) => {
-                        if (w === word) {
-                            positions.push(idx);
-                        }
-                    });
-                    
-                    const distances = [];
-                    for (let i = 1; i < positions.length; i++) {
-                        distances.push(positions[i] - positions[i - 1]);
-                    }
-                    
-                    const avgDistance = distances.reduce((a, b) => a + b, 0) / distances.length;
-                    const minDistance = Math.min(...distances);
-                    const maxDistance = Math.max(...distances);
-                    
-                    const severity = this.calculateRepetitionSeverity(count, avgDistance, words.length);
-                    
-                    repetitions.push({
-                        word: word,
-                        count: count,
-                        positions: positions,
-                        distances: distances,
-                        avgDistance: avgDistance,
-                        minDistance: minDistance,
-                        maxDistance: maxDistance,
-                        severity: severity,
-                        sentenceDistribution: this.mapPositionsToSentences(positions, sentences)
-                    });
-                }
-            }
-            
-            const sortedRepetitions = repetitions.sort((a, b) => b.severity - a.severity);
-            
-            const metrics = {
-                repetitionDensity: sortedRepetitions.length / Math.max(1, words.length / 10),
-                averageDistance: sortedRepetitions.length > 0 ? 
-                    sortedRepetitions.reduce((sum, r) => sum + r.avgDistance, 0) / sortedRepetitions.length : 0,
-                clusterCount: sortedRepetitions.filter(r => r.minDistance <= 10).length,
-                severity: sortedRepetitions.length > 0 ? 
-                    sortedRepetitions.reduce((sum, r) => sum + r.severity, 0) / sortedRepetitions.length : 0,
-                criticalRepetitions: sortedRepetitions.filter(r => r.severity > 0.7).length
-            };
-            
-            const recommendations = this.generateRepetitionRecommendations(sortedRepetitions, metrics);
-            
-            return {
-                repetitions: sortedRepetitions.slice(0, 20),
-                metrics: metrics,
-                recommendations: recommendations,
-                hasIssues: metrics.severity > 0.3 || metrics.criticalRepetitions > 0
-            };
+                              const words = data.words;
+                              const sentences = data.sentences;
+
+                              if (words.length === 0) {
+                                        return {
+                                                  repetitions: [],
+                                                  metrics: {
+                                                            repetitionDensity: 0,
+                                                            averageDistance: 0,
+                                                            clusterCount: 0,
+                                                            severity: 0
+                                                  },
+                                                  recommendations: []
+                                        };
+                              }
+
+                              const baseStopWords = this.language === 'ru' ? 
+                                        ['и', 'в', 'на', 'с', 'к', 'а', 'у', 'ли', 'но', 'или', 'я', 'ты', 'не', 'то', 'он', 'она', 'оно', 'они', 'это', 'всё', 'тот', 'такой', 'какой', 'свой', 'свою', 'себе', 'мой', 'твой', 'его', 'её', 'их', 'мы', 'наш', 'ваш'] :
+                                        ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'this', 'that', 'these', 'those', 'it', 'its', 'he', 'she', 'they', 'we', 'you', 'i', 'my', 'your', 'his', 'her', 'our', 'their'];
+
+                              const punctuationSymbols = [':', '-', ')', '(', '[', ']', '{', '}', '<', '>', '/', '\\', '|', '*', '+', '=', '~', '`', '@', '#', '$', '%', '^', '&', '_', '!', '?', '.', ',', ';', '\'', '"', '»', '«', '—', '…'];
+
+                              const stopWords = baseStopWords.concat(punctuationSymbols);
+
+                              const wordFrequency = {};
+                              words.forEach(word => {
+                                        if (!stopWords.includes(word)) {
+                                                  wordFrequency[word] = (wordFrequency[word] || 0) + 1;
+                                        }
+                              });
+
+                              const repetitions = [];
+
+                              for (const [word, count] of Object.entries(wordFrequency)) {
+                                        if (count >= 2) {
+                                                  const positions = [];
+                                                  words.forEach((w, idx) => {
+                                                            if (w === word) {
+                                                                      positions.push(idx);
+                                                            }
+                                                  });
+
+                                                  const distances = [];
+                                                  for (let i = 1; i < positions.length; i++) {
+                                                            distances.push(positions[i] - positions[i - 1]);
+                                                  }
+
+                                                  const avgDistance = distances.reduce((a, b) => a + b, 0) / distances.length;
+                                                  const minDistance = Math.min(...distances);
+                                                  const maxDistance = Math.max(...distances);
+
+                                                  const severity = this.calculateRepetitionSeverity(count, avgDistance, words.length);
+
+                                                  repetitions.push({
+                                                            word: word,
+                                                            count: count,
+                                                            positions: positions,
+                                                            distances: distances,
+                                                            avgDistance: avgDistance,
+                                                            minDistance: minDistance,
+                                                            maxDistance: maxDistance,
+                                                            severity: severity,
+                                                            sentenceDistribution: this.mapPositionsToSentences(positions, sentences)
+                                                  });
+                                        }
+                              }
+
+                              const sortedRepetitions = repetitions.sort((a, b) => b.severity - a.severity);
+
+                              const metrics = {
+                                        repetitionDensity: sortedRepetitions.length / Math.max(1, words.length / 10),
+                                        averageDistance: sortedRepetitions.length > 0 ? 
+                                                  sortedRepetitions.reduce((sum, r) => sum + r.avgDistance, 0) / sortedRepetitions.length : 0,
+                                        clusterCount: sortedRepetitions.filter(r => r.minDistance <= 10).length,
+                                        severity: sortedRepetitions.length > 0 ? 
+                                                  sortedRepetitions.reduce((sum, r) => sum + r.severity, 0) / sortedRepetitions.length : 0,
+                                        criticalRepetitions: sortedRepetitions.filter(r => r.severity > 0.7).length
+                              };
+
+                              const recommendations = this.generateRepetitionRecommendations(sortedRepetitions, metrics);
+
+                              return {
+                                        repetitions: sortedRepetitions.slice(0, 20),
+                                        metrics: metrics,
+                                        recommendations: recommendations,
+                                        hasIssues: metrics.severity > 0.3 || metrics.criticalRepetitions > 0
+                              };
         }
         
         calculateRepetitionSeverity(count, avgDistance, totalWords) {
@@ -10103,6 +10110,7 @@
     
 
 })();
+
 
 
 
