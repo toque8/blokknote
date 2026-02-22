@@ -2824,248 +2824,247 @@ renderResult(result) {
     const selfAwarenessDetails = this.getSafe(psychologicalDetails, 'selfAwarenessLevel', {});
 
     const hasPsychologicalData = plutchikDetails.primary || 
-                                maslowDetails.dominant ||
-                               bigFiveDetails.profile;
+                                                maslowDetails.dominant ||
+                                                bigFiveDetails.profile;
 
     if (hasPsychologicalData) {
-        html += `
-             <div class="emotion-section">
-                 <h3>${translations.psychologicalAnalysis}</h3>`;
-        
-        if (plutchikDetails.primary && plutchikDetails.primary.emotion) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.primaryPlutchikDesc}">${translations.primaryPlutchik}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${this.translatePlutchikEmotion(plutchikDetails.primary.emotion, currentLang)}</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(plutchikDetails.emotionalDiversity, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.plutchikDiversityDesc}">${translations.plutchikDiversity}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(plutchikDetails.emotionalDiversity * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
+                              html += `
+                                        <div class="emotion-section">
+                                                  <h3>${translations.psychologicalAnalysis}</h3>`;
 
-		const combinations = this.getSafe(plutchikDetails, 'combinations', []);
-        if (this.hasArrayContent(combinations)) {
-                                                  html += `<div class="emotion-subsection"><h4>${translations.plutchikCombinations}</h4>`;
-                                                  combinations.forEach(combo => {
-                                                            const comboName = `${this.translatePlutchikEmotion(combo.combination.split(' + ')[0], currentLang)} + ${this.translatePlutchikEmotion(combo.combination.split(' + ')[1], currentLang)} = ${this.translatePlutchikEmotion(combo.result, currentLang)}`;
-                                                            html += `<div class="emotion-metric" style="border-left:2px solid #aaa;margin:5px 0;padding-left:8px;">
-                                                                        <span class="label" title="${translations.plutchikCombinationDesc}">${comboName}:</span>
-                                                                        <span class="value">${(combo.intensity * 100).toFixed(1)}%</span>
-                                                                    </div>`;
-                                                  });
-                                                  html += `</div>`;
-        }
-        
-        if (maslowDetails.dominant && maslowDetails.dominant.level) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.dominantMaslowDesc}">${translations.dominantMaslow}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${this.translateMaslowLevel(maslowDetails.dominant.level, currentLang)}</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(maslowDetails.hierarchyCompletion, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.hierarchyCompletionDesc}">${translations.hierarchyCompletion}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(maslowDetails.hierarchyCompletion * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
+                              if (plutchikDetails.primary && plutchikDetails.primary.emotion) {
+                                        html += `
+                                                  <div class="emotion-metric">
+                                                            <span class="label" title="${translations.primaryPlutchikDesc}">${translations.primaryPlutchik}:</span>
+                                                            <span class="value" style="text-align:right !important;float:right;">${this.translatePlutchikEmotion(plutchikDetails.primary.emotion, currentLang)}</span>
+                                                  </div>`;
+                              }
 
-		const needs = this.getSafe(maslowDetails, 'needs', {});
-        if (Object.keys(needs).length > 0) {
-                                                  html += `<div class="emotion-subsection"><h4>${translations.maslowNeeds}</h4>`;
-                                                  Object.entries(needs).forEach(([level, data]) => {
-                                                            const levelName = this.translateMaslowLevel(level, currentLang);
-                                                            const intensity = (data.score * 100).toFixed(1);
-                                                            html += `<div class="emotion-metric" style="border-left:2px solid #4a90e2;margin:5px 0;padding-left:8px;">
-                                                                        <span class="label" title="${translations.maslowNeedDesc}">${levelName}:</span>
-                                                                        <span class="value">${intensity}%</span>
-                                                                    </div>`;
-                                                  });
-                                                  html += `</div>`;
-        }
-        
-        if (bigFiveDetails.profile && bigFiveDetails.profile.type) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.personalityTypeDesc}">${translations.personalityType}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${this.translatePersonalityType(bigFiveDetails.profile.type, currentLang)}</span>
-                 </div>`;
-        }
-        
-        if (bigFiveDetails.profile && bigFiveDetails.profile.dominantTraits && 
-            this.hasArrayContent(bigFiveDetails.profile.dominantTraits)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.dominantTraitsDesc}">${translations.dominantTraits}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${bigFiveDetails.profile.dominantTraits.map(trait => 
-                        this.translateBigFiveTrait(trait, currentLang)
-                    ).join(', ')}</span>
-                 </div>`;
-        }
+                              if (this.shouldShowMetric(plutchikDetails.emotionalDiversity, true)) {
+                                        html += `
+                                                  <div class="emotion-metric">
+                                                            <span class="label" title="${translations.plutchikDiversityDesc}">${translations.plutchikDiversity}:</span>
+                                                            <span class="value" style="text-align:right !important;float:right;">${(plutchikDetails.emotionalDiversity * 100).toFixed(1)}%</span>
+                                                  </div>`;
+                              }
 
-		const traits = this.getSafe(bigFiveDetails, 'traits', {});
-        if (Object.keys(traits).length > 0) {
-                                                  html += `<div class="emotion-subsection"><h4>${translations.bigFiveTraits}</h4>`;
-                                                  Object.entries(traits).forEach(([trait, data]) => {
-                                                            const traitName = this.translateBigFiveTrait(trait, currentLang);
-                                                            const score = (data.score * 100).toFixed(1);
-                                                            const level = this.translateBigFiveLevel(data.level, currentLang);
-                                                            html += `<div class="emotion-metric" style="border-left:2px solid #f39c12;margin:5px 0;padding-left:8px;">
-                                                                        <span class="label" title="${translations.bigFiveTraitDesc}">${traitName}:</span>
-                                                                        <span class="value">${score}% (${level})</span>
-                                                                    </div>`;
-                                                  });
-                                                  html += `</div>`;
-        }
-        
-        if (this.shouldShowMetric(bigFiveDetails.complexity, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.bigFiveComplexityDesc}">${translations.bigFiveComplexity}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(bigFiveDetails.complexity * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
-        
-        if (emotionalIntelligenceDetails.level) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.emotionalIntelligenceDesc}">${translations.emotionalIntelligence}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${this.translateEmotionalIntelligence(emotionalIntelligenceDetails.level, currentLang)}</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(emotionalIntelligenceDetails.score, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.eiScoreDesc}">${translations.eiScore}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(emotionalIntelligenceDetails.score * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
+                              const combinations = this.getSafe(plutchikDetails, 'combinations', []);
+                              if (this.hasArrayContent(combinations)) {
+                                        html += `<div class="emotion-subsection"><h4>${translations.plutchikCombinations}</h4>`;
+                                        combinations.forEach(combo => {
+                                                  const comboName = `${this.translatePlutchikEmotion(combo.combination.split(' + ')[0], currentLang)} + ${this.translatePlutchikEmotion(combo.combination.split(' + ')[1], currentLang)} = ${this.translatePlutchikEmotion(combo.result, currentLang)}`;
+                                                  html += `<div class="emotion-metric" style="border-left:2px solid #aaa;margin:5px 0;padding-left:8px;">
+                                                              <span class="label" title="${translations.plutchikCombinationDesc}">${comboName}:</span>
+                                                              <span class="value">${(combo.intensity * 100).toFixed(1)}%</span>
+                                                          </div>`;
+                                        });
+                                        html += `</div>`;
+                              }
 
-		const eiComponents = this.getSafe(emotionalIntelligenceDetails, 'components', {});
-        if (Object.keys(eiComponents).length > 0) {
-                                                  html += `<div class="emotion-subsection"><h4>${translations.eiComponents}</h4>`;
-                                                  Object.entries(eiComponents).forEach(([component, score]) => {
-                                                            const compName = this.translateEIComponent(component, currentLang);
-                                                            html += `<div class="emotion-metric" style="border-left:2px solid #2ecc71;margin:5px 0;padding-left:8px;">
-                                                                        <span class="label" title="${translations.eiComponentDesc}">${compName}:</span>
-                                                                        <span class="value">${(score * 100).toFixed(1)}%</span>
-                                                                    </div>`;
-                                                  });
-                                                  html += `</div>`;
-        }
-        
-        if (defenseMechanismsDetails.primaryMechanism) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.primaryDefenseDesc}">${translations.primaryDefense}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${this.translateDefenseMechanism(defenseMechanismsDetails.primaryMechanism, currentLang)}</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(defenseMechanismsDetails.overallIntensity, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.defenseIntensityDesc}">${translations.defenseIntensity}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(defenseMechanismsDetails.overallIntensity * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
+                              if (maslowDetails.dominant && maslowDetails.dominant.level) {
+                                        html += `
+                                                  <div class="emotion-metric">
+                                                            <span class="label" title="${translations.dominantMaslowDesc}">${translations.dominantMaslow}:</span>
+                                                            <span class="value" style="text-align:right !important;float:right;">${this.translateMaslowLevel(maslowDetails.dominant.level, currentLang)}</span>
+                                                  </div>`;
+                              }
 
-		const mechanismsList = this.getSafe(defenseMechanismsDetails, 'mechanisms', []);
-        if (this.hasArrayContent(mechanismsList)) {
-                                                  html += `<div class="emotion-subsection"><h4>${translations.defenseMechanisms}</h4>`;
-                                                  mechanismsList.forEach(mech => {
-                                                            const mechName = this.translateDefenseMechanism(mech.mechanism, currentLang);
-                                                            const intensity = (mech.intensity * 100).toFixed(1);
-                                                            html += `<div class="emotion-metric" style="border-left:2px solid #e67e22;margin:5px 0;padding-left:8px;">
-                                                                        <span class="label" title="${translations.defenseMechanismDesc}">${mechName}:</span>
-                                                                        <span class="value">${intensity}%</span>
-                                                                    </div>`;
-                                                  });
-                                                  html += `</div>`;
-        }
+                              if (this.shouldShowMetric(maslowDetails.hierarchyCompletion, true)) {
+                                        html += `
+                                                  <div class="emotion-metric">
+                                                            <span class="label" title="${translations.hierarchyCompletionDesc}">${translations.hierarchyCompletion}:</span>
+                                                            <span class="value" style="text-align:right !important;float:right;">${(maslowDetails.hierarchyCompletion * 100).toFixed(1)}%</span>
+                                                  </div>`;
+                              }
 
-        const cognitiveBiases = this.getSafe(psychologicalDetails, 'cognitiveBiases', {});
-    	if (cognitiveBiases && Object.keys(cognitiveBiases).length > 0) {
-                              html += `<div class="emotion-section"><h3>${translations.cognitiveBiases}</h3>`;
-                              Object.entries(cognitiveBiases).forEach(([bias, data]) => {
-                                        if (data && data.weight) {
-                                                  const biasName = this.translateCognitiveBias(bias, currentLang);
-                                                  const intensity = (data.weight * 100).toFixed(1);
-                                                  html += `<div class="emotion-metric">
-                                                            <span class="label" title="${translations.cognitiveBiasDesc}">${biasName}:</span>
-                                                            <span class="value" style="text-align:right !important;float:right;">${intensity}%</span>
-                                                      </div>`;
-                                        }
-                              });
-                              html += `</div>`;
-        }
+                              const needs = this.getSafe(maslowDetails, 'needs', {});
+                              if (Object.keys(needs).length > 0) {
+                                        html += `<div class="emotion-subsection"><h4>${translations.maslowNeeds}</h4>`;
+                                        Object.entries(needs).forEach(([level, data]) => {
+                                                  const levelName = this.translateMaslowLevel(level, currentLang);
+                                                  const intensity = (data.score * 100).toFixed(1);
+                                                  html += `<div class="emotion-metric" style="border-left:2px solid #4a90e2;margin:5px 0;padding-left:8px;">
+                                                              <span class="label" title="${translations.maslowNeedDesc}">${levelName}:</span>
+                                                              <span class="value">${intensity}%</span>
+                                                          </div>`;
+                                        });
+                                        html += `</div>`;
+                              }
 
+                              if (bigFiveDetails.profile && bigFiveDetails.profile.type) {
+                                        html += `
+                                                  <div class="emotion-metric">
+                                                            <span class="label" title="${translations.personalityTypeDesc}">${translations.personalityType}:</span>
+                                                            <span class="value" style="text-align:right !important;float:right;">${this.translatePersonalityType(bigFiveDetails.profile.type, currentLang)}</span>
+                                                  </div>`;
+                              }
 
-        const communicationStyles = this.getSafe(psychologicalDetails, 'communicationStyles', {});
-        if (communicationStyles && Object.keys(communicationStyles).length > 0) {
-                              html += `<div class="emotion-section"><h3>${translations.communicationStyles}</h3>`;
-                              Object.entries(communicationStyles).forEach(([style, data]) => {
-                                        if (data && data.weight) {
-                                                  const styleName = this.translateCommunicationStyle(style, currentLang);
-                                                  const intensity = (data.weight * 100).toFixed(1);
-                                                  html += `<div class="emotion-metric">
-                                                            <span class="label" title="${translations.communicationStyleDesc}">${styleName}:</span>
-                                                            <span class="value" style="text-align:right !important;float:right;">${intensity}%</span>
-                                                      </div>`;
-                                        }
-                              });
-                              html += `</div>`;
-        }
-        
-        if (this.shouldShowMetric(psychologicalDetails.psychologicalComplexity, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.psychologicalComplexityDesc}">${translations.psychologicalComplexity}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(psychologicalDetails.psychologicalComplexity * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
-        
-        if (selfAwarenessDetails.level) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.selfAwarenessLevelDesc}">${translations.selfAwarenessLevel}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${this.translateSelfAwareness(selfAwarenessDetails.level, currentLang)}</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(selfAwarenessDetails.score, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.selfAwarenessScoreDesc}">${translations.selfAwarenessScore}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(selfAwarenessDetails.score * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
+                              if (bigFiveDetails.profile && bigFiveDetails.profile.dominantTraits && 
+                                  this.hasArrayContent(bigFiveDetails.profile.dominantTraits)) {
+                                        html += `
+                                                  <div class="emotion-metric">
+                                                            <span class="label" title="${translations.dominantTraitsDesc}">${translations.dominantTraits}:</span>
+                                                            <span class="value" style="text-align:right !important;float:right;">${bigFiveDetails.profile.dominantTraits.map(trait => 
+                                                                      this.translateBigFiveTrait(trait, currentLang)
+                                                              ).join(', ')}</span>
+                                                  </div>`;
+                              }
 
-		const selfReflection = this.getNumber(this.getSafe(selfAwarenessDetails, 'selfReflection'));
-        if (this.shouldShowMetric(selfReflection, true)) {
-                                                  html += `<div class="emotion-metric">
-                                                        <span class="label" title="${translations.selfReflectionDesc}">${translations.selfReflection}:</span>
-                                                        <span class="value" style="text-align:right !important;float:right;">${(selfReflection * 100).toFixed(1)}%</span>
-                                                    </div>`;
-                                        }
-                                        const metacognition = this.getNumber(this.getSafe(selfAwarenessDetails, 'metacognition'));
-                                        if (this.shouldShowMetric(metacognition, true)) {
-                                                  html += `<div class="emotion-metric">
-                                                        <span class="label" title="${translations.metacognitionDesc}">${translations.metacognition}:</span>
-                                                        <span class="value" style="text-align:right !important;float:right;">${(metacognition * 100).toFixed(1)}%</span>
-                                                    </div>`;
-        }
-        
-        html += `</div>`;
-    }
+                              const traits = this.getSafe(bigFiveDetails, 'traits', {});
+                              if (Object.keys(traits).length > 0) {
+                                        html += `<div class="emotion-subsection"><h4>${translations.bigFiveTraits}</h4>`;
+                                        Object.entries(traits).forEach(([trait, data]) => {
+                                                  const traitName = this.translateBigFiveTrait(trait, currentLang);
+                                                  const score = (data.score * 100).toFixed(1);
+                                                  const level = this.translateBigFiveLevel(data.level, currentLang);
+                                                  html += `<div class="emotion-metric" style="border-left:2px solid #f39c12;margin:5px 0;padding-left:8px;">
+                                                              <span class="label" title="${translations.bigFiveTraitDesc}">${traitName}:</span>
+                                                              <span class="value">${score}% (${level})</span>
+                                                          </div>`;
+                                        });
+                                        html += `</div>`;
+                              }
+
+                              if (this.shouldShowMetric(bigFiveDetails.complexity, true)) {
+                                        html += `
+                                                  <div class="emotion-metric">
+                                                            <span class="label" title="${translations.bigFiveComplexityDesc}">${translations.bigFiveComplexity}:</span>
+                                                            <span class="value" style="text-align:right !important;float:right;">${(bigFiveDetails.complexity * 100).toFixed(1)}%</span>
+                                                  </div>`;
+                              }
+
+                              if (emotionalIntelligenceDetails.level) {
+                                        html += `
+                                                  <div class="emotion-metric">
+                                                            <span class="label" title="${translations.emotionalIntelligenceDesc}">${translations.emotionalIntelligence}:</span>
+                                                            <span class="value" style="text-align:right !important;float:right;">${this.translateEmotionalIntelligence(emotionalIntelligenceDetails.level, currentLang)}</span>
+                                                  </div>`;
+                              }
+
+                              if (this.shouldShowMetric(emotionalIntelligenceDetails.score, true)) {
+                                        html += `
+                                                  <div class="emotion-metric">
+                                                            <span class="label" title="${translations.eiScoreDesc}">${translations.eiScore}:</span>
+                                                            <span class="value" style="text-align:right !important;float:right;">${(emotionalIntelligenceDetails.score * 100).toFixed(1)}%</span>
+                                                  </div>`;
+                              }
+
+                              const eiComponents = this.getSafe(emotionalIntelligenceDetails, 'components', {});
+                              if (Object.keys(eiComponents).length > 0) {
+                                        html += `<div class="emotion-subsection"><h4>${translations.eiComponents}</h4>`;
+                                        Object.entries(eiComponents).forEach(([component, score]) => {
+                                                  const compName = this.translateEIComponent(component, currentLang);
+                                                  html += `<div class="emotion-metric" style="border-left:2px solid #2ecc71;margin:5px 0;padding-left:8px;">
+                                                              <span class="label" title="${translations.eiComponentDesc}">${compName}:</span>
+                                                              <span class="value">${(score * 100).toFixed(1)}%</span>
+                                                          </div>`;
+                                        });
+                                        html += `</div>`;
+                              }
+
+                              if (defenseMechanismsDetails.primaryMechanism) {
+                                        html += `
+                                                  <div class="emotion-metric">
+                                                            <span class="label" title="${translations.primaryDefenseDesc}">${translations.primaryDefense}:</span>
+                                                            <span class="value" style="text-align:right !important;float:right;">${this.translateDefenseMechanism(defenseMechanismsDetails.primaryMechanism, currentLang)}</span>
+                                                  </div>`;
+                              }
+
+                              if (this.shouldShowMetric(defenseMechanismsDetails.overallIntensity, true)) {
+                                        html += `
+                                                  <div class="emotion-metric">
+                                                            <span class="label" title="${translations.defenseIntensityDesc}">${translations.defenseIntensity}:</span>
+                                                            <span class="value" style="text-align:right !important;float:right;">${(defenseMechanismsDetails.overallIntensity * 100).toFixed(1)}%</span>
+                                                  </div>`;
+                              }
+
+                              const mechanismsList = this.getSafe(defenseMechanismsDetails, 'mechanisms', []);
+                              if (this.hasArrayContent(mechanismsList)) {
+                                        html += `<div class="emotion-subsection"><h4>${translations.defenseMechanisms}</h4>`;
+                                        mechanismsList.forEach(mech => {
+                                                  const mechName = this.translateDefenseMechanism(mech.mechanism, currentLang);
+                                                  const intensity = (mech.intensity * 100).toFixed(1);
+                                                  html += `<div class="emotion-metric" style="border-left:2px solid #e67e22;margin:5px 0;padding-left:8px;">
+                                                              <span class="label" title="${translations.defenseMechanismDesc}">${mechName}:</span>
+                                                              <span class="value">${intensity}%</span>
+                                                          </div>`;
+                                        });
+                                        html += `</div>`;
+                              }
+
+                              if (this.shouldShowMetric(psychologicalDetails.psychologicalComplexity, true)) {
+                                        html += `
+                                                  <div class="emotion-metric">
+                                                            <span class="label" title="${translations.psychologicalComplexityDesc}">${translations.psychologicalComplexity}:</span>
+                                                            <span class="value" style="text-align:right !important;float:right;">${(psychologicalDetails.psychologicalComplexity * 100).toFixed(1)}%</span>
+                                                  </div>`;
+                              }
+
+                              if (selfAwarenessDetails.level) {
+                                        html += `
+                                                  <div class="emotion-metric">
+                                                            <span class="label" title="${translations.selfAwarenessLevelDesc}">${translations.selfAwarenessLevel}:</span>
+                                                            <span class="value" style="text-align:right !important;float:right;">${this.translateSelfAwareness(selfAwarenessDetails.level, currentLang)}</span>
+                                                  </div>`;
+                              }
+
+                              if (this.shouldShowMetric(selfAwarenessDetails.score, true)) {
+                                        html += `
+                                                  <div class="emotion-metric">
+                                                            <span class="label" title="${translations.selfAwarenessScoreDesc}">${translations.selfAwarenessScore}:</span>
+                                                            <span class="value" style="text-align:right !important;float:right;">${(selfAwarenessDetails.score * 100).toFixed(1)}%</span>
+                                                  </div>`;
+                              }
+
+                              const selfReflection = this.getNumber(this.getSafe(selfAwarenessDetails, 'selfReflection'));
+                              if (this.shouldShowMetric(selfReflection, true)) {
+                                        html += `<div class="emotion-metric">
+                                                  <span class="label" title="${translations.selfReflectionDesc}">${translations.selfReflection}:</span>
+                                                  <span class="value" style="text-align:right !important;float:right;">${(selfReflection * 100).toFixed(1)}%</span>
+                                              </div>`;
+                              }
+                              const metacognition = this.getNumber(this.getSafe(selfAwarenessDetails, 'metacognition'));
+                              if (this.shouldShowMetric(metacognition, true)) {
+                                        html += `<div class="emotion-metric">
+                                                  <span class="label" title="${translations.metacognitionDesc}">${translations.metacognition}:</span>
+                                                  <span class="value" style="text-align:right !important;float:right;">${(metacognition * 100).toFixed(1)}%</span>
+                                              </div>`;
+                              }
+
+                              const cognitiveBiases = this.getSafe(psychologicalDetails, 'cognitiveBiases', {});
+                              if (cognitiveBiases && Object.keys(cognitiveBiases).length > 0) {
+                                        html += `<div class="emotion-subsection"><h4>${translations.cognitiveBiases}</h4>`;
+                                        Object.entries(cognitiveBiases).forEach(([bias, data]) => {
+                                                  if (data && data.weight) {
+                                                            const biasName = this.translateCognitiveBias(bias, currentLang);
+                                                            const intensity = (data.weight * 100).toFixed(1);
+                                                            html += `<div class="emotion-metric">
+                                                                        <span class="label" title="${translations.cognitiveBiasDesc}">${biasName}:</span>
+                                                                        <span class="value" style="text-align:right !important;float:right;">${intensity}%</span>
+                                                                      </div>`;
+                                                  }
+                                        });
+                                        html += `</div>`;
+                              }
+
+                              const communicationStyles = this.getSafe(psychologicalDetails, 'communicationStyles', {});
+                              if (communicationStyles && Object.keys(communicationStyles).length > 0) {
+                                        html += `<div class="emotion-subsection"><h4>${translations.communicationStyles}</h4>`;
+                                        Object.entries(communicationStyles).forEach(([style, data]) => {
+                                                  if (data && data.weight) {
+                                                            const styleName = this.translateCommunicationStyle(style, currentLang);
+                                                            const intensity = (data.weight * 100).toFixed(1);
+                                                            html += `<div class="emotion-metric">
+                                                                        <span class="label" title="${translations.communicationStyleDesc}">${styleName}:</span>
+                                                                        <span class="value" style="text-align:right !important;float:right;">${intensity}%</span>
+                                                                      </div>`;
+                                                  }
+                                        });
+                                        html += `</div>`;
+                              }
+
+                              html += `</div>`; 
+    } 
 
     const psychologicalInsights = this.getSafe(result, 'psychologicalInsights', {});
 
@@ -4243,6 +4242,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
