@@ -1466,15 +1466,6 @@ renderResult(result) {
 				`;
 		}
 
-		if (this.shouldShowMetric(textComplexity, true)) {
-				html += `
-					<div class="emotion-metric">
-						<span class="label" title="${translations.textComplexityDesc}">${translations.textComplexity}:</span>
-						<span class="value" style="text-align:right !important;float:right;">${(textComplexity * 100).toFixed(1)}%</span>
-					</div>
-				`;
-		}
-
 		if (this.shouldShowMetric(complexity, true)) {
 				html += `
 					<div class="emotion-metric">
@@ -1609,26 +1600,6 @@ renderResult(result) {
 					<div class="emotion-metric">
 						<span class="label" title="${translations.valleyCountDesc}">${translations.valleyCount}:</span>
 						<span class="value" style="text-align:right !important;float:right;">${valleyCount.toFixed(0)}</span>
-					</div>
-				`;
-		}
-
-		const clusters = this.getSafe(result, 'details.lexical.clusters', []);
-		const clusterCount = clusters.length;
-		if (this.shouldShowMetric(clusterCount, true) && clusterCount > 0) {
-				html += `
-					<div class="emotion-metric">
-						<span class="label" title="${translations.clusterCountDesc}">${translations.clusterCount}:</span>
-						<span class="value" style="text-align:right !important;float:right;">${clusterCount.toFixed(0)}</span>
-					</div>
-				`;
-		}
-		if (clusterCount > 0) {
-				const avgClusterSize = clusters.reduce((sum, c) => sum + (c.size || 1), 0) / clusterCount;
-				html += `
-					<div class="emotion-metric">
-						<span class="label" title="${translations.avgClusterSizeDesc}">${translations.avgClusterSize}:</span>
-						<span class="value" style="text-align:right !important;float:right;">${avgClusterSize.toFixed(1)}</span>
 					</div>
 				`;
 		}
@@ -2238,14 +2209,6 @@ renderResult(result) {
                  </div>`;
         }
         
-        if (this.shouldShowMetric(categoryCount, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.categoriesFoundDesc}">${translations.categoriesFound}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${categoryCount}</span>
-                 </div>`;
-        }
-        
         if (this.shouldShowMetric(dominantCategory)) {
             html += `
                  <div class="emotion-metric">
@@ -2269,6 +2232,15 @@ renderResult(result) {
                      <span class="value" style="text-align:right !important;float:right;">${(lexicalRichness * 100).toFixed(1)}%</span>
                  </div>`;
         }
+
+		if (this.shouldShowMetric(textComplexity, true)) {
+				html += `
+					<div class="emotion-metric">
+						<span class="label" title="${translations.textComplexityDesc}">${translations.textComplexity}:</span>
+						<span class="value" style="text-align:right !important;float:right;">${(textComplexity * 100).toFixed(1)}%</span>
+					</div>
+				`;
+		}
         
         if (Object.keys(emoticons).length > 0) {
             let emoticonsText = '';
@@ -4043,6 +4015,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
