@@ -8629,68 +8629,92 @@
         }
         
         findDominantEmotion(analyses) {
-            const candidates = [];
-            
-            const lexicalDominant = analyses.lexical.summary.dominantCategory;
-            if (lexicalDominant !== 'neutral') {
-                candidates.push({
-                    source: 'lexical',
-                    emotion: lexicalDominant,
-                    confidence: analyses.lexical.summary.lexicalDensity
-                });
-            }
-            
-            const plutchikDominant = analyses.psychological.plutchik.primary.emotion;
-            if (plutchikDominant !== 'neutral') {
-                candidates.push({
-                    source: 'psychological',
-                    emotion: plutchikDominant,
-                    confidence: analyses.psychological.plutchik.primary.confidence
-                });
-            }
-            
-            const semanticDominant = analyses.semantic.progression.arc;
-            if (semanticDominant !== 'flat') {
-                candidates.push({
-                    source: 'semantic',
-                    emotion: this.mapArcToEmotion(semanticDominant),
-                    confidence: analyses.semantic.progression.stability
-                });
-            }
-            
-            if (candidates.length === 0) {
-                return {
-                    emotion: 'neutral',
-                    confidence: 0.5,
-                    sources: []
-                };
-            }
-            
-            const emotionGroups = {};
-            candidates.forEach(candidate => {
-                if (!emotionGroups[candidate.emotion]) {
-                    emotionGroups[candidate.emotion] = [];
-                }
-                emotionGroups[candidate.emotion].push(candidate);
-            });
-            
-            let maxGroup = [];
-            let dominantEmotion = 'neutral';
-            
-            for (const [emotion, group] of Object.entries(emotionGroups)) {
-                if (group.length > maxGroup.length) {
-                    maxGroup = group;
-                    dominantEmotion = emotion;
-                }
-            }
-            
-            const confidence = maxGroup.reduce((sum, c) => sum + c.confidence, 0) / maxGroup.length;
-            
-            return {
-                emotion: dominantEmotion,
-                confidence: confidence,
-                sources: maxGroup.map(g => g.source)
-            };
+                              const lexicalDominantRaw = analyses.lexical?.summary?.dominantCategory;
+                              let lexicalEmotion = 'neutral';
+                              let lexicalConfidence = 0;
+
+                              if (lexicalDominantRaw && lexicalDominantRaw !== 'neutral') {
+                                        if (typeof lexicalDominantRaw === 'object') {
+                                                  lexicalEmotion = lexicalDominantRaw.primary || 'neutral';
+                                                  lexicalConfidence = lexicalDominantRaw.confidence || 0;
+                                        } else {
+                                                  lexicalEmotion = lexicalDominantRaw;
+                                                  lexicalConfidence = analyses.lexical?.summary?.lexicalDensity || 0.5;
+                                        }
+                                        if (lexicalConfidence > 0.6) {
+                                                  return {
+                                                            emotion: lexicalEmotion,
+                                                            confidence: lexicalConfidence,
+                                                            sources: ['lexical']
+                                                  };
+                                        }
+                              }
+
+                              const candidates = [];
+
+                              if (lexicalEmotion !== 'neutral') {
+                                        candidates.push({
+                                                  source: 'lexical',
+                                                  emotion: lexicalEmotion,
+                                                  confidence: lexicalConfidence || 0.5
+                                        });
+                              }
+
+                              const plutchikDominant = analyses.psychological?.plutchik?.primary?.emotion;
+                              if (plutchikDominant && plutchikDominant !== 'neutral') {
+                                        candidates.push({
+                                                  source: 'psychological',
+                                                  emotion: plutchikDominant,
+                                                  confidence: analyses.psychological?.plutchik?.primary?.confidence || 0.5
+                                        });
+                              }
+
+                              const semanticDominant = analyses.semantic?.progression?.arc;
+                              if (semanticDominant && semanticDominant !== 'flat') {
+                                        const mapped = this.mapArcToEmotion(semanticDominant);
+                                        candidates.push({
+                                                  source: 'semantic',
+                                                  emotion: mapped,
+                                                  confidence: analyses.semantic?.progression?.stability || 0.5
+                                        });
+                              }
+
+                              if (candidates.length === 0) {
+                                        return {
+                                                  emotion: 'neutral',
+                                                  confidence: 0.5,
+                                                  sources: []
+                                        };
+                              }
+
+                              const emotionGroups = {};
+                              candidates.forEach(candidate => {
+                                        if (!emotionGroups[candidate.emotion]) {
+                                                  emotionGroups[candidate.emotion] = [];
+                                        }
+                                        emotionGroups[candidate.emotion].push(candidate);
+                              });
+
+                              let maxGroup = [];
+                              let dominantEmotion = 'neutral';
+                              let maxTotalConfidence = 0;
+
+                              for (const [emotion, group] of Object.entries(emotionGroups)) {
+                                        const totalConfidence = group.reduce((sum, c) => sum + c.confidence, 0);
+                                        if (totalConfidence > maxTotalConfidence) {
+                                                  maxTotalConfidence = totalConfidence;
+                                                  maxGroup = group;
+                                                  dominantEmotion = emotion;
+                                        }
+                              }
+
+                              const confidence = maxGroup.length > 0 ? maxGroup.reduce((sum, c) => sum + c.confidence, 0) / maxGroup.length : 0.5;
+
+                              return {
+                                        emotion: dominantEmotion,
+                                        confidence: confidence,
+                                        sources: maxGroup.map(g => g.source)
+                              };
         }
         
         mapArcToEmotion(arcType) {
@@ -10079,6 +10103,7 @@
     
 
 })();
+
 
 
 
