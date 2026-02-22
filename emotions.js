@@ -8849,29 +8849,29 @@
                               const complexityScore = integratedResult.complexityScore || 0;
                               const confidenceScore = integratedResult.confidenceScore || 0;
                               const consistencyScore = integratedResult.consistencyScore || 0;
-                              const dominantEmotion = integratedResult.dominantEmotion || { primary: 'neutral', confidence: 0.5 };
+                              const dominantEmotionObj = integratedResult.dominantEmotion || { emotion: 'neutral', confidence: 0.5 };
                               const emotionalRange = integratedResult.emotionalRange || 0.5;
                               const emotionalDepth = integratedResult.emotionalDepth || 0.5;
 
                               const intensity = Math.max(0, Math.min(1, (
                                         Math.abs(totalScore) * 0.4 +
                                         emotionalRange * 0.3 +
-                                        dominantEmotion.confidence * 0.3
+                                        dominantEmotionObj.confidence * 0.3
                               )));
 
                               const primaryEmotion = this.classifyPrimaryEmotion(
-                                        dominantEmotion.primary,
+                                        dominantEmotionObj.emotion,
                                         totalScore,
                                         emotionalRange,
                                         intensity,
-                                        dominantEmotion.confidence
+                                        dominantEmotionObj.confidence
                               );
 
                               const secondaryEmotions = this.identifySecondaryEmotions(integratedResult);
 
                               const emotionComplexity = Math.max(0, Math.min(1, (
-                                        emotionalRange * 0.4 +
-                                        emotionalDepth * 0.3 +
+                                        emotionalRange * 0.4 +          
+                                        emotionalDepth * 0.3 +          
                                         integratedResult.dimensionScores.psychological * 0.3
                               )));
 
@@ -10078,6 +10078,7 @@
     
 
 })();
+
 
 
 
