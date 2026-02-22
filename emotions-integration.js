@@ -1237,7 +1237,7 @@ generateRecommendations(metrics, lang) {
                                                                     '▪ Too categorical, use softer expressions');
                                                 }
                                       }
-                            } else { // fiction
+                            } else { 
                                       if (metrics.writer) {
                                                 const hemingway = this.getNumber(metrics.writer.hemingwayCoefficient);
                                                 if (hemingway !== null) {
@@ -2188,6 +2188,22 @@ renderResult(result) {
                      <span class="value" style="text-align:right !important;float:right;">${paragraphCount}</span>
                  </div>`;
         }
+
+		if (Object.keys(emoticons).length > 0) {
+            let emoticonsText = '';
+            if (emoticons.positive > 0) emoticonsText += `${translations.positive}: ${emoticons.positive} `;
+            if (emoticons.negative > 0) emoticonsText += `${translations.negative}: ${emoticons.negative} `;
+            if (emoticons.neutral > 0) emoticonsText += `${translations.neutral}: ${emoticons.neutral} `;
+            if (emoticons.complex > 0) emoticonsText += `${translations.complex}: ${emoticons.complex} `;
+            
+            if (emoticonsText) {
+                html += `
+                     <div class="emotion-metric">
+                         <span class="label" title="${translations.emoticonsDesc}">${translations.emoticons}:</span>
+                         <span class="value" style="text-align:right !important;float:right;">${emoticonsText}</span>
+                     </div>`;
+            }
+        }
         
         const emotionalWords = this.getNumber(this.getSafe(result, 'details.lexical.summary.totalEmotionalWords'));
         const lexicalDensity = this.getNumber(this.getSafe(result, 'details.lexical.summary.lexicalDensity'));
@@ -2201,19 +2217,19 @@ renderResult(result) {
         const emotionalClusters = this.getNumber(this.getSafe(result, 'details.lexical.clusters.length'));
         const emoticons = this.getSafe(result, 'details.lexical.emoticons', {});
         
-        if (this.shouldShowMetric(lexicalDensity, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.lexicalDensityDesc}">${translations.lexicalDensity}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(lexicalDensity * 100).toFixed(1)}%</span>
-                 </div>`;
-        }
-        
         if (this.shouldShowMetric(dominantCategory)) {
             html += `
                  <div class="emotion-metric">
                      <span class="label" title="${translations.dominantCategoryDesc}">${translations.dominantCategory}:</span>
                      <span class="value" style="text-align:right !important;float:right;">${this.translateCategory(dominantCategory, currentLang)}</span>
+                 </div>`;
+        }
+		
+		if (this.shouldShowMetric(lexicalDensity, true)) {
+            html += `
+                 <div class="emotion-metric">
+                     <span class="label" title="${translations.lexicalDensityDesc}">${translations.lexicalDensity}:</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(lexicalDensity * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -2241,22 +2257,6 @@ renderResult(result) {
 					</div>
 				`;
 		}
-        
-        if (Object.keys(emoticons).length > 0) {
-            let emoticonsText = '';
-            if (emoticons.positive > 0) emoticonsText += `${translations.positive}: ${emoticons.positive} `;
-            if (emoticons.negative > 0) emoticonsText += `${translations.negative}: ${emoticons.negative} `;
-            if (emoticons.neutral > 0) emoticonsText += `${translations.neutral}: ${emoticons.neutral} `;
-            if (emoticons.complex > 0) emoticonsText += `${translations.complex}: ${emoticons.complex} `;
-            
-            if (emoticonsText) {
-                html += `
-                     <div class="emotion-metric">
-                         <span class="label" title="${translations.emoticonsDesc}">${translations.emoticons}:</span>
-                         <span class="value" style="text-align:right !important;float:right;">${emoticonsText}</span>
-                     </div>`;
-            }
-        }
 
 		if (this.shouldShowMetric(languageConfidence, true)) {
             html += `
@@ -2384,6 +2384,14 @@ renderResult(result) {
                      <span class="value" style="text-align:right !important;float:right;">${sentenceTypes.poetic}</span>
                  </div>`;
         }
+
+		if (this.shouldShowMetric(syntacticCoherence, true)) {
+            html += `
+                 <div class="emotion-metric">
+                     <span class="label" title="${translations.syntacticCoherenceDesc}">${translations.syntacticCoherence}:</span>
+                     <span class="value" style="text-align:right !important;float:right;">${(syntacticCoherence * 100).toFixed(1)}%</span>
+                 </div>`;
+        }
         
         if (this.shouldShowMetric(rhythmRegularity, true)) {
             html += `
@@ -2406,14 +2414,6 @@ renderResult(result) {
                  <div class="emotion-metric">
                      <span class="label" title="${translations.rhythmFlowDesc}">${translations.rhythmFlow}:</span>
                      <span class="value" style="text-align:right !important;float:right;">${this.translateRhythmFlow(rhythmFlow, currentLang)}</span>
-                 </div>`;
-        }
-        
-        if (this.shouldShowMetric(syntacticCoherence, true)) {
-            html += `
-                 <div class="emotion-metric">
-                     <span class="label" title="${translations.syntacticCoherenceDesc}">${translations.syntacticCoherence}:</span>
-                     <span class="value" style="text-align:right !important;float:right;">${(syntacticCoherence * 100).toFixed(1)}%</span>
                  </div>`;
         }
         
@@ -4015,6 +4015,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
