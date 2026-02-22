@@ -8916,7 +8916,8 @@
         }
         
         classifyPrimaryEmotion(dominantEmotion, totalScore, emotionalRange, intensity, confidence = 0.5) {
-                              if (dominantEmotion && dominantEmotion !== 'neutral' && confidence > 0.6) {
+
+                              if (dominantEmotion && dominantEmotion !== 'neutral' && confidence > 0.4) {
                                         const emotionMapping = {
                                                   'ecstasy': 'ecstatic',
                                                   'joy': 'joyful',
@@ -8967,10 +8968,10 @@
                               if (intensity > 0.7) level = 'highIntensity';
                               else if (intensity < 0.3) level = 'lowIntensity';
 
-                              if (Math.abs(totalScore) <= 0.1 && emotionalRange > 0.5) {
+                              if (Math.abs(totalScore) <= 0.1 && emotionalRange > 0.6 && confidence <= 0.5) {
                                         category = 'complex';
                                         level = emotionalRange > 0.7 ? 'highComplexity' : 
-                                               emotionalRange > 0.4 ? 'mediumComplexity' : 'lowComplexity';
+                                               emotionalRange > 0.5 ? 'mediumComplexity' : 'lowComplexity';
                               }
 
                               const emotions = emotionMatrix[category]?.[level] || ['balanced'];
@@ -10078,6 +10079,7 @@
     
 
 })();
+
 
 
 
