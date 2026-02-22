@@ -6491,137 +6491,140 @@
         }
         
         enhancedCulturalAnalysis(data) {
-                    const text = data.cleaned.toLowerCase();
-                    const language = this.language;
-                    const cultural = this.culturalContext[language];
-                    
-                    const analysis = {
-                        references: {
-                            literary: { count: 0, items: [] },
-                            historical: { count: 0, items: [] },
-                            mythological: { count: 0, items: [] },
-                            traditional: { count: 0, items: [] },
-                            idioms: { count: 0, items: [] },
-                            poetic: { count: 0, items: [] }
-                        },
-                        scores: {
-                            culturalDepth: 0,
-                            intertextuality: 0,
-                            culturalRichness: 0
-                        },
-                        patterns: {
-                            literaryPatterns: [],
-                            culturalThemes: [],
-                            intertextualReferences: []
-                        }
-                    };
-                    
-                    cultural.literaryReferences.forEach(ref => {
-                        const lowerRef = ref.toLowerCase();
-                        const regex = new RegExp(`${this.escapeRegExp(lowerRef)}`, this.language === 'ru' ? 'gui' : 'gi');
-                        const matches = text.match(regex);
-                        if (matches) {
-                            analysis.references.literary.count += matches.length;
-                            analysis.references.literary.items.push({
-                                reference: ref,
-                                count: matches.length,
-                                contexts: this.findReferenceContexts ? this.findReferenceContexts(text, lowerRef) : []
-                            });
-                            analysis.scores.culturalDepth += matches.length * 0.5;
-                            
-                            if (this.isIntertextualReference && this.isIntertextualReference(lowerRef, text)) {
-                                analysis.scores.intertextuality += 0.3;
-                                analysis.patterns.intertextualReferences.push(ref);
-                            }
-                        }
-                    });
-                    
-                    cultural.historicalReferences.forEach(ref => {
-                        const lowerRef = ref.toLowerCase();
-                        const regex = new RegExp(`${this.escapeRegExp(lowerRef)}`, this.language === 'ru' ? 'gui' : 'gi');
-                        const matches = text.match(regex);
-                        if (matches) {
-                            analysis.references.historical.count += matches.length;
-                            analysis.references.historical.items.push({
-                                reference: ref,
-                                count: matches.length,
-                                period: this.determineHistoricalPeriod ? this.determineHistoricalPeriod(ref) : 'unknown'
-                            });
-                            analysis.scores.culturalDepth += matches.length * 0.4;
-                        }
-                    });
-                    
-                    cultural.mythologicalReferences.forEach(ref => {
-                        const lowerRef = ref.toLowerCase();
-                        const regex = new RegExp(`${this.escapeRegExp(lowerRef)}`, this.language === 'ru' ? 'gui' : 'gi');
-                        const matches = text.match(regex);
-                        if (matches) {
-                            analysis.references.mythological.count += matches.length;
-                            analysis.references.mythological.items.push({
-                                reference: ref,
-                                count: matches.length,
-                                archetype: this.determineMythologicalArchetype ? this.determineMythologicalArchetype(ref) : 'unknown'
-                            });
-                            analysis.scores.culturalDepth += matches.length * 0.3;
-                            
-                            if (this.isMythologicalPattern && this.isMythologicalPattern(lowerRef, text)) {
-                                analysis.patterns.culturalThemes.push(`mythological: ${ref}`);
-                            }
-                        }
-                    });
-                    
-                    cultural.idioms.forEach(idiom => {
-                        const lowerIdiom = idiom.toLowerCase();
-                        const escapedIdiom = this.escapeRegExp(lowerIdiom);
-                        const regex = new RegExp(`${escapedIdiom}`, this.language === 'ru' ? 'gui' : 'gi');
-                        const matches = text.match(regex);
-                        if (matches) {
-                            analysis.references.idioms.count += matches.length;
-                            analysis.references.idioms.items.push({
-                                idiom: idiom,
-                                count: matches.length,
-                                literalMeaning: this.getLiteralMeaning ? this.getLiteralMeaning(idiom, language) : ''
-                            });
-                            analysis.scores.culturalRichness += matches.length * 0.3;
-                        }
-                    });
-                    
-                    cultural.poeticPatterns.forEach((pattern, index) => {
-                        const matches = text.match(pattern);
-                        if (matches) {
-                            analysis.references.poetic.count += matches.length;
-                            analysis.references.poetic.items.push({
-                                pattern: pattern.toString(),
-                                count: matches.length,
-                                type: this.classifyPoeticPattern ? this.classifyPoeticPattern(pattern) : 'unknown'
-                            });
-                            analysis.scores.culturalRichness += matches.length * 0.2;
-                            
-                            matches.forEach(match => {
-                                analysis.patterns.literaryPatterns.push({
-                                    pattern: `poetic_${index}`,
-                                    example: match.substring(0, 50) + '...'
-                                });
-                            });
-                        }
-                    });
-                    
-                    const totalReferences = Object.values(analysis.references)
-                        .reduce((sum, ref) => sum + ref.count, 0);
-                    
-                    analysis.scores.culturalDepth = totalReferences > 0 ? analysis.scores.culturalDepth / totalReferences : 0;
-                    analysis.scores.culturalRichness = totalReferences > 0 ? analysis.scores.culturalRichness / totalReferences : 0;
-                    analysis.scores.overall = (analysis.scores.culturalDepth + 
-                                              analysis.scores.culturalRichness + 
-                                              analysis.scores.intertextuality) / 3;
-                    
-                    analysis.culturalDensity = totalReferences / (data.words.length || 1);
-                    
-                    analysis.culturalCoherence = this.calculateCulturalCoherence ? this.calculateCulturalCoherence(analysis.references) : 1;
-                    
-                    analysis.dominantCulturalTheme = this.detectDominantCulturalTheme ? this.detectDominantCulturalTheme(analysis.references) : 'none';
-                    
-                    return analysis;
+                              const text = data.cleaned.toLowerCase();
+                              const language = this.language;
+                              const cultural = this.culturalContext[language];
+
+                              const analysis = {
+                                        references: {
+                                                  literary: { count: 0, items: [] },
+                                                  historical: { count: 0, items: [] },
+                                                  mythological: { count: 0, items: [] },
+                                                  traditional: { count: 0, items: [] },
+                                                  idioms: { count: 0, items: [] },
+                                                  poetic: { count: 0, items: [] }
+                                        },
+                                        scores: {
+                                                  culturalDepth: 0,
+                                                  intertextuality: 0,
+                                                  culturalRichness: 0
+                                        },
+                                        patterns: {
+                                                  literaryPatterns: [],
+                                                  culturalThemes: [],
+                                                  intertextualReferences: []
+                                        }
+                              };
+
+                              cultural.literaryReferences.forEach(ref => {
+                                        const lowerRef = ref.toLowerCase();
+                                        const escaped = this.escapeRegExp(lowerRef);
+                                        const regex = new RegExp(`\\b${escaped}\\b`, 'gi');
+                                        const matches = text.match(regex);
+                                        if (matches) {
+                                                  analysis.references.literary.count += matches.length;
+                                                  analysis.references.literary.items.push({
+                                                            reference: ref,
+                                                            count: matches.length,
+                                                            contexts: this.findReferenceContexts ? this.findReferenceContexts(text, lowerRef) : []
+                                                  });
+                                                  analysis.scores.culturalDepth += matches.length * 0.5;
+
+                                                  if (this.isIntertextualReference && this.isIntertextualReference(lowerRef, text)) {
+                                                            analysis.scores.intertextuality += 0.3;
+                                                            analysis.patterns.intertextualReferences.push(ref);
+                                                  }
+                                        }
+                              });
+
+                              cultural.historicalReferences.forEach(ref => {
+                                        const lowerRef = ref.toLowerCase();
+                                        const escaped = this.escapeRegExp(lowerRef);
+                                        const regex = new RegExp(`\\b${escaped}\\b`, 'gi');
+                                        const matches = text.match(regex);
+                                        if (matches) {
+                                                  analysis.references.historical.count += matches.length;
+                                                  analysis.references.historical.items.push({
+                                                            reference: ref,
+                                                            count: matches.length,
+                                                            period: this.determineHistoricalPeriod ? this.determineHistoricalPeriod(ref) : 'unknown'
+                                                  });
+                                                  analysis.scores.culturalDepth += matches.length * 0.4;
+                                        }
+                              });
+
+                              cultural.mythologicalReferences.forEach(ref => {
+                                        const lowerRef = ref.toLowerCase();
+                                        const escaped = this.escapeRegExp(lowerRef);
+                                        const regex = new RegExp(`\\b${escaped}\\b`, 'gi');
+                                        const matches = text.match(regex);
+                                        if (matches) {
+                                                  analysis.references.mythological.count += matches.length;
+                                                  analysis.references.mythological.items.push({
+                                                            reference: ref,
+                                                            count: matches.length,
+                                                            archetype: this.determineMythologicalArchetype ? this.determineMythologicalArchetype(ref) : 'unknown'
+                                                  });
+                                                  analysis.scores.culturalDepth += matches.length * 0.3;
+
+                                                  if (this.isMythologicalPattern && this.isMythologicalPattern(lowerRef, text)) {
+                                                            analysis.patterns.culturalThemes.push(`mythological: ${ref}`);
+                                                  }
+                                        }
+                              });
+
+                              cultural.idioms.forEach(idiom => {
+                                        const lowerIdiom = idiom.toLowerCase();
+                                        const escaped = this.escapeRegExp(lowerIdiom);
+                                        const regex = new RegExp(`\\b${escaped}\\b`, 'gi');
+                                        const matches = text.match(regex);
+                                        if (matches) {
+                                                  analysis.references.idioms.count += matches.length;
+                                                  analysis.references.idioms.items.push({
+                                                            idiom: idiom,
+                                                            count: matches.length,
+                                                            literalMeaning: this.getLiteralMeaning ? this.getLiteralMeaning(idiom, language) : ''
+                                                  });
+                                                  analysis.scores.culturalRichness += matches.length * 0.3;
+                                        }
+                              });
+
+                              cultural.poeticPatterns.forEach((pattern, index) => {
+                                        const matches = text.match(pattern);
+                                        if (matches) {
+                                                  analysis.references.poetic.count += matches.length;
+                                                  analysis.references.poetic.items.push({
+                                                            pattern: pattern.toString(),
+                                                            count: matches.length,
+                                                            type: this.classifyPoeticPattern ? this.classifyPoeticPattern(pattern) : 'unknown'
+                                                  });
+                                                  analysis.scores.culturalRichness += matches.length * 0.2;
+
+                                                  matches.forEach(match => {
+                                                            analysis.patterns.literaryPatterns.push({
+                                                                      pattern: `poetic_${index}`,
+                                                                      example: match.substring(0, 50) + '...'
+                                                            });
+                                                  });
+                                        }
+                              });
+
+                              const totalReferences = Object.values(analysis.references)
+                                        .reduce((sum, ref) => sum + ref.count, 0);
+
+                              analysis.scores.culturalDepth = totalReferences > 0 ? analysis.scores.culturalDepth / totalReferences : 0;
+                              analysis.scores.culturalRichness = totalReferences > 0 ? analysis.scores.culturalRichness / totalReferences : 0;
+                              analysis.scores.overall = (analysis.scores.culturalDepth + 
+                                                          analysis.scores.culturalRichness + 
+                                                          analysis.scores.intertextuality) / 3;
+
+                              analysis.culturalDensity = totalReferences / (data.words.length || 1);
+
+                              analysis.culturalCoherence = this.calculateCulturalCoherence ? this.calculateCulturalCoherence(analysis.references) : 1;
+
+                              analysis.dominantCulturalTheme = this.detectDominantCulturalTheme ? this.detectDominantCulturalTheme(analysis.references) : 'none';
+
+                              return analysis;
         }
         
         detectWordRepetitions(data) {
@@ -6642,7 +6645,7 @@
                               }
 
                               const baseStopWords = this.language === 'ru' ? 
-                                        ['и', 'в', 'на', 'с', 'к', 'а', 'у', 'ли', 'но', 'или', 'я', 'ты', 'не', 'то', 'он', 'она', 'оно', 'они', 'это', 'всё', 'тот', 'такой', 'какой', 'свой', 'свою', 'себе', 'мой', 'твой', 'его', 'её', 'их', 'мы', 'наш', 'ваш'] :
+                                        ['и', 'в', 'на', 'с', 'к', 'а', 'у', 'ли', 'но', 'или', 'я', 'ты', 'не', 'то', 'он', 'она', 'оно', 'они', 'это', 'всё', 'тот', 'такой', 'какой', 'свой', 'свою', 'свои', 'себе', 'мой', 'твой', 'его', 'её', 'их', 'мы', 'наш', 'ваш'] :
                                         ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'this', 'that', 'these', 'those', 'it', 'its', 'he', 'she', 'they', 'we', 'you', 'i', 'my', 'your', 'his', 'her', 'our', 'their'];
 
                               const punctuationSymbols = [':', '-', ')', '(', '[', ']', '{', '}', '<', '>', '/', '\\', '|', '*', '+', '=', '~', '`', '@', '#', '$', '%', '^', '&', '_', '!', '?', '.', ',', ';', '\'', '"', '»', '«', '—', '…'];
@@ -10110,6 +10113,7 @@
     
 
 })();
+
 
 
 
