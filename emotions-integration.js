@@ -1658,7 +1658,7 @@ renderResult(result) {
                     if (this.shouldShowMetric(silenceVal, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.writerSilenceHint || ''}">${this.translateValue('Эффект тишины', lang)}:</span>`;
-                              html += `<span class="value" style="text-align:right !important;float:right;">${writer.silenceEffect} dB</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${writer.silenceEffect}dB</span>`;
                               html += `</div>`;
                     }
                     
@@ -1666,7 +1666,7 @@ renderResult(result) {
                     if (this.shouldShowMetric(weatherVal, true)) {
                               html += `<div class="emotion-metric">`;
                               html += `<span class="label" title="${t.writerWeatherHint || ''}">${this.translateValue('Индекс погоды', lang)}:</span>`;
-                              html += `<span class="value" style="text-align:right !important;float:right;">${writer.weatherIndex} °C</span>`;
+                              html += `<span class="value" style="text-align:right !important;float:right;">${writer.weatherIndex}°C</span>`;
                               html += `</div>`;
                     }
                     
@@ -4016,6 +4016,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
