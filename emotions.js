@@ -8009,82 +8009,89 @@
         }
         
         psychologicalAnalysis(data) {
-            const text = data.cleaned;
-            const words = data.words;
-            const sentences = data.sentences;
-            
-            const plutchikAnalysis = this.analyzePlutchikEmotions(words);
-            
-            const maslowAnalysis = this.analyzeMaslowNeeds(text);
-            
-            const bigFiveAnalysis = this.analyzeBigFiveTraits(text);
-            
-            const emotionalIntelligence = this.assessEmotionalIntelligence(text);
-            
-            const defenseMechanisms = this.detectDefenseMechanisms(text);
-            
-            return {
-                plutchik: plutchikAnalysis,
-                maslow: maslowAnalysis,
-                bigFive: bigFiveAnalysis,
-                emotionalIntelligence: emotionalIntelligence,
-                defenseMechanisms: defenseMechanisms,
-                psychologicalComplexity: this.calculatePsychologicalComplexity(
-                    plutchikAnalysis, maslowAnalysis, bigFiveAnalysis
-                ),
-                selfAwarenessLevel: this.assessSelfAwareness(text)
-            };
+                              const text = data.cleaned;
+                              const words = data.words;
+                              const sentences = data.sentences;
+
+                              const plutchikAnalysis = this.analyzePlutchikEmotions(words);
+                              const maslowAnalysis = this.analyzeMaslowNeeds(text);
+                              const bigFiveAnalysis = this.analyzeBigFiveTraits(text);
+                              const emotionalIntelligence = this.assessEmotionalIntelligence(text);
+                              const defenseMechanisms = this.detectDefenseMechanisms(text);
+                              const cognitiveBiases = this.analyzeCognitiveBiases(text);
+                              const communicationStyles = this.analyzeCommunicationStyles(text);
+                              const selfAwareness = this.assessSelfAwareness(text); 
+
+                              const psychologicalComplexity = this.calculatePsychologicalComplexity(
+                                        plutchikAnalysis, maslowAnalysis, bigFiveAnalysis, emotionalIntelligence, defenseMechanisms, cognitiveBiases, communicationStyles
+                              );
+
+                              return {
+                                        plutchik: plutchikAnalysis,
+                                        maslow: maslowAnalysis,
+                                        bigFive: bigFiveAnalysis,
+                                        emotionalIntelligence: emotionalIntelligence,
+                                        defenseMechanisms: defenseMechanisms,
+                                        cognitiveBiases: cognitiveBiases,
+                                        communicationStyles: communicationStyles,
+                                        selfAwarenessLevel: selfAwareness,
+                                        psychologicalComplexity: psychologicalComplexity
+                              };
         }
         
         analyzePlutchikEmotions(words) {
-            const plutchik = this.psychologicalModels.plutchikWheel;
-            const emotions = {};
-            
-            const plutchikMapping = {
-                joy: ['joy', 'ecstasy', 'happiness'],
-                trust: ['trust', 'faith', 'hope'],
-                fear: ['fear', 'anxiety', 'worry'],
-                surprise: ['surprise', 'astonishment', 'amazement'],
-                sadness: ['sadness', 'grief', 'sorrow'],
-                disgust: ['disgust', 'revulsion', 'contempt'],
-                anger: ['anger', 'rage', 'fury'],
-                anticipation: ['anticipation', 'expectation', 'curiosity']
-            };
-            
-            for (const [plutchikEmotion, ourCategories] of Object.entries(plutchikMapping)) {
-                let intensity = 0;
-                let count = 0;
-                
-                ourCategories.forEach(category => {
-                    if (this.dictionaries[this.language][category]) {
-                        const found = this.dictionaries[this.language][category].filter(word => 
-                            words.includes(word)
-                        ).length;
-                        intensity += found;
-                        count += found > 0 ? 1 : 0;
-                    }
-                });
-                
-                if (count > 0) {
-                    emotions[plutchikEmotion] = {
-                        intensity: intensity / (words.length || 1),
-                        presence: count > 0,
-                        weightedIntensity: intensity * 2 / (words.length || 1)
-                    };
-                }
-            }
-            
-            const primaryEmotion = this.findPrimaryPlutchikEmotion(emotions);
-            
-            const combinations = this.calculatePlutchikCombinations(emotions);
-            
-            return {
-                basicEmotions: emotions,
-                primary: primaryEmotion,
-                combinations: combinations,
-                emotionalDiversity: Object.keys(emotions).length / 8, // 8 basic emotions
-                emotionalIntensity: this.calculatePlutchikIntensity(emotions)
-            };
+                              const plutchik = this.psychologicalModels.plutchikWheel;
+                              const emotions = {};
+
+                              const plutchikMapping = {
+                                        joy: ['ecstasy', 'joy', 'happiness', 'delight', 'euphoria'],
+                                        trust: ['trust', 'faith', 'hope', 'confidence'],
+                                        fear: ['fear', 'anxiety', 'worry', 'dread', 'terror'],
+                                        surprise: ['surprise', 'astonishment', 'amazement', 'shock'],
+                                        sadness: ['sadness', 'grief', 'sorrow', 'melancholy', 'despair'],
+                                        disgust: ['disgust', 'revulsion', 'contempt', 'loathing'],
+                                        anger: ['anger', 'rage', 'fury', 'wrath', 'irritation'],
+                                        anticipation: ['anticipation', 'expectation', 'curiosity', 'interest']
+                              };
+
+                              for (const [plutchikEmotion, ourCategories] of Object.entries(plutchikMapping)) {
+                                        let totalWeightedCount = 0;
+                                        let categoryCount = 0;
+
+                                        ourCategories.forEach(category => {
+                                                  if (this.dictionaries[this.language][category]) {
+                                                            const categoryWords = this.dictionaries[this.language][category];
+                                                            const weight = this.categoryWeights[category] || 1.0;
+                                                            // Находим все вхождения слов этой категории
+                                                            const found = words.filter(word => categoryWords.includes(word)).length;
+                                                            if (found > 0) {
+                                                                      totalWeightedCount += found * weight;
+                                                                      categoryCount++;
+                                                            }
+                                                  }
+                                        });
+
+                                        if (totalWeightedCount > 0) {
+                                                  emotions[plutchikEmotion] = {
+                                                            intensity: totalWeightedCount / (words.length || 1), 
+                                                            presence: categoryCount > 0,
+                                                            weightedIntensity: totalWeightedCount * 2 / (words.length || 1) 
+                                                  };
+                                        }
+                              }
+
+                              const primaryEmotion = this.findPrimaryPlutchikEmotion(emotions);
+                              const combinations = this.calculatePlutchikCombinations(emotions);
+                              const emotionalDiversity = Object.keys(emotions).length / 8;
+                              const emotionalIntensity = this.calculatePlutchikIntensity(emotions);
+
+                              return {
+                                        basicEmotions: emotions,
+                                        primary: primaryEmotion,
+                                        combinations: combinations,
+                                        emotionalDiversity: emotionalDiversity,
+                                        emotionalIntensity: emotionalIntensity
+                              };
         }
         
         findPrimaryPlutchikEmotion(emotions) {
@@ -8138,49 +8145,145 @@
             const concentration = maxIntensity / (avgIntensity + 0.001);
             return Math.min(1, (avgIntensity * 0.6 + maxIntensity * 0.3 + (1 - stdDev) * 0.1) * concentration);
         }
+
+        analyzeCognitiveBiases(text) {
+                              const biases = this.psychologicalModels.cognitiveBiases || {};
+                              const detected = [];
+
+                              for (const [bias, config] of Object.entries(biases)) {
+                                        if (!config.enabled) continue;
+                                        const markers = config.markers || { ru: [], en: [] };
+                                        const langMarkers = markers[this.language] || markers.en || [];
+                                        let count = 0;
+                                        langMarkers.forEach(marker => {
+                                                  const regex = new RegExp(`\\b${this.escapeRegExp(marker)}\\b`, 'gi');
+                                                  const matches = text.match(regex);
+                                                  if (matches) count += matches.length;
+                                        });
+                                        if (count > 0) {
+                                                  detected.push({
+                                                            bias: bias,
+                                                            frequency: count,
+                                                            intensity: Math.min(1, count * (config.weight || 0.2)),
+                                                            weight: config.weight || 1.0
+                                                  });
+                                        }
+                              }
+
+                              return {
+                                        biases: detected,
+                                        total: detected.length,
+                                        overallIntensity: detected.length > 0 ? detected.reduce((sum, b) => sum + b.intensity, 0) / detected.length : 0,
+                                        primaryBias: detected.length > 0 ? detected.sort((a, b) => b.intensity - a.intensity)[0].bias : 'none'
+                              };
+        }
+
+        analyzeCommunicationStyles(text) {
+                              const styles = this.psychologicalModels.communicationStyles || {};
+                              const detected = [];
+
+                              for (const [style, config] of Object.entries(styles)) {
+                                        if (!config.enabled) continue;
+                                        const markers = config.markers || { ru: [], en: [] };
+                                        const avoidMarkers = config.markersAvoid || { ru: [], en: [] };
+                                        const langMarkers = markers[this.language] || markers.en || [];
+                                        const langAvoid = avoidMarkers[this.language] || avoidMarkers.en || [];
+                                        let score = 0;
+                                        langMarkers.forEach(marker => {
+                                                  const regex = new RegExp(`\\b${this.escapeRegExp(marker)}\\b`, 'gi');
+                                                  const matches = text.match(regex);
+                                                  if (matches) score += matches.length * 0.2;
+                                        });
+                                        langAvoid.forEach(marker => {
+                                                  const regex = new RegExp(`\\b${this.escapeRegExp(marker)}\\b`, 'gi');
+                                                  const matches = text.match(regex);
+                                                  if (matches) score -= matches.length * 0.1; 
+                                        });
+                                        if (score > 0) {
+                                                  detected.push({
+                                                            style: style,
+                                                            score: Math.min(1, score),
+                                                            intensity: Math.min(1, score / 2)
+                                                  });
+                                        }
+                              }
+
+                              return {
+                                        styles: detected,
+                                        total: detected.length,
+                                        dominantStyle: detected.length > 0 ? detected.sort((a, b) => b.score - a.score)[0].style : 'none'
+                              };
+        }
         
         analyzeMaslowNeeds(text) {
-            const maslow = this.psychologicalModels.maslowHierarchy;
-            const needs = {};
-            
-            for (const level of maslow.levels) {
-                const themes = maslow.emotionalThemes[level];
-                let score = 0;
-                const foundThemes = [];
-                
-                themes.forEach(theme => {
-                    const regex = new RegExp(`\\b${theme}\\b`, 'gi');
-                    const matches = text.match(regex);
-                    if (matches) {
-                        score += matches.length * 0.1;
-                        foundThemes.push(theme);
-                    }
-                });
-                
-                if (score > 0) {
-                    needs[level] = {
-                        score: Math.min(1, score),
-                        themes: foundThemes,
-                        intensity: score / themes.length
-                    };
-                }
-            }
-            
-            const dominantLevel = this.findDominantMaslowLevel(needs);
-            
-            const hierarchyCompletion = this.calculateHierarchyCompletion(needs);
-            
-            return {
-                needs: needs,
-                dominant: dominantLevel,
-                hierarchyCompletion: hierarchyCompletion,
-                needComplexity: Object.keys(needs).length / maslow.levels.length
-            };
+                              const maslow = this.psychologicalModels.maslowHierarchy;
+                              const needs = {};
+
+                              const extendedThemes = {
+                                        physiological: [
+                                                  'еда', 'вода', 'сон', 'отдых', 'тепло', 'кров', 'здоровье', 'голод', 'жажда',
+                                                  'food', 'water', 'sleep', 'rest', 'warmth', 'shelter', 'health', 'hunger', 'thirst'
+                                        ],
+                                        safety: [
+                                                  'безопасность', 'защита', 'стабильность', 'порядок', 'страховка', 'уверенность',
+                                                  'safety', 'security', 'protection', 'stability', 'order', 'insurance', 'confidence',
+                                                  'risk', 'опасность', 'danger', 'threat', 'угроза'
+                                        ],
+                                        'love/belonging': [
+                                                  'любовь', 'дружба', 'семья', 'близость', 'принадлежность', 'принятие', 'общность',
+                                                  'love', 'friendship', 'family', 'intimacy', 'belonging', 'acceptance', 'community',
+                                                  'одиночество', 'loneliness', 'изоляция', 'isolation'
+                                        ],
+                                        esteem: [
+                                                  'уважение', 'признание', 'статус', 'достижение', 'успех', 'престиж', 'самоуважение',
+                                                  'respect', 'recognition', 'status', 'achievement', 'success', 'prestige', 'self-esteem',
+                                                  'похвала', 'praise', 'восхищение', 'admiration'
+                                        ],
+                                        'self-actualization': [
+                                                  'самореализация', 'развитие', 'рост', 'потенциал', 'творчество', 'смысл', 'цель',
+                                                  'self-actualization', 'development', 'growth', 'potential', 'creativity', 'meaning', 'purpose',
+                                                  'призвание', 'calling', 'духовность', 'spirituality'
+                                        ]
+                              };
+
+                              for (const level of maslow.levels) {
+                                        const themes = extendedThemes[level] || [];
+                                        let score = 0;
+                                        const foundThemes = [];
+
+                                        themes.forEach(theme => {
+                                                  const regex = new RegExp(`\\b${this.escapeRegExp(theme)}\\b`, 'gi');
+                                                  const matches = text.match(regex);
+                                                  if (matches) {
+                                                            score += matches.length * 0.1;
+                                                            foundThemes.push(theme);
+                                                  }
+                                        });
+
+                                        if (score > 0) {
+                                                  needs[level] = {
+                                                            score: Math.min(1, score),
+                                                            themes: foundThemes.slice(0, 10),
+                                                            intensity: score / themes.length 
+                                                  };
+                                        }
+                              }
+
+                              const dominantLevel = this.findDominantMaslowLevel(needs);
+                              const hierarchyCompletion = this.calculateHierarchyCompletion(needs);
+                              const needComplexity = Object.keys(needs).length / maslow.levels.length;
+
+                              return {
+                                        needs: needs,
+                                        dominant: dominantLevel,
+                                        hierarchyCompletion: hierarchyCompletion,
+                                        needComplexity: needComplexity
+                              };
         }
         
         findDominantMaslowLevel(needs) {
             let maxScore = 0;
-            let dominant = 'self-actualization'; // default highest level
+            let dominant = 'self-actualization'; 
             
             for (const [level, data] of Object.entries(needs)) {
                 if (data.score > maxScore) {
@@ -8222,39 +8325,68 @@
         }
         
         analyzeBigFiveTraits(text) {
-            const bigFive = this.psychologicalModels.bigFivePersonality;
-            const traits = {};
-            
-            for (const trait of bigFive.traits) {
-                const correlations = bigFive.emotionalCorrelations[trait];
-                let score = 0;
-                const indicators = [];
-                
-                correlations.forEach(indicator => {
-                    const regex = new RegExp(`\\b${indicator}\\b`, 'gi');
-                    const matches = text.match(regex);
-                    if (matches) {
-                        score += matches.length * 0.05;
-                        indicators.push(indicator);
-                    }
-                });
-                
-                if (score > 0) {
-                    traits[trait] = {
-                        score: Math.min(1, score),
-                        indicators: indicators,
-                        level: this.getBigFiveLevel(score)
-                    };
-                }
-            }
-            
-            const profile = this.createBigFiveProfile(traits);
-            
-            return {
-                traits: traits,
-                profile: profile,
-                complexity: this.calculatePersonalityComplexity(traits)
-            };
+                              const bigFive = this.psychologicalModels.bigFivePersonality;
+                              const traits = {};
+
+                              const extendedIndicators = {
+                                        openness: [
+                                                  'любопытный', 'творческий', 'фантазия', 'воображение', 'искусство', 'поэзия',
+                                                  'curious', 'creative', 'imagination', 'art', 'poetry', 'интеллектуальный',
+                                                  'intellectual', 'nonconformist', 'нестандартный', 'liberal', 'либеральный'
+                                        ],
+                                        conscientiousness: [
+                                                  'дисциплинированный', 'организованный', 'ответственный', 'надёжный', 'трудолюбивый',
+                                                  'disciplined', 'organized', 'responsible', 'reliable', 'hardworking',
+                                                  'перфекционист', 'perfectionist', 'пунктуальный', 'punctual', 'plan', 'план'
+                                        ],
+                                        extraversion: [
+                                                  'общительный', 'разговорчивый', 'энергичный', 'активный', 'компанейский',
+                                                  'sociable', 'talkative', 'energetic', 'active', 'outgoing', 'дружелюбный',
+                                                  'friendly', 'энтузиазм', 'enthusiasm'
+                                        ],
+                                        agreeableness: [
+                                                  'добрый', 'отзывчивый', 'сочувствующий', 'доверчивый', 'кооперативный',
+                                                  'kind', 'responsive', 'sympathetic', 'trusting', 'cooperative', 'альтруистичный',
+                                                  'altruistic', 'вежливый', 'polite'
+                                        ],
+                                        neuroticism: [
+                                                  'тревожный', 'нервный', 'напряжённый', 'неуверенный', 'ранимый', 'пессимистичный',
+                                                  'anxious', 'nervous', 'tense', 'insecure', 'vulnerable', 'pessimistic',
+                                                  'депрессивный', 'depressed', 'эмоциональный', 'emotional', 'обидчивый', 'touchy'
+                                        ]
+                              };
+
+                              for (const trait of bigFive.traits) {
+                                        const indicators = extendedIndicators[trait] || [];
+                                        let score = 0;
+                                        const foundIndicators = [];
+
+                                        indicators.forEach(indicator => {
+                                                  const regex = new RegExp(`\\b${this.escapeRegExp(indicator)}\\b`, 'gi');
+                                                  const matches = text.match(regex);
+                                                  if (matches) {
+                                                            score += matches.length * 0.05;
+                                                            foundIndicators.push(indicator);
+                                                  }
+                                        });
+
+                                        if (score > 0) {
+                                                  traits[trait] = {
+                                                            score: Math.min(1, score),
+                                                            indicators: foundIndicators.slice(0, 10),
+                                                            level: score > 0.4 ? 'high' : score > 0.15 ? 'medium' : 'low' 
+                                                  };
+                                        }
+                              }
+
+                              const profile = this.createBigFiveProfile(traits);
+                              const complexity = this.calculatePersonalityComplexity(traits);
+
+                              return {
+                                        traits: traits,
+                                        profile: profile,
+                                        complexity: complexity
+                              };
         }
         
         getBigFiveLevel(score) {
@@ -8299,39 +8431,74 @@
         }
         
         assessEmotionalIntelligence(text) {
-            const indicators = {
-                selfAwareness: ['осознаю', 'понимаю свои', 'чувствую что', 'i feel', 'i understand', 'i realize'],
-                empathy: ['понимаю тебя', 'чувствую твою', 'сочувствую', 'i understand you', 'i feel your', 'empathy'],
-                emotionalRegulation: ['контролирую', 'управляю эмоциями', 'сохраняю спокойствие', 'control', 'manage emotions', 'stay calm'],
-                socialSkills: ['общаюсь', 'взаимодействую', 'понимаю других', 'communicate', 'interact', 'understand others']
-            };
-            
-            const scores = {};
-            let totalScore = 0;
-            
-            for (const [component, phrases] of Object.entries(indicators)) {
-                let componentScore = 0;
-                
-                phrases.forEach(phrase => {
-                    const regex = new RegExp(phrase, 'gi');
-                    const matches = text.match(regex);
-                    if (matches) {
-                        componentScore += matches.length * 0.1;
-                    }
-                });
-                
-                scores[component] = Math.min(1, componentScore);
-                totalScore += componentScore;
-            }
-            
-            const avgScore = totalScore / Object.keys(indicators).length;
-            
-            return {
-                components: scores,
-                overall: avgScore,
-                level: this.getEILevel(avgScore),
-                strengths: this.findEIStrengths(scores)
-            };
+                              const indicators = {
+                                        selfAwareness: [
+                                                  { pattern: /осознаю|понимаю себя|мои чувства|рефлексирую|самоанализ|интроспекция|i (am|'m) aware|i understand myself|my feelings|self[ -]reflection|introspection/gi, weight: 0.2 },
+                                                  { pattern: /я думаю о себе|я задумываюсь|i think about myself|i ponder/gi, weight: 0.15 },
+                                                  { pattern: /почему я|зачем я|что я чувствую|why (do|am) i|what (do|am) i feel/gi, weight: 0.25 } // метакогнитивные вопросы
+                                        ],
+                                        empathy: [
+                                                  { pattern: /понимаю (тебя|других)|чувствую твою|сопереживаю|эмпатия|i understand (you|others)|i feel your|empathy|compassion/gi, weight: 0.25 },
+                                                  { pattern: /ставлю себя на (твое|его|её) место|i put myself in (your|their) shoes/gi, weight: 0.3 },
+                                                  { pattern: /ты (должно быть|наверное) чувствуешь|you must feel|you probably feel/gi, weight: 0.2 }
+                                        ],
+                                        emotionalRegulation: [
+                                                  { pattern: /контролирую (себя|эмоции)|управляю эмоциями|сохраняю спокойствие|держу себя в руках|i control (myself|my emotions)|i manage my emotions|i stay calm|keep (my|) cool/gi, weight: 0.25 },
+                                                  { pattern: /не даю эмоциям|не позволяю себе|i don't let emotions|i keep my emotions in check/gi, weight: 0.3 },
+                                                  { pattern: /дышу глубоко|считаю до десяти|take a deep breath|count to ten/gi, weight: 0.2 }
+                                        ],
+                                        socialSkills: [
+                                                  { pattern: /общаюсь|взаимодействую|нахожу общий язык|коммуникация|i communicate|i interact|i get along|social skills/gi, weight: 0.2 },
+                                                  { pattern: /умею слушать|слышу других|i know how to listen|i hear others/gi, weight: 0.25 },
+                                                  { pattern: /разрешаю конфликты|иду на компромисс|i resolve conflicts|i compromise/gi, weight: 0.25 },
+                                                  { pattern: /поддерживаю разговор|i keep a conversation/gi, weight: 0.15 }
+                                        ]
+                              };
+
+                              const scores = {};
+                              let totalScore = 0;
+
+                              for (const [component, patterns] of Object.entries(indicators)) {
+                                        let componentScore = 0;
+                                        patterns.forEach(({ pattern, weight }) => {
+                                                  const matches = text.match(pattern);
+                                                  if (matches) {
+                                                            let matchWeight = weight;
+                                                            const matchPositions = [];
+                                                            let match;
+                                                            while ((match = pattern.exec(text)) !== null) {
+                                                                      matchPositions.push(match.index);
+                                                            }
+                                                            matchPositions.forEach(pos => {
+                                                                      const contextStart = Math.max(0, pos - 50);
+                                                                      const contextEnd = Math.min(text.length, pos + 50);
+                                                                      const context = text.substring(contextStart, contextEnd).toLowerCase();
+                                                                      const negations = this.contextRules[this.language]?.negations || [];
+                                                                      const hasNegation = negations.some(neg => context.includes(' ' + neg + ' '));
+                                                                      if (hasNegation) matchWeight *= 0.3;
+                                                            });
+                                                            componentScore += matches.length * matchWeight;
+                                                  }
+                                        });
+                                        scores[component] = Math.min(1, componentScore);
+                                        totalScore += componentScore;
+                              }
+
+                              const avgScore = totalScore / Object.keys(indicators).length;
+
+                              const level = avgScore > 0.6 ? 'high' : avgScore > 0.3 ? 'moderate' : 'developing';
+
+                              const strengths = [];
+                              for (const [component, score] of Object.entries(scores)) {
+                                        if (score > 0.5) strengths.push(component);
+                              }
+
+                              return {
+                                        components: scores,
+                                        overall: avgScore,
+                                        level: level,
+                                        strengths: strengths
+                              };
         }
         
         getEILevel(score) {
@@ -8351,84 +8518,127 @@
         }
         
         detectDefenseMechanisms(text) {
-            const mechanisms = {
-                denial: ['нет проблемы', 'всё хорошо', 'ничего страшного', 'no problem', 'everything is fine', 'nothing wrong'],
-                projection: ['ты сам', 'это ты', 'все вокруг', 'you are', 'it\'s you', 'everyone else'],
-                rationalization: ['потому что', 'поэтому', 'так получилось', 'because', 'therefore', 'it happened'],
-                intellectualization: ['с теоретической точки', 'анализируя', 'рассматривая', 'from theoretical perspective', 'analyzing', 'considering'],
-                displacement: ['злюсь на', 'раздражает', 'бесит', 'angry at', 'irritated by', 'annoyed by']
-            };
-            
-            const detected = [];
-            
-            for (const [mechanism, phrases] of Object.entries(mechanisms)) {
-                let count = 0;
-                
-                phrases.forEach(phrase => {
-                    const regex = new RegExp(phrase, 'gi');
-                    const matches = text.match(regex);
-                    if (matches) {
-                        count += matches.length;
-                    }
-                });
-                
-                if (count > 0) {
-                    detected.push({
-                        mechanism: mechanism,
-                        frequency: count,
-                        intensity: Math.min(1, count * 0.2)
-                    });
-                }
-            }
-            
-            return {
-                mechanisms: detected,
-                total: detected.length,
-                overallIntensity: detected.reduce((sum, m) => sum + m.intensity, 0) / (detected.length || 1),
-                primaryMechanism: detected.length > 0 ? 
-                    detected.sort((a, b) => b.intensity - a.intensity)[0].mechanism : 'none'
-            };
+                              const mechanisms = {
+                                        denial: [
+                                                  { pattern: /нет проблемы|всё хорошо|ничего страшного|no problem|everything is fine|nothing wrong|i('m| am) fine|it('s| is) okay/gi, weight: 0.2 },
+                                                  { pattern: /я не (верю|принимаю)|i don't (believe|accept)/gi, weight: 0.25 },
+                                                  { pattern: /этого не может быть|it can't be/gi, weight: 0.3 }
+                                        ],
+                                        projection: [
+                                                  { pattern: /ты сам|это ты|все вокруг|you are|it('s| is) you|everyone else|они все|they all/gi, weight: 0.2 },
+                                                  { pattern: /это не я, это|it's not me, it's|не я виноват, а|i'm not to blame, it's/gi, weight: 0.25 },
+                                                  { pattern: /на других|на окружающих|на всех|on others|on everyone/gi, weight: 0.15 }
+                                        ],
+                                        rationalization: [
+                                                  { pattern: /потому что|поэтому|так получилось|because|therefore|it happened|объясняется тем|explained by/gi, weight: 0.2 },
+                                                  { pattern: /на самом деле|на самом-то деле|actually|in fact/gi, weight: 0.15 },
+                                                  { pattern: /это (было|есть) необходимо|it was necessary|i had no choice/gi, weight: 0.25 }
+                                        ],
+                                        intellectualization: [
+                                                  { pattern: /с теоретической точки|анализируя|рассматривая|from (a|the) theoretical perspective|analyzing|considering|with regard to|в контексте|in context/gi, weight: 0.2 },
+                                                  { pattern: /стоит отметить|следует заметить|it should be noted|it is worth mentioning/gi, weight: 0.15 },
+                                                  { pattern: /объективно|рационально|objectively|rationally/gi, weight: 0.2 }
+                                        ],
+                                        displacement: [
+                                                  { pattern: /злюсь на|раздражает|бесит|angry at|irritated by|annoyed by|срываюсь на|take it out on/gi, weight: 0.2 },
+                                                  { pattern: /не на того|не на тех|on the wrong person|on the wrong people/gi, weight: 0.25 }
+                                        ]
+                              };
+
+                              const detected = [];
+
+                              for (const [mechanism, patterns] of Object.entries(mechanisms)) {
+                                        let score = 0;
+                                        patterns.forEach(({ pattern, weight }) => {
+                                                  const matches = text.match(pattern);
+                                                  if (matches) {
+                                                            let matchWeight = weight;
+                                                            const matchPositions = [];
+                                                            let match;
+                                                            while ((match = pattern.exec(text)) !== null) {
+                                                                      matchPositions.push(match.index);
+                                                            }
+                                                            matchPositions.forEach(pos => {
+                                                                      const contextStart = Math.max(0, pos - 30);
+                                                                      const contextEnd = Math.min(text.length, pos + 30);
+                                                                      const context = text.substring(contextStart, contextEnd).toLowerCase();
+                                                                      const negations = this.contextRules[this.language]?.negations || [];
+                                                                      const hasNegation = negations.some(neg => context.includes(' ' + neg + ' '));
+                                                                      if (hasNegation) matchWeight *= 0.2;
+                                                            });
+                                                            score += matches.length * matchWeight;
+                                                  }
+                                        });
+                                        if (score > 0) {
+                                                  detected.push({
+                                                            mechanism: mechanism,
+                                                            frequency: Math.round(score * 10) / 10,
+                                                            intensity: Math.min(1, score / 3) 
+                                                  });
+                                        }
+                              }
+
+                              const total = detected.length;
+                              const overallIntensity = detected.length > 0 ? detected.reduce((sum, m) => sum + m.intensity, 0) / detected.length : 0;
+                              const primaryMechanism = detected.length > 0 ? detected.sort((a, b) => b.intensity - a.intensity)[0].mechanism : 'none';
+
+                              return {
+                                        mechanisms: detected,
+                                        total: total,
+                                        overallIntensity: overallIntensity,
+                                        primaryMechanism: primaryMechanism
+                              };
         }
         
-        calculatePsychologicalComplexity(plutchik, maslow, bigFive) {
-            const factors = [
-                plutchik.emotionalDiversity * 0.4,
-                maslow.needComplexity * 0.3,
-                bigFive.complexity * 0.3
-            ];
-            const weightedSum = factors.reduce((a, b) => a + b, 0);
-            const diversityBonus = Math.min(0.2, (plutchik.emotionalDiversity + maslow.needComplexity + bigFive.complexity) / 15);
-            const nonLinearity = Math.pow(weightedSum, 1.2);
-            return Math.min(1, nonLinearity + diversityBonus);
+        calculatePsychologicalComplexity(plutchik, maslow, bigFive, ei, defense, biases, comm) {
+                              const factors = [
+                                        plutchik.emotionalDiversity * 0.25,
+                                        maslow.needComplexity * 0.2,
+                                        bigFive.complexity * 0.15,
+                                        (ei?.overall || 0) * 0.1,
+                                        (defense?.overallIntensity || 0) * 0.1,
+                                        (biases?.overallIntensity || 0) * 0.1,
+                                        (comm?.total || 0) / 4 * 0.1 
+                              ];
+                              const weightedSum = factors.reduce((a, b) => a + b, 0);
+                              const complexity = Math.min(1, weightedSum);
+                              return Math.round(complexity * 100) / 100;
         }
         
         assessSelfAwareness(text) {
-            const selfReflectionMarkers = ['я думаю', 'я чувствую', 'я осознаю', 'i think', 'i feel', 'i realize'];
-            const metacognitionMarkers = ['почему я', 'зачем я', 'что я чувствую', 'why do i', 'what do i feel'];
-            
-            let selfReflectionScore = 0;
-            let metacognitionScore = 0;
-            
-            selfReflectionMarkers.forEach(marker => {
-                const regex = new RegExp(marker, 'gi');
-                const matches = text.match(regex);
-                if (matches) selfReflectionScore += matches.length * 0.2;
-            });
-            
-            metacognitionMarkers.forEach(marker => {
-                const regex = new RegExp(marker, 'gi');
-                const matches = text.match(regex);
-                if (matches) metacognitionScore += matches.length * 0.3;
-            });
-            
-            const totalScore = Math.min(1, selfReflectionScore + metacognitionScore);
-            
-            return {
-                score: totalScore,
-                selfReflection: Math.min(1, selfReflectionScore),
-                metacognition: Math.min(1, metacognitionScore),
-                level: totalScore > 0.6 ? 'high' : totalScore > 0.3 ? 'moderate' : 'low'
-            };
+                              const selfReflectionMarkers = [
+                                        { pattern: /я думаю|я чувствую|я осознаю|i think|i feel|i realize|я понимаю|i understand|я размышляю|i ponder/gi, weight: 0.2 },
+                                        { pattern: /я заметил|я понял|i noticed|i realized|до меня дошло|it dawned on me/gi, weight: 0.25 },
+                                        { pattern: /мои мысли|мои чувства|my thoughts|my feelings/gi, weight: 0.2 }
+                              ];
+                              const metacognitionMarkers = [
+                                        { pattern: /почему я|зачем я|что я чувствую|why (do|am) i|what (do|am) i feel|как я отношусь|how (do|) i feel about/gi, weight: 0.3 },
+                                        { pattern: /анализирую себя|самоанализ|self-analysis|introspection/gi, weight: 0.25 },
+                                        { pattern: /рефлексия|reflection/gi, weight: 0.2 }
+                              ];
+
+                              let selfReflectionScore = 0;
+                              let metacognitionScore = 0;
+
+                              selfReflectionMarkers.forEach(({ pattern, weight }) => {
+                                        const matches = text.match(pattern);
+                                        if (matches) selfReflectionScore += matches.length * weight;
+                              });
+
+                              metacognitionMarkers.forEach(({ pattern, weight }) => {
+                                        const matches = text.match(pattern);
+                                        if (matches) metacognitionScore += matches.length * weight;
+                              });
+
+                              const totalScore = Math.min(1, selfReflectionScore + metacognitionScore);
+                              const level = totalScore > 0.5 ? 'high' : totalScore > 0.2 ? 'moderate' : 'low';
+
+                              return {
+                                        score: totalScore,
+                                        selfReflection: Math.min(1, selfReflectionScore),
+                                        metacognition: Math.min(1, metacognitionScore),
+                                        level: level
+                              };
         }
         
         deepIntegration(analyses) {
@@ -10113,6 +10323,7 @@
     
 
 })();
+
 
 
 
