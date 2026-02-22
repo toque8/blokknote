@@ -8845,74 +8845,74 @@
         }
         
         calculateAdvancedEmotionProfile(integratedResult) {
-                const totalScore = integratedResult.totalScore || 0;
-                const complexityScore = integratedResult.complexityScore || 0;
-                const confidenceScore = integratedResult.confidenceScore || 0;
-                const consistencyScore = integratedResult.consistencyScore || 0;
-                const dominantEmotion = integratedResult.dominantEmotion || { emotion: 'neutral', confidence: 0.5 };
-                const emotionalRange = integratedResult.emotionalRange || 0.5;
-                const emotionalDepth = integratedResult.emotionalDepth || 0.5;
-                
-                const primaryEmotion = this.classifyPrimaryEmotion(
-                    dominantEmotion.primary,
-                    totalScore,
-                    emotionalRange,
-                    intensity,
-                    dominantEmotion.confidence
-                );
-                
-                const secondaryEmotions = this.identifySecondaryEmotions(integratedResult);
-                
-                const intensity = Math.max(0, Math.min(1, (
-                    Math.abs(totalScore) * 0.4 +
-                    emotionalRange * 0.3 +
-                    dominantEmotion.confidence * 0.3
-                )));
-                
-                const emotionComplexity = Math.max(0, Math.min(1, (
-                    emotionalRange * 0.4 +          
-                    emotionalDepth * 0.3 +          
-                    integratedResult.dimensionScores.psychological * 0.3
-                )));
-                
-                const ironyLevel = this.calculateIronyLevel(integratedResult);
-                
-                const polarity = Math.max(-1, Math.min(1, totalScore));
-                
-                const visualProfile = this.generateAdvancedVisualProfile(primaryEmotion, intensity, polarity, emotionComplexity);
-                
-                const behavioralProfile = this.generateAdvancedBehavioralProfile(primaryEmotion, intensity, emotionComplexity);
-                
-                const psychologicalIntegration = this.integratePsychologicalInsights(integratedResult);
-                
-                const narrativeArchetype = this.determineNarrativeArchetype(integratedResult);
-                
-                return {
-                    primary: primaryEmotion,
-                    polarity: polarity,
-                    intensity: intensity,
-                    complexity: emotionComplexity,
-                    confidence: confidenceScore,
-                    consistency: consistencyScore,
-                    secondary: secondaryEmotions,
-                    ironyLevel: ironyLevel,
-                    emotionalRange: emotionalRange,
-                    emotionalDepth: emotionalDepth,
-                    visual: visualProfile,
-                    behavioral: behavioralProfile,
-                    psychological: psychologicalIntegration,
-                    narrative: narrativeArchetype,
-                    display: {
-                        name: this.getAdvancedDisplayName(primaryEmotion, polarity, intensity, emotionComplexity),
-                        description: this.getAdvancedDescription(primaryEmotion, polarity, intensity, emotionComplexity),
-                        keywords: this.generateEmotionKeywords(primaryEmotion, secondaryEmotions)
-                    },
-                    meta: {
-                        analysisDepth: 'advanced',
-                        timestamp: new Date().toISOString(),
-                        modelVersion: this.version
-                    }
-                };
+                              const totalScore = integratedResult.totalScore || 0;
+                              const complexityScore = integratedResult.complexityScore || 0;
+                              const confidenceScore = integratedResult.confidenceScore || 0;
+                              const consistencyScore = integratedResult.consistencyScore || 0;
+                              const dominantEmotion = integratedResult.dominantEmotion || { primary: 'neutral', confidence: 0.5 };
+                              const emotionalRange = integratedResult.emotionalRange || 0.5;
+                              const emotionalDepth = integratedResult.emotionalDepth || 0.5;
+
+                              const intensity = Math.max(0, Math.min(1, (
+                                        Math.abs(totalScore) * 0.4 +
+                                        emotionalRange * 0.3 +
+                                        dominantEmotion.confidence * 0.3
+                              )));
+
+                              const primaryEmotion = this.classifyPrimaryEmotion(
+                                        dominantEmotion.primary,
+                                        totalScore,
+                                        emotionalRange,
+                                        intensity,
+                                        dominantEmotion.confidence
+                              );
+
+                              const secondaryEmotions = this.identifySecondaryEmotions(integratedResult);
+
+                              const emotionComplexity = Math.max(0, Math.min(1, (
+                                        emotionalRange * 0.4 +
+                                        emotionalDepth * 0.3 +
+                                        integratedResult.dimensionScores.psychological * 0.3
+                              )));
+
+                              const ironyLevel = this.calculateIronyLevel(integratedResult);
+
+                              const polarity = Math.max(-1, Math.min(1, totalScore));
+
+                              const visualProfile = this.generateAdvancedVisualProfile(primaryEmotion, intensity, polarity, emotionComplexity);
+
+                              const behavioralProfile = this.generateAdvancedBehavioralProfile(primaryEmotion, intensity, emotionComplexity);
+
+                              const psychologicalIntegration = this.integratePsychologicalInsights(integratedResult);
+
+                              const narrativeArchetype = this.determineNarrativeArchetype(integratedResult);
+
+                              return {
+                                        primary: primaryEmotion,
+                                        polarity: polarity,
+                                        intensity: intensity,
+                                        complexity: emotionComplexity,
+                                        confidence: confidenceScore,
+                                        consistency: consistencyScore,
+                                        secondary: secondaryEmotions,
+                                        ironyLevel: ironyLevel,
+                                        emotionalRange: emotionalRange,
+                                        emotionalDepth: emotionalDepth,
+                                        visual: visualProfile,
+                                        behavioral: behavioralProfile,
+                                        psychological: psychologicalIntegration,
+                                        narrative: narrativeArchetype,
+                                        display: {
+                                                  name: this.getAdvancedDisplayName(primaryEmotion, polarity, intensity, emotionComplexity),
+                                                  description: this.getAdvancedDescription(primaryEmotion, polarity, intensity, emotionComplexity),
+                                                  keywords: this.generateEmotionKeywords(primaryEmotion, secondaryEmotions)
+                                        },
+                                        meta: {
+                                                  analysisDepth: 'advanced',
+                                                  timestamp: new Date().toISOString(),
+                                                  modelVersion: this.version
+                                        }
+                              };
         }
         
         classifyPrimaryEmotion(dominantEmotion, totalScore, emotionalRange, intensity, confidence = 0.5) {
@@ -10078,6 +10078,7 @@
     
 
 })();
+
 
 
 
