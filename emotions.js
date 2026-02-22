@@ -1252,6 +1252,112 @@
                     }
                 }
             };
+
+            this.psychologicalModels.cognitiveBiases = {
+                              dichotomous: {
+                                        markers: {
+                                                  ru: ['всегда', 'никогда', 'все', 'никто', 'абсолютно', 'категорически', 'либо-либо'],
+                                                  en: ['always', 'never', 'everyone', 'nobody', 'absolutely', 'categorically', 'either-or']
+                                        },
+                                        weight: 1.2,
+                                        enabled: true
+                              },
+                              catastrophizing: {
+                                        markers: {
+                                                  ru: ['ужасно', 'кошмар', 'конец', 'катастрофа', 'все пропало', 'безысходность', 'крах'],
+                                                  en: ['awful', 'nightmare', 'the end', 'disaster', 'all is lost', 'hopelessness', 'collapse']
+                                        },
+                                        weight: 1.5,
+                                        enabled: true
+                              },
+                              emotionalReasoning: {
+                                        markers: {
+                                                  ru: ['чувствую, что это так', 'ощущаю, что он неправ', 'мне кажется, это плохо'],
+                                                  en: ['I feel that it is so', 'I feel that he is wrong', 'it seems bad to me']
+                                        },
+                                        weight: 1.1,
+                                        enabled: true
+                              },
+                              overgeneralization: {
+                                        markers: {
+                                                  ru: ['как всегда', 'опять все по старому', 'у меня никогда не получается', 'все люди...'],
+                                                  en: ['as always', 'again everything is the same', 'I never succeed', 'all people...']
+                                        },
+                                        weight: 1.0,
+                                        enabled: true
+                              },
+                              mindReading: {
+                                        markers: {
+                                                  ru: ['он думает, что я', 'она наверняка считает', 'они меня ненавидят'],
+                                                  en: ['he thinks that I', 'she surely thinks', 'they hate me']
+                                        },
+                                        weight: 1.3,
+                                        enabled: true
+                              },
+                              personalization: {
+                                        markers: {
+                                                  ru: ['это из-за меня', 'я виноват', 'наверное, я им не нравлюсь', 'они так поступили, потому что я...'],
+                                                  en: ['it\'s because of me', 'I\'m to blame', 'probably they don\'t like me', 'they did that because I...']
+                                        },
+                                        weight: 1.2,
+                                        enabled: true
+                              },
+                              fortuneTelling: {
+                                        markers: {
+                                                  ru: ['наверняка не получится', 'точно провалюсь', 'они откажут', 'будет ужасно'],
+                                                  en: ['it probably won\'t work', 'I\'ll definitely fail', 'they will refuse', 'it will be terrible']
+                                        },
+                                        weight: 1.1,
+                                        enabled: true
+                              },
+                              minimization: {
+                                        markers: {
+                                                  ru: ['ничего особенного', 'просто повезло', 'это ерунда', 'не стоит внимания'],
+                                                  en: ['nothing special', 'just lucky', 'it\'s nonsense', 'not worth attention']
+                                        },
+                                        weight: 0.9,
+                                        enabled: true
+                              }
+            };
+
+            this.psychologicalModels.communicationStyles = {
+                              assertive: {
+                                        markers: {
+                                                  ru: ['я считаю', 'предлагаю', 'давайте вместе', 'мне важно'],
+                                                  en: ['I think', 'I suggest', 'let\'s together', 'it is important to me']
+                                        },
+                                        markersAvoid: {
+                                                  ru: ['наверное', 'извините, но', 'как-нибудь'],
+                                                  en: ['maybe', 'sorry, but', 'somehow']
+                                        },
+                                        weight: 1.0,
+                                        enabled: true
+                              },
+                              passive: {
+                                        markers: {
+                                                  ru: ['не знаю', 'как скажете', 'мне все равно', 'лишь бы вас не беспокоить'],
+                                                  en: ['I don\'t know', 'as you say', 'I don\'t care', 'just not to bother you']
+                                        },
+                                        weight: 0.8,
+                                        enabled: true
+                              },
+                              aggressive: {
+                                        markers: {
+                                                  ru: ['ты должен', 'категорически не согласен', 'это глупость', 'сейчас же'],
+                                                  en: ['you must', 'categorically disagree', 'this is nonsense', 'right now']
+                                        },
+                                        weight: 1.2,
+                                        enabled: true
+                              },
+                              manipulative: {
+                                        markers: {
+                                                  ru: ['если бы ты меня любил', 'все так делают', 'ты же не хочешь, чтобы...', 'после всего, что я для тебя...'],
+                                                  en: ['if you loved me', 'everyone does it', 'you don\'t want to...', 'after all I\'ve done for you...']
+                                        },
+                                        weight: 1.3,
+                                        enabled: true
+                              }
+            };
             
             this.complexityMetrics = {
                 emotionalDiversity: {
@@ -10323,6 +10429,7 @@
     
 
 })();
+
 
 
 
