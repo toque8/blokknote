@@ -3144,24 +3144,25 @@ renderResult(result) {
         }
     }
 
-    const psychInsights = this.getSafe(result, 'psychologicalInsights', {});
-    if (psychInsights && psychInsights.summary) {
-                              html += `
-                                        <div class="emotion-section">
-                                                  <h3>${translations.psychologicalSummary}</h3>
-                                                  <div class="emotion-metric" style="border-left:3px solid #9b59b6;padding-left:10px;margin:10px 0;">
-                                                            <span class="value" style="display:block;text-align:left;font-size:0.95em;line-height:1.5;">${psychInsights.summary}</span>
-                                                  </div>
-                                        </div>`;
-    }
-
     if (psychInsights && psychInsights.applicability) {
                               const applicability = psychInsights.applicability;
                               let applicabilityColor = '#27ae60'; 
-                              if (applicability.applicability === 'умеренная' || applicability.applicability === 'moderate') {
-                                        applicabilityColor = '#f39c12'; 
-                              } else if (applicability.applicability === 'ограниченная' || applicability.applicability === 'limited') {
-                                        applicabilityColor = '#e74c3c'; 
+                              let applicabilityText = '';
+                              
+                              if (this.getCurrentLanguage() === 'ru') {
+                                        if (applicability.applicability === 'высокая') applicabilityText = 'высокий';
+                                        else if (applicability.applicability === 'умеренная') applicabilityText = 'умеренный';
+                                        else if (applicability.applicability === 'ограниченная') applicabilityText = 'ограниченный';
+                                        else applicabilityText = applicability.applicability;
+                                        
+                                        if (applicability.applicability === 'высокая') applicabilityColor = '#27ae60';
+                                        else if (applicability.applicability === 'умеренная') applicabilityColor = '#f39c12';
+                                        else applicabilityColor = '#e74c3c';
+                              } else {
+                                        applicabilityText = applicability.applicability;
+                                        if (applicability.applicability === 'high') applicabilityColor = '#27ae60';
+                                        else if (applicability.applicability === 'moderate') applicabilityColor = '#f39c12';
+                                        else applicabilityColor = '#e74c3c';
                               }
 
                               html += `
@@ -3169,7 +3170,7 @@ renderResult(result) {
                                                   <h3>${translations.insightApplicability}</h3>
                                                   <div class="emotion-metric">
                                                             <span class="label" title="${translations.applicabilityDesc}">${translations.applicabilityLevel}:</span>
-                                                            <span class="value" style="color:${applicabilityColor};font-weight:bold;text-align:right !important;float:right;">${applicability.applicability}</span>
+                                                            <span class="value" style="color:${applicabilityColor};font-weight:bold;text-align:right !important;float:right;">${applicabilityText}</span>
                                                   </div>
                                                   <div class="emotion-metric">
                                                             <span class="label" title="${translations.applicabilityScoreDesc}">${translations.applicabilityScore}:</span>
@@ -3179,13 +3180,39 @@ renderResult(result) {
                               if (applicability.limitations && applicability.limitations.length > 0) {
                                         html += `<div class="emotion-subsection"><h4>${translations.limitations}</h4>`;
                                         applicability.limitations.forEach(lim => {
+                                                  let limitationText = lim;
+                                                  if (this.getCurrentLanguage() === 'ru') {
+                                                            if (lim === 'ограниченная надёжность анализа') limitationText = 'ограниченная надёжность анализа';
+                                                            else if (lim === 'высокая эмоциональная изменчивость') limitationText = 'высокая эмоциональная изменчивость';
+                                                            else if (lim === 'ограниченное психологическое содержание') limitationText = 'ограниченное психологическое содержание';
+                                                            else if (lim === 'стандартные ограничения текстового анализа') limitationText = 'стандартные ограничения текстового анализа';
+                                                  }
                                                   html += `<div class="emotion-metric" style="border-left:2px solid #e74c3c;margin:5px 0;padding-left:8px;">
-                                                            <span class="value" style="text-align:left;">${this.translateLimitation(lim, currentLang)}</span>
+                                                            <span class="value" style="text-align:left;">${limitationText}</span>
                                                           </div>`;
                                         });
                                         html += `</div>`;
                               }
 
+                              html += `</div>`;
+    }
+	
+    const psychInsights = this.getSafe(result, 'psychologicalInsights', {});
+    if (psychInsights && psychInsights.summary) {
+                              const summaryParts = psychInsights.summary.split('. ').filter(part => part.trim().length > 0);
+                              
+                              html += `
+                                        <div class="emotion-section">
+                                                  <h3>${translations.psychologicalSummary}</h3>`;
+                              
+                              summaryParts.forEach(part => {
+                                        const formattedPart = part.endsWith('.') ? part : part + '.';
+                                        html += `
+                                                  <div class="emotion-metric" style="border-left:3px solid #9b59b6;padding-left:10px;margin:8px 0;">
+                                                            <span class="value" style="display:block;text-align:left;font-size:0.95em;line-height:1.5;">${formattedPart}</span>
+                                                  </div>`;
+                              });
+                              
                               html += `</div>`;
     }
 
@@ -4322,3 +4349,4 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
