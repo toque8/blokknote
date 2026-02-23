@@ -3197,18 +3197,15 @@ renderResult(result) {
                         html += `</div>`;
     }
 
-    if (psychInsights && psychInsights.summary) {
-    const summaryParts = psychInsights.summary.split('. ').filter(part => part.trim().length > 0);
-                        
+    if (psychInsights && psychInsights.summary && psychInsights.summary.length > 0) {
                         html += `
                             <div class="emotion-section">
                                 <h3>${translations.psychologicalSummary}</h3>`;
                         
-                        summaryParts.forEach(part => {
-                            const formattedPart = part.endsWith('.') ? part : part + '.';
+                        psychInsights.summary.forEach(line => {
                             html += `
                                 <div class="emotion-metric" style="border-left:3px solid #9b59b6;padding-left:10px;margin:8px 0;">
-                                    <span class="value" style="display:block;text-align:left;font-size:0.95em;line-height:1.5;">${formattedPart}</span>
+                                    <span class="value" style="display:block;text-align:left;font-size:0.95em;line-height:1.5;">${line}</span>
                                 </div>`;
                         });
                         
@@ -4348,6 +4345,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
