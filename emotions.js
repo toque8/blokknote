@@ -8254,7 +8254,7 @@
 
         analyzeCognitiveBiases(text) {
                               const biases = this.psychologicalModels.cognitiveBiases || {};
-                              const detected = [];
+                              const result = {};
 
                               for (const [bias, config] of Object.entries(biases)) {
                                         if (!config.enabled) continue;
@@ -8267,26 +8267,22 @@
                                                   if (matches) count += matches.length;
                                         });
                                         if (count > 0) {
-                                                  detected.push({
-                                                            bias: bias,
+                                                  const weight = config.weight || 1.0;
+                                                  const intensity = Math.min(1, count * 0.2);
+                                                  result[bias] = {
                                                             frequency: count,
-                                                            intensity: Math.min(1, count * (config.weight || 0.2)),
-                                                            weight: config.weight || 1.0
-                                                  });
+                                                            intensity: intensity,
+                                                            weight: weight
+                                                  };
                                         }
                               }
 
-                              return {
-                                        biases: detected,
-                                        total: detected.length,
-                                        overallIntensity: detected.length > 0 ? detected.reduce((sum, b) => sum + b.intensity, 0) / detected.length : 0,
-                                        primaryBias: detected.length > 0 ? detected.sort((a, b) => b.intensity - a.intensity)[0].bias : 'none'
-                              };
+                              return result;
         }
 
         analyzeCommunicationStyles(text) {
                               const styles = this.psychologicalModels.communicationStyles || {};
-                              const detected = [];
+                              const result = {};
 
                               for (const [style, config] of Object.entries(styles)) {
                                         if (!config.enabled) continue;
@@ -8303,22 +8299,18 @@
                                         langAvoid.forEach(marker => {
                                                   const regex = new RegExp(`\\b${this.escapeRegExp(marker)}\\b`, 'gi');
                                                   const matches = text.match(regex);
-                                                  if (matches) score -= matches.length * 0.1; 
+                                                  if (matches) score -= matches.length * 0.1;
                                         });
                                         if (score > 0) {
-                                                  detected.push({
-                                                            style: style,
+                                                  result[style] = {
                                                             score: Math.min(1, score),
-                                                            intensity: Math.min(1, score / 2)
-                                                  });
+                                                            intensity: Math.min(1, score / 2),
+                                                            weight: config.weight || 1.0
+                                                  };
                                         }
                               }
 
-                              return {
-                                        styles: detected,
-                                        total: detected.length,
-                                        dominantStyle: detected.length > 0 ? detected.sort((a, b) => b.score - a.score)[0].style : 'none'
-                              };
+                              return result;
         }
         
         analyzeMaslowNeeds(text) {
@@ -10429,6 +10421,7 @@
     
 
 })();
+
 
 
 
