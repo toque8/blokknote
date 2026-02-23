@@ -3073,146 +3073,146 @@ renderResult(result) {
                               html += `</div>`; 
     } 
 
-    const psychologicalInsights = this.getSafe(result, 'psychologicalInsights', {});
+    const psychInsights = this.getSafe(result, 'psychologicalInsights', {});
 
-    if (psychologicalInsights && psychologicalInsights.insights) {
-        const insights = psychologicalInsights.insights;
-        const hasInsights = this.hasArrayContent(insights.emotionalPatterns) || 
-                           (insights.cognitiveStyle && insights.cognitiveStyle.style) ||
-                          this.hasArrayContent(insights.relationalPatterns) ||
-                          this.hasArrayContent(insights.personalGrowth) ||
-                          this.hasArrayContent(insights.therapeuticApproaches);
-        
-        if (hasInsights) {
-            html += `
-             <div class="emotion-section">
-                 <h3>${translations.psychologicalInsights}</h3>`;
-            
-            if (this.hasArrayContent(insights.emotionalPatterns)) {
-                html += `
-                     <div class="emotion-metric">
-                         <span class="label" title="${translations.emotionalPatternsDesc}">${translations.emotionalPatterns}:</span>
-                         <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${insights.emotionalPatterns.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
-                     </div>`;
-            }
-            
-            if (insights.cognitiveStyle && insights.cognitiveStyle.style) {
-                html += `
-                     <div class="emotion-metric">
-                         <span class="label" title="${translations.cognitiveStyleDesc}">${translations.cognitiveStyle}:</span>
-                         <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${this.translateValue(insights.cognitiveStyle.style, currentLang)}</span>
-                     </div>`;
-            }
+    if (psychInsights && psychInsights.insights) {
+                        const insights = psychInsights.insights;
+                        const hasInsights = this.hasArrayContent(insights.emotionalPatterns) || 
+                                           (insights.cognitiveStyle && insights.cognitiveStyle.style) ||
+                                          this.hasArrayContent(insights.relationalPatterns) ||
+                                          this.hasArrayContent(insights.personalGrowth) ||
+                                          this.hasArrayContent(insights.therapeuticApproaches);
+                        
+                        if (hasInsights) {
+                            html += `
+                             <div class="emotion-section">
+                                 <h3>${translations.psychologicalInsights}</h3>`;
+                            
+                            if (this.hasArrayContent(insights.emotionalPatterns)) {
+                                html += `
+                                     <div class="emotion-metric">
+                                         <span class="label" title="${translations.emotionalPatternsDesc}">${translations.emotionalPatterns}:</span>
+                                         <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${insights.emotionalPatterns.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
+                                     </div>`;
+                            }
+                            
+                            if (insights.cognitiveStyle && insights.cognitiveStyle.style) {
+                                html += `
+                                     <div class="emotion-metric">
+                                         <span class="label" title="${translations.cognitiveStyleDesc}">${translations.cognitiveStyle}:</span>
+                                         <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${this.translateValue(insights.cognitiveStyle.style, currentLang)}</span>
+                                     </div>`;
+                            }
 
-			if (insights.cognitiveStyle && insights.cognitiveStyle.factors) {
-                                                  html += `<div class="emotion-subsection"><h4>${translations.cognitiveStyleFactors}</h4>`;
-                                                  Object.entries(insights.cognitiveStyle.factors).forEach(([factor, value]) => {
-                                                            const factorName = this.translateCognitiveFactor(factor, currentLang);
-                                                            html += `<div class="emotion-metric" style="border-left:2px solid #9b59b6;margin:5px 0;padding-left:8px;">
-                                                                        <span class="label" title="${translations.cognitiveFactorDesc}">${factorName}:</span>
-                                                                        <span class="value">${(value * 100).toFixed(1)}%</span>
-                                                                    </div>`;
-                                                  });
-                                                  html += `</div>`;
-            }
-            
-            if (this.hasArrayContent(insights.relationalPatterns)) {
-                html += `
-                     <div class="emotion-metric">
-                         <span class="label" title="${translations.relationsDesc}">${translations.relations}:</span>
-                         <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${insights.relationalPatterns.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
-                     </div>`;
-            }
-            
-            if (this.hasArrayContent(insights.personalGrowth)) {
-                html += `
-                     <div class="emotion-metric">
-                         <span class="label" title="${translations.growthPathsDesc}">${translations.growthPaths}:</span>
-                         <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${insights.personalGrowth.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
-                     </div>`;
-            }
-            
-            if (this.hasArrayContent(insights.therapeuticApproaches)) {
-                html += `
-                     <div class="emotion-metric">
-                         <span class="label" title="${translations.therapeuticApproachesDesc}">${translations.therapeuticApproaches}:</span>
-                         <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${insights.therapeuticApproaches.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
-                     </div>`;
-            }
-            
-            html += `</div>`;
-        }
+                            if (insights.cognitiveStyle && insights.cognitiveStyle.factors) {
+                                html += `<div class="emotion-subsection"><h4>${translations.cognitiveStyleFactors}</h4>`;
+                                Object.entries(insights.cognitiveStyle.factors).forEach(([factor, value]) => {
+                                    const factorName = this.translateCognitiveFactor(factor, currentLang);
+                                    html += `<div class="emotion-metric" style="border-left:2px solid #9b59b6;margin:5px 0;padding-left:8px;">
+                                                <span class="label" title="${translations.cognitiveFactorDesc}">${factorName}:</span>
+                                                <span class="value">${(value * 100).toFixed(1)}%</span>
+                                            </div>`;
+                                });
+                                html += `</div>`;
+                            }
+                            
+                            if (this.hasArrayContent(insights.relationalPatterns)) {
+                                html += `
+                                     <div class="emotion-metric">
+                                         <span class="label" title="${translations.relationsDesc}">${translations.relations}:</span>
+                                         <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${insights.relationalPatterns.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
+                                     </div>`;
+                            }
+                            
+                            if (this.hasArrayContent(insights.personalGrowth)) {
+                                html += `
+                                     <div class="emotion-metric">
+                                         <span class="label" title="${translations.growthPathsDesc}">${translations.growthPaths}:</span>
+                                         <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${insights.personalGrowth.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
+                                     </div>`;
+                            }
+                            
+                            if (this.hasArrayContent(insights.therapeuticApproaches)) {
+                                html += `
+                                     <div class="emotion-metric">
+                                         <span class="label" title="${translations.therapeuticApproachesDesc}">${translations.therapeuticApproaches}:</span>
+                                         <span class="value" style="display:block;text-align:right !important;float:right;word-break:break-word;margin-top:2px;">${insights.therapeuticApproaches.map(p => this.translateValue(p, currentLang)).join(', ')}</span>
+                                     </div>`;
+                            }
+                            
+                            html += `</div>`;
+                        }
     }
 
     if (psychInsights && psychInsights.applicability) {
-                              const applicability = psychInsights.applicability;
-                              let applicabilityColor = '#27ae60'; 
-                              let applicabilityText = '';
-                              
-                              if (this.getCurrentLanguage() === 'ru') {
-                                        if (applicability.applicability === 'высокая') applicabilityText = 'высокий';
-                                        else if (applicability.applicability === 'умеренная') applicabilityText = 'умеренный';
-                                        else if (applicability.applicability === 'ограниченная') applicabilityText = 'ограниченный';
-                                        else applicabilityText = applicability.applicability;
-                                        
-                                        if (applicability.applicability === 'высокая') applicabilityColor = '#27ae60';
-                                        else if (applicability.applicability === 'умеренная') applicabilityColor = '#f39c12';
-                                        else applicabilityColor = '#e74c3c';
-                              } else {
-                                        applicabilityText = applicability.applicability;
-                                        if (applicability.applicability === 'high') applicabilityColor = '#27ae60';
-                                        else if (applicability.applicability === 'moderate') applicabilityColor = '#f39c12';
-                                        else applicabilityColor = '#e74c3c';
-                              }
+                        const applicability = psychInsights.applicability;
+                        let applicabilityColor = '#27ae60'; 
+                        let applicabilityText = '';
+                        
+                        if (this.getCurrentLanguage() === 'ru') {
+                            if (applicability.applicability === 'высокая') applicabilityText = 'высокий';
+                            else if (applicability.applicability === 'умеренная') applicabilityText = 'умеренный';
+                            else if (applicability.applicability === 'ограниченная') applicabilityText = 'ограниченный';
+                            else applicabilityText = applicability.applicability;
+                            
+                            if (applicability.applicability === 'высокая') applicabilityColor = '#27ae60';
+                            else if (applicability.applicability === 'умеренная') applicabilityColor = '#f39c12';
+                            else applicabilityColor = '#e74c3c';
+                        } else {
+                            applicabilityText = applicability.applicability;
+                            if (applicability.applicability === 'high') applicabilityColor = '#27ae60';
+                            else if (applicability.applicability === 'moderate') applicabilityColor = '#f39c12';
+                            else applicabilityColor = '#e74c3c';
+                        }
 
-                              html += `
-                                        <div class="emotion-section">
-                                                  <h3>${translations.insightApplicability}</h3>
-                                                  <div class="emotion-metric">
-                                                            <span class="label" title="${translations.applicabilityDesc}">${translations.applicabilityLevel}:</span>
-                                                            <span class="value" style="color:${applicabilityColor};font-weight:bold;text-align:right !important;float:right;">${applicabilityText}</span>
-                                                  </div>
-                                                  <div class="emotion-metric">
-                                                            <span class="label" title="${translations.applicabilityScoreDesc}">${translations.applicabilityScore}:</span>
-                                                            <span class="value" style="text-align:right !important;float:right;">${(applicability.score * 100).toFixed(1)}%</span>
-                                                  </div>`;
+                        html += `
+                            <div class="emotion-section">
+                                <h3>${translations.insightApplicability}</h3>
+                                <div class="emotion-metric">
+                                    <span class="label" title="${translations.applicabilityDesc}">${translations.applicabilityLevel}:</span>
+                                    <span class="value" style="color:${applicabilityColor};font-weight:bold;text-align:right !important;float:right;">${applicabilityText}</span>
+                                </div>
+                                <div class="emotion-metric">
+                                    <span class="label" title="${translations.applicabilityScoreDesc}">${translations.applicabilityScore}:</span>
+                                    <span class="value" style="text-align:right !important;float:right;">${(applicability.score * 100).toFixed(1)}%</span>
+                                </div>`;
 
-                              if (applicability.limitations && applicability.limitations.length > 0) {
-                                        html += `<div class="emotion-subsection"><h4>${translations.limitations}</h4>`;
-                                        applicability.limitations.forEach(lim => {
-                                                  let limitationText = lim;
-                                                  if (this.getCurrentLanguage() === 'ru') {
-                                                            if (lim === 'ограниченная надёжность анализа') limitationText = 'ограниченная надёжность анализа';
-                                                            else if (lim === 'высокая эмоциональная изменчивость') limitationText = 'высокая эмоциональная изменчивость';
-                                                            else if (lim === 'ограниченное психологическое содержание') limitationText = 'ограниченное психологическое содержание';
-                                                            else if (lim === 'стандартные ограничения текстового анализа') limitationText = 'стандартные ограничения текстового анализа';
-                                                  }
-                                                  html += `<div class="emotion-metric" style="border-left:2px solid #e74c3c;margin:5px 0;padding-left:8px;">
-                                                            <span class="value" style="text-align:left;">${limitationText}</span>
-                                                          </div>`;
-                                        });
-                                        html += `</div>`;
-                              }
+                        if (applicability.limitations && applicability.limitations.length > 0) {
+                            html += `<div class="emotion-subsection"><h4>${translations.limitations}</h4>`;
+                            applicability.limitations.forEach(lim => {
+                                let limitationText = lim;
+                                if (this.getCurrentLanguage() === 'ru') {
+                                    if (lim === 'ограниченная надёжность анализа') limitationText = 'ограниченная надёжность анализа';
+                                    else if (lim === 'высокая эмоциональная изменчивость') limitationText = 'высокая эмоциональная изменчивость';
+                                    else if (lim === 'ограниченное психологическое содержание') limitationText = 'ограниченное психологическое содержание';
+                                    else if (lim === 'стандартные ограничения текстового анализа') limitationText = 'стандартные ограничения текстового анализа';
+                                }
+                                html += `<div class="emotion-metric" style="border-left:2px solid #e74c3c;margin:5px 0;padding-left:8px;">
+                                            <span class="value" style="text-align:left;">${limitationText}</span>
+                                        </div>`;
+                            });
+                            html += `</div>`;
+                        }
 
-                              html += `</div>`;
+                        html += `</div>`;
     }
-	
+
     if (psychInsights && psychInsights.summary) {
-                              const summaryParts = psychInsights.summary.split('. ').filter(part => part.trim().length > 0);
-                              
-                              html += `
-                                        <div class="emotion-section">
-                                                  <h3>${translations.psychologicalSummary}</h3>`;
-                              
-                              summaryParts.forEach(part => {
-                                        const formattedPart = part.endsWith('.') ? part : part + '.';
-                                        html += `
-                                                  <div class="emotion-metric" style="border-left:3px solid #9b59b6;padding-left:10px;margin:8px 0;">
-                                                            <span class="value" style="display:block;text-align:left;font-size:0.95em;line-height:1.5;">${formattedPart}</span>
-                                                  </div>`;
-                              });
-                              
-                              html += `</div>`;
+    const summaryParts = psychInsights.summary.split('. ').filter(part => part.trim().length > 0);
+                        
+                        html += `
+                            <div class="emotion-section">
+                                <h3>${translations.psychologicalSummary}</h3>`;
+                        
+                        summaryParts.forEach(part => {
+                            const formattedPart = part.endsWith('.') ? part : part + '.';
+                            html += `
+                                <div class="emotion-metric" style="border-left:3px solid #9b59b6;padding-left:10px;margin:8px 0;">
+                                    <span class="value" style="display:block;text-align:left;font-size:0.95em;line-height:1.5;">${formattedPart}</span>
+                                </div>`;
+                        });
+                        
+                        html += `</div>`;
     }
 
     if (this.hasArrayContent(colorPalette)) {
@@ -4348,5 +4348,6 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
