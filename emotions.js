@@ -8261,11 +8261,21 @@
                                         const markers = config.markers || { ru: [], en: [] };
                                         const langMarkers = markers[this.language] || markers.en || [];
                                         let count = 0;
+
                                         langMarkers.forEach(marker => {
-                                                  const regex = new RegExp(`\\b${this.escapeRegExp(marker)}\\b`, 'gi');
-                                                  const matches = text.match(regex);
-                                                  if (matches) count += matches.length;
+                                                  const lowerMarker = marker.toLowerCase();
+                                                  // Если маркер содержит пробелы, ищем как фразу
+                                                  if (lowerMarker.includes(' ')) {
+                                                            const phraseRegex = new RegExp('(^|[\\s\\p{P}])' + this.escapeRegExp(lowerMarker) + '($|[\\s\\p{P}])', 'giu');
+                                                            const matches = text.match(phraseRegex);
+                                                            if (matches) count += matches.length;
+                                                  } else {
+                                                            const wordRegex = new RegExp('\\b' + this.escapeRegExp(lowerMarker) + '\\b', 'gi');
+                                                            const matches = text.match(wordRegex);
+                                                            if (matches) count += matches.length;
+                                                  }
                                         });
+
                                         if (count > 0) {
                                                   const weight = config.weight || 1.0;
                                                   const intensity = Math.min(1, count * 0.2);
@@ -8291,16 +8301,33 @@
                                         const langMarkers = markers[this.language] || markers.en || [];
                                         const langAvoid = avoidMarkers[this.language] || avoidMarkers.en || [];
                                         let score = 0;
+
                                         langMarkers.forEach(marker => {
-                                                  const regex = new RegExp(`\\b${this.escapeRegExp(marker)}\\b`, 'gi');
-                                                  const matches = text.match(regex);
-                                                  if (matches) score += matches.length * 0.2;
+                                                  const lowerMarker = marker.toLowerCase();
+                                                  if (lowerMarker.includes(' ')) {
+                                                            const phraseRegex = new RegExp('(^|[\\s\\p{P}])' + this.escapeRegExp(lowerMarker) + '($|[\\s\\p{P}])', 'giu');
+                                                            const matches = text.match(phraseRegex);
+                                                            if (matches) score += matches.length * 0.2;
+                                                  } else {
+                                                            const wordRegex = new RegExp('\\b' + this.escapeRegExp(lowerMarker) + '\\b', 'gi');
+                                                            const matches = text.match(wordRegex);
+                                                            if (matches) score += matches.length * 0.2;
+                                                  }
                                         });
+
                                         langAvoid.forEach(marker => {
-                                                  const regex = new RegExp(`\\b${this.escapeRegExp(marker)}\\b`, 'gi');
-                                                  const matches = text.match(regex);
-                                                  if (matches) score -= matches.length * 0.1;
+                                                  const lowerMarker = marker.toLowerCase();
+                                                  if (lowerMarker.includes(' ')) {
+                                                            const phraseRegex = new RegExp('(^|[\\s\\p{P}])' + this.escapeRegExp(lowerMarker) + '($|[\\s\\p{P}])', 'giu');
+                                                            const matches = text.match(phraseRegex);
+                                                            if (matches) score -= matches.length * 0.1;
+                                                  } else {
+                                                            const wordRegex = new RegExp('\\b' + this.escapeRegExp(lowerMarker) + '\\b', 'gi');
+                                                            const matches = text.match(wordRegex);
+                                                            if (matches) score -= matches.length * 0.1;
+                                                  }
                                         });
+
                                         if (score > 0) {
                                                   result[style] = {
                                                             score: Math.min(1, score),
@@ -10421,6 +10448,7 @@
     
 
 })();
+
 
 
 
