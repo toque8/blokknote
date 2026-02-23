@@ -3248,7 +3248,12 @@ translateCategory(category, lang) {
         'resilience': 'стойкость',
         'peacefulAdj': 'покой',
 		'suffer': 'страдание',
-		'suffering': 'страдание'
+		'suffering': 'страдание',
+		                                'joyfulAdj': 'радостный',
+                                        'sadAdj': 'печальный',
+                                        'angryAdj': 'злой',
+                                        'peacefulAdj': 'мирный',
+                                        'intenseAdj': 'интенсивный'
     };
     return translations[category] || category;
 }
@@ -3348,7 +3353,8 @@ translateMaslowLevel(level, lang) {
         'esteem': 'уважение',
         'self-actualization': 'самоактуализация',
         'self-transcendence': 'самотрансценденция',
-        'balanced': 'сбалансированные'
+        'balanced': 'сбалансированные',
+		'love/belonging': 'любовь и принадлежность'
     };
     return translations[level] || level;
 }
@@ -3653,7 +3659,7 @@ getTranslations(lang) {
                                         eiComponents: 'Компоненты эмоционального интеллекта',
                                         eiComponentDesc: 'Отдельные составляющие эмоционального интеллекта',
                                         defenseMechanisms: 'Защитные механизмы',
-                                        defenseMechanismDesc: 'Обнаруженные психологические защиты',
+                                        defenseMechanismDesc: 'Виды психологической защиты',
                                         selfReflection: 'Саморефлексия',
                                         selfReflectionDesc: 'Способность к самоанализу',
                                         metacognition: 'Метапознание',
@@ -4238,6 +4244,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
