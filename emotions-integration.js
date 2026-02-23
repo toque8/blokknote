@@ -3249,11 +3249,11 @@ translateCategory(category, lang) {
         'peacefulAdj': 'покой',
 		'suffer': 'страдание',
 		'suffering': 'страдание',
-		                                'joyfulAdj': 'радостный',
-                                        'sadAdj': 'печальный',
-                                        'angryAdj': 'злой',
-                                        'peacefulAdj': 'мирный',
-                                        'intenseAdj': 'интенсивный'
+		                                'joyfulAdj': 'радость',
+                                        'sadAdj': 'печаль',
+                                        'angryAdj': 'злость',
+                                        'peacefulAdj': 'покой',
+                                        'intenseAdj': 'интенсивность'
     };
     return translations[category] || category;
 }
@@ -4244,6 +4244,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
