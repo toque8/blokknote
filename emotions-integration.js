@@ -3057,6 +3057,8 @@ renderResult(result) {
                                                           </div>`;
                                         });
                                         html += `</div>`;
+
+							  }
 	}	
 
     const psychologicalInsights = this.getSafe(result, 'psychologicalInsights', {});
@@ -4235,6 +4237,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
