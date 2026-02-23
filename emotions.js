@@ -10753,59 +10753,99 @@
         }
         
         createPsychologicalSummary(insights) {
-            const summary = [];
-            
-            if (insights.emotionalPatterns) {
-                summary.push(`Эмоциональные паттерны: ${insights.emotionalPatterns.join(', ')}`);
-            }
-            
-            if (insights.cognitiveStyle) {
-                summary.push(`Когнитивный стиль: преимущественно ${insights.cognitiveStyle.style}`);
-            }
-            
-            if (insights.relationalPatterns) {
-                summary.push(`Межличностные особенности: ${insights.relationalPatterns.join(', ')}`);
-            }
-            
-            if (insights.personalGrowth && insights.personalGrowth.length > 0) {
-                summary.push(`Направления роста: ${insights.personalGrowth.join(', ')}`);
-            }
-            
-            return summary.join('. ');
+                              const summary = [];
+                              
+                              if (insights.emotionalPatterns) {
+                                        if (this.language === 'ru') {
+                                                  summary.push(`Эмоциональные паттерны: ${insights.emotionalPatterns.join(', ')}`);
+                                        } else {
+                                                  summary.push(`Emotional patterns: ${insights.emotionalPatterns.join(', ')}`);
+                                        }
+                              }
+                              
+                              if (insights.cognitiveStyle) {
+                                        const styleText = insights.cognitiveStyle.style;
+                                        if (this.language === 'ru') {
+                                                  summary.push(`Когнитивный стиль: преимущественно ${styleText}`);
+                                        } else {
+                                                  summary.push(`Cognitive style: predominantly ${styleText}`);
+                                        }
+                              }
+                              
+                              if (insights.relationalPatterns) {
+                                        if (this.language === 'ru') {
+                                                  summary.push(`Межличностные особенности: ${insights.relationalPatterns.join(', ')}`);
+                                        } else {
+                                                  summary.push(`Relational patterns: ${insights.relationalPatterns.join(', ')}`);
+                                        }
+                              }
+                              
+                              if (insights.personalGrowth && insights.personalGrowth.length > 0) {
+                                        if (this.language === 'ru') {
+                                                  summary.push(`Направления роста: ${insights.personalGrowth.join(', ')}`);
+                                        } else {
+                                                  summary.push(`Growth paths: ${insights.personalGrowth.join(', ')}`);
+                                        }
+                              }
+                              
+                              return summary.join(' ');
         }
         
         assessInsightApplicability(integratedResult) {
-            const applicabilityFactors = [
-                integratedResult.confidenceScore,
-                integratedResult.consistencyScore,
-                integratedResult.dimensionScores.psychological
-            ];
-            
-            const score = applicabilityFactors.reduce((a, b) => a + b, 0) / applicabilityFactors.length;
-            
-            return {
-                score: score,
-                applicability: score > 0.7 ? 'высокая' : score > 0.4 ? 'умеренная' : 'ограниченная',
-                limitations: this.identifyInsightLimitations(integratedResult)
-            };
+                              const applicabilityFactors = [
+                                        integratedResult.confidenceScore,
+                                        integratedResult.consistencyScore,
+                                        integratedResult.dimensionScores.psychological
+                              ];
+                              
+                              const score = applicabilityFactors.reduce((a, b) => a + b, 0) / applicabilityFactors.length;
+                              
+                              let applicabilityText;
+                              if (this.language === 'ru') {
+                                        if (score > 0.7) applicabilityText = 'высокая';
+                                        else if (score > 0.4) applicabilityText = 'умеренная';
+                                        else applicabilityText = 'ограниченная';
+                              } else {
+                                        if (score > 0.7) applicabilityText = 'high';
+                                        else if (score > 0.4) applicabilityText = 'moderate';
+                                        else applicabilityText = 'limited';
+                              }
+                              
+                              return {
+                                        score: score,
+                                        applicability: applicabilityText,
+                                        limitations: this.identifyInsightLimitations(integratedResult)
+                              };
         }
         
         identifyInsightLimitations(integratedResult) {
-            const limitations = [];
-            
-            if (integratedResult.confidenceScore < 0.5) {
-                limitations.push('ограниченная надёжность анализа');
-            }
-            
-            if (integratedResult.consistencyScore < 0.4) {
-                limitations.push('высокая эмоциональная изменчивость');
-            }
-            
-            if (integratedResult.dimensionScores.psychological < 0.3) {
-                limitations.push('ограниченное психологическое содержание');
-            }
-            
-            return limitations.length > 0 ? limitations : ['стандартные ограничения текстового анализа'];
+                              const limitations = [];
+                              
+                              if (integratedResult.confidenceScore < 0.5) {
+                                        limitations.push(this.language === 'ru' ? 
+                                                  'ограниченная надёжность анализа' : 
+                                                  'limited analysis reliability');
+                              }
+                              
+                              if (integratedResult.consistencyScore < 0.4) {
+                                        limitations.push(this.language === 'ru' ? 
+                                                  'высокая эмоциональная изменчивость' : 
+                                                  'high emotional variability');
+                              }
+                              
+                              if (integratedResult.dimensionScores.psychological < 0.3) {
+                                        limitations.push(this.language === 'ru' ? 
+                                                  'ограниченное психологическое содержание' : 
+                                                  'limited psychological content');
+                              }
+                              
+                              if (limitations.length === 0) {
+                                        limitations.push(this.language === 'ru' ? 
+                                                  'стандартные ограничения текстового анализа' : 
+                                                  'standard limitations of text analysis');
+                              }
+                              
+                              return limitations;
         }
         
         escapeRegExp(string) {
@@ -11055,4 +11095,5 @@
     
 
 })();
+
 
