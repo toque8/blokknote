@@ -382,6 +382,17 @@ translateCulturalTheme(theme, lang) {
     return translations[theme] || theme;
 }
 
+translateLimitation(limitation, lang) {
+                              if (lang !== 'ru') return limitation;
+                              const translations = {
+                                        'ограниченная надёжность анализа': 'ограниченная надёжность анализа',
+                                        'высокая эмоциональная изменчивость': 'высокая эмоциональная изменчивость',
+                                        'ограниченное психологическое содержание': 'ограниченное психологическое содержание',
+                                        'стандартные ограничения текстового анализа': 'стандартные ограничения текстового анализа'
+                              };
+                              return translations[limitation] || limitation;
+}
+
 translateValue(value, lang) {
     if (lang === 'ru') {
         const translations = {
@@ -3133,6 +3144,51 @@ renderResult(result) {
         }
     }
 
+    const psychInsights = this.getSafe(result, 'psychologicalInsights', {});
+    if (psychInsights && psychInsights.summary) {
+                              html += `
+                                        <div class="emotion-section">
+                                                  <h3>${translations.psychologicalSummary}</h3>
+                                                  <div class="emotion-metric" style="border-left:3px solid #9b59b6;padding-left:10px;margin:10px 0;">
+                                                            <span class="value" style="display:block;text-align:left;font-size:0.95em;line-height:1.5;">${psychInsights.summary}</span>
+                                                  </div>
+                                        </div>`;
+    }
+
+    if (psychInsights && psychInsights.applicability) {
+                              const applicability = psychInsights.applicability;
+                              let applicabilityColor = '#27ae60'; 
+                              if (applicability.applicability === 'умеренная' || applicability.applicability === 'moderate') {
+                                        applicabilityColor = '#f39c12'; 
+                              } else if (applicability.applicability === 'ограниченная' || applicability.applicability === 'limited') {
+                                        applicabilityColor = '#e74c3c'; 
+                              }
+
+                              html += `
+                                        <div class="emotion-section">
+                                                  <h3>${translations.insightApplicability}</h3>
+                                                  <div class="emotion-metric">
+                                                            <span class="label" title="${translations.applicabilityDesc}">${translations.applicabilityLevel}:</span>
+                                                            <span class="value" style="color:${applicabilityColor};font-weight:bold;text-align:right !important;float:right;">${applicability.applicability}</span>
+                                                  </div>
+                                                  <div class="emotion-metric">
+                                                            <span class="label" title="${translations.applicabilityScoreDesc}">${translations.applicabilityScore}:</span>
+                                                            <span class="value" style="text-align:right !important;float:right;">${(applicability.score * 100).toFixed(1)}%</span>
+                                                  </div>`;
+
+                              if (applicability.limitations && applicability.limitations.length > 0) {
+                                        html += `<div class="emotion-subsection"><h4>${translations.limitations}</h4>`;
+                                        applicability.limitations.forEach(lim => {
+                                                  html += `<div class="emotion-metric" style="border-left:2px solid #e74c3c;margin:5px 0;padding-left:8px;">
+                                                            <span class="value" style="text-align:left;">${this.translateLimitation(lim, currentLang)}</span>
+                                                          </div>`;
+                                        });
+                                        html += `</div>`;
+                              }
+
+                              html += `</div>`;
+    }
+
     if (this.hasArrayContent(colorPalette)) {
         html += `
              <div class="emotion-section">
@@ -3363,13 +3419,21 @@ translatePersonalityType(type, lang) {
     if (lang !== 'ru') return type;
     const translations = {
         'balanced': 'сбалансированный',
-        'introverted': 'интровертированный',
-        'extroverted': 'экстравертированный',
+        'introverted': 'интровертный',
+        'extroverted': 'экстравертный',
         'analytical': 'аналитический',
         'emotional': 'эмоциональный',
         'practical': 'прагматичный',
         'creative': 'креативный',
-        'intuitive': 'интуитивный'
+        'intuitive': 'интуитивный',
+		'sensitive': 'чувствительный',
+                                        'sociable': 'общительный',
+                                        'responsible': 'ответственный',
+                                        'resilient': 'устойчивый',
+                                        'vulnerable': 'ранимый',
+                                        'anxious': 'тревожный',
+                                        'secure': 'уверенный',
+                                        'insecure': 'неуверенный'
     };
     return translations[type] || type;
 }
@@ -3670,6 +3734,13 @@ getTranslations(lang) {
                                         cognitiveBiasDesc: 'Систематические ошибки мышления, влияющие на восприятие',
                                         communicationStyles: 'Стили общения',
                                         communicationStyleDesc: 'Преобладающие способы взаимодействия с другими',
+			                            psychologicalSummary: 'Психологическое резюме',
+                                        insightApplicability: 'Применимость инсайтов',
+                                        applicabilityLevel: 'Уровень применимости',
+                                        applicabilityDesc: 'Насколько результаты анализа применимы к реальной личности автора',
+                                        applicabilityScore: 'Оценка применимости',
+                                        applicabilityScoreDesc: 'Числовая оценка надёжности и применимости',
+                                        limitations: 'Ограничения анализа',
             emotionalPatterns: 'Эмоциональные паттерны',
             emotionalPatternsDesc: 'Характерные эмоциональные паттерны',
              cognitiveStyle: 'Когнитивный стиль',
@@ -4045,6 +4116,13 @@ getTranslations(lang) {
                                         cognitiveBiasDesc: 'Systematic thinking errors that affect perception',
                                         communicationStyles: 'Communication Styles',
                                         communicationStyleDesc: 'Predominant ways of interacting with others',
+			                            psychologicalSummary: 'Psychological Summary',
+                                        insightApplicability: 'Insight Applicability',
+                                        applicabilityLevel: 'Applicability Level',
+                                        applicabilityDesc: 'How applicable the analysis results are to the author\'s real personality',
+                                        applicabilityScore: 'Applicability Score',
+                                        applicabilityScoreDesc: 'Numerical score of reliability and applicability',
+                                        limitations: 'Analysis Limitations',
             emotionalPatterns: 'Emotional Patterns',
             emotionalPatternsDesc: 'Characteristic emotional patterns',
             cognitiveStyle: 'Cognitive Style',
@@ -4244,69 +4322,3 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
