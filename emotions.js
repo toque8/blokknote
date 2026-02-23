@@ -8343,32 +8343,72 @@
                               const maslow = this.psychologicalModels.maslowHierarchy;
                               const needs = {};
 
+                              const stemRussian = (word) => {
+                                        if (!word || word.length < 3) return word;
+                                        let w = word.toLowerCase();
+                                        if (w.length > 6) {
+                                                  if (w.endsWith('ого') || w.endsWith('его') || w.endsWith('ому') || w.endsWith('ему')) return w.slice(0, -3);
+                                                  if (w.endsWith('ыми') || w.endsWith('ими')) return w.slice(0, -3);
+                                        }
+                                        if (w.length > 5) {
+                                                  if (w.endsWith('ая') || w.endsWith('яя') || w.endsWith('ое') || w.endsWith('ее') || w.endsWith('ые') || w.endsWith('ие')) return w.slice(0, -2);
+                                                  if (w.endsWith('ой') || w.endsWith('ий') || w.endsWith('ый')) return w.slice(0, -2);
+                                                  if (w.endsWith('ом') || w.endsWith('ем') || w.endsWith('ам') || w.endsWith('ям')) return w.slice(0, -2);
+                                                  if (w.endsWith('ов') || w.endsWith('ев') || w.endsWith('ин') || w.endsWith('ын')) return w.slice(0, -2);
+                                                  if (w.endsWith('ах') || w.endsWith('ях')) return w.slice(0, -2);
+                                                  if (w.endsWith('ку') || w.endsWith('гу') || w.endsWith('ху')) return w.slice(0, -2);
+                                        }
+                                        if (w.length > 4) {
+                                                  if (w.endsWith('ка') || w.endsWith('га') || w.endsWith('ха')) return w.slice(0, -1);
+                                                  if (w.endsWith('ть') || w.endsWith('ти')) return w.slice(0, -2);
+                                                  if (w.endsWith('ла') || w.endsWith('ло') || w.endsWith('ли')) return w.slice(0, -2);
+                                                  if (w.endsWith('ет') || w.endsWith('ют') || w.endsWith('ят')) return w.slice(0, -2);
+                                                  if (w.endsWith('ит') || w.endsWith('ат')) return w.slice(0, -2);
+                                        }
+                                        if (w.length > 3) {
+                                                  if (w.endsWith('а') || w.endsWith('я') || w.endsWith('о') || w.endsWith('е') || 
+                                                      w.endsWith('ы') || w.endsWith('и') || w.endsWith('у') || w.endsWith('ю')) {
+                                                            return w.slice(0, -1);
+                                                  }
+                                        }
+                                        return w;
+                              };
+
                               const extendedThemes = {
                                         physiological: [
-                                                  'еда', 'вода', 'сон', 'отдых', 'тепло', 'кров', 'здоровье', 'голод', 'жажда',
-                                                  'food', 'water', 'sleep', 'rest', 'warmth', 'shelter', 'health', 'hunger', 'thirst'
+                                                  'еда', 'вода', 'пить', 'голод', 'жажда', 'сон', 'отдых', 'спать', 'устал', 'усталость',
+                                                  'тепло', 'холод', 'кров', 'дом', 'жильё', 'здоровье', 'болезнь', 'лечение', 'физический',
+                                                  'пища', 'напиток', 'голодный', 'сонный', 'уставший', 'температура', 'жилище'
                                         ],
                                         safety: [
-                                                  'безопасность', 'защита', 'стабильность', 'порядок', 'страховка', 'уверенность',
-                                                  'safety', 'security', 'protection', 'stability', 'order', 'insurance', 'confidence',
-                                                  'risk', 'опасность', 'danger', 'threat', 'угроза'
+                                                  'безопасность', 'защита', 'стабильность', 'порядок', 'страх', 'опасность', 'угроза',
+                                                  'тревога', 'уверенность', 'спокойствие', 'работа', 'деньги', 'финансы', 'будущее',
+                                                  'устойчивость', 'надёжность', 'кредит', 'ипотека', 'долг', 'риск', 'паника',
+                                                  'безопасный', 'защищённый', 'стабильный', 'спокойный', 'тревожный', 'опасный'
                                         ],
                                         'love/belonging': [
-                                                  'любовь', 'дружба', 'семья', 'близость', 'принадлежность', 'принятие', 'общность',
-                                                  'love', 'friendship', 'family', 'intimacy', 'belonging', 'acceptance', 'community',
-                                                  'одиночество', 'loneliness', 'изоляция', 'isolation'
+                                                  'любовь', 'дружба', 'семья', 'близкие', 'отношения', 'принятие', 'общение', 'одиночество',
+                                                  'друг', 'подруга', 'мать', 'отец', 'родители', 'ребёнок', 'дети', 'коллеги', 'группа',
+                                                  'команда', 'сообщество', 'принадлежность', 'доверие', 'нежность', 'забота', 'ласка',
+                                                  'родные', 'любимый', 'близкий', 'родственный', 'дружеский', 'семейный'
                                         ],
                                         esteem: [
-                                                  'уважение', 'признание', 'статус', 'достижение', 'успех', 'престиж', 'самоуважение',
-                                                  'respect', 'recognition', 'status', 'achievement', 'success', 'prestige', 'self-esteem',
-                                                  'похвала', 'praise', 'восхищение', 'admiration'
+                                                  'уважение', 'признание', 'достижение', 'успех', 'гордость', 'самоуважение', 'статус',
+                                                  'похвала', 'восхищение', 'престиж', 'влияние', 'авторитет', 'репутация', 'карьера',
+                                                  'должность', 'звание', 'награда', 'премия', 'почёт', 'достоинство', 'самооценка',
+                                                  'уважаемый', 'признанный', 'успешный', 'гордый', 'престижный', 'влиятельный'
                                         ],
                                         'self-actualization': [
                                                   'самореализация', 'развитие', 'рост', 'потенциал', 'творчество', 'смысл', 'цель',
-                                                  'self-actualization', 'development', 'growth', 'potential', 'creativity', 'meaning', 'purpose',
-                                                  'призвание', 'calling', 'духовность', 'spirituality'
+                                                  'мечта', 'призвание', 'талант', 'способности', 'самосовершенствование', 'духовность',
+                                                  'просветление', 'гармония', 'мудрость', 'познание', 'истина', 'предназначение',
+                                                  'реализоваться', 'развиваться', 'расти', 'творить', 'созидать', 'познавать'
                                         ]
                               };
+
+                              const words = text.toLowerCase().split(/[^а-яёa-z]+/).filter(w => w.length > 1);
+                              const stemmedWords = words.map(w => stemRussian(w));
+                              const stemmedText = stemmedWords.join(' ');
 
                               for (const level of maslow.levels) {
                                         const themes = extendedThemes[level] || [];
@@ -8376,19 +8416,31 @@
                                         const foundThemes = [];
 
                                         themes.forEach(theme => {
-                                                  const regex = new RegExp(`\\b${this.escapeRegExp(theme)}\\b`, 'gi');
-                                                  const matches = text.match(regex);
+                                                  const stemmedTheme = stemRussian(theme);
+                                                  const regex = new RegExp(`\\b${this.escapeRegExp(stemmedTheme)}\\b`, 'gi');
+                                                  const matches = stemmedText.match(regex);
                                                   if (matches) {
-                                                            score += matches.length * 0.1;
+                                                            score += matches.length * 0.15;
                                                             foundThemes.push(theme);
+                                                  } else {
+                                                            let found = false;
+                                                            stemmedWords.forEach(sw => {
+                                                                      if (sw.includes(stemmedTheme) || stemmedTheme.includes(sw)) {
+                                                                                if (!found) {
+                                                                                          score += 0.1;
+                                                                                          foundThemes.push(theme + '*');
+                                                                                          found = true;
+                                                                                }
+                                                                      }
+                                                            });
                                                   }
                                         });
 
                                         if (score > 0) {
                                                   needs[level] = {
-                                                            score: Math.min(1, score),
-                                                            themes: foundThemes.slice(0, 10),
-                                                            intensity: score / themes.length 
+                                                            score: Math.min(1, score / 3),
+                                                            themes: [...new Set(foundThemes)].slice(0, 10),
+                                                            intensity: Math.min(1, score / (themes.length * 0.3))
                                                   };
                                         }
                               }
@@ -8452,33 +8504,76 @@
                               const bigFive = this.psychologicalModels.bigFivePersonality;
                               const traits = {};
 
+                              const stemRussian = (word) => {
+                                        if (!word || word.length < 3) return word;
+                                        let w = word.toLowerCase();
+                                        if (w.length > 6) {
+                                                  if (w.endsWith('ого') || w.endsWith('его') || w.endsWith('ому') || w.endsWith('ему')) return w.slice(0, -3);
+                                                  if (w.endsWith('ыми') || w.endsWith('ими')) return w.slice(0, -3);
+                                        }
+                                        if (w.length > 5) {
+                                                  if (w.endsWith('ая') || w.endsWith('яя') || w.endsWith('ое') || w.endsWith('ее') || w.endsWith('ые') || w.endsWith('ие')) return w.slice(0, -2);
+                                                  if (w.endsWith('ой') || w.endsWith('ий') || w.endsWith('ый')) return w.slice(0, -2);
+                                                  if (w.endsWith('ом') || w.endsWith('ем') || w.endsWith('ам') || w.endsWith('ям')) return w.slice(0, -2);
+                                                  if (w.endsWith('ов') || w.endsWith('ев') || w.endsWith('ин') || w.endsWith('ын')) return w.slice(0, -2);
+                                                  if (w.endsWith('ах') || w.endsWith('ях')) return w.slice(0, -2);
+                                        }
+                                        if (w.length > 4) {
+                                                  if (w.endsWith('ка') || w.endsWith('га') || w.endsWith('ха')) return w.slice(0, -1);
+                                                  if (w.endsWith('ть') || w.endsWith('ти')) return w.slice(0, -2);
+                                                  if (w.endsWith('ла') || w.endsWith('ло') || w.endsWith('ли')) return w.slice(0, -2);
+                                                  if (w.endsWith('ет') || w.endsWith('ют') || w.endsWith('ят')) return w.slice(0, -2);
+                                                  if (w.endsWith('ит') || w.endsWith('ат')) return w.slice(0, -2);
+                                        }
+                                        if (w.length > 3) {
+                                                  if (w.endsWith('а') || w.endsWith('я') || w.endsWith('о') || w.endsWith('е') || 
+                                                      w.endsWith('ы') || w.endsWith('и') || w.endsWith('у') || w.endsWith('ю')) {
+                                                            return w.slice(0, -1);
+                                                  }
+                                        }
+                                        return w;
+                              };
+
                               const extendedIndicators = {
                                         openness: [
                                                   'любопытный', 'творческий', 'фантазия', 'воображение', 'искусство', 'поэзия',
-                                                  'curious', 'creative', 'imagination', 'art', 'poetry', 'интеллектуальный',
-                                                  'intellectual', 'nonconformist', 'нестандартный', 'liberal', 'либеральный'
+                                                  'интеллектуальный', 'нестандартный', 'свободомыслящий', 'либеральный',
+                                                  'новый', 'эксперимент', 'инновация', 'оригинальный', 'креативный',
+                                                  'изобретательный', 'нетрадиционный', 'прогрессивный', 'открытый',
+                                                  'любознательный', 'пытливый', 'интересующийся', 'мечтательный'
                                         ],
                                         conscientiousness: [
                                                   'дисциплинированный', 'организованный', 'ответственный', 'надёжный', 'трудолюбивый',
-                                                  'disciplined', 'organized', 'responsible', 'reliable', 'hardworking',
-                                                  'перфекционист', 'perfectionist', 'пунктуальный', 'punctual', 'plan', 'план'
+                                                  'перфекционист', 'пунктуальный', 'план', 'цель', 'порядок', 'система', 'обязательный',
+                                                  'старательный', 'усердный', 'аккуратный', 'последовательный', 'методичный',
+                                                  'рациональный', 'расчётливый', 'предусмотрительный', 'исполнительный',
+                                                  'добросовестный', 'принципиальный', 'обязанность', 'долг'
                                         ],
                                         extraversion: [
                                                   'общительный', 'разговорчивый', 'энергичный', 'активный', 'компанейский',
-                                                  'sociable', 'talkative', 'energetic', 'active', 'outgoing', 'дружелюбный',
-                                                  'friendly', 'энтузиазм', 'enthusiasm'
+                                                  'дружелюбный', 'энтузиазм', 'жизнерадостный', 'шумный', 'вечеринка', 'люди',
+                                                  'коммуникабельный', 'открытый', 'контактный', 'весёлый', 'оживлённый',
+                                                  'экстраверт', 'общение', 'тусовка', 'собрание', 'компания', 'друзья'
                                         ],
                                         agreeableness: [
                                                   'добрый', 'отзывчивый', 'сочувствующий', 'доверчивый', 'кооперативный',
-                                                  'kind', 'responsive', 'sympathetic', 'trusting', 'cooperative', 'альтруистичный',
-                                                  'altruistic', 'вежливый', 'polite'
+                                                  'альтруистичный', 'вежливый', 'терпимый', 'мягкий', 'помогать',
+                                                  'снисходительный', 'великодушный', 'благожелательный', 'сердечный',
+                                                  'милосердный', 'сострадательный', 'эмпатичный', 'чуткий', 'понимающий',
+                                                  'уступчивый', 'покладистый', 'миролюбивый', 'добродушный'
                                         ],
                                         neuroticism: [
                                                   'тревожный', 'нервный', 'напряжённый', 'неуверенный', 'ранимый', 'пессимистичный',
-                                                  'anxious', 'nervous', 'tense', 'insecure', 'vulnerable', 'pessimistic',
-                                                  'депрессивный', 'depressed', 'эмоциональный', 'emotional', 'обидчивый', 'touchy'
+                                                  'депрессивный', 'эмоциональный', 'обидчивый', 'раздражительный', 'беспокойный',
+                                                  'впечатлительный', 'чувствительный', 'мнительный', 'неспокойный', 'возбудимый',
+                                                  'импульсивный', 'нестабильный', 'капризный', 'непостоянный', 'изменчивый',
+                                                  'страх', 'боязнь', 'паника', 'стресс', 'переживание', 'волнение'
                                         ]
                               };
+
+                              const words = text.toLowerCase().split(/[^а-яёa-z]+/).filter(w => w.length > 1);
+                              const stemmedWords = words.map(w => stemRussian(w));
+                              const stemmedText = stemmedWords.join(' ');
 
                               for (const trait of bigFive.traits) {
                                         const indicators = extendedIndicators[trait] || [];
@@ -8486,19 +8581,33 @@
                                         const foundIndicators = [];
 
                                         indicators.forEach(indicator => {
-                                                  const regex = new RegExp(`\\b${this.escapeRegExp(indicator)}\\b`, 'gi');
-                                                  const matches = text.match(regex);
+                                                  const stemmedIndicator = stemRussian(indicator);
+                                                  const regex = new RegExp(`\\b${this.escapeRegExp(stemmedIndicator)}\\b`, 'gi');
+                                                  const matches = stemmedText.match(regex);
                                                   if (matches) {
-                                                            score += matches.length * 0.05;
+                                                            score += matches.length * 0.1;
                                                             foundIndicators.push(indicator);
+                                                  } else {
+                                                            let found = false;
+                                                            stemmedWords.forEach(sw => {
+                                                                      if (sw.includes(stemmedIndicator) || stemmedIndicator.includes(sw)) {
+                                                                                if (!found) {
+                                                                                          score += 0.05;
+                                                                                          foundIndicators.push(indicator + '*');
+                                                                                          found = true;
+                                                                                }
+                                                                      }
+                                                            });
                                                   }
                                         });
 
                                         if (score > 0) {
+                                                  const normalizedScore = Math.min(1, score / 3);
                                                   traits[trait] = {
-                                                            score: Math.min(1, score),
+                                                            score: normalizedScore,
                                                             indicators: foundIndicators.slice(0, 10),
-                                                            level: score > 0.4 ? 'high' : score > 0.15 ? 'medium' : 'low' 
+                                                            level: normalizedScore > 0.4 ? 'high' : 
+                                                                   normalizedScore > 0.15 ? 'medium' : 'low'
                                                   };
                                         }
                               }
@@ -8555,28 +8664,60 @@
         }
         
         assessEmotionalIntelligence(text) {
+                              const stemRussian = (word) => {
+                                        if (!word || word.length < 3) return word;
+                                        let w = word.toLowerCase();
+                                        if (w.length > 6) {
+                                                  if (w.endsWith('ого') || w.endsWith('его') || w.endsWith('ому') || w.endsWith('ему')) return w.slice(0, -3);
+                                                  if (w.endsWith('ыми') || w.endsWith('ими')) return w.slice(0, -3);
+                                        }
+                                        if (w.length > 5) {
+                                                  if (w.endsWith('ая') || w.endsWith('яя') || w.endsWith('ое') || w.endsWith('ее') || w.endsWith('ые') || w.endsWith('ие')) return w.slice(0, -2);
+                                                  if (w.endsWith('ой') || w.endsWith('ий') || w.endsWith('ый')) return w.slice(0, -2);
+                                                  if (w.endsWith('ом') || w.endsWith('ем') || w.endsWith('ам') || w.endsWith('ям')) return w.slice(0, -2);
+                                                  if (w.endsWith('ов') || w.endsWith('ев') || w.endsWith('ин') || w.endsWith('ын')) return w.slice(0, -2);
+                                                  if (w.endsWith('ах') || w.endsWith('ях')) return w.slice(0, -2);
+                                        }
+                                        if (w.length > 4) {
+                                                  if (w.endsWith('ка') || w.endsWith('га') || w.endsWith('ха')) return w.slice(0, -1);
+                                                  if (w.endsWith('ть') || w.endsWith('ти')) return w.slice(0, -2);
+                                                  if (w.endsWith('ла') || w.endsWith('ло') || w.endsWith('ли')) return w.slice(0, -2);
+                                                  if (w.endsWith('ет') || w.endsWith('ют') || w.endsWith('ят')) return w.slice(0, -2);
+                                                  if (w.endsWith('ит') || w.endsWith('ат')) return w.slice(0, -2);
+                                        }
+                                        if (w.length > 3) {
+                                                  if (w.endsWith('а') || w.endsWith('я') || w.endsWith('о') || w.endsWith('е') || 
+                                                      w.endsWith('ы') || w.endsWith('и') || w.endsWith('у') || w.endsWith('ю')) {
+                                                            return w.slice(0, -1);
+                                                  }
+                                        }
+                                        return w;
+                              };
+
+                              const words = text.toLowerCase().split(/[^а-яёa-z]+/).filter(w => w.length > 1);
+                              const stemmedWords = words.map(w => stemRussian(w));
+                              const stemmedText = stemmedWords.join(' ');
+
                               const indicators = {
                                         selfAwareness: [
-                                                  { pattern: /осознаю|понимаю себя|мои чувства|рефлексирую|самоанализ|интроспекция|i (am|'m) aware|i understand myself|my feelings|self[ -]reflection|introspection/gi, weight: 0.2 },
-                                                  { pattern: /я думаю о себе|я задумываюсь|i think about myself|i ponder/gi, weight: 0.15 },
-                                                  { pattern: /почему я|зачем я|что я чувствую|why (do|am) i|what (do|am) i feel/gi, weight: 0.25 } // метакогнитивные вопросы
+                                                  { pattern: /осознаю|понимаю себя|мои чувства|рефлексирую|самоанализ|интроспекция|я думаю о себе|я задумываюсь|почему я|что я чувствую|рефлексия/i, weight: 0.2 },
+                                                  { pattern: /анализирую себя|самопознание|самонаблюдение/i, weight: 0.25 },
+                                                  { pattern: /я понял|я заметил|до меня дошло/i, weight: 0.3 }
                                         ],
                                         empathy: [
-                                                  { pattern: /понимаю (тебя|других)|чувствую твою|сопереживаю|эмпатия|i understand (you|others)|i feel your|empathy|compassion/gi, weight: 0.25 },
-                                                  { pattern: /ставлю себя на (твое|его|её) место|i put myself in (your|their) shoes/gi, weight: 0.3 },
-                                                  { pattern: /ты (должно быть|наверное) чувствуешь|you must feel|you probably feel/gi, weight: 0.2 }
+                                                  { pattern: /понимаю (тебя|других)|чувствую твою|сопереживаю|эмпатия|ставлю себя на место|понимаю других|сочувствую|i understand you|i feel your|empathy|compassion/i, weight: 0.25 },
+                                                  { pattern: /ты должно быть чувствуешь|тебе наверное трудно|i know how you feel/i, weight: 0.2 },
+                                                  { pattern: /поддерживаю|помогаю|support|help/i, weight: 0.15 }
                                         ],
                                         emotionalRegulation: [
-                                                  { pattern: /контролирую (себя|эмоции)|управляю эмоциями|сохраняю спокойствие|держу себя в руках|дышу глубоко|считаю до десяти|успокаиваюсь|беру себя в руки|стараюсь не реагировать|подавляю гнев|сдерживаюсь/gi, weight: 0.2 },
-                                                  { pattern: /не даю эмоциям|не позволяю себе|i don't let emotions|i keep my emotions in check/gi, weight: 0.3 },
-                                                  { pattern: /медитирую|йога|дыхательные практики|relax|calm down/gi, weight: 0.25 },
-                                                  { pattern: /control (myself|my emotions)|manage emotions|stay calm|keep (my|) cool|take a deep breath|count to ten|relax|calm down/gi, weight: 0.2 }
+                                                  { pattern: /контролирую (себя|эмоции)|управляю эмоциями|сохраняю спокойствие|держу себя в руках|дышу глубоко|считаю до десяти|успокаиваюсь|беру себя в руки|стараюсь не реагировать|сдерживаюсь|control (myself|my emotions)|manage emotions|stay calm|keep my cool|take a deep breath|count to ten|relax|calm down/i, weight: 0.2 },
+                                                  { pattern: /медитирую|йога|дыхательные практики|meditate|yoga|breathing exercises/i, weight: 0.25 },
+                                                  { pattern: /не даю эмоциям|не позволяю себе|i don't let emotions|i keep my emotions in check/i, weight: 0.3 }
                                         ],
                                         socialSkills: [
-                                                  { pattern: /общаюсь|взаимодействую|нахожу общий язык|коммуникация|i communicate|i interact|i get along|social skills/gi, weight: 0.2 },
-                                                  { pattern: /умею слушать|слышу других|i know how to listen|i hear others/gi, weight: 0.25 },
-                                                  { pattern: /разрешаю конфликты|иду на компромисс|i resolve conflicts|i compromise/gi, weight: 0.25 },
-                                                  { pattern: /поддерживаю разговор|i keep a conversation/gi, weight: 0.15 }
+                                                  { pattern: /общаюсь|взаимодействую|нахожу общий язык|коммуникация|умею слушать|слышу других|разрешаю конфликты|иду на компромисс|поддерживаю разговор|i communicate|i interact|i get along|social skills|i know how to listen|i hear others|i resolve conflicts|i compromise|i keep a conversation/i, weight: 0.2 },
+                                                  { pattern: /работа в команде|сотрудничество|teamwork|collaboration/i, weight: 0.25 },
+                                                  { pattern: /лидерство|убеждаю|веду за собой|leadership|persuade|lead/i, weight: 0.2 }
                                         ]
                               };
 
@@ -8586,23 +8727,9 @@
                               for (const [component, patterns] of Object.entries(indicators)) {
                                         let componentScore = 0;
                                         patterns.forEach(({ pattern, weight }) => {
-                                                  const matches = text.match(pattern);
+                                                  const matches = stemmedText.match(pattern);
                                                   if (matches) {
-                                                            let matchWeight = weight;
-                                                            const matchPositions = [];
-                                                            let match;
-                                                            while ((match = pattern.exec(text)) !== null) {
-                                                                      matchPositions.push(match.index);
-                                                            }
-                                                            matchPositions.forEach(pos => {
-                                                                      const contextStart = Math.max(0, pos - 50);
-                                                                      const contextEnd = Math.min(text.length, pos + 50);
-                                                                      const context = text.substring(contextStart, contextEnd).toLowerCase();
-                                                                      const negations = this.contextRules[this.language]?.negations || [];
-                                                                      const hasNegation = negations.some(neg => context.includes(' ' + neg + ' '));
-                                                                      if (hasNegation) matchWeight *= 0.3;
-                                                            });
-                                                            componentScore += matches.length * matchWeight;
+                                                            componentScore += matches.length * weight;
                                                   }
                                         });
                                         scores[component] = Math.min(1, componentScore);
@@ -8610,7 +8737,6 @@
                               }
 
                               const avgScore = totalScore / Object.keys(indicators).length;
-
                               const level = avgScore > 0.6 ? 'high' : avgScore > 0.3 ? 'moderate' : 'developing';
 
                               const strengths = [];
@@ -8643,30 +8769,69 @@
         }
         
         detectDefenseMechanisms(text) {
+                              const stemRussian = (word) => {
+                                        if (!word || word.length < 3) return word;
+                                        let w = word.toLowerCase();
+                                        if (w.length > 6) {
+                                                  if (w.endsWith('ого') || w.endsWith('его') || w.endsWith('ому') || w.endsWith('ему')) return w.slice(0, -3);
+                                                  if (w.endsWith('ыми') || w.endsWith('ими')) return w.slice(0, -3);
+                                        }
+                                        if (w.length > 5) {
+                                                  if (w.endsWith('ая') || w.endsWith('яя') || w.endsWith('ое') || w.endsWith('ее') || w.endsWith('ые') || w.endsWith('ие')) return w.slice(0, -2);
+                                                  if (w.endsWith('ой') || w.endsWith('ий') || w.endsWith('ый')) return w.slice(0, -2);
+                                                  if (w.endsWith('ом') || w.endsWith('ем') || w.endsWith('ам') || w.endsWith('ям')) return w.slice(0, -2);
+                                                  if (w.endsWith('ов') || w.endsWith('ев') || w.endsWith('ин') || w.endsWith('ын')) return w.slice(0, -2);
+                                                  if (w.endsWith('ах') || w.endsWith('ях')) return w.slice(0, -2);
+                                        }
+                                        if (w.length > 4) {
+                                                  if (w.endsWith('ка') || w.endsWith('га') || w.endsWith('ха')) return w.slice(0, -1);
+                                                  if (w.endsWith('ть') || w.endsWith('ти')) return w.slice(0, -2);
+                                                  if (w.endsWith('ла') || w.endsWith('ло') || w.endsWith('ли')) return w.slice(0, -2);
+                                                  if (w.endsWith('ет') || w.endsWith('ют') || w.endsWith('ят')) return w.slice(0, -2);
+                                                  if (w.endsWith('ит') || w.endsWith('ат')) return w.slice(0, -2);
+                                        }
+                                        if (w.length > 3) {
+                                                  if (w.endsWith('а') || w.endsWith('я') || w.endsWith('о') || w.endsWith('е') || 
+                                                      w.endsWith('ы') || w.endsWith('и') || w.endsWith('у') || w.endsWith('ю')) {
+                                                            return w.slice(0, -1);
+                                                  }
+                                        }
+                                        return w;
+                              };
+
+                              const words = text.toLowerCase().split(/[^а-яёa-z]+/).filter(w => w.length > 1);
+                              const stemmedWords = words.map(w => stemRussian(w));
+                              const stemmedText = stemmedWords.join(' ');
+
                               const mechanisms = {
                                         denial: [
-                                                  { pattern: /нет проблемы|всё хорошо|ничего страшного|no problem|everything is fine|nothing wrong|i('m| am) fine|it('s| is) okay/gi, weight: 0.2 },
-                                                  { pattern: /я не (верю|принимаю)|i don't (believe|accept)/gi, weight: 0.25 },
-                                                  { pattern: /этого не может быть|it can't be/gi, weight: 0.3 }
+                                                  { pattern: /нет проблемы|всё хорошо|ничего страшного|no problem|everything is fine|nothing wrong|i'm fine|it's okay/i, weight: 0.2 },
+                                                  { pattern: /я не (верю|принимаю)|i don't (believe|accept)/i, weight: 0.25 },
+                                                  { pattern: /этого не может быть|it can't be|неправда|not true/i, weight: 0.3 },
+                                                  { pattern: /ерунда|чепуха|глупости|nonsense|rubbish/i, weight: 0.15 }
                                         ],
                                         projection: [
-                                                  { pattern: /ты сам|это ты|все вокруг|you are|it('s| is) you|everyone else|они все|they all/gi, weight: 0.2 },
-                                                  { pattern: /это не я, это|it's not me, it's|не я виноват, а|i'm not to blame, it's/gi, weight: 0.25 },
-                                                  { pattern: /на других|на окружающих|на всех|on others|on everyone/gi, weight: 0.15 }
+                                                  { pattern: /ты сам|это ты|все вокруг|you are|it's you|everyone else|они все|they all/i, weight: 0.2 },
+                                                  { pattern: /это не я, это|it's not me, it's|не я виноват, а|i'm not to blame, it's/i, weight: 0.25 },
+                                                  { pattern: /на других|на окружающих|на всех|on others|on everyone/i, weight: 0.15 },
+                                                  { pattern: /они меня (бесят|раздражают)|they annoy me/i, weight: 0.2 }
                                         ],
                                         rationalization: [
-                                                  { pattern: /потому что|поэтому|так получилось|because|therefore|it happened|объясняется тем|explained by/gi, weight: 0.2 },
-                                                  { pattern: /на самом деле|на самом-то деле|actually|in fact/gi, weight: 0.15 },
-                                                  { pattern: /это (было|есть) необходимо|it was necessary|i had no choice/gi, weight: 0.25 }
+                                                  { pattern: /потому что|поэтому|так получилось|because|therefore|it happened|объясняется тем|explained by/i, weight: 0.2 },
+                                                  { pattern: /на самом деле|на самом-то деле|actually|in fact/i, weight: 0.15 },
+                                                  { pattern: /это (было|есть) необходимо|it was necessary|i had no choice|пришлось|had to/i, weight: 0.25 },
+                                                  { pattern: /есть причины|there are reasons/i, weight: 0.2 }
                                         ],
                                         intellectualization: [
-                                                  { pattern: /с теоретической точки|анализируя|рассматривая|from (a|the) theoretical perspective|analyzing|considering|with regard to|в контексте|in context/gi, weight: 0.2 },
-                                                  { pattern: /стоит отметить|следует заметить|it should be noted|it is worth mentioning/gi, weight: 0.15 },
-                                                  { pattern: /объективно|рационально|objectively|rationally/gi, weight: 0.2 }
+                                                  { pattern: /с теоретической точки|анализируя|рассматривая|from a theoretical perspective|analyzing|considering|with regard to|в контексте|in context/i, weight: 0.2 },
+                                                  { pattern: /стоит отметить|следует заметить|it should be noted|it is worth mentioning/i, weight: 0.15 },
+                                                  { pattern: /объективно|рационально|objectively|rationally/i, weight: 0.2 },
+                                                  { pattern: /абстрагируясь|detached|dispassionate/i, weight: 0.25 }
                                         ],
                                         displacement: [
-                                                  { pattern: /злюсь на|раздражает|бесит|angry at|irritated by|annoyed by|срываюсь на|take it out on/gi, weight: 0.2 },
-                                                  { pattern: /не на того|не на тех|on the wrong person|on the wrong people/gi, weight: 0.25 }
+                                                  { pattern: /злюсь на|раздражает|бесит|angry at|irritated by|annoyed by|срываюсь на|take it out on/i, weight: 0.2 },
+                                                  { pattern: /не на того|не на тех|on the wrong person|on the wrong people/i, weight: 0.25 },
+                                                  { pattern: /перекладываю|blame shifting/i, weight: 0.2 }
                                         ]
                               };
 
@@ -8675,30 +8840,16 @@
                               for (const [mechanism, patterns] of Object.entries(mechanisms)) {
                                         let score = 0;
                                         patterns.forEach(({ pattern, weight }) => {
-                                                  const matches = text.match(pattern);
+                                                  const matches = stemmedText.match(pattern);
                                                   if (matches) {
-                                                            let matchWeight = weight;
-                                                            const matchPositions = [];
-                                                            let match;
-                                                            while ((match = pattern.exec(text)) !== null) {
-                                                                      matchPositions.push(match.index);
-                                                            }
-                                                            matchPositions.forEach(pos => {
-                                                                      const contextStart = Math.max(0, pos - 30);
-                                                                      const contextEnd = Math.min(text.length, pos + 30);
-                                                                      const context = text.substring(contextStart, contextEnd).toLowerCase();
-                                                                      const negations = this.contextRules[this.language]?.negations || [];
-                                                                      const hasNegation = negations.some(neg => context.includes(' ' + neg + ' '));
-                                                                      if (hasNegation) matchWeight *= 0.2;
-                                                            });
-                                                            score += matches.length * matchWeight;
+                                                            score += matches.length * weight;
                                                   }
                                         });
                                         if (score > 0) {
                                                   detected.push({
                                                             mechanism: mechanism,
                                                             frequency: Math.round(score * 10) / 10,
-                                                            intensity: Math.min(1, score / 3) 
+                                                            intensity: Math.min(1, score / 4)
                                                   });
                                         }
                               }
@@ -10448,6 +10599,7 @@
     
 
 })();
+
 
 
 
