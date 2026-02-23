@@ -3055,9 +3055,12 @@ renderResult(result) {
                                                               <span class="label" title="${translations.communicationStyleDesc}">${styleName}:</span>
                                                               <span class="value">${intensity}%</span>
                                                           </div>`;
+                                        });
                                         html += `</div>`;
                               }
-    }
+
+                              html += `</div>`; 
+    } 
 
     const psychologicalInsights = this.getSafe(result, 'psychologicalInsights', {});
 
@@ -4235,6 +4238,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
