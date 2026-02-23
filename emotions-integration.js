@@ -3031,13 +3031,12 @@ renderResult(result) {
                                               </div>`;
                               }
 
-                              const cognitiveBiasesData = this.getSafe(psychologicalDetails, 'cognitiveBiases', {});
-                              const biasesList = cognitiveBiasesData.biases || [];
-                              if (biasesList.length > 0) {
+                              const cognitiveBiases = this.getSafe(psychologicalDetails, 'cognitiveBiases', {});
+                              if (Object.keys(cognitiveBiases).length > 0) {
                                         html += `<div class="emotion-subsection"><h4>${translations.cognitiveBiases}</h4>`;
-                                        biasesList.forEach(item => {
-                                                  const biasName = this.translateCognitiveBias(item.bias, currentLang);
-                                                  const intensity = (item.intensity * 100).toFixed(1);
+                                        Object.entries(cognitiveBiases).forEach(([bias, data]) => {
+                                                  const biasName = this.translateCognitiveBias(bias, currentLang);
+                                                  const intensity = (data.intensity * 100).toFixed(1);
                                                   html += `<div class="emotion-metric" style="border-left:2px solid #9b59b6;margin:5px 0;padding-left:8px;">
                                                               <span class="label" title="${translations.cognitiveBiasDesc}">${biasName}:</span>
                                                               <span class="value">${intensity}%</span>
@@ -3046,23 +3045,20 @@ renderResult(result) {
                                         html += `</div>`;
                               }
 
-                              const commStylesData = this.getSafe(psychologicalDetails, 'communicationStyles', {});
-                              const stylesList = commStylesData.styles || [];
-                              if (stylesList.length > 0) {
+                              const communicationStyles = this.getSafe(psychologicalDetails, 'communicationStyles', {});
+                              if (Object.keys(communicationStyles).length > 0) {
                                         html += `<div class="emotion-subsection"><h4>${translations.communicationStyles}</h4>`;
-                                        stylesList.forEach(item => {
-                                                  const styleName = this.translateCommunicationStyle(item.style, currentLang);
-                                                  const intensity = (item.intensity * 100).toFixed(1);
+                                        Object.entries(communicationStyles).forEach(([style, data]) => {
+                                                  const styleName = this.translateCommunicationStyle(style, currentLang);
+                                                  const intensity = (data.intensity * 100).toFixed(1);
                                                   html += `<div class="emotion-metric" style="border-left:2px solid #3498db;margin:5px 0;padding-left:8px;">
                                                               <span class="label" title="${translations.communicationStyleDesc}">${styleName}:</span>
                                                               <span class="value">${intensity}%</span>
                                                           </div>`;
                                         });
                                         html += `</div>`;
-                              }
-
-                              html += `</div>`; 
-    } 
+    						 }
+	}	
 
     const psychologicalInsights = this.getSafe(result, 'psychologicalInsights', {});
 
@@ -4240,6 +4236,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
