@@ -10137,163 +10137,600 @@
         }
         
         generateEmotionKeywords(primary, secondary) {
-            const keywordMap = {
-                ecstatic: ['восторг', 'экстаз', 'эйфория', 'блаженство'],
-                joyful: ['радость', 'счастье', 'ликование', 'веселье'],
-                happy: ['удовлетворение', 'благополучие', 'гармония'],
-                content: ['спокойствие', 'удовлетворение', 'баланс'],
-                calm: ['мир', 'тишина', 'равновесие', 'умиротворение'],
-                angry: ['гнев', 'ярость', 'раздражение', 'негодование'],
-                sad: ['грусть', 'печаль', 'тоска', 'скорбь'],
-                melancholic: ['меланхолия', 'рефлексия', 'созерцание'],
-                anxious: ['тревога', 'беспокойство', 'опасение', 'нервозность'],
-                complex: ['противоречие', 'многослойность', 'глубина', 'нюансы'],
-                bittersweet: ['амбивалентность', 'смешанные чувства', 'контраст'],
-                nostalgic: ['воспоминания', 'прошлое', 'память', 'эхо']
-            };
-            
-            let keywords = keywordMap[primary] || ['эмоция', 'чувство', 'переживание'];
-            
-            secondary.forEach(sec => {
-                if (keywordMap[sec]) {
-                    keywords = keywords.concat(keywordMap[sec]);
-                }
-            });
-            
-            return [...new Set(keywords)].slice(0, 10);
+                              const keywordMap = {
+                                        ecstatic: ['восторг', 'экстаз', 'эйфория', 'блаженство', 'ликование', 'упоение', 'неистовство', 'кульминация'],
+                                        joyful: ['радость', 'счастье', 'ликование', 'веселье', 'праздник', 'ликбез', 'торжество', 'свет', 'сияние'],
+                                        happy: ['удовлетворение', 'благополучие', 'гармония', 'довольство', 'успех', 'достижение', 'радость жизни'],
+                                        content: ['спокойствие', 'удовлетворение', 'баланс', 'уравновешенность', 'покой', 'тишина', 'принятие'],
+                                        calm: ['мир', 'тишина', 'равновесие', 'умиротворение', 'безмятежность', 'релаксация', 'медитация', 'дзен'],
+                                        pleased: ['довольство', 'удовлетворение', 'приятность', 'комфорт', 'уют', 'теплота'],
+                                        satisfied: ['насыщение', 'исполнение', 'достаточность', 'полнота', 'завершённость'],
+                                        
+                                        angry: ['гнев', 'ярость', 'раздражение', 'негодование', 'злость', 'бешенство', 'озлобление', 'враждебность'],
+                                        enraged: ['ярость', 'бешенство', 'неистовство', 'исступление', 'яростный', 'неконтролируемый гнев'],
+                                        sad: ['грусть', 'печаль', 'тоска', 'скорбь', 'уныние', 'меланхолия', 'хандра', 'слезы', 'плач'],
+                                        despairing: ['отчаяние', 'безысходность', 'безнадёжность', 'обречённость', 'крах', 'провал'],
+                                        melancholic: ['меланхолия', 'рефлексия', 'созерцание', 'задумчивость', 'элегия', 'ностальгия'],
+                                        anxious: ['тревога', 'беспокойство', 'опасение', 'нервозность', 'напряжение', 'страх', 'паника', 'переживание'],
+                                        terrified: ['ужас', 'страх', 'боязнь', 'испуг', 'паника', 'кошмар', 'леденящий'],
+                                        subdued: ['подавленность', 'угнетённость', 'апатия', 'безразличие', 'вялость', 'истощение'],
+                                        pensive: ['задумчивость', 'размышление', 'рефлексия', 'созерцание', 'медитация', 'интроспекция'],
+                                        resigned: ['смирение', 'принятие', 'покорность', 'безропотность', 'фатализм'],
+                                        
+                                        complex: ['противоречие', 'многослойность', 'глубина', 'нюансы', 'парадокс', 'амбивалентность', 'дилемма'],
+                                        bittersweet: ['амбивалентность', 'смешанные чувства', 'контраст', 'горько-сладкий', 'двойственность', 'ностальгия'],
+                                        nostalgic: ['воспоминания', 'прошлое', 'память', 'эхо', 'былое', 'минувшее', 'ретроспектива'],
+                                        ambivalent: ['двойственность', 'противоречивость', 'неоднозначность', 'колебание', 'нерешительность'],
+                                        ironic: ['ирония', 'сарказм', 'насмешка', 'парадокс', 'абсурд', 'гротеск'],
+                                        reflective: ['рефлексия', 'самоанализ', 'интроспекция', 'размышление', 'осмысление'],
+                                        contemplative: ['созерцание', 'медитация', 'погружение', 'отстранённость', 'наблюдение'],
+                                        mixed: ['смешанные', 'противоречивые', 'неоднозначные', 'комплексные', 'многогранные'],
+                                        vulnerable: ['уязвимость', 'ранимость', 'чувствительность', 'открытость', 'беззащитность'],
+                                        resilient: ['стойкость', 'устойчивость', 'выносливость', 'сила', 'несгибаемость'],
+                                        
+                                        'восторг': 'ecstasy', 'экстаз': 'ecstasy', 'эйфория': 'euphoria', 'блаженство': 'bliss',
+                                        'радость': 'joy', 'счастье': 'happiness', 'ликование': 'jubilation', 'веселье': 'merriment',
+                                        'удовлетворение': 'satisfaction', 'благополучие': 'well-being', 'гармония': 'harmony',
+                                        'спокойствие': 'calm', 'тишина': 'silence', 'равновесие': 'balance', 'умиротворение': 'serenity',
+                                        'гнев': 'anger', 'ярость': 'fury', 'раздражение': 'irritation', 'негодование': 'indignation',
+                                        'грусть': 'sadness', 'печаль': 'sorrow', 'тоска': 'melancholy', 'скорбь': 'grief',
+                                        'меланхолия': 'melancholy', 'рефлексия': 'reflection', 'созерцание': 'contemplation',
+                                        'тревога': 'anxiety', 'беспокойство': 'worry', 'опасение': 'apprehension', 'нервозность': 'nervousness',
+                                        'противоречие': 'contradiction', 'многослойность': 'multi-layeredness', 'глубина': 'depth',
+                                        'нюансы': 'nuances', 'амбивалентность': 'ambivalence', 'смешанные чувства': 'mixed feelings',
+                                        'контраст': 'contrast', 'воспоминания': 'memories', 'прошлое': 'past', 'память': 'memory', 'эхо': 'echo'
+                              };
+
+                              let keywords = [];
+
+                              if (primary && keywordMap[primary]) {
+                                        keywords = keywords.concat(keywordMap[primary]);
+                              }
+
+                              if (secondary && Array.isArray(secondary)) {
+                                        secondary.forEach(sec => {
+                                                  if (keywordMap[sec]) {
+                                                            keywords = keywords.concat(keywordMap[sec]);
+                                                  }
+                                        });
+                              }
+
+                              if (keywords.length === 0) {
+                                        keywords = this.language === 'ru' ? 
+                                                  ['эмоция', 'чувство', 'переживание', 'настроение', 'тон'] :
+                                                  ['emotion', 'feeling', 'experience', 'mood', 'tone'];
+                              }
+
+                              const uniqueKeywords = [...new Set(keywords)];
+
+                              if (this.getCurrentLanguage() === 'en') {
+                                        return uniqueKeywords.map(k => keywordMap[k] || k).slice(0, 12);
+                              }
+
+                              return uniqueKeywords.slice(0, 12);
         }
         
         generatePsychologicalInsights(integratedResult) {
-            const insights = {
-                emotionalPatterns: this.identifyEmotionalPatterns(integratedResult),
-                cognitiveStyle: this.assessCognitiveStyle(integratedResult),
-                relationalPatterns: this.inferRelationalPatterns(integratedResult),
-                personalGrowth: this.suggestPersonalGrowthPaths(integratedResult),
-                therapeuticApproaches: this.recommendTherapeuticApproaches(integratedResult)
-            };
-            
-            return {
-                insights: insights,
-                summary: this.createPsychologicalSummary(insights),
-                confidence: integratedResult.confidenceScore,
-                applicability: this.assessInsightApplicability(integratedResult)
-            };
+                              const insights = {
+                                        emotionalPatterns: this.identifyEmotionalPatterns(integratedResult),
+                                        cognitiveStyle: this.assessCognitiveStyle(integratedResult),
+                                        relationalPatterns: this.inferRelationalPatterns(integratedResult),
+                                        personalGrowth: this.suggestPersonalGrowthPaths(integratedResult),
+                                        therapeuticApproaches: this.recommendTherapeuticApproaches(integratedResult)
+                              };
+
+                              const summary = this.createPsychologicalSummary(insights);
+
+                              return {
+                                        insights: insights,
+                                        summary: summary,
+                                        confidence: integratedResult.confidenceScore,
+                                        applicability: this.assessInsightApplicability(integratedResult),
+                                        meta: {
+                                                  timestamp: new Date().toISOString(),
+                                                  language: this.language,
+                                                  version: '2.0'
+                                        }
+                              };
         }
         
         identifyEmotionalPatterns(integratedResult) {
-            const patterns = [];
-            
-            if (integratedResult.consistencyScore > 0.8) {
-                patterns.push('устойчивый эмоциональный фон');
-            }
-            
-            if (integratedResult.emotionalRange > 0.7) {
-                patterns.push('широкий эмоциональный диапазон');
-            }
-            
-            if (integratedResult.complexityScore > 0.7) {
-                patterns.push('сложная эмоциональная палитра');
-            }
-            
-            if (integratedResult.ironyLevel > 0.5) {
-                patterns.push('использование иронии как защитного механизма');
-            }
-            
-            const archetype = this.determineNarrativeArchetype(integratedResult);
-            if (archetype === 'tragic') {
-                patterns.push('склонность к драматизации');
-            } else if (archetype === 'comic') {
-                patterns.push('использование юмора');
-            }
-            
-            return patterns.length > 0 ? patterns : ['умеренная эмоциональная выразительность'];
+                              const patterns = [];
+                              const lexical = integratedResult.details?.lexical;
+                              const contextual = integratedResult.details?.contextual;
+                              const psychological = integratedResult.details?.psychological;
+
+                              if (integratedResult.consistencyScore > 0.8) {
+                                        patterns.push('устойчивый эмоциональный фон');
+                              } else if (integratedResult.consistencyScore < 0.3) {
+                                        patterns.push('эмоциональная лабильность');
+                              }
+
+                              if (integratedResult.emotionalRange > 0.7) {
+                                        patterns.push('широкий эмоциональный диапазон');
+                              } else if (integratedResult.emotionalRange < 0.3) {
+                                        patterns.push('суженный эмоциональный диапазон');
+                              }
+
+                              if (integratedResult.complexityScore > 0.7) {
+                                        patterns.push('сложная эмоциональная палитра');
+                              }
+
+                              if (integratedResult.ironyLevel > 0.5) {
+                                        patterns.push('ироничный взгляд на мир');
+                              }
+
+                              if (lexical?.categories) {
+                                        const positiveCats = ['ecstasy', 'joy', 'love', 'peace', 'hope', 'gratitude', 'inspiration', 'pride'];
+                                        const negativeCats = ['sadness', 'grief', 'anger', 'fear', 'disgust', 'shame', 'guilt', 'loneliness', 'envy', 'despair'];
+                                        const complexCats = ['ambivalence', 'irony', 'nostalgiaMixed', 'bittersweet', 'nostalgia'];
+
+                                        let positiveCount = 0, negativeCount = 0, complexCount = 0;
+                                        
+                                        Object.keys(lexical.categories).forEach(cat => {
+                                                  if (positiveCats.includes(cat)) positiveCount++;
+                                                  else if (negativeCats.includes(cat)) negativeCount++;
+                                                  else if (complexCats.includes(cat)) complexCount++;
+                                        });
+
+                                        if (positiveCount > negativeCount * 2) {
+                                                  patterns.push('преобладание позитивных эмоций');
+                                        } else if (negativeCount > positiveCount * 2) {
+                                                  patterns.push('преобладание негативных эмоций');
+                                        } else if (positiveCount > 0 && negativeCount > 0) {
+                                                  patterns.push('эмоциональная амбивалентность');
+                                        }
+
+                                        if (complexCount > 2) {
+                                                  patterns.push('склонность к сложным, смешанным переживаниям');
+                                        }
+                              }
+
+                              if (psychological?.plutchik?.basicEmotions) {
+                                        const emotions = psychological.plutchik.basicEmotions;
+                                        const strongEmotions = Object.entries(emotions)
+                                                  .filter(([_, data]) => data.intensity > 0.3)
+                                                  .map(([emotion]) => emotion);
+
+                                        if (strongEmotions.length >= 4) {
+                                                  patterns.push('эмоциональное разнообразие');
+                                        }
+
+                                        if (strongEmotions.includes('fear') && strongEmotions.includes('anxiety')) {
+                                                  patterns.push('тревожный фон');
+                                        }
+                                        if (strongEmotions.includes('anger') && strongEmotions.includes('irritation')) {
+                                                  patterns.push('повышенная раздражительность');
+                                        }
+                                        if (strongEmotions.includes('joy') && strongEmotions.includes('love')) {
+                                                  patterns.push('эмоциональная теплота');
+                                        }
+                              }
+
+                              if (contextual?.indicators) {
+                                        if (contextual.indicators.negations > 5) {
+                                                  patterns.push('склонность к отрицанию');
+                                        }
+                                        if (contextual.indicators.intensifiers > 5) {
+                                                  patterns.push('эмоциональная экспрессивность');
+                                        }
+                                        if (contextual.indicators.understatement > 3) {
+                                                  patterns.push('склонность к преуменьшению');
+                                        }
+                              }
+
+                              if (this.language === 'en') {
+                                        const enPatterns = {
+                                                  'устойчивый эмоциональный фон': 'stable emotional background',
+                                                  'эмоциональная лабильность': 'emotional lability',
+                                                  'широкий эмоциональный диапазон': 'wide emotional range',
+                                                  'суженный эмоциональный диапазон': 'narrowed emotional range',
+                                                  'сложная эмоциональная палитра': 'complex emotional palette',
+                                                  'ироничный взгляд на мир': 'ironic worldview',
+                                                  'преобладание позитивных эмоций': 'predominance of positive emotions',
+                                                  'преобладание негативных эмоций': 'predominance of negative emotions',
+                                                  'эмоциональная амбивалентность': 'emotional ambivalence',
+                                                  'склонность к сложным, смешанным переживаниям': 'tendency to complex mixed feelings',
+                                                  'эмоциональное разнообразие': 'emotional diversity',
+                                                  'тревожный фон': 'anxious background',
+                                                  'повышенная раздражительность': 'increased irritability',
+                                                  'эмоциональная теплота': 'emotional warmth',
+                                                  'склонность к отрицанию': 'tendency to denial',
+                                                  'эмоциональная экспрессивность': 'emotional expressiveness',
+                                                  'склонность к преуменьшению': 'tendency to understatement',
+                                                  'склонность к драматизации': 'tendency to dramatization',
+                                                  'использование юмора': 'use of humor',
+                                                  'умеренная эмоциональная выразительность': 'moderate emotional expressiveness'
+                                        };
+                                        return patterns.map(p => enPatterns[p] || p);
+                              }
+
+                              const archetype = this.determineNarrativeArchetype(integratedResult);
+                              if (archetype === 'tragic') {
+                                        patterns.push('склонность к драматизации');
+                              } else if (archetype === 'comic') {
+                                        patterns.push('использование юмора');
+                              }
+
+                              return patterns.length > 0 ? patterns : ['умеренная эмоциональная выразительность'];
         }
         
         assessCognitiveStyle(integratedResult) {
-            const styleFactors = {
-                analytical: integratedResult.complexityScore > 0.7 ? 0.8 : 0.3,
-                intuitive: integratedResult.emotionalDepth > 0.6 ? 0.7 : 0.4,
-                reflective: integratedResult.dimensionScores.semantic > 0.6 ? 0.9 : 0.5,
-                practical: integratedResult.dimensionScores.contextual > 0 ? 0.6 : 0.4
-            };
-            
-            const maxScore = Math.max(...Object.values(styleFactors));
-            const dominantStyle = Object.keys(styleFactors).find(
-                key => styleFactors[key] === maxScore
-            );
-            
-            return {
-                style: dominantStyle,
-                factors: styleFactors,
-                flexibility: 1 - Math.max(...Object.values(styleFactors)) + 
-                           Math.min(...Object.values(styleFactors))
-            };
+                              const lexical = integratedResult.details?.lexical;
+                              const semantic = integratedResult.details?.semantic;
+                              const contextual = integratedResult.details?.contextual;
+                              const psychological = integratedResult.details?.psychological;
+
+                              const styleFactors = {
+                                        analytical: (
+                                                  (integratedResult.complexityScore > 0.6 ? 0.4 : 0.1) +
+                                                  (semantic?.coherence > 0.6 ? 0.3 : 0.1) +
+                                                  (lexical?.metrics?.lexicalRichness > 0.5 ? 0.3 : 0.1)
+                                        ),
+
+                                        intuitive: (
+                                                  (integratedResult.emotionalDepth > 0.5 ? 0.4 : 0.1) +
+                                                  (semantic?.abstraction?.level > 0.6 ? 0.3 : 0.1) +
+                                                  (lexical?.categories?.intensity ? 0.3 : 0.1)
+                                        ),
+
+                                        reflective: (
+                                                  (psychological?.selfAwarenessLevel?.score > 0.5 ? 0.4 : 0.1) +
+                                                  (psychological?.emotionalIntelligence?.components?.selfAwareness > 0.3 ? 0.3 : 0.1) +
+                                                  (integratedResult.consistencyScore > 0.5 ? 0.3 : 0.1)
+                                        ),
+
+                                        practical: (
+                                                  (semantic?.abstraction?.level < 0.4 ? 0.4 : 0.1) +
+                                                  (contextual?.coherence > 0.5 ? 0.3 : 0.1) +
+                                                  (lexical?.summary?.lexicalDensity > 0.3 ? 0.3 : 0.1)
+                                        )
+                              };
+
+                              Object.keys(styleFactors).forEach(key => {
+                                        styleFactors[key] = Math.min(1, styleFactors[key]);
+                              });
+
+                              const maxScore = Math.max(...Object.values(styleFactors));
+                              const dominantStyle = Object.keys(styleFactors).find(
+                                        key => styleFactors[key] === maxScore
+                              );
+
+                              const scores = Object.values(styleFactors);
+                              const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+                              const variance = scores.reduce((sum, s) => sum + Math.pow(s - avg, 2), 0) / scores.length;
+                              const flexibility = 1 - Math.min(1, variance * 2);
+
+                              const styleNames = {
+                                        analytical: this.language === 'ru' ? 'аналитический' : 'analytical',
+                                        intuitive: this.language === 'ru' ? 'интуитивный' : 'intuitive',
+                                        reflective: this.language === 'ru' ? 'рефлексивный' : 'reflective',
+                                        practical: this.language === 'ru' ? 'практический' : 'practical'
+                              };
+
+                              return {
+                                        style: styleNames[dominantStyle] || 'balanced',
+                                        factors: styleFactors,
+                                        flexibility: flexibility,
+                                        description: this.getCognitiveStyleDescription(dominantStyle)
+                              };
+        }
+
+        getCognitiveStyleDescription(style) {
+                              const descriptions = {
+                                        analytical: {
+                                                  ru: 'Склонность к логическому анализу, структурированию информации, поиску закономерностей',
+                                                  en: 'Tendency to logical analysis, structuring information, finding patterns'
+                                        },
+                                        intuitive: {
+                                                  ru: 'Опора на интуицию, целостное восприятие, быстрые решения без детального анализа',
+                                                  en: 'Reliance on intuition, holistic perception, quick decisions without detailed analysis'
+                                        },
+                                        reflective: {
+                                                  ru: 'Склонность к самоанализу, рефлексии, глубокому осмыслению опыта',
+                                                  en: 'Tendency to introspection, reflection, deep understanding of experience'
+                                        },
+                                        practical: {
+                                                  ru: 'Ориентация на конкретные результаты, практическое применение знаний',
+                                                  en: 'Focus on concrete results, practical application of knowledge'
+                                        }
+                              };
+                              return descriptions[style]?.[this.language] || descriptions[style]?.en || '';
         }
         
         inferRelationalPatterns(integratedResult) {
-            const patterns = [];
-            const { emotion } = integratedResult.dominantEmotion;
-            
-            if (['joyful', 'happy', 'content'].includes(emotion)) {
-                patterns.push('склонность к позитивным взаимодействиям');
-                patterns.push('открытость в общении');
-            } else if (['sad', 'melancholic'].includes(emotion)) {
-                patterns.push('потребность в понимании и поддержке');
-                patterns.push('глубина в отношениях');
-            } else if (['angry', 'anxious'].includes(emotion)) {
-                patterns.push('защитная позиция в отношениях');
-                patterns.push('потребность в безопасных границах');
-            }
-            
-            if (integratedResult.ironyLevel > 0.5) {
-                patterns.push('использование дистанции в общении');
-            }
-            
-            return patterns.length > 0 ? patterns : ['сбалансированный стиль общения'];
+                              const patterns = [];
+                              const psychological = integratedResult.details?.psychological;
+                              const contextual = integratedResult.details?.contextual;
+                              const lexical = integratedResult.details?.lexical;
+                              const { emotion } = integratedResult.dominantEmotion;
+
+                              if (['joyful', 'happy', 'content', 'joy', 'love'].includes(emotion)) {
+                                        patterns.push('склонность к позитивным взаимодействиям');
+                                        patterns.push('открытость в общении');
+                                        patterns.push('эмоциональная теплота в отношениях');
+                              } else if (['sad', 'melancholic', 'sadness', 'grief'].includes(emotion)) {
+                                        patterns.push('потребность в понимании и поддержке');
+                                        patterns.push('глубина и искренность в отношениях');
+                                        patterns.push('чувствительность к отвержению');
+                              } else if (['angry', 'anxious', 'anger', 'fear', 'anxiety'].includes(emotion)) {
+                                        patterns.push('защитная позиция в отношениях');
+                                        patterns.push('потребность в безопасных границах');
+                                        patterns.push('настороженность в новых контактах');
+                              }
+
+                              if (psychological?.communicationStyles) {
+                                        const styles = psychological.communicationStyles;
+                                        
+                                        if (styles.assertive?.score > 0.3) {
+                                                  patterns.push('способность отстаивать свои интересы');
+                                        }
+                                        if (styles.passive?.score > 0.3) {
+                                                  patterns.push('склонность к уступчивости');
+                                        }
+                                        if (styles.aggressive?.score > 0.3) {
+                                                  patterns.push('конфликтность в стрессовых ситуациях');
+                                        }
+                                        if (styles.manipulative?.score > 0.3) {
+                                                  patterns.push('использование непрямых способов влияния');
+                                        }
+                              }
+
+                              if (psychological?.cognitiveBiases) {
+                                        const biases = psychological.cognitiveBiases;
+                                        
+                                        if (biases.mindReading?.intensity > 0.3) {
+                                                  patterns.push('склонность приписывать мысли другим');
+                                        }
+                                        if (biases.personalization?.intensity > 0.3) {
+                                                  patterns.push('тенденция принимать всё на свой счёт');
+                                        }
+                              }
+
+                              if (contextual?.indicators) {
+                                        if (contextual.indicators.negations > 3) {
+                                                  patterns.push('склонность к конфронтации');
+                                        }
+                                        if (contextual.indicators.intensifiers > 3) {
+                                                  patterns.push('эмоциональная экспрессивность в общении');
+                                        }
+                              }
+
+                              if (psychological?.emotionalIntelligence?.components?.empathy > 0.3) {
+                                        patterns.push('развитая эмпатия');
+                              }
+
+                              if (integratedResult.ironyLevel > 0.5) {
+                                        patterns.push('использование иронии как способа дистанцирования');
+                              }
+
+                              const uniquePatterns = [...new Set(patterns)];
+
+                              if (this.language === 'en') {
+                                        const enPatterns = {
+                                                  'склонность к позитивным взаимодействиям': 'tendency to positive interactions',
+                                                  'открытость в общении': 'openness in communication',
+                                                  'эмоциональная теплота в отношениях': 'emotional warmth in relationships',
+                                                  'потребность в понимании и поддержке': 'need for understanding and support',
+                                                  'глубина и искренность в отношениях': 'depth and sincerity in relationships',
+                                                  'чувствительность к отвержению': 'sensitivity to rejection',
+                                                  'защитная позиция в отношениях': 'defensive position in relationships',
+                                                  'потребность в безопасных границах': 'need for safe boundaries',
+                                                  'настороженность в новых контактах': 'caution in new contacts',
+                                                  'способность отстаивать свои интересы': 'ability to assert one\'s interests',
+                                                  'склонность к уступчивости': 'tendency to compliance',
+                                                  'конфликтность в стрессовых ситуациях': 'conflictness in stressful situations',
+                                                  'использование непрямых способов влияния': 'use of indirect influence',
+                                                  'склонность приписывать мысли другим': 'tendency to attribute thoughts to others',
+                                                  'тенденция принимать всё на свой счёт': 'tendency to take everything personally',
+                                                  'склонность к конфронтации': 'tendency to confrontation',
+                                                  'эмоциональная экспрессивность в общении': 'emotional expressiveness in communication',
+                                                  'развитая эмпатия': 'developed empathy',
+                                                  'использование иронии как способа дистанцирования': 'use of irony as a way of distancing',
+                                                  'сбалансированный стиль общения': 'balanced communication style'
+                                        };
+                                        return uniquePatterns.map(p => enPatterns[p] || p);
+                              }
+
+                              return uniquePatterns.length > 0 ? uniquePatterns : ['сбалансированный стиль общения'];
         }
         
         suggestPersonalGrowthPaths(integratedResult) {
-            const paths = [];
-            
-            if (integratedResult.emotionalRange < 0.4) {
-                paths.push('расширение эмоционального репертуара');
-            }
-            
-            if (integratedResult.consistencyScore < 0.5) {
-                paths.push('развитие эмоциональной стабильности');
-            }
-            
-            if (integratedResult.complexityScore > 0.7) {
-                paths.push('интеграция сложных эмоциональных переживаний');
-            }
-            
-            if (integratedResult.dimensionScores.psychological < 0.4) {
-                paths.push('развитие психологической осознанности');
-            }
-            
-            return paths.length > 0 ? paths : ['гармонизация эмоциональной сферы'];
+                              const paths = [];
+                              const psychological = integratedResult.details?.psychological;
+                              const lexical = integratedResult.details?.lexical;
+                              const semantic = integratedResult.details?.semantic;
+
+                              if (integratedResult.emotionalRange < 0.3) {
+                                        paths.push('расширение эмоционального репертуара');
+                              } else if (integratedResult.emotionalRange > 0.7 && integratedResult.consistencyScore < 0.4) {
+                                        paths.push('развитие эмоциональной регуляции');
+                              }
+
+                              if (integratedResult.consistencyScore < 0.4) {
+                                        paths.push('развитие эмоциональной стабильности');
+                              }
+
+                              if (integratedResult.complexityScore > 0.6) {
+                                        paths.push('интеграция сложных эмоциональных переживаний');
+                              }
+
+                              if (psychological?.cognitiveBiases) {
+                                        const biasCount = Object.keys(psychological.cognitiveBiases).length;
+                                        if (biasCount > 3) {
+                                                  paths.push('работа с когнитивными искажениями');
+                                        }
+                              }
+
+                              if (semantic?.abstraction?.level > 0.7) {
+                                        paths.push('развитие практического мышления');
+                              } else if (semantic?.abstraction?.level < 0.3) {
+                                        paths.push('развитие абстрактного мышления');
+                              }
+
+                              if (psychological?.communicationStyles) {
+                                        const styles = psychological.communicationStyles;
+                                        if (styles.aggressive?.score > 0.3) {
+                                                  paths.push('развитие ассертивности');
+                                        }
+                                        if (styles.passive?.score > 0.3) {
+                                                  paths.push('развитие уверенности в общении');
+                                        }
+                                        if (styles.manipulative?.score > 0.3) {
+                                                  paths.push('развитие прямых способов коммуникации');
+                                        }
+                              }
+
+                              const ei = psychological?.emotionalIntelligence;
+                              if (ei) {
+                                        if (ei.components.empathy < 0.3) {
+                                                  paths.push('развитие эмпатии');
+                                        }
+                                        if (ei.components.socialSkills < 0.3) {
+                                                  paths.push('развитие социальных навыков');
+                                        }
+                                        if (ei.components.emotionalRegulation < 0.3) {
+                                                  paths.push('развитие навыков саморегуляции');
+                                        }
+                              }
+
+                              if (psychological?.selfAwarenessLevel) {
+                                        if (psychological.selfAwarenessLevel.score < 0.4) {
+                                                  paths.push('развитие самосознания');
+                                        } else if (psychological.selfAwarenessLevel.score > 0.7) {
+                                                  paths.push('углубление самопознания');
+                                        }
+                              }
+
+                              if (psychological?.psychologicalComplexity < 0.3) {
+                                        paths.push('развитие психологической осознанности');
+                              }
+
+                              const uniquePaths = [...new Set(paths)];
+
+                              if (this.language === 'en') {
+                                        const enPaths = {
+                                                  'расширение эмоционального репертуара': 'expanding emotional repertoire',
+                                                  'развитие эмоциональной регуляции': 'developing emotional regulation',
+                                                  'развитие эмоциональной стабильности': 'developing emotional stability',
+                                                  'интеграция сложных эмоциональных переживаний': 'integration of complex emotional experiences',
+                                                  'работа с когнитивными искажениями': 'working with cognitive distortions',
+                                                  'развитие практического мышления': 'developing practical thinking',
+                                                  'развитие абстрактного мышления': 'developing abstract thinking',
+                                                  'развитие ассертивности': 'developing assertiveness',
+                                                  'развитие уверенности в общении': 'developing confidence in communication',
+                                                  'развитие прямых способов коммуникации': 'developing direct communication',
+                                                  'развитие эмпатии': 'developing empathy',
+                                                  'развитие социальных навыков': 'developing social skills',
+                                                  'развитие навыков саморегуляции': 'developing self-regulation skills',
+                                                  'развитие самосознания': 'developing self-awareness',
+                                                  'углубление самопознания': 'deepening self-knowledge',
+                                                  'развитие психологической осознанности': 'developing psychological awareness',
+                                                  'гармонизация эмоциональной сферы': 'harmonization of emotional sphere'
+                                        };
+                                        return uniquePaths.map(p => enPaths[p] || p);
+                              }
+
+                              return uniquePaths.length > 0 ? uniquePaths : ['гармонизация эмоциональной сферы'];
         }
         
         recommendTherapeuticApproaches(integratedResult) {
-            const approaches = [];
-            
-            if (integratedResult.complexityScore > 0.7) {
-                approaches.push('гештальт-терапия', 'экзистенциальная терапия');
-            }
-            
-            if (integratedResult.ironyLevel > 0.5) {
-                approaches.push('когнитивно-поведенческая терапия');
-            }
-            
-            if (integratedResult.dimensionScores.contextual < 0) {
-                approaches.push('терапия принятия и ответственности');
-            }
-            
-            if (integratedResult.emotionalDepth > 0.6) {
-                approaches.push('глубинная психотерапия');
-            }
-            
-            return approaches.length > 0 ? approaches : ['общеукрепляющая психотерапия'];
+                              const approaches = [];
+                              const psychological = integratedResult.details?.psychological;
+                              const lexical = integratedResult.details?.lexical;
+
+                              if (psychological?.cognitiveBiases) {
+                                        const biasCount = Object.keys(psychological.cognitiveBiases).length;
+                                        if (biasCount > 2) {
+                                                  approaches.push('когнитивно-поведенческая терапия (КПТ)');
+                                        }
+                              }
+
+                              if (psychological?.defenseMechanisms) {
+                                        const defenseCount = psychological.defenseMechanisms.mechanisms?.length || 0;
+                                        if (defenseCount > 2) {
+                                                  approaches.push('психодинамическая терапия');
+                                        }
+                              }
+
+                              if (integratedResult.emotionalRange > 0.7 && integratedResult.consistencyScore < 0.4) {
+                                        approaches.push('диалектическая поведенческая терапия (ДПТ)');
+                              }
+
+                              if (integratedResult.ironyLevel > 0.5) {
+                                        approaches.push('когнитивно-поведенческая терапия (КПТ)');
+                              }
+
+                              if (integratedResult.emotionalDepth > 0.6) {
+                                        approaches.push('глубинная психотерапия');
+                                        approaches.push('психоанализ');
+                              }
+
+                              if (psychological?.maslow?.dominant) {
+                                        const dominantNeed = psychological.maslow.dominant.level;
+                                        if (dominantNeed === 'safety') {
+                                                  approaches.push('терапия, ориентированная на безопасность');
+                                        } else if (dominantNeed === 'love/belonging') {
+                                                  approaches.push('интерперсональная терапия');
+                                        } else if (dominantNeed === 'esteem') {
+                                                  approaches.push('терапия самооценки');
+                                        } else if (dominantNeed === 'self-actualization') {
+                                                  approaches.push('экзистенциальная терапия');
+                                                  approaches.push('гуманистическая терапия');
+                                        }
+                              }
+
+                              if (psychological?.communicationStyles) {
+                                        const styles = psychological.communicationStyles;
+                                        if (styles.assertive?.score < 0.2) {
+                                                  approaches.push('тренинг ассертивности');
+                                        }
+                                        if (styles.aggressive?.score > 0.3) {
+                                                  approaches.push('тренинг управления гневом');
+                                        }
+                              }
+
+                              if (integratedResult.complexityScore > 0.6) {
+                                        if (!approaches.includes('гештальт-терапия')) {
+                                                  approaches.push('гештальт-терапия');
+                                        }
+                                        if (!approaches.includes('экзистенциальная терапия')) {
+                                                  approaches.push('экзистенциальная терапия');
+                                        }
+                              }
+
+                              if (psychological?.selfAwarenessLevel?.score < 0.3) {
+                                        approaches.push('майндфулнес');
+                                  } else if (psychological?.selfAwarenessLevel?.score > 0.7) {
+                                        approaches.push('терапия, ориентированная на инсайт');
+                              }
+
+                              const uniqueApproaches = [...new Set(approaches)];
+
+                              if (this.language === 'en') {
+                                        const enApproaches = {
+                                                  'когнитивно-поведенческая терапия (КПТ)': 'cognitive-behavioral therapy (CBT)',
+                                                  'психодинамическая терапия': 'psychodynamic therapy',
+                                                  'диалектическая поведенческая терапия (ДПТ)': 'dialectical behavior therapy (DBT)',
+                                                  'глубинная психотерапия': 'depth psychotherapy',
+                                                  'психоанализ': 'psychoanalysis',
+                                                  'терапия, ориентированная на безопасность': 'safety-focused therapy',
+                                                  'интерперсональная терапия': 'interpersonal therapy',
+                                                  'терапия самооценки': 'self-esteem therapy',
+                                                  'экзистенциальная терапия': 'existential therapy',
+                                                  'гуманистическая терапия': 'humanistic therapy',
+                                                  'тренинг ассертивности': 'assertiveness training',
+                                                  'тренинг управления гневом': 'anger management training',
+                                                  'гештальт-терапия': 'gestalt therapy',
+                                                  'майндфулнес': 'mindfulness',
+                                                  'терапия принятия и ответственности': 'acceptance and commitment therapy (ACT)',
+                                                  'общеукрепляющая психотерапия': 'general strengthening psychotherapy',
+                                                  'терапия, ориентированная на инсайт': 'insight-oriented therapy'
+                                        };
+                                        return uniqueApproaches.map(a => enApproaches[a] || a);
+                              }
+
+                              return uniqueApproaches.length > 0 ? uniqueApproaches : ['общеукрепляющая психотерапия'];
         }
         
         createPsychologicalSummary(insights) {
@@ -10528,7 +10965,6 @@
         }
         
         getAnalysisHistory() {
-            // This would typically connect to a storage system
             return {
                 totalAnalyses: 0,
                 averageProcessingTime: 0,
@@ -10600,90 +11036,3 @@
     
 
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
