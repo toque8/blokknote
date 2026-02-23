@@ -10137,9 +10137,9 @@
         }
         
         generateEmotionKeywords(primary, secondary) {
-                              const keywordMap = {
+                              const ruKeywordMap = {
                                         ecstatic: ['восторг', 'экстаз', 'эйфория', 'блаженство', 'ликование', 'упоение', 'неистовство', 'кульминация'],
-                                        joyful: ['радость', 'счастье', 'ликование', 'веселье', 'праздник', 'ликбез', 'торжество', 'свет', 'сияние'],
+                                        joyful: ['радость', 'счастье', 'ликование', 'веселье', 'праздник', 'торжество', 'свет', 'сияние'],
                                         happy: ['удовлетворение', 'благополучие', 'гармония', 'довольство', 'успех', 'достижение', 'радость жизни'],
                                         content: ['спокойствие', 'удовлетворение', 'баланс', 'уравновешенность', 'покой', 'тишина', 'принятие'],
                                         calm: ['мир', 'тишина', 'равновесие', 'умиротворение', 'безмятежность', 'релаксация', 'медитация', 'дзен'],
@@ -10166,20 +10166,46 @@
                                         contemplative: ['созерцание', 'медитация', 'погружение', 'отстранённость', 'наблюдение'],
                                         mixed: ['смешанные', 'противоречивые', 'неоднозначные', 'комплексные', 'многогранные'],
                                         vulnerable: ['уязвимость', 'ранимость', 'чувствительность', 'открытость', 'беззащитность'],
-                                        resilient: ['стойкость', 'устойчивость', 'выносливость', 'сила', 'несгибаемость'],
-                                        
-                                        'восторг': 'ecstasy', 'экстаз': 'ecstasy', 'эйфория': 'euphoria', 'блаженство': 'bliss',
-                                        'радость': 'joy', 'счастье': 'happiness', 'ликование': 'jubilation', 'веселье': 'merriment',
-                                        'удовлетворение': 'satisfaction', 'благополучие': 'well-being', 'гармония': 'harmony',
-                                        'спокойствие': 'calm', 'тишина': 'silence', 'равновесие': 'balance', 'умиротворение': 'serenity',
-                                        'гнев': 'anger', 'ярость': 'fury', 'раздражение': 'irritation', 'негодование': 'indignation',
-                                        'грусть': 'sadness', 'печаль': 'sorrow', 'тоска': 'melancholy', 'скорбь': 'grief',
-                                        'меланхолия': 'melancholy', 'рефлексия': 'reflection', 'созерцание': 'contemplation',
-                                        'тревога': 'anxiety', 'беспокойство': 'worry', 'опасение': 'apprehension', 'нервозность': 'nervousness',
-                                        'противоречие': 'contradiction', 'многослойность': 'multi-layeredness', 'глубина': 'depth',
-                                        'нюансы': 'nuances', 'амбивалентность': 'ambivalence', 'смешанные чувства': 'mixed feelings',
-                                        'контраст': 'contrast', 'воспоминания': 'memories', 'прошлое': 'past', 'память': 'memory', 'эхо': 'echo'
+                                        resilient: ['стойкость', 'устойчивость', 'выносливость', 'сила', 'несгибаемость']
                               };
+
+                              const enKeywordMap = {
+                                        ecstatic: ['ecstasy', 'rapture', 'euphoria', 'bliss', 'jubilation', 'exhilaration', 'elation'],
+                                        joyful: ['joy', 'happiness', 'delight', 'glee', 'merriment', 'celebration', 'light', 'radiance'],
+                                        happy: ['satisfaction', 'well-being', 'harmony', 'contentment', 'success', 'achievement', 'joy of life'],
+                                        content: ['calm', 'satisfaction', 'balance', 'equanimity', 'peace', 'silence', 'acceptance'],
+                                        calm: ['peace', 'silence', 'balance', 'serenity', 'tranquility', 'relaxation', 'meditation', 'zen'],
+                                        pleased: ['contentment', 'satisfaction', 'pleasure', 'comfort', 'coziness', 'warmth'],
+                                        satisfied: ['fulfillment', 'completion', 'sufficiency', 'fullness', 'finality'],
+                                        
+                                        angry: ['anger', 'fury', 'irritation', 'indignation', 'rage', 'wrath', 'hostility'],
+                                        enraged: ['fury', 'rage', 'frenzy', 'frenzy', 'uncontrollable anger'],
+                                        sad: ['sadness', 'sorrow', 'melancholy', 'grief', 'despondency', 'gloom', 'tears', 'crying'],
+                                        despairing: ['despair', 'hopelessness', 'desperation', 'doom', 'collapse', 'failure'],
+                                        melancholic: ['melancholy', 'reflection', 'contemplation', 'pensiveness', 'elegy', 'nostalgia'],
+                                        anxious: ['anxiety', 'worry', 'apprehension', 'nervousness', 'tension', 'fear', 'panic', 'concern'],
+                                        terrified: ['terror', 'fear', 'dread', 'fright', 'panic', 'nightmare', 'chilling'],
+                                        subdued: ['subdued', 'oppressed', 'apathy', 'indifference', 'lethargy', 'exhaustion'],
+                                        pensive: ['pensiveness', 'thought', 'reflection', 'contemplation', 'meditation', 'introspection'],
+                                        resigned: ['resignation', 'acceptance', 'submission', 'compliance', 'fatalism'],
+                                        
+                                        complex: ['contradiction', 'multi-layeredness', 'depth', 'nuances', 'paradox', 'ambivalence', 'dilemma'],
+                                        bittersweet: ['ambivalence', 'mixed feelings', 'contrast', 'bittersweet', 'duality', 'nostalgia'],
+                                        nostalgic: ['memories', 'past', 'memory', 'echo', 'bygone', 'retrospect', 'reminiscence'],
+                                        ambivalent: ['duality', 'contradictoriness', 'ambiguity', 'hesitation', 'indecision'],
+                                        ironic: ['irony', 'sarcasm', 'mockery', 'paradox', 'absurdity', 'grotesque'],
+                                        reflective: ['reflection', 'self-analysis', 'introspection', 'thought', 'contemplation'],
+                                        contemplative: ['contemplation', 'meditation', 'immersion', 'detachment', 'observation'],
+                                        mixed: ['mixed', 'contradictory', 'ambiguous', 'complex', 'multifaceted'],
+                                        vulnerable: ['vulnerability', 'sensitivity', 'openness', 'defenselessness'],
+                                        resilient: ['resilience', 'fortitude', 'endurance', 'strength', 'unbending']
+                              };
+
+                              const defaultRu = ['эмоция', 'чувство', 'переживание', 'настроение', 'тон'];
+                              const defaultEn = ['emotion', 'feeling', 'experience', 'mood', 'tone'];
+
+                              const keywordMap = this.language === 'ru' ? ruKeywordMap : enKeywordMap;
+                              const defaultKeywords = this.language === 'ru' ? defaultRu : defaultEn;
 
                               let keywords = [];
 
@@ -10196,17 +10222,10 @@
                               }
 
                               if (keywords.length === 0) {
-                                        keywords = this.language === 'ru' ? 
-                                                  ['эмоция', 'чувство', 'переживание', 'настроение', 'тон'] :
-                                                  ['emotion', 'feeling', 'experience', 'mood', 'tone'];
+                                        keywords = defaultKeywords;
                               }
 
                               const uniqueKeywords = [...new Set(keywords)];
-
-                              if (this.getCurrentLanguage() === 'en') {
-                                        return uniqueKeywords.map(k => keywordMap[k] || k).slice(0, 12);
-                              }
-
                               return uniqueKeywords.slice(0, 12);
         }
         
@@ -11036,3 +11055,4 @@
     
 
 })();
+
