@@ -961,7 +961,7 @@
                               },
                               catastrophizing: {
                                   markers: {
-                                      ru: ['ужасно', 'кошмар', 'конец', 'катастрофа', 'все пропало', 'безысходность', 'крах'],
+                                      ru: ['ужасно', 'кошмар', 'конец', 'катастрофа', 'не выносимо', 'все пропало', 'худшее', 'безысходность', 'конец', 'крах'],
                                       en: ['awful', 'nightmare', 'the end', 'disaster', 'all is lost', 'hopelessness', 'collapse']
                                   },
                                   weight: 1.5
@@ -977,7 +977,7 @@
                               overgeneralization: {
                                   enabled: true,
                                   markers: {
-                                      ru: ['как всегда', 'опять все по старому', 'у меня никогда не получается', 'все люди...'],
+                                      ru: ['как всегда', 'опять все по старому', 'вечно одно и то же', 'опять тоже самое', 'каждый раз', 'всегда все', 'никто никогда', 'у меня никогда не получается', 'все люди'],
                                       en: ['as always', 'again everything is the same', 'I never succeed', 'all people...']
                                   },
                                   weight: 1.0
@@ -985,7 +985,7 @@
                               mindReading: {
                                   enabled: true,
                                   markers: {
-                                      ru: ['он думает, что я', 'она наверняка считает', 'они меня ненавидят'],
+                                      ru: ['думает, что я', 'все думают', 'догадываются', 'догадывается', 'считает', 'считают', 'они наверняка', 'он наверняка', 'она наверняка'],
                                       en: ['he thinks that I', 'she surely thinks', 'they hate me']
                                   },
                                   weight: 1.3
@@ -8263,7 +8263,6 @@
 
                                         langMarkers.forEach(marker => {
                                                   const lowerMarker = marker.toLowerCase();
-                                                  // Если маркер содержит пробелы, ищем как фразу
                                                   if (lowerMarker.includes(' ')) {
                                                             const phraseRegex = new RegExp('(^|[\\s\\p{P}])' + this.escapeRegExp(lowerMarker) + '($|[\\s\\p{P}])', 'giu');
                                                             const matches = text.match(phraseRegex);
@@ -8707,7 +8706,8 @@
                                         empathy: [
                                                   { pattern: /понимаю (тебя|других)|чувствую твою|сопереживаю|эмпатия|ставлю себя на место|понимаю других|сочувствую|i understand you|i feel your|empathy|compassion/i, weight: 0.25 },
                                                   { pattern: /ты должно быть чувствуешь|тебе наверное трудно|i know how you feel/i, weight: 0.2 },
-                                                  { pattern: /поддерживаю|помогаю|support|help/i, weight: 0.15 }
+                                                  { pattern: /поддерживаю|помогаю|support|help/i, weight: 0.15 },
+                                                  { pattern: /понимаю (других|людей)|сочувствую|сопереживаю|чувствую чужие|эмпатия/i, weight: 0.25 }
                                         ],
                                         emotionalRegulation: [
                                                   { pattern: /контролирую (себя|эмоции)|управляю эмоциями|сохраняю спокойствие|держу себя в руках|дышу глубоко|считаю до десяти|успокаиваюсь|беру себя в руки|стараюсь не реагировать|сдерживаюсь|control (myself|my emotions)|manage emotions|stay calm|keep my cool|take a deep breath|count to ten|relax|calm down/i, weight: 0.2 },
@@ -8717,7 +8717,8 @@
                                         socialSkills: [
                                                   { pattern: /общаюсь|взаимодействую|нахожу общий язык|коммуникация|умею слушать|слышу других|разрешаю конфликты|иду на компромисс|поддерживаю разговор|i communicate|i interact|i get along|social skills|i know how to listen|i hear others|i resolve conflicts|i compromise|i keep a conversation/i, weight: 0.2 },
                                                   { pattern: /работа в команде|сотрудничество|teamwork|collaboration/i, weight: 0.25 },
-                                                  { pattern: /лидерство|убеждаю|веду за собой|leadership|persuade|lead/i, weight: 0.2 }
+                                                  { pattern: /лидерство|убеждаю|веду за собой|leadership|persuade|lead/i, weight: 0.2 },
+                                                  { pattern: /нахожу общий язык|общительный|коммуникабельный|легко знакомлюсь|дружелюбный/i, weight: 0.2 }
                                         ]
                               };
 
@@ -10599,6 +10600,7 @@
     
 
 })();
+
 
 
 
