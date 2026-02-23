@@ -3197,7 +3197,6 @@ renderResult(result) {
                               html += `</div>`;
     }
 	
-    const psychInsights = this.getSafe(result, 'psychologicalInsights', {});
     if (psychInsights && psychInsights.summary) {
                               const summaryParts = psychInsights.summary.split('. ').filter(part => part.trim().length > 0);
                               
@@ -4349,4 +4348,5 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
