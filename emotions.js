@@ -8569,7 +8569,8 @@
                                         emotionalRegulation: [
                                                   { pattern: /контролирую (себя|эмоции)|управляю эмоциями|сохраняю спокойствие|держу себя в руках|дышу глубоко|считаю до десяти|успокаиваюсь|беру себя в руки|стараюсь не реагировать|подавляю гнев|сдерживаюсь/gi, weight: 0.2 },
                                                   { pattern: /не даю эмоциям|не позволяю себе|i don't let emotions|i keep my emotions in check/gi, weight: 0.3 },
-                                                  { pattern: /медитирую|йога|дыхательные практики|relax|calm down/gi, weight: 0.25 }
+                                                  { pattern: /медитирую|йога|дыхательные практики|relax|calm down/gi, weight: 0.25 },
+                                                  { pattern: /control (myself|my emotions)|manage emotions|stay calm|keep (my|) cool|take a deep breath|count to ten|relax|calm down/gi, weight: 0.2 }
                                         ],
                                         socialSkills: [
                                                   { pattern: /общаюсь|взаимодействую|нахожу общий язык|коммуникация|i communicate|i interact|i get along|social skills/gi, weight: 0.2 },
@@ -10447,6 +10448,7 @@
     
 
 })();
+
 
 
 
