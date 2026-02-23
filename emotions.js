@@ -953,10 +953,10 @@
                           },
                           cognitiveBiases: {
                               dichotomous: {
-                                  markers: {
-                                      ru: ['всегда', 'никогда', 'все', 'никто', 'абсолютно', 'категорически', 'либо-либо'],
-                                      en: ['always', 'never', 'everyone', 'nobody', 'absolutely', 'categorically', 'either-or']
-                                  },
+                                markers: {
+                                    ru: ['всегда', 'никогда', 'все', 'никто', 'абсолютно', 'категорически', 'либо-либо', 'постоянно', 'всегда так', 'вечно'],
+                                    en: ['always', 'never', 'everyone', 'nobody', 'absolutely', 'categorically', 'either-or', 'constantly']
+                                },
                                   weight: 1.2
                               },
                               catastrophizing: {
@@ -999,11 +999,10 @@
                                   weight: 1.2
                               },
                               fortuneTelling: {
-                                  enabled: true,
-                                  markers: {
-                                      ru: ['наверняка не получится', 'точно провалюсь', 'они откажут', 'будет ужасно'],
-                                      en: ['it probably won\'t work', 'I\'ll definitely fail', 'they will refuse', 'it will be terrible']
-                                  },
+                                markers: {
+                                    ru: ['наверняка не получится', 'точно провалюсь', 'они откажут', 'будет ужасно', 'а вдруг', 'что если', 'предчувствую', 'боюсь, что'],
+                                    en: ['it probably won\'t work', 'I\'ll definitely fail', 'they will refuse', 'it will be terrible', 'what if', 'I\'m afraid that']
+                                },
                                   weight: 1.1
                               },
                               minimization: {
@@ -1042,8 +1041,8 @@
                               manipulative: {
                                   enabled: true,
                                   markers: {
-                                      ru: ['если бы ты меня любил', 'все так делают', 'ты же не хочешь, чтобы...', 'после всего, что я для тебя...'],
-                                      en: ['if you loved me', 'everyone does it', 'you don\'t want to...', 'after all I\'ve done for you...']
+                                      ru: ['если бы ты меня любил', 'все так делают', 'ты же не хочешь, чтобы...', 'после всего, что я для тебя...', 'ты мне должен', 'я на тебя рассчитывал', 'неужели тебе не жаль'],
+                                      en: ['if you loved me', 'everyone does it', 'you don\'t want to...', 'after all I\'ve done for you...', 'you owe me', 'I was counting on you']
                                   }
                               }
                           },
@@ -8568,9 +8567,9 @@
                                                   { pattern: /ты (должно быть|наверное) чувствуешь|you must feel|you probably feel/gi, weight: 0.2 }
                                         ],
                                         emotionalRegulation: [
-                                                  { pattern: /контролирую (себя|эмоции)|управляю эмоциями|сохраняю спокойствие|держу себя в руках|i control (myself|my emotions)|i manage my emotions|i stay calm|keep (my|) cool/gi, weight: 0.25 },
+                                                  { pattern: /контролирую (себя|эмоции)|управляю эмоциями|сохраняю спокойствие|держу себя в руках|дышу глубоко|считаю до десяти|успокаиваюсь|беру себя в руки|стараюсь не реагировать|подавляю гнев|сдерживаюсь/gi, weight: 0.2 },
                                                   { pattern: /не даю эмоциям|не позволяю себе|i don't let emotions|i keep my emotions in check/gi, weight: 0.3 },
-                                                  { pattern: /дышу глубоко|считаю до десяти|take a deep breath|count to ten/gi, weight: 0.2 }
+                                                  { pattern: /медитирую|йога|дыхательные практики|relax|calm down/gi, weight: 0.25 }
                                         ],
                                         socialSkills: [
                                                   { pattern: /общаюсь|взаимодействую|нахожу общий язык|коммуникация|i communicate|i interact|i get along|social skills/gi, weight: 0.2 },
@@ -10448,6 +10447,7 @@
     
 
 })();
+
 
 
 
