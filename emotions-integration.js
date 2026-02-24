@@ -3270,19 +3270,18 @@ renderResult(result) {
                                 <h3 title="${translations.insightApplicabilityHint}">${translations.insightApplicability}</h3>
                                 <div class="emotion-metric">
                                     <span class="label" title="${translations.applicabilityLevelHint}">${translations.applicabilityLevel}:</span>
-                                    <span class="value" title="${translations.applicabilityValueHint}">${this.translateValue(applicability.applicability, currentLang)}</span>
+                                    <span class="value">${this.translateValue(applicability.applicability, currentLang)}</span>
                                 </div>
                                 <div class="emotion-metric">
                                     <span class="label" title="${translations.applicabilityScoreHint}">${translations.applicabilityScore}:</span>
-                                    <span class="value" title="${(applicability.score * 100).toFixed(1)}%">${(applicability.score * 100).toFixed(1)}%</span>
+                                    <span class="value">${(applicability.score * 100).toFixed(1)}%</span>
                                 </div>`;
 
                         if (applicability.limitations && applicability.limitations.length > 0) {
                             html += `<div class="emotion-subsection"><h4 title="${translations.limitationsHint}">${translations.limitations}</h4>`;
                             applicability.limitations.forEach(lim => {
                                 html += `<div class="emotion-metric" style="border-left:2px solid #e74c3c;margin:5px 0;padding-left:8px;">
-                                            <span class="label" style="width:auto;flex:none;margin-right:10px;" title="${translations.limitationItemHint}">•</span>
-                                            <span class="value" style="text-align:left;flex:1;" title="${this.translateValue(lim, currentLang)}">${this.translateValue(lim, currentLang)}</span>
+                                            <span class="value" style="text-align:left;">${this.translateValue(lim, currentLang)}</span>
                                         </div>`;
                             });
                             html += `</div>`;
@@ -3299,8 +3298,7 @@ renderResult(result) {
                         psychInsights.summary.forEach(line => {
                             html += `
                                 <div class="emotion-metric" style="border-left:3px solid #9b59b6;padding-left:10px;margin:8px 0;">
-                                    <span class="label" style="width:auto;flex:none;margin-right:10px;" title="${translations.summaryItemHint}">📊</span>
-                                    <span class="value" style="display:block;text-align:left;font-size:0.95em;line-height:1.5;" title="${this.translateValue(line, currentLang)}">${this.translateValue(line, currentLang)}</span>
+                                    <span class="value" style="display:block;text-align:left;font-size:0.95em;line-height:1.5;">${this.translateValue(line, currentLang)}</span>
                                 </div>`;
                         });
                         
@@ -4467,6 +4465,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
