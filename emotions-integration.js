@@ -985,6 +985,7 @@ translateValue(value, lang) {
             'прошлое': 'past',
             'память': 'memory',
             'эхо': 'echo',
+			'Relational Patterns: need for understanding and support, глубина и искренность в отношениях, чувствительность к отвержению': 'Relational patterns: need for understanding and support, depth and sincerity in relationships, sensitivity to rejection',
             
             'устойчивый эмоциональный фон': 'stable emotional background',
             'широкий эмоциональный диапазон': 'wide emotional range',
@@ -1625,9 +1626,12 @@ async downloadSidebarAsImage() {
                 const label = element.querySelector('.label');
                 const value = element.querySelector('.value');
 
-                if (label) {
+                if (label && value) {
                     const labelRect = label.getBoundingClientRect();
+                    const valueRect = value.getBoundingClientRect();
                     const labelStyles = window.getComputedStyle(label);
+                    const valueStyles = window.getComputedStyle(value);
+
                     ctx.save();
                     ctx.font = `${labelStyles.fontSize} ${labelStyles.fontFamily}`;
                     ctx.fillStyle = labelStyles.color;
@@ -1636,31 +1640,21 @@ async downloadSidebarAsImage() {
                         labelRect.left - sidebarRect.left, 
                         labelRect.top - sidebarRect.top + labelRect.height/2);
                     ctx.restore();
-                }
 
-                if (value) {
-                    const valueRect = value.getBoundingClientRect();
-                    const valueStyles = window.getComputedStyle(value);
                     ctx.save();
                     ctx.font = `${valueStyles.fontSize} ${valueStyles.fontFamily}`;
                     ctx.fillStyle = valueStyles.color;
                     ctx.textBaseline = 'middle';
-                    
-                    const valueAlign = valueStyles.textAlign;
-                    if (valueAlign === 'right') {
-                        ctx.textAlign = 'right';
-                        ctx.fillText(value.textContent.trim(), 
-                            valueRect.left - sidebarRect.left + valueRect.width, 
-                            valueRect.top - sidebarRect.top + valueRect.height/2);
-                    } else {
-                        ctx.textAlign = 'left';
-                        ctx.fillText(value.textContent.trim(), 
-                            valueRect.left - sidebarRect.left, 
-                            valueRect.top - sidebarRect.top + valueRect.height/2);
-                    }
+                    ctx.textAlign = 'right';
+                    ctx.fillText(value.textContent.trim(), 
+                        valueRect.left - sidebarRect.left + valueRect.width, 
+                        valueRect.top - sidebarRect.top + valueRect.height/2);
                     ctx.restore();
                 }
-            } else if (element.childNodes.length === 1 && element.childNodes[0].nodeType === 3) {
+                return;
+            }
+
+            if (element.childNodes.length === 1 && element.childNodes[0].nodeType === 3) {
                 ctx.save();
                 ctx.font = `${styles.fontSize} ${styles.fontFamily}`;
                 ctx.fillStyle = styles.color;
@@ -4678,6 +4672,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
