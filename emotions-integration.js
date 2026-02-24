@@ -3267,21 +3267,22 @@ renderResult(result) {
                         
                         html += `
                             <div class="emotion-section">
-                                <h3 title="${this.translateValue('Ограничения анализа — факторы, снижающие точность', currentLang)}">${translations.insightApplicability}</h3>
+                                <h3 title="${translations.insightApplicabilityHint}">${translations.insightApplicability}</h3>
                                 <div class="emotion-metric">
-                                    <span class="label">${translations.applicabilityLevel}:</span>
-                                    <span class="value">${this.translateValue(applicability.applicability, currentLang)}</span>
+                                    <span class="label" title="${translations.applicabilityLevelHint}">${translations.applicabilityLevel}:</span>
+                                    <span class="value" title="${translations.applicabilityValueHint}">${this.translateValue(applicability.applicability, currentLang)}</span>
                                 </div>
                                 <div class="emotion-metric">
-                                    <span class="label">${translations.applicabilityScore}:</span>
-                                    <span class="value">${(applicability.score * 100).toFixed(1)}%</span>
+                                    <span class="label" title="${translations.applicabilityScoreHint}">${translations.applicabilityScore}:</span>
+                                    <span class="value" title="${(applicability.score * 100).toFixed(1)}%">${(applicability.score * 100).toFixed(1)}%</span>
                                 </div>`;
 
                         if (applicability.limitations && applicability.limitations.length > 0) {
-                            html += `<div class="emotion-subsection"><h4 title="${this.translateValue('Ограничения анализа — факторы, снижающие точность', currentLang)}">${translations.limitations}</h4>`;
+                            html += `<div class="emotion-subsection"><h4 title="${translations.limitationsHint}">${translations.limitations}</h4>`;
                             applicability.limitations.forEach(lim => {
                                 html += `<div class="emotion-metric" style="border-left:2px solid #e74c3c;margin:5px 0;padding-left:8px;">
-                                            <span class="value" style="text-align:left;">${this.translateValue(lim, currentLang)}</span>
+                                            <span class="label" style="width:auto;flex:none;margin-right:10px;" title="${translations.limitationItemHint}">•</span>
+                                            <span class="value" style="text-align:left;flex:1;" title="${this.translateValue(lim, currentLang)}">${this.translateValue(lim, currentLang)}</span>
                                         </div>`;
                             });
                             html += `</div>`;
@@ -3293,12 +3294,13 @@ renderResult(result) {
     if (psychInsights && psychInsights.summary && psychInsights.summary.length > 0) {
                         html += `
                             <div class="emotion-section">
-                                <h3 title="${this.translateValue('Сводка основных психологических характеристик текста', currentLang)}">${translations.psychologicalSummary}</h3>`;
+                                <h3 title="${translations.psychologicalSummaryHint}">${translations.psychologicalSummary}</h3>`;
                         
                         psychInsights.summary.forEach(line => {
                             html += `
                                 <div class="emotion-metric" style="border-left:3px solid #9b59b6;padding-left:10px;margin:8px 0;">
-                                    <span class="value" style="display:block;text-align:left;font-size:0.95em;line-height:1.5;">${this.translateValue(line, currentLang)}</span>
+                                    <span class="label" style="width:auto;flex:none;margin-right:10px;" title="${translations.summaryItemHint}">📊</span>
+                                    <span class="value" style="display:block;text-align:left;font-size:0.95em;line-height:1.5;" title="${this.translateValue(line, currentLang)}">${this.translateValue(line, currentLang)}</span>
                                 </div>`;
                         });
                         
@@ -3862,6 +3864,14 @@ getTranslations(lang) {
 										applicabilityLevelHint: 'Уровень достоверности и применимости результатов',
 										applicabilityScoreHint: 'Числовая оценка от 0 до 100%',
 										limitationsHint: 'Факторы, ограничивающие точность анализа',
+										insightApplicabilityHint: 'Ограничения анализа — факторы, снижающие точность',
+										applicabilityLevelHint: 'Уровень применимости результатов анализа',
+										applicabilityScoreHint: 'Числовая оценка от 0 до 100%',
+										applicabilityValueHint: 'Текущий уровень применимости',
+										limitationsHint: 'Факторы, снижающие точность анализа',
+										limitationItemHint: 'Ограничение',
+										psychologicalSummaryHint: 'Сводка основных психологических характеристик текста',
+										summaryItemHint: 'Психологическая характеристика',
 
             emotionalPatterns: 'Эмоциональные паттерны',
             emotionalPatternsDesc: 'Характерные эмоциональные паттерны',
@@ -4250,6 +4260,14 @@ getTranslations(lang) {
 										applicabilityLevelHint: 'Level of reliability and applicability of the results',
 										applicabilityScoreHint: 'Numerical score from 0 to 100%',
 										limitationsHint: 'Factors limiting the accuracy of the analysis',
+										insightApplicabilityHint: 'Analysis limitations — factors that reduce accuracy',
+										applicabilityLevelHint: 'Applicability level of analysis results',
+										applicabilityScoreHint: 'Numerical score from 0 to 100%',
+										applicabilityValueHint: 'Current applicability level',
+										limitationsHint: 'Factors reducing analysis accuracy',
+										limitationItemHint: 'Limitation',
+										psychologicalSummaryHint: 'Summary of the main psychological characteristics of the text',
+										summaryItemHint: 'Psychological characteristic',
             emotionalPatterns: 'Emotional Patterns',
             emotionalPatternsDesc: 'Characteristic emotional patterns',
             cognitiveStyle: 'Cognitive Style',
@@ -4449,6 +4467,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
