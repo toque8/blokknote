@@ -657,6 +657,7 @@ translateValue(value, lang) {
 							'reflective': 'рефлексивный',
 							'intuitive': 'интуитивный',
 							'practical': 'практический',
+							'Межличностные особенности: защитная позиция в отношениях, потребность в безопасных границах, настороженность в новых контактах': 'Межличностные особенности: защитная позиция в отношениях, потребность в безопасных границах, настороженность в новых контактах',
 							
 							'moderate emotional expressiveness': 'умеренная эмоциональная выразительность',
 							'balanced communication style': 'сбалансированный стиль общения',
@@ -769,6 +770,7 @@ translateValue(value, lang) {
 										'высокая эмоциональная изменчивость': 'high emotional variability',
 										'ограниченное психологическое содержание': 'limited psychological content',
 										'стандартные ограничения текстового анализа': 'standard limitations of text analysis',
+										'Межличностные особенности: защитная позиция в отношениях, потребность в безопасных границах, настороженность в новых контактах': 'Relational patterns: defensive position in relationships, need for safe boundaries, caution in new contacts',
 										
 										'рефлексивный': 'reflective',
 										'аналитический': 'analytical',
@@ -4483,6 +4485,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
