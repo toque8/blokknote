@@ -658,7 +658,10 @@ translateValue(value, lang) {
 							'intuitive': 'интуитивный',
 							'practical': 'практический',
 							'Межличностные особенности: защитная позиция в отношениях, потребность в безопасных границах, настороженность в новых контактах': 'Межличностные особенности: защитная позиция в отношениях, потребность в безопасных границах, настороженность в новых контактах',
-							
+							'Межличностные особенности: потребность в понимании и поддержке, глубина и искренность в отношениях, чувствительность к отвержению': 'Межличностные особенности: потребность в понимании и поддержке, глубина и искренность в отношениях, чувствительность к отвержению',
+							'Межличностные особенности: склонность к позитивным взаимодействиям, открытость в общении, эмоциональная теплота в отношениях': 'Межличностные особенности: склонность к позитивным взаимодействиям, открытость в общении, эмоциональная теплота в отношениях',
+							'Межличностные особенности: защитная позиция в отношениях, потребность в безопасных границах, настороженность в новых контактах': 'Межличностные особенности: защитная позиция в отношениях, потребность в безопасных границах, настороженность в новых контактах',
+							'Межличностные особенности: способность отстаивать свои интересы, склонность к уступчивости, конфликтность в стрессовых ситуациях': 'Межличностные особенности: способность отстаивать свои интересы, склонность к уступчивости, конфликтность в стрессовых ситуациях',
 							'moderate emotional expressiveness': 'умеренная эмоциональная выразительность',
 							'balanced communication style': 'сбалансированный стиль общения',
 							'harmonization of emotional sphere': 'гармонизация эмоциональной сферы',
@@ -830,6 +833,11 @@ translateValue(value, lang) {
 										'Межличностные особенности: сбалансированный стиль общения': 'Relational patterns: balanced communication style',
 										'Направления роста: гармонизация эмоциональной сферы': 'Growth paths: harmonization of emotional sphere',
 										'преимущественно': 'predominantly',
+			'Межличностные особенности: потребность в понимании и поддержке, глубина и искренность в отношениях, чувствительность к отвержению': 'Relational patterns: need for understanding and support, depth and sincerity in relationships, sensitivity to rejection',
+			'Межличностные особенности: склонность к позитивным взаимодействиям, открытость в общении, эмоциональная теплота в отношениях': 'Relational patterns: tendency to positive interactions, openness in communication, emotional warmth in relationships',
+			'Межличностные особенности: защитная позиция в отношениях, потребность в безопасных границах, настороженность в новых контактах': 'Relational patterns: defensive position in relationships, need for safe boundaries, caution in new contacts',
+			'Межличностные особенности: способность отстаивать свои интересы, склонность к уступчивости, конфликтность в стрессовых ситуациях': 'Relational patterns: ability to assert interests, tendency to compliance, conflict in stressful situations',
+			'Межличностные особенности: сбалансированный стиль общения': 'Relational patterns: balanced communication style',
 			'Эмоциональные паттерны: умеренная эмоциональная выразительность': 'Emotional patterns: moderate emotional expressiveness',
 			'Эмоциональные паттерны: moderate emotional expressiveness': 'Emotional patterns: moderate emotional expressiveness',
 			'Когнитивный стиль: преимущественно аналитический': 'Cognitive style: predominantly analytical',
@@ -1569,55 +1577,49 @@ async downloadSidebarAsImage() {
 
     const lang = this.getCurrentLanguage();
     const sidebar = this.sidebar;
-    const content = document.getElementById('emotions-content');
-    if (!content) return;
+    const originalOverflow = sidebar.style.overflow;
+    const originalHeight = sidebar.style.height;
 
     try {
-        const sidebarRect = sidebar.getBoundingClientRect();
+        sidebar.style.overflow = 'visible';
+        sidebar.style.height = 'auto';
+
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        const fullHeight = sidebar.scrollHeight;
+        const fullWidth = sidebar.offsetWidth;
 
         const canvas = document.createElement('canvas');
-        canvas.width = sidebarRect.width;
-        canvas.height = sidebarRect.height;
+        canvas.width = fullWidth;
+        canvas.height = fullHeight;
 
         const ctx = canvas.getContext('2d');
 
         ctx.fillStyle = '#1e1e1e';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, fullWidth, fullHeight);
 
-        const drawElement = (element) => {
-            if (!element || element.id === 'emotions-download-btn' || 
-                element.classList.contains('close-btn')) return;
+        const drawElement = (element, x, y) => {
+            if (!element || element.id === 'emotions-download-btn') return;
 
             const rect = element.getBoundingClientRect();
-            
-            if (rect.width === 0 || rect.height === 0) return;
-            if (rect.bottom < sidebarRect.top || rect.top > sidebarRect.bottom) return;
+            const sidebarRect = sidebar.getBoundingClientRect();
 
-            const x = rect.left - sidebarRect.left;
-            const y = rect.top - sidebarRect.top;
+            const elementX = rect.left - sidebarRect.left;
+            const elementY = rect.top - sidebarRect.top;
 
             const styles = window.getComputedStyle(element);
 
-            if (styles.backgroundColor !== 'rgba(0, 0, 0, 0)') {
+            if (styles.backgroundColor && styles.backgroundColor !== 'rgba(0, 0, 0, 0)') {
                 ctx.fillStyle = styles.backgroundColor;
-                ctx.fillRect(x, y, rect.width, rect.height);
-            }
-
-            if (styles.borderTopWidth !== '0px') {
-                ctx.fillStyle = styles.borderTopColor;
-                ctx.fillRect(x, y, rect.width, parseInt(styles.borderTopWidth));
-            }
-            if (styles.borderLeftWidth !== '0px') {
-                ctx.fillStyle = styles.borderLeftColor;
-                ctx.fillRect(x, y, parseInt(styles.borderLeftWidth), rect.height);
+                ctx.fillRect(elementX, elementY, rect.width, rect.height);
             }
 
             if (element.childNodes.length === 1 && element.childNodes[0].nodeType === 3) {
                 ctx.save();
                 ctx.font = `${styles.fontSize} ${styles.fontFamily}`;
                 ctx.fillStyle = styles.color;
-                ctx.textBaseline = 'middle';
-                ctx.fillText(element.textContent.trim(), x + 5, y + rect.height/2);
+                ctx.textBaseline = 'top';
+                ctx.fillText(element.textContent.trim(), elementX + 5, elementY + 5);
                 ctx.restore();
             }
 
@@ -1630,10 +1632,10 @@ async downloadSidebarAsImage() {
                     ctx.save();
                     ctx.font = `${window.getComputedStyle(label).fontSize} ${window.getComputedStyle(label).fontFamily}`;
                     ctx.fillStyle = window.getComputedStyle(label).color;
-                    ctx.textBaseline = 'middle';
+                    ctx.textBaseline = 'top';
                     ctx.fillText(label.textContent.trim(), 
                         labelRect.left - sidebarRect.left, 
-                        labelRect.top - sidebarRect.top + labelRect.height/2);
+                        labelRect.top - sidebarRect.top);
                     ctx.restore();
                 }
 
@@ -1642,29 +1644,29 @@ async downloadSidebarAsImage() {
                     ctx.save();
                     ctx.font = `${window.getComputedStyle(value).fontSize} ${window.getComputedStyle(value).fontFamily}`;
                     ctx.fillStyle = window.getComputedStyle(value).color;
-                    ctx.textBaseline = 'middle';
+                    ctx.textBaseline = 'top';
                     ctx.textAlign = 'right';
                     ctx.fillText(value.textContent.trim(), 
                         valueRect.left - sidebarRect.left + valueRect.width, 
-                        valueRect.top - sidebarRect.top + valueRect.height/2);
+                        valueRect.top - sidebarRect.top);
                     ctx.restore();
                 }
             }
 
-            if (element.tagName === 'H2' || element.tagName === 'H3' || element.tagName === 'H4') {
+            if (element.tagName === 'H2' || element.tagName === 'H3') {
                 ctx.save();
                 ctx.font = `${styles.fontSize} ${styles.fontFamily}`;
                 ctx.fillStyle = styles.color;
-                ctx.textBaseline = 'middle';
-                ctx.fillText(element.textContent.trim(), x + 10, y + rect.height/2);
+                ctx.textBaseline = 'top';
+                ctx.fillText(element.textContent.trim(), elementX + 10, elementY + 5);
                 ctx.restore();
 
                 if (element.tagName === 'H2') {
                     ctx.strokeStyle = '#333';
                     ctx.lineWidth = 1;
                     ctx.beginPath();
-                    ctx.moveTo(x + 10, y + rect.height);
-                    ctx.lineTo(x + rect.width - 10, y + rect.height);
+                    ctx.moveTo(elementX + 10, elementY + rect.height - 2);
+                    ctx.lineTo(elementX + rect.width - 10, elementY + rect.height - 2);
                     ctx.stroke();
                 }
             }
@@ -1682,28 +1684,22 @@ async downloadSidebarAsImage() {
                     );
                 });
             }
-
-            for (let child of element.children) {
-                drawElement(child);
-            }
         };
 
-        drawElement(sidebar);
+        const allElements = sidebar.querySelectorAll('*');
+        allElements.forEach(el => drawElement(el));
 
         const link = document.createElement('a');
-        const timestamp = new Date().toISOString()
-            .slice(0, 19)
-            .replace(/:/g, '-')
-            .replace('T', '_');
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
         link.download = `emotions_${timestamp}.png`;
         link.href = canvas.toDataURL('image/png');
-
-        document.body.appendChild(link);
         link.click();
-        document.body.removeChild(link);
 
     } catch (error) {
-        console.error('Error creating image:', error);
+        console.error('Error:', error);
+    } finally {
+        sidebar.style.overflow = originalOverflow;
+        sidebar.style.height = originalHeight;
     }
 }
 
@@ -4666,6 +4662,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
