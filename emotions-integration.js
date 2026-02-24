@@ -700,6 +700,29 @@ translateValue(value, lang) {
                                         'Довольное спокойствие': 'Content Calm',
                                         'Сбалансированное состояние': 'Balanced State',
                                         'Отстранённое наблюдение': 'Detached Observation',
+
+										'высокая': 'high',
+										'умеренная': 'moderate',
+										'ограниченная': 'limited',
+										
+										'ограниченная надёжность анализа': 'limited analysis reliability',
+										'высокая эмоциональная изменчивость': 'high emotional variability',
+										'ограниченное психологическое содержание': 'limited psychological content',
+										'стандартные ограничения текстового анализа': 'standard limitations of text analysis',
+										
+										'Эмоциональные паттерны': 'Emotional patterns',
+										'Когнитивный стиль': 'Cognitive style',
+										'Межличностные особенности': 'Relational patterns',
+										'Направления роста': 'Growth paths',
+										'преимущественно': 'predominantly',
+										
+										'умеренная эмоциональная выразительность': 'moderate emotional expressiveness',
+										'сбалансированный стиль общения': 'balanced communication style',
+										'гармонизация эмоциональной сферы': 'harmonization of emotional sphere',
+										'аналитический': 'analytical',
+										'рефлексивный': 'reflective',
+										'интуитивный': 'intuitive',
+										'практический': 'practical',
 			'Коэффициент Хемингуэя': 'Hemingway Coefficient',
             'Эффект тишины': 'Silence Effect',
             'Индекс погоды': 'Weather Index',
@@ -3146,13 +3169,14 @@ renderResult(result) {
 
     if (psychInsights && psychInsights.applicability) {
                         const applicability = psychInsights.applicability;
+                        const currentLang = this.getCurrentLanguage();
                         
                         html += `
                             <div class="emotion-section">
                                 <h3>${translations.insightApplicability}</h3>
                                 <div class="emotion-metric">
                                     <span class="label">${translations.applicabilityLevel}:</span>
-                                    <span class="value">${applicability.applicability}</span>
+                                    <span class="value">${this.translateValue(applicability.applicability, currentLang)}</span>
                                 </div>
                                 <div class="emotion-metric">
                                     <span class="label">${translations.applicabilityScore}:</span>
@@ -3163,7 +3187,7 @@ renderResult(result) {
                             html += `<div class="emotion-subsection"><h4>${translations.limitations}</h4>`;
                             applicability.limitations.forEach(lim => {
                                 html += `<div class="emotion-metric" style="border-left:2px solid #e74c3c;margin:5px 0;padding-left:8px;">
-                                            <span class="value" style="text-align:left;">${lim}</span>
+                                            <span class="value" style="text-align:left;">${this.translateValue(lim, currentLang)}</span>
                                         </div>`;
                             });
                             html += `</div>`;
@@ -3173,14 +3197,20 @@ renderResult(result) {
     }
 
     if (psychInsights && psychInsights.summary && psychInsights.summary.length > 0) {
+                        const currentLang = this.getCurrentLanguage();
+                        
                         html += `
                             <div class="emotion-section">
                                 <h3>${translations.psychologicalSummary}</h3>`;
                         
                         psychInsights.summary.forEach(line => {
+                            // Разбиваем строку на части для перевода отдельных слов
+                            const translatedLine = line.replace(/(преимущественно|аналитический|рефлексивный|интуитивный|практический|умеренная эмоциональная выразительность|сбалансированный стиль общения|гармонизация эмоциональной сферы)/g, 
+                                match => this.translateValue(match, currentLang));
+                            
                             html += `
                                 <div class="emotion-metric" style="border-left:3px solid #9b59b6;padding-left:10px;margin:8px 0;">
-                                    <span class="value" style="display:block;text-align:left;font-size:0.95em;line-height:1.5;">${line}</span>
+                                    <span class="value" style="display:block;text-align:left;font-size:0.95em;line-height:1.5;">${translatedLine}</span>
                                 </div>`;
                         });
                         
@@ -4320,6 +4350,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
