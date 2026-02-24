@@ -657,12 +657,17 @@ translateValue(value, lang) {
 							'reflective': 'рефлексивный',
 							'intuitive': 'интуитивный',
 							'practical': 'практический',
+							'depth in relationships': 'глубина в отношениях',
+							'sensitivity to rejection': 'чувствительность к отвержению',
+							'sincerity in relationships': 'искренность в отношениях',
 							'Межличностные особенности: защитная позиция в отношениях, потребность в безопасных границах, настороженность в новых контактах': 'Межличностные особенности: защитная позиция в отношениях, потребность в безопасных границах, настороженность в новых контактах',
 							'Межличностные особенности: потребность в понимании и поддержке, глубина и искренность в отношениях, чувствительность к отвержению': 'Межличностные особенности: потребность в понимании и поддержке, глубина и искренность в отношениях, чувствительность к отвержению',
 							'Межличностные особенности: склонность к позитивным взаимодействиям, открытость в общении, эмоциональная теплота в отношениях': 'Межличностные особенности: склонность к позитивным взаимодействиям, открытость в общении, эмоциональная теплота в отношениях',
 							'Межличностные особенности: защитная позиция в отношениях, потребность в безопасных границах, настороженность в новых контактах': 'Межличностные особенности: защитная позиция в отношениях, потребность в безопасных границах, настороженность в новых контактах',
 							'Межличностные особенности: способность отстаивать свои интересы, склонность к уступчивости, конфликтность в стрессовых ситуациях': 'Межличностные особенности: способность отстаивать свои интересы, склонность к уступчивости, конфликтность в стрессовых ситуациях',
 							'moderate emotional expressiveness': 'умеренная эмоциональная выразительность',
+							'Relational patterns: need for understanding and support, depth and sincerity in relationships, sensitivity to rejection': 'Межличностные особенности: потребность в понимании и поддержке, глубина и искренность в отношениях, чувствительность к отвержению',
+
 							'balanced communication style': 'сбалансированный стиль общения',
 							'harmonization of emotional sphere': 'гармонизация эмоциональной сферы',
 							'predominantly': 'преимущественно',
@@ -833,6 +838,8 @@ translateValue(value, lang) {
 										'Межличностные особенности: сбалансированный стиль общения': 'Relational patterns: balanced communication style',
 										'Направления роста: гармонизация эмоциональной сферы': 'Growth paths: harmonization of emotional sphere',
 										'преимущественно': 'predominantly',
+			'Межличностные особенности: потребность в понимании и поддержке, глубина и искренность в отношениях, чувствительность к отвержению': 'Relational patterns: need for understanding and support, depth and sincerity in relationships, sensitivity to rejection',
+			'искренность в отношениях': 'sincerity in relationships',
 			'Межличностные особенности: потребность в понимании и поддержке, глубина и искренность в отношениях, чувствительность к отвержению': 'Relational patterns: need for understanding and support, depth and sincerity in relationships, sensitivity to rejection',
 			'Межличностные особенности: склонность к позитивным взаимодействиям, открытость в общении, эмоциональная теплота в отношениях': 'Relational patterns: tendency to positive interactions, openness in communication, emotional warmth in relationships',
 			'Межличностные особенности: защитная позиция в отношениях, потребность в безопасных границах, настороженность в новых контактах': 'Relational patterns: defensive position in relationships, need for safe boundaries, caution in new contacts',
@@ -1614,43 +1621,52 @@ async downloadSidebarAsImage() {
                 ctx.fillRect(elementX, elementY, rect.width, rect.height);
             }
 
-            if (element.childNodes.length === 1 && element.childNodes[0].nodeType === 3) {
-                ctx.save();
-                ctx.font = `${styles.fontSize} ${styles.fontFamily}`;
-                ctx.fillStyle = styles.color;
-                ctx.textBaseline = 'top';
-                ctx.fillText(element.textContent.trim(), elementX + 5, elementY + 5);
-                ctx.restore();
-            }
-
             if (element.classList.contains('emotion-metric')) {
                 const label = element.querySelector('.label');
                 const value = element.querySelector('.value');
 
                 if (label) {
                     const labelRect = label.getBoundingClientRect();
+                    const labelStyles = window.getComputedStyle(label);
                     ctx.save();
-                    ctx.font = `${window.getComputedStyle(label).fontSize} ${window.getComputedStyle(label).fontFamily}`;
-                    ctx.fillStyle = window.getComputedStyle(label).color;
-                    ctx.textBaseline = 'top';
+                    ctx.font = `${labelStyles.fontSize} ${labelStyles.fontFamily}`;
+                    ctx.fillStyle = labelStyles.color;
+                    ctx.textBaseline = 'middle';
                     ctx.fillText(label.textContent.trim(), 
                         labelRect.left - sidebarRect.left, 
-                        labelRect.top - sidebarRect.top);
+                        labelRect.top - sidebarRect.top + labelRect.height/2);
                     ctx.restore();
                 }
 
                 if (value) {
                     const valueRect = value.getBoundingClientRect();
+                    const valueStyles = window.getComputedStyle(value);
                     ctx.save();
-                    ctx.font = `${window.getComputedStyle(value).fontSize} ${window.getComputedStyle(value).fontFamily}`;
-                    ctx.fillStyle = window.getComputedStyle(value).color;
-                    ctx.textBaseline = 'top';
-                    ctx.textAlign = 'right';
-                    ctx.fillText(value.textContent.trim(), 
-                        valueRect.left - sidebarRect.left + valueRect.width, 
-                        valueRect.top - sidebarRect.top);
+                    ctx.font = `${valueStyles.fontSize} ${valueStyles.fontFamily}`;
+                    ctx.fillStyle = valueStyles.color;
+                    ctx.textBaseline = 'middle';
+                    
+                    const valueAlign = valueStyles.textAlign;
+                    if (valueAlign === 'right') {
+                        ctx.textAlign = 'right';
+                        ctx.fillText(value.textContent.trim(), 
+                            valueRect.left - sidebarRect.left + valueRect.width, 
+                            valueRect.top - sidebarRect.top + valueRect.height/2);
+                    } else {
+                        ctx.textAlign = 'left';
+                        ctx.fillText(value.textContent.trim(), 
+                            valueRect.left - sidebarRect.left, 
+                            valueRect.top - sidebarRect.top + valueRect.height/2);
+                    }
                     ctx.restore();
                 }
+            } else if (element.childNodes.length === 1 && element.childNodes[0].nodeType === 3) {
+                ctx.save();
+                ctx.font = `${styles.fontSize} ${styles.fontFamily}`;
+                ctx.fillStyle = styles.color;
+                ctx.textBaseline = 'top';
+                ctx.fillText(element.textContent.trim(), elementX + 5, elementY + 5);
+                ctx.restore();
             }
 
             if (element.tagName === 'H2' || element.tagName === 'H3') {
@@ -4662,6 +4678,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
