@@ -660,7 +660,9 @@ translateValue(value, lang) {
 							'harmonization of emotional sphere': 'гармонизация эмоциональной сферы',
 							'predominantly': 'преимущественно',
 							'Ограничения анализа — факторы, снижающие точность': 'Ограничения анализа — факторы, снижающие точность',
-							'Сводка основных психологических характеристик текста': 'Сводка основных психологических характеристик текста'
+							'Сводка основных психологических характеристик текста': 'Сводка основных психологических характеристик текста',
+							'Фактор, снижающий точность анализа': 'Фактор, снижающий точность анализа',
+							'Психологическая характеристика': 'Психологическая характеристика'
         };
         return translations[value] || value;
     } else if (lang === 'en') {
@@ -783,6 +785,8 @@ translateValue(value, lang) {
 										'Межличностные особенности: balanced communication style': 'Relational patterns: balanced communication style',
 										'Направления роста: гармонизация эмоциональной сферы': 'Growth paths: harmonization of emotional sphere',
 										'Направления роста: harmonization of emotional sphere': 'Growth paths: harmonization of emotional sphere',
+										'Фактор, снижающий точность анализа': 'Factor reducing analysis accuracy',
+										'Психологическая характеристика': 'Psychological characteristic',
 
 										'высокая': 'high',
 										'умеренная': 'moderate',
@@ -3267,7 +3271,7 @@ renderResult(result) {
                         
                         html += `
                             <div class="emotion-section">
-                                <h3 title="${translations.insightApplicabilityHint}">${translations.insightApplicability}</h3>
+                                <h3>${translations.insightApplicability}</h3>
                                 <div class="emotion-metric">
                                     <span class="label" title="${translations.applicabilityLevelHint}">${translations.applicabilityLevel}:</span>
                                     <span class="value">${this.translateValue(applicability.applicability, currentLang)}</span>
@@ -3278,10 +3282,10 @@ renderResult(result) {
                                 </div>`;
 
                         if (applicability.limitations && applicability.limitations.length > 0) {
-                            html += `<div class="emotion-subsection"><h4 title="${translations.limitationsHint}">${translations.limitations}</h4>`;
+                            html += `<div class="emotion-subsection"><h4>${translations.limitations}</h4>`;
                             applicability.limitations.forEach(lim => {
                                 html += `<div class="emotion-metric" style="border-left:2px solid #e74c3c;margin:5px 0;padding-left:8px;">
-                                            <span class="value" style="text-align:left;">${this.translateValue(lim, currentLang)}</span>
+                                            <span class="value" style="text-align:left;" title="${this.translateValue('Фактор, снижающий точность анализа', currentLang)}">${this.translateValue(lim, currentLang)}</span>
                                         </div>`;
                             });
                             html += `</div>`;
@@ -3293,12 +3297,12 @@ renderResult(result) {
     if (psychInsights && psychInsights.summary && psychInsights.summary.length > 0) {
                         html += `
                             <div class="emotion-section">
-                                <h3 title="${translations.psychologicalSummaryHint}">${translations.psychologicalSummary}</h3>`;
+                                <h3>${translations.psychologicalSummary}</h3>`;
                         
                         psychInsights.summary.forEach(line => {
                             html += `
                                 <div class="emotion-metric" style="border-left:3px solid #9b59b6;padding-left:10px;margin:8px 0;">
-                                    <span class="value" style="display:block;text-align:left;font-size:0.95em;line-height:1.5;">${this.translateValue(line, currentLang)}</span>
+                                    <span class="value" style="display:block;text-align:left;font-size:0.95em;line-height:1.5;" title="${this.translateValue('Психологическая характеристика', currentLang)}">${this.translateValue(line, currentLang)}</span>
                                 </div>`;
                         });
                         
@@ -4465,6 +4469,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
