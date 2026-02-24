@@ -669,6 +669,7 @@ translateValue(value, lang) {
 							'Relational patterns: need for understanding and support, depth and sincerity in relationships, sensitivity to rejection': 'Межличностные особенности: потребность в понимании и поддержке, глубина и искренность в отношениях, чувствительность к отвержению',
 
 							'balanced communication style': 'сбалансированный стиль общения',
+							'depth and sincerity in relationships': 'глубина и искренность в отношениях',
 							'harmonization of emotional sphere': 'гармонизация эмоциональной сферы',
 							'predominantly': 'преимущественно',
 							'Ограничения анализа — факторы, снижающие точность': 'Ограничения анализа — факторы, снижающие точность',
@@ -1128,6 +1129,7 @@ translateValue(value, lang) {
                             'Сократ': 'Socrates',
                             'Вергилий': 'Virgil',
                             'Овидий': 'Ovid',
+							'глубина и искренность в отношениях': 'depth and sincerity in relationships',
 							'Relational Patterns: need for understanding and support, глубина и искренность в отношениях, чувствительность к отвержению': 'Relational patterns: need for understanding and support, depth and sincerity in relationships, sensitivity to rejection'
         };
         return translations[value] || value;
@@ -1588,9 +1590,6 @@ async downloadSidebarAsImage() {
     if (!this.sidebar) return;
 
     const sidebar = this.sidebar;
-    const content = document.getElementById('emotions-content');
-    if (!content) return;
-
     const originalOverflow = sidebar.style.overflow;
     const originalHeight = sidebar.style.height;
 
@@ -1598,7 +1597,7 @@ async downloadSidebarAsImage() {
         sidebar.style.overflow = 'visible';
         sidebar.style.height = 'auto';
 
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 200));
 
         const fullHeight = sidebar.scrollHeight;
         const fullWidth = sidebar.offsetWidth;
@@ -1612,67 +1611,64 @@ async downloadSidebarAsImage() {
         ctx.fillStyle = '#1e1e1e';
         ctx.fillRect(0, 0, fullWidth, fullHeight);
 
-        const elements = sidebar.querySelectorAll('h2, h3, h4, .emotion-metric, .color-preview div, .emotion-section');
-        
-        elements.forEach(el => {
-            if (el.id === 'emotions-download-btn') return;
-            if (el.classList.contains('close-btn')) return;
+        const colorPreview = sidebar.querySelector('.color-preview');
+        if (colorPreview) {
+            const boxes = colorPreview.querySelectorAll('div');
+            boxes.forEach(box => {
+                const boxRect = box.getBoundingClientRect();
+                const sidebarRect = sidebar.getBoundingClientRect();
+                ctx.fillStyle = window.getComputedStyle(box).backgroundColor;
+                ctx.fillRect(
+                    boxRect.left - sidebarRect.left,
+                    boxRect.top - sidebarRect.top,
+                    boxRect.width,
+                    boxRect.height
+                );
+            });
+        }
+
+        const allElements = sidebar.querySelectorAll('*');
+        allElements.forEach(el => {
+            if (el.id === 'emotions-download-btn' || el.classList.contains('close-btn')) return;
+            if (el.children.length > 0) return;
+
+            const text = el.textContent?.trim();
+            if (!text) return;
 
             const rect = el.getBoundingClientRect();
             const sidebarRect = sidebar.getBoundingClientRect();
-            
             const x = rect.left - sidebarRect.left;
             const y = rect.top - sidebarRect.top;
 
             if (x < 0 || y < 0 || x > fullWidth || y > fullHeight) return;
 
-            const styles = window.getComputedStyle(el);
+            ctx.save();
+            ctx.textBaseline = 'middle';
 
             if (el.tagName === 'H2') {
-                ctx.fillStyle = '#ffffff';
                 ctx.font = 'bold 16px Consolas, Monaco, monospace';
-                ctx.fillText(el.textContent, x + 10, y + 20);
-                
-                ctx.strokeStyle = '#333';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(x + 10, y + 35);
-                ctx.lineTo(x + rect.width - 10, y + 35);
-                ctx.stroke();
-            } 
-            else if (el.tagName === 'H3') {
-                ctx.fillStyle = '#cccccc';
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(text, x + 10, y + rect.height/2);
+            } else if (el.tagName === 'H3') {
                 ctx.font = 'bold 14px Consolas, Monaco, monospace';
-                ctx.fillText(el.textContent, x + 10, y + 20);
+                ctx.fillStyle = '#cccccc';
+                ctx.fillText(text, x + 10, y + rect.height/2);
+            } else if (el.classList.contains('label')) {
+                ctx.font = '14px Consolas, Monaco, monospace';
+                ctx.fillStyle = '#aaaaaa';
+                ctx.fillText(text, x + 10, y + rect.height/2);
+            } else if (el.classList.contains('value')) {
+                ctx.font = '14px Consolas, Monaco, monospace';
+                ctx.fillStyle = '#ffffff';
+                ctx.textAlign = 'right';
+                const textWidth = ctx.measureText(text).width;
+                ctx.fillText(text, x + rect.width - 10, y + rect.height/2);
+            } else {
+                ctx.font = '14px Consolas, Monaco, monospace';
+                ctx.fillStyle = '#e0e0e0';
+                ctx.fillText(text, x + 5, y + rect.height/2);
             }
-            else if (el.classList.contains('emotion-metric')) {
-                const label = el.querySelector('.label');
-                const value = el.querySelector('.value');
-                
-                if (label && value) {
-                    ctx.fillStyle = styles.color;
-                    ctx.font = '14px Consolas, Monaco, monospace';
-                    ctx.fillText(label.textContent, x + 10, y + 18);
-                    
-                    ctx.fillStyle = '#ffffff';
-                    ctx.textAlign = 'right';
-                    ctx.fillText(value.textContent, x + rect.width - 10, y + 18);
-                    ctx.textAlign = 'left';
-                }
-            }
-            else if (el.classList.contains('color-preview')) {
-                const boxes = el.querySelectorAll('div');
-                boxes.forEach((box, i) => {
-                    const boxRect = box.getBoundingClientRect();
-                    ctx.fillStyle = window.getComputedStyle(box).backgroundColor;
-                    ctx.fillRect(
-                        boxRect.left - sidebarRect.left,
-                        boxRect.top - sidebarRect.top,
-                        boxRect.width,
-                        boxRect.height
-                    );
-                });
-            }
+            ctx.restore();
         });
 
         const link = document.createElement('a');
@@ -4648,6 +4644,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
