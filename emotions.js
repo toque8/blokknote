@@ -10754,25 +10754,41 @@
         
         createPsychologicalSummary(insights) {
                               const summary = [];
-                              const uiLang = 'en'; 
                               
                               if (insights.emotionalPatterns) {
-                                        summary.push(`Emotional patterns: ${insights.emotionalPatterns.join(', ')}`);
+                                        if (this.language === 'ru') {
+                                                  summary.push(`Эмоциональные паттерны: ${insights.emotionalPatterns.join(', ')}`);
+                                        } else {
+                                                  summary.push(`Emotional patterns: ${insights.emotionalPatterns.join(', ')}`);
+                                        }
                               }
                               
                               if (insights.cognitiveStyle) {
-                                        summary.push(`Cognitive style: predominantly ${insights.cognitiveStyle.style}`);
+                                        const styleText = insights.cognitiveStyle.style;
+                                        if (this.language === 'ru') {
+                                                  summary.push(`Когнитивный стиль: преимущественно ${styleText}`);
+                                        } else {
+                                                  summary.push(`Cognitive style: predominantly ${styleText}`);
+                                        }
                               }
                               
                               if (insights.relationalPatterns) {
-                                        summary.push(`Relational patterns: ${insights.relationalPatterns.join(', ')}`);
+                                        if (this.language === 'ru') {
+                                                  summary.push(`Межличностные особенности: ${insights.relationalPatterns.join(', ')}`);
+                                        } else {
+                                                  summary.push(`Relational patterns: ${insights.relationalPatterns.join(', ')}`);
+                                        }
                               }
                               
                               if (insights.personalGrowth && insights.personalGrowth.length > 0) {
-                                        summary.push(`Growth paths: ${insights.personalGrowth.join(', ')}`);
+                                        if (this.language === 'ru') {
+                                                  summary.push(`Направления роста: ${insights.personalGrowth.join(', ')}`);
+                                        } else {
+                                                  summary.push(`Growth paths: ${insights.personalGrowth.join(', ')}`);
+                                        }
                               }
                               
-                              return summary; 
+                              return summary;
         }
         
         assessInsightApplicability(integratedResult) {
@@ -10785,9 +10801,15 @@
                               const score = applicabilityFactors.reduce((a, b) => a + b, 0) / applicabilityFactors.length;
                               
                               let applicabilityText;
-                              if (score > 0.7) applicabilityText = 'high';
-                              else if (score > 0.4) applicabilityText = 'moderate';
-                              else applicabilityText = 'limited';
+                              if (this.language === 'ru') {
+                                        if (score > 0.7) applicabilityText = 'высокая';
+                                        else if (score > 0.4) applicabilityText = 'умеренная';
+                                        else applicabilityText = 'ограниченная';
+                              } else {
+                                        if (score > 0.7) applicabilityText = 'high';
+                                        else if (score > 0.4) applicabilityText = 'moderate';
+                                        else applicabilityText = 'limited';
+                              }
                               
                               return {
                                         score: score,
@@ -10800,19 +10822,27 @@
                               const limitations = [];
                               
                               if (integratedResult.confidenceScore < 0.5) {
-                                        limitations.push('limited analysis reliability');
+                                        limitations.push(this.language === 'ru' ? 
+                                                  'ограниченная надёжность анализа' : 
+                                                  'limited analysis reliability');
                               }
                               
                               if (integratedResult.consistencyScore < 0.4) {
-                                        limitations.push('high emotional variability');
+                                        limitations.push(this.language === 'ru' ? 
+                                                  'высокая эмоциональная изменчивость' : 
+                                                  'high emotional variability');
                               }
                               
                               if (integratedResult.dimensionScores.psychological < 0.3) {
-                                        limitations.push('limited psychological content');
+                                        limitations.push(this.language === 'ru' ? 
+                                                  'ограниченное психологическое содержание' : 
+                                                  'limited psychological content');
                               }
                               
                               if (limitations.length === 0) {
-                                        limitations.push('standard limitations of text analysis');
+                                        limitations.push(this.language === 'ru' ? 
+                                                  'стандартные ограничения текстового анализа' : 
+                                                  'standard limitations of text analysis');
                               }
                               
                               return limitations;
@@ -11065,6 +11095,7 @@
     
 
 })();
+
 
 
 
