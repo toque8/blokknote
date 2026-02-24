@@ -3146,49 +3146,24 @@ renderResult(result) {
 
     if (psychInsights && psychInsights.applicability) {
                         const applicability = psychInsights.applicability;
-                        let applicabilityColor = '#27ae60'; 
-                        let applicabilityText = '';
                         
-                        if (this.getCurrentLanguage() === 'ru') {
-                            if (applicability.applicability === 'высокая') applicabilityText = 'высокий';
-                            else if (applicability.applicability === 'умеренная') applicabilityText = 'умеренный';
-                            else if (applicability.applicability === 'ограниченная') applicabilityText = 'ограниченный';
-                            else applicabilityText = applicability.applicability;
-                            
-                            if (applicability.applicability === 'высокая') applicabilityColor = '#27ae60';
-                            else if (applicability.applicability === 'умеренная') applicabilityColor = '#f39c12';
-                            else applicabilityColor = '#e74c3c';
-                        } else {
-                            applicabilityText = applicability.applicability;
-                            if (applicability.applicability === 'high') applicabilityColor = '#27ae60';
-                            else if (applicability.applicability === 'moderate') applicabilityColor = '#f39c12';
-                            else applicabilityColor = '#e74c3c';
-                        }
-
                         html += `
                             <div class="emotion-section">
                                 <h3>${translations.insightApplicability}</h3>
                                 <div class="emotion-metric">
-                                    <span class="label" title="${translations.applicabilityDesc}">${translations.applicabilityLevel}:</span>
-                                    <span class="value" style="color:${applicabilityColor};font-weight:bold;text-align:right !important;float:right;">${applicabilityText}</span>
+                                    <span class="label">${translations.applicabilityLevel}:</span>
+                                    <span class="value">${applicability.applicability}</span>
                                 </div>
                                 <div class="emotion-metric">
-                                    <span class="label" title="${translations.applicabilityScoreDesc}">${translations.applicabilityScore}:</span>
-                                    <span class="value" style="text-align:right !important;float:right;">${(applicability.score * 100).toFixed(1)}%</span>
+                                    <span class="label">${translations.applicabilityScore}:</span>
+                                    <span class="value">${(applicability.score * 100).toFixed(1)}%</span>
                                 </div>`;
 
                         if (applicability.limitations && applicability.limitations.length > 0) {
                             html += `<div class="emotion-subsection"><h4>${translations.limitations}</h4>`;
                             applicability.limitations.forEach(lim => {
-                                let limitationText = lim;
-                                if (this.getCurrentLanguage() === 'ru') {
-                                    if (lim === 'ограниченная надёжность анализа') limitationText = 'ограниченная надёжность анализа';
-                                    else if (lim === 'высокая эмоциональная изменчивость') limitationText = 'высокая эмоциональная изменчивость';
-                                    else if (lim === 'ограниченное психологическое содержание') limitationText = 'ограниченное психологическое содержание';
-                                    else if (lim === 'стандартные ограничения текстового анализа') limitationText = 'стандартные ограничения текстового анализа';
-                                }
                                 html += `<div class="emotion-metric" style="border-left:2px solid #e74c3c;margin:5px 0;padding-left:8px;">
-                                            <span class="value" style="text-align:left;">${limitationText}</span>
+                                            <span class="value" style="text-align:left;">${lim}</span>
                                         </div>`;
                             });
                             html += `</div>`;
@@ -4345,6 +4320,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
