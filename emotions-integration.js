@@ -785,6 +785,8 @@ translateValue(value, lang) {
 										'интуитивный': 'intuitive',
 										'практический': 'practical',
 										'преимущественно': 'predominantly',
+
+										'Межличностные особенности: потребность в понимании и поддержке, глубина и искренность в отношениях, чувствительность к отвержению': 'Relational patterns: need for understanding and support, depth and sincerity in relationships, sensitivity to rejection',
 										
 										'умеренная эмоциональная выразительность': 'moderate emotional expressiveness',
 										
@@ -1583,7 +1585,6 @@ generateRecommendations(metrics, lang) {
 async downloadSidebarAsImage() {
     if (!this.sidebar) return;
 
-    const lang = this.getCurrentLanguage();
     const sidebar = this.sidebar;
     const originalOverflow = sidebar.style.overflow;
     const originalHeight = sidebar.style.height;
@@ -1602,102 +1603,19 @@ async downloadSidebarAsImage() {
         canvas.height = fullHeight;
 
         const ctx = canvas.getContext('2d');
-
         ctx.fillStyle = '#1e1e1e';
         ctx.fillRect(0, 0, fullWidth, fullHeight);
+        ctx.fillStyle = '#e0e0e0';
+        ctx.font = '14px Consolas, Monaco, monospace';
 
-        const drawElement = (element, x, y) => {
-            if (!element || element.id === 'emotions-download-btn') return;
+        let y = 20;
+        const lines = sidebar.innerText.split('\n').filter(line => line.trim());
 
-            const rect = element.getBoundingClientRect();
-            const sidebarRect = sidebar.getBoundingClientRect();
-
-            const elementX = rect.left - sidebarRect.left;
-            const elementY = rect.top - sidebarRect.top;
-
-            const styles = window.getComputedStyle(element);
-
-            if (styles.backgroundColor && styles.backgroundColor !== 'rgba(0, 0, 0, 0)') {
-                ctx.fillStyle = styles.backgroundColor;
-                ctx.fillRect(elementX, elementY, rect.width, rect.height);
-            }
-
-            if (element.classList.contains('emotion-metric')) {
-                const label = element.querySelector('.label');
-                const value = element.querySelector('.value');
-
-                if (label && value) {
-                    const labelRect = label.getBoundingClientRect();
-                    const valueRect = value.getBoundingClientRect();
-                    const labelStyles = window.getComputedStyle(label);
-                    const valueStyles = window.getComputedStyle(value);
-
-                    ctx.save();
-                    ctx.font = `${labelStyles.fontSize} ${labelStyles.fontFamily}`;
-                    ctx.fillStyle = labelStyles.color;
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText(label.textContent.trim(), 
-                        labelRect.left - sidebarRect.left, 
-                        labelRect.top - sidebarRect.top + labelRect.height/2);
-                    ctx.restore();
-
-                    ctx.save();
-                    ctx.font = `${valueStyles.fontSize} ${valueStyles.fontFamily}`;
-                    ctx.fillStyle = valueStyles.color;
-                    ctx.textBaseline = 'middle';
-                    ctx.textAlign = 'right';
-                    ctx.fillText(value.textContent.trim(), 
-                        valueRect.left - sidebarRect.left + valueRect.width, 
-                        valueRect.top - sidebarRect.top + valueRect.height/2);
-                    ctx.restore();
-                }
-                return;
-            }
-
-            if (element.childNodes.length === 1 && element.childNodes[0].nodeType === 3) {
-                ctx.save();
-                ctx.font = `${styles.fontSize} ${styles.fontFamily}`;
-                ctx.fillStyle = styles.color;
-                ctx.textBaseline = 'top';
-                ctx.fillText(element.textContent.trim(), elementX + 5, elementY + 5);
-                ctx.restore();
-            }
-
-            if (element.tagName === 'H2' || element.tagName === 'H3') {
-                ctx.save();
-                ctx.font = `${styles.fontSize} ${styles.fontFamily}`;
-                ctx.fillStyle = styles.color;
-                ctx.textBaseline = 'top';
-                ctx.fillText(element.textContent.trim(), elementX + 10, elementY + 5);
-                ctx.restore();
-
-                if (element.tagName === 'H2') {
-                    ctx.strokeStyle = '#333';
-                    ctx.lineWidth = 1;
-                    ctx.beginPath();
-                    ctx.moveTo(elementX + 10, elementY + rect.height - 2);
-                    ctx.lineTo(elementX + rect.width - 10, elementY + rect.height - 2);
-                    ctx.stroke();
-                }
-            }
-
-            if (element.classList.contains('color-preview')) {
-                const boxes = element.querySelectorAll('div');
-                boxes.forEach(box => {
-                    const boxRect = box.getBoundingClientRect();
-                    ctx.fillStyle = window.getComputedStyle(box).backgroundColor;
-                    ctx.fillRect(
-                        boxRect.left - sidebarRect.left,
-                        boxRect.top - sidebarRect.top,
-                        boxRect.width,
-                        boxRect.height
-                    );
-                });
-            }
-        };
-
-        const allElements = sidebar.querySelectorAll('*');
-        allElements.forEach(el => drawElement(el));
+        lines.forEach(line => {
+            if (line.includes('Скачать') || line.includes('Download')) return;
+            ctx.fillText(line.trim(), 20, y);
+            y += 22;
+        });
 
         const link = document.createElement('a');
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -4672,6 +4590,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
