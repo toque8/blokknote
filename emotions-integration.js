@@ -674,7 +674,8 @@ translateValue(value, lang) {
 							'Ограничения анализа — факторы, снижающие точность': 'Ограничения анализа — факторы, снижающие точность',
 							'Сводка основных психологических характеристик текста': 'Сводка основных психологических характеристик текста',
 							'Фактор, снижающий точность анализа': 'Фактор, снижающий точность анализа',
-							'Психологическая характеристика': 'Психологическая характеристика'
+							'Психологическая характеристика': 'Психологическая характеристика',
+							'Межличностные особенности: потребность в понимании и поддержке, глубина и искренность в отношениях, чувствительность к отвержению': 'Межличностные особенности: потребность в понимании и поддержке, глубина и искренность в отношениях, чувствительность к отвержению'
         };
         return translations[value] || value;
     } else if (lang === 'en') {
@@ -1126,7 +1127,8 @@ translateValue(value, lang) {
                             'Аристотель': 'Aristotle',
                             'Сократ': 'Socrates',
                             'Вергилий': 'Virgil',
-                            'Овидий': 'Ovid'
+                            'Овидий': 'Ovid',
+							'Relational Patterns: need for understanding and support, глубина и искренность в отношениях, чувствительность к отвержению': 'Relational patterns: need for understanding and support, depth and sincerity in relationships, sensitivity to rejection'
         };
         return translations[value] || value;
     }
@@ -1586,6 +1588,9 @@ async downloadSidebarAsImage() {
     if (!this.sidebar) return;
 
     const sidebar = this.sidebar;
+    const content = document.getElementById('emotions-content');
+    if (!content) return;
+
     const originalOverflow = sidebar.style.overflow;
     const originalHeight = sidebar.style.height;
 
@@ -1603,18 +1608,71 @@ async downloadSidebarAsImage() {
         canvas.height = fullHeight;
 
         const ctx = canvas.getContext('2d');
+
         ctx.fillStyle = '#1e1e1e';
         ctx.fillRect(0, 0, fullWidth, fullHeight);
-        ctx.fillStyle = '#e0e0e0';
-        ctx.font = '14px Consolas, Monaco, monospace';
 
-        let y = 20;
-        const lines = sidebar.innerText.split('\n').filter(line => line.trim());
+        const elements = sidebar.querySelectorAll('h2, h3, h4, .emotion-metric, .color-preview div, .emotion-section');
+        
+        elements.forEach(el => {
+            if (el.id === 'emotions-download-btn') return;
+            if (el.classList.contains('close-btn')) return;
 
-        lines.forEach(line => {
-            if (line.includes('Скачать') || line.includes('Download')) return;
-            ctx.fillText(line.trim(), 20, y);
-            y += 22;
+            const rect = el.getBoundingClientRect();
+            const sidebarRect = sidebar.getBoundingClientRect();
+            
+            const x = rect.left - sidebarRect.left;
+            const y = rect.top - sidebarRect.top;
+
+            if (x < 0 || y < 0 || x > fullWidth || y > fullHeight) return;
+
+            const styles = window.getComputedStyle(el);
+
+            if (el.tagName === 'H2') {
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 16px Consolas, Monaco, monospace';
+                ctx.fillText(el.textContent, x + 10, y + 20);
+                
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(x + 10, y + 35);
+                ctx.lineTo(x + rect.width - 10, y + 35);
+                ctx.stroke();
+            } 
+            else if (el.tagName === 'H3') {
+                ctx.fillStyle = '#cccccc';
+                ctx.font = 'bold 14px Consolas, Monaco, monospace';
+                ctx.fillText(el.textContent, x + 10, y + 20);
+            }
+            else if (el.classList.contains('emotion-metric')) {
+                const label = el.querySelector('.label');
+                const value = el.querySelector('.value');
+                
+                if (label && value) {
+                    ctx.fillStyle = styles.color;
+                    ctx.font = '14px Consolas, Monaco, monospace';
+                    ctx.fillText(label.textContent, x + 10, y + 18);
+                    
+                    ctx.fillStyle = '#ffffff';
+                    ctx.textAlign = 'right';
+                    ctx.fillText(value.textContent, x + rect.width - 10, y + 18);
+                    ctx.textAlign = 'left';
+                }
+            }
+            else if (el.classList.contains('color-preview')) {
+                const boxes = el.querySelectorAll('div');
+                boxes.forEach((box, i) => {
+                    const boxRect = box.getBoundingClientRect();
+                    ctx.fillStyle = window.getComputedStyle(box).backgroundColor;
+                    ctx.fillRect(
+                        boxRect.left - sidebarRect.left,
+                        boxRect.top - sidebarRect.top,
+                        boxRect.width,
+                        boxRect.height
+                    );
+                });
+            }
         });
 
         const link = document.createElement('a');
@@ -4590,6 +4648,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
