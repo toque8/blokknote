@@ -1564,6 +1564,220 @@ generateRecommendations(metrics, lang) {
                             return [...new Set(recs)].slice(0, 8);
 }
 
+async downloadSidebarAsImage() {
+    if (!this.sidebar) return;
+
+    const lang = this.getCurrentLanguage();
+    const sidebar = this.sidebar;
+    const content = document.getElementById('emotions-content');
+    if (!content) return;
+
+    const loadingDiv = document.createElement('div');
+    loadingDiv.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #2d2d2d;
+        color: #fff;
+        padding: 20px 40px;
+        border-radius: 8px;
+        font-size: 16px;
+        z-index: 10001;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        border: 1px solid #444;
+    `;
+    loadingDiv.textContent = lang === 'ru' ? 'Создание изображения...' : 'Creating image...';
+    document.body.appendChild(loadingDiv);
+
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    try {
+        const sidebarRect = sidebar.getBoundingClientRect();
+        const contentRect = content.getBoundingClientRect();
+
+        const canvas = document.createElement('canvas');
+        canvas.width = sidebarRect.width;
+        canvas.height = sidebarRect.height;
+
+        const ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = '#1e1e1e';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const drawElement = (element, offsetX, offsetY) => {
+            if (!element || !element.style) return;
+
+            const rect = element.getBoundingClientRect();
+            const x = rect.left - sidebarRect.left;
+            const y = rect.top - sidebarRect.top;
+
+            const styles = window.getComputedStyle(element);
+
+            if (styles.backgroundColor !== 'rgba(0, 0, 0, 0)' && 
+                styles.backgroundColor !== 'transparent') {
+                ctx.fillStyle = styles.backgroundColor;
+                ctx.fillRect(x, y, rect.width, rect.height);
+            }
+
+            if (styles.borderLeftWidth !== '0px') {
+                ctx.fillStyle = styles.borderLeftColor;
+                ctx.fillRect(x, y, 
+                    parseInt(styles.borderLeftWidth), rect.height);
+            }
+
+            if (element.children.length === 0 || 
+                (element.classList.contains('emotion-metric') && element.children.length === 2)) {
+                
+                ctx.font = `${styles.fontWeight} ${styles.fontSize} ${styles.fontFamily}`;
+                ctx.fillStyle = styles.color;
+                ctx.textBaseline = 'middle';
+                ctx.textAlign = 'left';
+
+                ctx.save();
+
+                if (element.classList.contains('emotion-metric')) {
+                    const label = element.querySelector('.label');
+                    const value = element.querySelector('.value');
+
+                    if (label) {
+                        const labelRect = label.getBoundingClientRect();
+                        ctx.fillText(label.textContent.trim(), 
+                            labelRect.left - sidebarRect.left, 
+                            labelRect.top - sidebarRect.top + labelRect.height/2);
+                    }
+
+                    if (value) {
+                        const valueRect = value.getBoundingClientRect();
+                        ctx.textAlign = value.style.textAlign || 'right';
+                        ctx.fillText(value.textContent.trim(), 
+                            valueRect.left - sidebarRect.left + valueRect.width, 
+                            valueRect.top - sidebarRect.top + valueRect.height/2);
+                    }
+                } else {
+                    ctx.fillText(element.textContent.trim(), x + 5, y + rect.height/2);
+                }
+
+                ctx.restore();
+            }
+
+            if (element.tagName === 'H2' || element.tagName === 'H3' || element.tagName === 'H4') {
+                ctx.save();
+                ctx.font = `${styles.fontWeight} ${styles.fontSize} ${styles.fontFamily}`;
+                ctx.fillStyle = styles.color;
+                ctx.textBaseline = 'middle';
+                ctx.fillText(element.textContent.trim(), x + 10, y + rect.height/2);
+                ctx.restore();
+
+                if (element.tagName === 'H2') {
+                    ctx.strokeStyle = '#333';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(x + 10, y + rect.height);
+                    ctx.lineTo(x + rect.width - 10, y + rect.height);
+                    ctx.stroke();
+                }
+            }
+
+            if (element.classList.contains('color-preview')) {
+                const colorBoxes = element.querySelectorAll('div');
+                colorBoxes.forEach((box, index) => {
+                    const boxRect = box.getBoundingClientRect();
+                    ctx.fillStyle = window.getComputedStyle(box).backgroundColor;
+                    ctx.fillRect(
+                        boxRect.left - sidebarRect.left,
+                        boxRect.top - sidebarRect.top,
+                        boxRect.width,
+                        boxRect.height
+                    );
+                });
+            }
+        };
+
+        const traverseDOM = (node, offsetX = 0, offsetY = 0) => {
+            if (!node || node === loadingDiv) return;
+
+            if (node.classList && node.classList.contains('close-btn')) return;
+
+            drawElement(node, offsetX, offsetY);
+
+            for (let child of node.children) {
+                traverseDOM(child, offsetX, offsetY);
+            }
+        };
+
+        traverseDOM(sidebar);
+
+        const link = document.createElement('a');
+        const timestamp = new Date().toISOString()
+            .slice(0, 19)
+            .replace(/:/g, '-')
+            .replace('T', '_');
+        link.download = `emotions_${timestamp}.png`;
+        link.href = canvas.toDataURL('image/png');
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+    } catch (error) {
+        console.error('Error creating image:', error);
+        alert(lang === 'ru' ? 'Ошибка при создании изображения' : 'Error creating image');
+    } finally {
+        document.body.removeChild(loadingDiv);
+    }
+}
+
+addDownloadButtonToSidebar() {
+    const content = document.getElementById('emotions-content');
+    if (!content) return;
+
+    if (document.getElementById('emotions-download-btn')) return;
+
+    const lang = this.getCurrentLanguage();
+    const downloadContainer = document.createElement('div');
+    downloadContainer.style.cssText = `
+        margin: 20px 0 10px 0;
+        text-align: center;
+        padding: 10px;
+    `;
+
+    const downloadBtn = document.createElement('button');
+    downloadBtn.id = 'emotions-download-btn';
+    downloadBtn.textContent = lang === 'ru' ? 'Скачать' : 'Download';
+    downloadBtn.style.cssText = `
+        background: #2d2d2d;
+        color: #e0e0e0;
+        border: 1px solid #444;
+        padding: 10px 20px;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: inherit;
+    `;
+
+    downloadBtn.addEventListener('mouseenter', () => {
+        downloadBtn.style.background = '#3d3d3d';
+        downloadBtn.style.color = '#fff';
+        downloadBtn.style.borderColor = '#666';
+    });
+
+    downloadBtn.addEventListener('mouseleave', () => {
+        downloadBtn.style.background = '#2d2d2d';
+        downloadBtn.style.color = '#e0e0e0';
+        downloadBtn.style.borderColor = '#444';
+    });
+
+    downloadBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.downloadSidebarAsImage();
+    });
+
+    downloadContainer.appendChild(downloadBtn);
+    content.appendChild(downloadContainer);
+}
+
 renderResult(result) {
     if (!result || !result.success) {
         this.showError('Analysis failed');
@@ -3392,6 +3606,8 @@ renderResult(result) {
          </div>
    `;
 
+	this.addDownloadButtonToSidebar();
+
     content.innerHTML = html;
 }
 
@@ -4485,6 +4701,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
