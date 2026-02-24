@@ -723,6 +723,42 @@ translateValue(value, lang) {
 										'рефлексивный': 'reflective',
 										'интуитивный': 'intuitive',
 										'практический': 'practical',
+
+										'высокая': 'high',
+										'умеренная': 'moderate',
+										'ограниченная': 'limited',
+										
+										'ограниченная надёжность анализа': 'limited analysis reliability',
+										'высокая эмоциональная изменчивость': 'high emotional variability',
+										'ограниченное психологическое содержание': 'limited psychological content',
+										'стандартные ограничения текстового анализа': 'standard limitations of text analysis',
+										
+										'рефлексивный': 'reflective',
+										'аналитический': 'analytical',
+										'интуитивный': 'intuitive',
+										'практический': 'practical',
+										'преимущественно': 'predominantly',
+										
+										'умеренная эмоциональная выразительность': 'moderate emotional expressiveness',
+										
+										'сбалансированный стиль общения': 'balanced communication style',
+										
+										'гармонизация эмоциональной сферы': 'harmonization of emotional sphere',
+										
+										'Эмоциональные паттерны: умеренная эмоциональная выразительность': 'Emotional patterns: moderate emotional expressiveness',
+										'Эмоциональные паттерны: moderate emotional expressiveness': 'Emotional patterns: moderate emotional expressiveness',
+										'Когнитивный стиль: преимущественно аналитический': 'Cognitive style: predominantly analytical',
+										'Когнитивный стиль: преимущественно рефлексивный': 'Cognitive style: predominantly reflective',
+										'Когнитивный стиль: преимущественно интуитивный': 'Cognitive style: predominantly intuitive',
+										'Когнитивный стиль: преимущественно практический': 'Cognitive style: predominantly practical',
+										'Когнитивный стиль: преимущественно analytical': 'Cognitive style: predominantly analytical',
+										'Когнитивный стиль: преимущественно reflective': 'Cognitive style: predominantly reflective',
+										'Когнитивный стиль: преимущественно intuitive': 'Cognitive style: predominantly intuitive',
+										'Когнитивный стиль: преимущественно practical': 'Cognitive style: predominantly practical',
+										'Межличностные особенности: сбалансированный стиль общения': 'Relational patterns: balanced communication style',
+										'Межличностные особенности: balanced communication style': 'Relational patterns: balanced communication style',
+										'Направления роста: гармонизация эмоциональной сферы': 'Growth paths: harmonization of emotional sphere',
+										'Направления роста: harmonization of emotional sphere': 'Growth paths: harmonization of emotional sphere',
 			'Эмоциональные паттерны: умеренная эмоциональная выразительность': 'Emotional patterns: moderate emotional expressiveness',
 			'Эмоциональные паттерны: moderate emotional expressiveness': 'Emotional patterns: moderate emotional expressiveness',
 			'Когнитивный стиль: преимущественно аналитический': 'Cognitive style: predominantly analytical',
@@ -3184,18 +3220,19 @@ renderResult(result) {
                                 <h3 title="${translations.insightApplicabilityHint}">${translations.insightApplicability}</h3>
                                 <div class="emotion-metric">
                                     <span class="label" title="${translations.applicabilityLevelHint}">${translations.applicabilityLevel}:</span>
-                                    <span class="value">${this.translateValue(applicability.applicability, currentLang)}</span>
+                                    <span class="value" title="${this.translateValue(applicability.applicability, currentLang)}">${this.translateValue(applicability.applicability, currentLang)}</span>
                                 </div>
                                 <div class="emotion-metric">
                                     <span class="label" title="${translations.applicabilityScoreHint}">${translations.applicabilityScore}:</span>
-                                    <span class="value">${(applicability.score * 100).toFixed(1)}%</span>
+                                    <span class="value" title="${(applicability.score * 100).toFixed(1)}%">${(applicability.score * 100).toFixed(1)}%</span>
                                 </div>`;
 
                         if (applicability.limitations && applicability.limitations.length > 0) {
                             html += `<div class="emotion-subsection"><h4 title="${translations.limitationsHint}">${translations.limitations}</h4>`;
                             applicability.limitations.forEach(lim => {
+                                const translatedLim = this.translateValue(lim, currentLang);
                                 html += `<div class="emotion-metric" style="border-left:2px solid #e74c3c;margin:5px 0;padding-left:8px;">
-                                            <span class="value" style="text-align:left;">${this.translateValue(lim, currentLang)}</span>
+                                            <span class="value" style="text-align:left;" title="${translatedLim}">${translatedLim}</span>
                                         </div>`;
                             });
                             html += `</div>`;
@@ -3216,7 +3253,7 @@ renderResult(result) {
                             
                             html += `
                                 <div class="emotion-metric" style="border-left:3px solid #9b59b6;padding-left:10px;margin:8px 0;">
-                                    <span class="value" style="display:block;text-align:left;font-size:0.95em;line-height:1.5;">${translatedLine}</span>
+                                    <span class="value" style="display:block;text-align:left;font-size:0.95em;line-height:1.5;" title="${translatedLine}">${translatedLine}</span>
                                 </div>`;
                         });
                         
@@ -4367,6 +4404,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
