@@ -3606,9 +3606,9 @@ renderResult(result) {
          </div>
    `;
 
-	this.addDownloadButtonToSidebar();
-
     content.innerHTML = html;
+
+	this.addDownloadButtonToSidebar();
 }
 
 translateCategory(category, lang) {
@@ -4701,6 +4701,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
