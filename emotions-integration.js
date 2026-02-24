@@ -644,6 +644,9 @@ translateValue(value, lang) {
 							'high': 'высокая',
 							'moderate': 'умеренная',
 							'limited': 'ограниченная',
+							'ограниченный': 'ограниченный',
+							'умеренный': 'умеренный',
+							'высокий': 'высокий',
 							
 							'limited analysis reliability': 'ограниченная надёжность анализа',
 							'high emotional variability': 'высокая эмоциональная изменчивость',
@@ -727,6 +730,9 @@ translateValue(value, lang) {
 										'высокая': 'high',
 										'умеренная': 'moderate',
 										'ограниченная': 'limited',
+										'ограниченный': 'limited',
+										'умеренный': 'moderate',
+										'высокий': 'high',
 										
 										'ограниченная надёжность анализа': 'limited analysis reliability',
 										'высокая эмоциональная изменчивость': 'high emotional variability',
@@ -3274,7 +3280,7 @@ renderResult(result) {
                                 <h3>${translations.insightApplicability}</h3>
                                 <div class="emotion-metric">
                                     <span class="label" title="${translations.applicabilityLevelHint}">${translations.applicabilityLevel}:</span>
-                                    <span class="value">${this.translateValue(applicability.applicability, currentLang)}</span>
+                                    <span class="value">${this.translateValue(applicability.applicability === 'ограниченная' ? 'ограниченный' : applicability.applicability, currentLang)}</span>
                                 </div>
                                 <div class="emotion-metric">
                                     <span class="label" title="${translations.applicabilityScoreHint}">${translations.applicabilityScore}:</span>
@@ -4469,6 +4475,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
