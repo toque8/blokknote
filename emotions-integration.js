@@ -752,6 +752,14 @@ translateValue(value, lang) {
 										'рефлексивный': 'reflective',
 										'интуитивный': 'intuitive',
 										'практический': 'practical',
+										'защитная позиция в отношениях': 'defensive position in relationships',
+										'потребность в безопасных границах': 'need for safe boundaries',
+										'настороженность в новых контактах': 'caution in new contacts',
+										
+										'защитная позиция': 'defensive position',
+										'потребность в безопасных границах': 'need for safe boundaries',
+										'настороженность': 'caution',
+										'новых контактах': 'new contacts',
 
 										'высокая': 'high',
 										'умеренная': 'moderate',
@@ -4475,6 +4483,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
