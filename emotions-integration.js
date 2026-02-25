@@ -1615,8 +1615,9 @@ async downloadSidebarAsImage() {
         ctx.fillRect(0, 0, fullWidth, fullHeight);
 
         const sidebarRect = sidebar.getBoundingClientRect();
+        const elements = sidebar.querySelectorAll('h2, h3, .emotion-metric, .color-preview div');
 
-        const drawElement = (el) => {
+        elements.forEach(el => {
             if (el.id === 'emotions-download-btn' || el.classList.contains('close-btn')) return;
 
             const rect = el.getBoundingClientRect();
@@ -1625,90 +1626,47 @@ async downloadSidebarAsImage() {
 
             if (x < 0 || y < 0 || x > fullWidth || y > fullHeight) return;
 
-            const styles = window.getComputedStyle(el);
+            if (el.tagName === 'H2') {
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 16px Consolas, Monaco, monospace';
+                ctx.fillText(el.textContent, x + 10, y + 25);
 
-            if (styles.backgroundColor && styles.backgroundColor !== 'rgba(0, 0, 0, 0)') {
-                ctx.fillStyle = styles.backgroundColor;
-                ctx.fillRect(x, y, rect.width, rect.height);
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(x + 10, y + 40);
+                ctx.lineTo(x + rect.width - 10, y + 40);
+                ctx.stroke();
+            } 
+            else if (el.tagName === 'H3') {
+                ctx.fillStyle = '#cccccc';
+                ctx.font = 'bold 14px Consolas, Monaco, monospace';
+                ctx.fillText(el.textContent, x + 10, y + 20);
             }
-
-            if (el.classList.contains('emotion-metric')) {
+            else if (el.classList.contains('emotion-metric')) {
                 const label = el.querySelector('.label');
                 const value = el.querySelector('.value');
+
                 if (label && value) {
-                    const labelRect = label.getBoundingClientRect();
-                    const valueRect = value.getBoundingClientRect();
-                    ctx.save();
-                    ctx.font = '14px Consolas, Monaco, monospace';
                     ctx.fillStyle = '#aaaaaa';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText(label.textContent.trim(), 
-                        labelRect.left - sidebarRect.left, 
-                        labelRect.top - sidebarRect.top + labelRect.height/2);
+                    ctx.font = '14px Consolas, Monaco, monospace';
+                    ctx.fillText(label.textContent, x + 10, y + 18);
+
                     ctx.fillStyle = '#ffffff';
                     ctx.textAlign = 'right';
-                    ctx.fillText(value.textContent.trim(), 
-                        valueRect.left - sidebarRect.left + valueRect.width, 
-                        valueRect.top - sidebarRect.top + valueRect.height/2);
-                    ctx.restore();
+                    ctx.fillText(value.textContent, x + rect.width - 10, y + 18);
+                    ctx.textAlign = 'left';
                 }
-                return;
             }
-
-            if (el.classList.contains('color-preview')) {
-                const boxes = el.querySelectorAll('div');
-                boxes.forEach(box => {
-                    const boxRect = box.getBoundingClientRect();
-                    ctx.fillStyle = window.getComputedStyle(box).backgroundColor;
-                    ctx.fillRect(
-                        boxRect.left - sidebarRect.left,
-                        boxRect.top - sidebarRect.top,
-                        boxRect.width,
-                        boxRect.height
-                    );
-                });
-                return;
-            }
-
-            if (el.children.length === 0 && el.textContent.trim()) {
-                ctx.save();
-                ctx.font = '14px Consolas, Monaco, monospace';
-                ctx.fillStyle = styles.color;
-                ctx.textBaseline = 'middle';
-                ctx.fillText(el.textContent.trim(), x + 5, y + rect.height/2);
-                ctx.restore();
-            }
-        };
-
-        const elements = sidebar.querySelectorAll('h2, h3, h4, .emotion-metric, .color-preview, .label, .value, .emotion-section, .emotion-subsection');
-        elements.forEach(drawElement);
-
-        const textNodes = [];
-        const walk = document.createTreeWalker(sidebar, NodeFilter.SHOW_TEXT, {
-            acceptNode: (node) => {
-                if (node.parentElement.closest('.emotion-metric, .color-preview, h2, h3, h4')) return NodeFilter.FILTER_REJECT;
-                return node.textContent.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+            else if (el.parentElement?.classList.contains('color-preview')) {
+                ctx.fillStyle = window.getComputedStyle(el).backgroundColor;
+                ctx.fillRect(x, y, rect.width, rect.height);
             }
         });
-        while (walk.nextNode()) textNodes.push(walk.currentNode);
-        textNodes.forEach(node => {
-            const range = document.createRange();
-            range.selectNodeContents(node);
-            const rect = range.getBoundingClientRect();
-            const x = rect.left - sidebarRect.left;
-            const y = rect.top - sidebarRect.top;
-            if (x < 0 || y < 0 || x > fullWidth || y > fullHeight) return;
-            ctx.save();
-            ctx.font = '14px Consolas, Monaco, monospace';
-            ctx.fillStyle = '#e0e0e0';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(node.textContent.trim(), x, y + rect.height/2);
-            ctx.restore();
-        });
 
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').replace('T', '_').split('.')[0];
         const link = document.createElement('a');
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-        link.download = `emotions_${timestamp}.png`;
+        link.download = `textanalize-${timestamp}.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
 
@@ -4679,6 +4637,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
