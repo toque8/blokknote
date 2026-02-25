@@ -989,6 +989,7 @@ translateValue(value, lang) {
             'прошлое': 'past',
             'память': 'memory',
             'эхо': 'echo',
+			'чувствительность к отвержению': 'sensitivity to rejection',
 			'Relational Patterns: need for understanding and support, глубина и искренность в отношениях, чувствительность к отвержению': 'Relational patterns: need for understanding and support, depth and sincerity in relationships, sensitivity to rejection',
             
             'устойчивый эмоциональный фон': 'stable emotional background',
@@ -1602,72 +1603,106 @@ async downloadSidebarAsImage() {
         const fullHeight = sidebar.scrollHeight;
         const fullWidth = sidebar.offsetWidth;
 
+        const scale = 2;
         const canvas = document.createElement('canvas');
-        canvas.width = fullWidth;
-        canvas.height = fullHeight;
+        canvas.width = fullWidth * scale;
+        canvas.height = fullHeight * scale;
 
         const ctx = canvas.getContext('2d');
+        ctx.scale(scale, scale);
 
         ctx.fillStyle = '#1e1e1e';
         ctx.fillRect(0, 0, fullWidth, fullHeight);
 
-        const colorPreview = sidebar.querySelector('.color-preview');
-        if (colorPreview) {
-            const boxes = colorPreview.querySelectorAll('div');
-            boxes.forEach(box => {
-                const boxRect = box.getBoundingClientRect();
-                const sidebarRect = sidebar.getBoundingClientRect();
-                ctx.fillStyle = window.getComputedStyle(box).backgroundColor;
-                ctx.fillRect(
-                    boxRect.left - sidebarRect.left,
-                    boxRect.top - sidebarRect.top,
-                    boxRect.width,
-                    boxRect.height
-                );
-            });
-        }
+        const sidebarRect = sidebar.getBoundingClientRect();
 
-        const allElements = sidebar.querySelectorAll('*');
-        allElements.forEach(el => {
+        const drawElement = (el) => {
             if (el.id === 'emotions-download-btn' || el.classList.contains('close-btn')) return;
-            if (el.children.length > 0) return;
-
-            const text = el.textContent?.trim();
-            if (!text) return;
 
             const rect = el.getBoundingClientRect();
-            const sidebarRect = sidebar.getBoundingClientRect();
             const x = rect.left - sidebarRect.left;
             const y = rect.top - sidebarRect.top;
 
             if (x < 0 || y < 0 || x > fullWidth || y > fullHeight) return;
 
-            ctx.save();
-            ctx.textBaseline = 'middle';
+            const styles = window.getComputedStyle(el);
 
-            if (el.tagName === 'H2') {
-                ctx.font = 'bold 16px Consolas, Monaco, monospace';
-                ctx.fillStyle = '#ffffff';
-                ctx.fillText(text, x + 10, y + rect.height/2);
-            } else if (el.tagName === 'H3') {
-                ctx.font = 'bold 14px Consolas, Monaco, monospace';
-                ctx.fillStyle = '#cccccc';
-                ctx.fillText(text, x + 10, y + rect.height/2);
-            } else if (el.classList.contains('label')) {
-                ctx.font = '14px Consolas, Monaco, monospace';
-                ctx.fillStyle = '#aaaaaa';
-                ctx.fillText(text, x + 10, y + rect.height/2);
-            } else if (el.classList.contains('value')) {
-                ctx.font = '14px Consolas, Monaco, monospace';
-                ctx.fillStyle = '#ffffff';
-                ctx.textAlign = 'right';
-                const textWidth = ctx.measureText(text).width;
-                ctx.fillText(text, x + rect.width - 10, y + rect.height/2);
-            } else {
-                ctx.font = '14px Consolas, Monaco, monospace';
-                ctx.fillStyle = '#e0e0e0';
-                ctx.fillText(text, x + 5, y + rect.height/2);
+            if (styles.backgroundColor && styles.backgroundColor !== 'rgba(0, 0, 0, 0)') {
+                ctx.fillStyle = styles.backgroundColor;
+                ctx.fillRect(x, y, rect.width, rect.height);
             }
+
+            if (el.classList.contains('emotion-metric')) {
+                const label = el.querySelector('.label');
+                const value = el.querySelector('.value');
+                if (label && value) {
+                    const labelRect = label.getBoundingClientRect();
+                    const valueRect = value.getBoundingClientRect();
+                    ctx.save();
+                    ctx.font = '14px Consolas, Monaco, monospace';
+                    ctx.fillStyle = '#aaaaaa';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(label.textContent.trim(), 
+                        labelRect.left - sidebarRect.left, 
+                        labelRect.top - sidebarRect.top + labelRect.height/2);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.textAlign = 'right';
+                    ctx.fillText(value.textContent.trim(), 
+                        valueRect.left - sidebarRect.left + valueRect.width, 
+                        valueRect.top - sidebarRect.top + valueRect.height/2);
+                    ctx.restore();
+                }
+                return;
+            }
+
+            if (el.classList.contains('color-preview')) {
+                const boxes = el.querySelectorAll('div');
+                boxes.forEach(box => {
+                    const boxRect = box.getBoundingClientRect();
+                    ctx.fillStyle = window.getComputedStyle(box).backgroundColor;
+                    ctx.fillRect(
+                        boxRect.left - sidebarRect.left,
+                        boxRect.top - sidebarRect.top,
+                        boxRect.width,
+                        boxRect.height
+                    );
+                });
+                return;
+            }
+
+            if (el.children.length === 0 && el.textContent.trim()) {
+                ctx.save();
+                ctx.font = '14px Consolas, Monaco, monospace';
+                ctx.fillStyle = styles.color;
+                ctx.textBaseline = 'middle';
+                ctx.fillText(el.textContent.trim(), x + 5, y + rect.height/2);
+                ctx.restore();
+            }
+        };
+
+        const elements = sidebar.querySelectorAll('h2, h3, h4, .emotion-metric, .color-preview, .label, .value, .emotion-section, .emotion-subsection');
+        elements.forEach(drawElement);
+
+        const textNodes = [];
+        const walk = document.createTreeWalker(sidebar, NodeFilter.SHOW_TEXT, {
+            acceptNode: (node) => {
+                if (node.parentElement.closest('.emotion-metric, .color-preview, h2, h3, h4')) return NodeFilter.FILTER_REJECT;
+                return node.textContent.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+            }
+        });
+        while (walk.nextNode()) textNodes.push(walk.currentNode);
+        textNodes.forEach(node => {
+            const range = document.createRange();
+            range.selectNodeContents(node);
+            const rect = range.getBoundingClientRect();
+            const x = rect.left - sidebarRect.left;
+            const y = rect.top - sidebarRect.top;
+            if (x < 0 || y < 0 || x > fullWidth || y > fullHeight) return;
+            ctx.save();
+            ctx.font = '14px Consolas, Monaco, monospace';
+            ctx.fillStyle = '#e0e0e0';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(node.textContent.trim(), x, y + rect.height/2);
             ctx.restore();
         });
 
@@ -4644,6 +4679,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
