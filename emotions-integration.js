@@ -1615,9 +1615,29 @@ async downloadSidebarAsImage() {
         ctx.fillRect(0, 0, fullWidth, fullHeight);
 
         const sidebarRect = sidebar.getBoundingClientRect();
-        const elements = sidebar.querySelectorAll('h2, h3, .emotion-metric, .color-preview div');
 
-        elements.forEach(el => {
+        const processedElements = new Set();
+
+        const colorPreview = sidebar.querySelector('.color-preview');
+        if (colorPreview) {
+            const boxes = colorPreview.querySelectorAll('div');
+            boxes.forEach(box => {
+                const boxRect = box.getBoundingClientRect();
+                ctx.fillStyle = window.getComputedStyle(box).backgroundColor;
+                ctx.fillRect(
+                    boxRect.left - sidebarRect.left,
+                    boxRect.top - sidebarRect.top,
+                    boxRect.width,
+                    boxRect.height
+                );
+                processedElements.add(box);
+            });
+            processedElements.add(colorPreview);
+        }
+
+        const allElements = sidebar.querySelectorAll('*');
+        allElements.forEach(el => {
+            if (processedElements.has(el)) return;
             if (el.id === 'emotions-download-btn' || el.classList.contains('close-btn')) return;
 
             const rect = el.getBoundingClientRect();
@@ -1625,42 +1645,81 @@ async downloadSidebarAsImage() {
             const y = rect.top - sidebarRect.top;
 
             if (x < 0 || y < 0 || x > fullWidth || y > fullHeight) return;
+            if (rect.width === 0 || rect.height === 0) return;
+
+            const styles = window.getComputedStyle(el);
+
+            if (styles.backgroundColor && styles.backgroundColor !== 'rgba(0, 0, 0, 0)') {
+                ctx.fillStyle = styles.backgroundColor;
+                ctx.fillRect(x, y, rect.width, rect.height);
+            }
+
+            if (el.classList.contains('emotion-metric')) {
+                const label = el.querySelector('.label');
+                const value = el.querySelector('.value');
+                if (label && value) {
+                    const labelRect = label.getBoundingClientRect();
+                    const valueRect = value.getBoundingClientRect();
+
+                    ctx.save();
+                    ctx.font = '14px Consolas, Monaco, monospace';
+                    ctx.fillStyle = '#aaaaaa';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(label.textContent.trim(),
+                        labelRect.left - sidebarRect.left,
+                        labelRect.top - sidebarRect.top + labelRect.height/2);
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.textAlign = 'right';
+                    ctx.fillText(value.textContent.trim(),
+                        valueRect.left - sidebarRect.left + valueRect.width,
+                        valueRect.top - sidebarRect.top + valueRect.height/2);
+                    ctx.restore();
+
+                    processedElements.add(label);
+                    processedElements.add(value);
+                }
+                processedElements.add(el);
+                return;
+            }
 
             if (el.tagName === 'H2') {
-                ctx.fillStyle = '#ffffff';
+                ctx.save();
                 ctx.font = 'bold 16px Consolas, Monaco, monospace';
-                ctx.fillText(el.textContent, x + 10, y + 25);
+                ctx.fillStyle = '#ffffff';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(el.textContent.trim(), x + 10, y + rect.height/2);
+                ctx.restore();
 
                 ctx.strokeStyle = '#333';
                 ctx.lineWidth = 1;
                 ctx.beginPath();
-                ctx.moveTo(x + 10, y + 40);
-                ctx.lineTo(x + rect.width - 10, y + 40);
+                ctx.moveTo(x + 10, y + rect.height - 5);
+                ctx.lineTo(x + rect.width - 10, y + rect.height - 5);
                 ctx.stroke();
-            } 
-            else if (el.tagName === 'H3') {
-                ctx.fillStyle = '#cccccc';
+
+                processedElements.add(el);
+                return;
+            }
+
+            if (el.tagName === 'H3') {
+                ctx.save();
                 ctx.font = 'bold 14px Consolas, Monaco, monospace';
-                ctx.fillText(el.textContent, x + 10, y + 20);
+                ctx.fillStyle = '#cccccc';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(el.textContent.trim(), x + 10, y + rect.height/2);
+                ctx.restore();
+                processedElements.add(el);
+                return;
             }
-            else if (el.classList.contains('emotion-metric')) {
-                const label = el.querySelector('.label');
-                const value = el.querySelector('.value');
 
-                if (label && value) {
-                    ctx.fillStyle = '#aaaaaa';
-                    ctx.font = '14px Consolas, Monaco, monospace';
-                    ctx.fillText(label.textContent, x + 10, y + 18);
-
-                    ctx.fillStyle = '#ffffff';
-                    ctx.textAlign = 'right';
-                    ctx.fillText(value.textContent, x + rect.width - 10, y + 18);
-                    ctx.textAlign = 'left';
-                }
-            }
-            else if (el.parentElement?.classList.contains('color-preview')) {
-                ctx.fillStyle = window.getComputedStyle(el).backgroundColor;
-                ctx.fillRect(x, y, rect.width, rect.height);
+            if (el.children.length === 0 && el.textContent.trim()) {
+                ctx.save();
+                ctx.font = '14px Consolas, Monaco, monospace';
+                ctx.fillStyle = styles.color || '#e0e0e0';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(el.textContent.trim(), x + 5, y + rect.height/2);
+                ctx.restore();
             }
         });
 
@@ -4637,6 +4696,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
