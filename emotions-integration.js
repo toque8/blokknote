@@ -1598,7 +1598,9 @@ async downloadSidebarAsImage() {
         sidebar.style.overflow = 'visible';
         sidebar.style.height = 'auto';
 
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise(resolve => requestAnimationFrame(() => {
+            requestAnimationFrame(resolve);
+        }));
 
         const fullHeight = sidebar.scrollHeight;
         const fullWidth = sidebar.offsetWidth;
@@ -1615,6 +1617,9 @@ async downloadSidebarAsImage() {
         ctx.fillRect(0, 0, fullWidth, fullHeight);
 
         const sidebarRect = sidebar.getBoundingClientRect();
+
+        const scrollTop = sidebar.scrollTop || 0;
+        const scrollLeft = sidebar.scrollLeft || 0;
 
         const processedElements = new Set();
 
@@ -1635,17 +1640,26 @@ async downloadSidebarAsImage() {
             processedElements.add(colorPreview);
         }
 
-        const allElements = sidebar.querySelectorAll('*');
+        const allElements = Array.from(sidebar.querySelectorAll('*'))
+            .filter(el => {
+                const rect = el.getBoundingClientRect();
+                return rect.width > 0 && rect.height > 0;
+            })
+            .sort((a, b) => {
+                const aRect = a.getBoundingClientRect();
+                const bRect = b.getBoundingClientRect();
+                return aRect.top - bRect.top;
+            });
+
         allElements.forEach(el => {
             if (processedElements.has(el)) return;
             if (el.id === 'emotions-download-btn' || el.classList.contains('close-btn')) return;
 
             const rect = el.getBoundingClientRect();
-            const x = rect.left - sidebarRect.left;
-            const y = rect.top - sidebarRect.top;
+            const x = rect.left - sidebarRect.left + scrollLeft;
+            const y = rect.top - sidebarRect.top + scrollTop;
 
             if (x < 0 || y < 0 || x > fullWidth || y > fullHeight) return;
-            if (rect.width === 0 || rect.height === 0) return;
 
             const styles = window.getComputedStyle(el);
 
@@ -1662,18 +1676,21 @@ async downloadSidebarAsImage() {
                     const valueRect = value.getBoundingClientRect();
 
                     ctx.save();
-                    ctx.font = '14px Consolas, Monaco, monospace';
-                    ctx.fillStyle = '#aaaaaa';
-                    ctx.textBaseline = 'middle';
+                    ctx.font = styles.font || '14px Consolas, Monaco, monospace';
+                    ctx.fillStyle = styles.color || '#aaaaaa';
+                    ctx.textBaseline = 'alphabetic';
+                    
+                    const paddingTop = parseFloat(styles.paddingTop) || 0;
+                    
                     ctx.fillText(label.textContent.trim(),
-                        labelRect.left - sidebarRect.left,
-                        labelRect.top - sidebarRect.top + labelRect.height/2);
+                        labelRect.left - sidebarRect.left + scrollLeft,
+                        labelRect.top - sidebarRect.top + scrollTop + labelRect.height * 0.75);
 
                     ctx.fillStyle = '#ffffff';
                     ctx.textAlign = 'right';
                     ctx.fillText(value.textContent.trim(),
-                        valueRect.left - sidebarRect.left + valueRect.width,
-                        valueRect.top - sidebarRect.top + valueRect.height/2);
+                        valueRect.left - sidebarRect.left + scrollLeft + valueRect.width,
+                        valueRect.top - sidebarRect.top + scrollTop + valueRect.height * 0.75);
                     ctx.restore();
 
                     processedElements.add(label);
@@ -1685,17 +1702,23 @@ async downloadSidebarAsImage() {
 
             if (el.tagName === 'H2') {
                 ctx.save();
-                ctx.font = 'bold 16px Consolas, Monaco, monospace';
-                ctx.fillStyle = '#ffffff';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(el.textContent.trim(), x + 10, y + rect.height/2);
+                ctx.font = `bold ${styles.fontSize || '16px'} ${styles.fontFamily || 'Consolas, Monaco, monospace'}`;
+                ctx.fillStyle = styles.color || '#ffffff';
+                ctx.textBaseline = 'alphabetic';
+                
+                const paddingTop = parseFloat(styles.paddingTop) || 0;
+                const paddingLeft = parseFloat(styles.paddingLeft) || 10;
+                
+                ctx.fillText(el.textContent.trim(), 
+                    x + paddingLeft, 
+                    y + paddingTop + rect.height * 0.75);
                 ctx.restore();
 
                 ctx.strokeStyle = '#333';
                 ctx.lineWidth = 1;
                 ctx.beginPath();
-                ctx.moveTo(x + 10, y + rect.height - 5);
-                ctx.lineTo(x + rect.width - 10, y + rect.height - 5);
+                ctx.moveTo(x + paddingLeft, y + rect.height - 5);
+                ctx.lineTo(x + rect.width - paddingLeft, y + rect.height - 5);
                 ctx.stroke();
 
                 processedElements.add(el);
@@ -1704,10 +1727,16 @@ async downloadSidebarAsImage() {
 
             if (el.tagName === 'H3') {
                 ctx.save();
-                ctx.font = 'bold 14px Consolas, Monaco, monospace';
-                ctx.fillStyle = '#cccccc';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(el.textContent.trim(), x + 10, y + rect.height/2);
+                ctx.font = `bold ${styles.fontSize || '14px'} ${styles.fontFamily || 'Consolas, Monaco, monospace'}`;
+                ctx.fillStyle = styles.color || '#cccccc';
+                ctx.textBaseline = 'alphabetic';
+                
+                const paddingTop = parseFloat(styles.paddingTop) || 0;
+                const paddingLeft = parseFloat(styles.paddingLeft) || 10;
+                
+                ctx.fillText(el.textContent.trim(), 
+                    x + paddingLeft, 
+                    y + paddingTop + rect.height * 0.75);
                 ctx.restore();
                 processedElements.add(el);
                 return;
@@ -1715,10 +1744,16 @@ async downloadSidebarAsImage() {
 
             if (el.children.length === 0 && el.textContent.trim()) {
                 ctx.save();
-                ctx.font = '14px Consolas, Monaco, monospace';
+                ctx.font = styles.font || '14px Consolas, Monaco, monospace';
                 ctx.fillStyle = styles.color || '#e0e0e0';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(el.textContent.trim(), x + 5, y + rect.height/2);
+                ctx.textBaseline = 'alphabetic';
+                
+                const paddingTop = parseFloat(styles.paddingTop) || 0;
+                const paddingLeft = parseFloat(styles.paddingLeft) || 5;
+                
+                ctx.fillText(el.textContent.trim(), 
+                    x + paddingLeft, 
+                    y + paddingTop + rect.height * 0.75);
                 ctx.restore();
             }
         });
@@ -4696,6 +4731,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
