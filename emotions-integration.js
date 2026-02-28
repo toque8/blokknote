@@ -771,6 +771,37 @@ translateValue(value, lang) {
 										'потребность в безопасных границах': 'need for safe boundaries',
 										'настороженность': 'caution',
 										'новых контактах': 'new contacts',
+										'Состояние полного, всеобъемлющего счастья и духовного подъёма': 'A state of complete, all-encompassing happiness and spiritual upliftment',
+										'Яркое, жизнеутверждающее эмоциональное состояние': 'A bright, life-affirming emotional state',
+										'Устойчивое чувство удовлетворения и благополучия': 'A stable feeling of satisfaction and well-being',
+										'Спокойное принятие и удовлетворение текущим моментом': 'Calm acceptance and satisfaction with the current moment',
+										'Глубокое внутреннее равновесие и гармония': 'Deep inner balance and harmony',
+										'Интенсивное состояние недовольства и внутреннего напряжения': 'An intense state of dissatisfaction and inner tension',
+										'Состояние неконтролируемой ярости и гнева': 'A state of uncontrollable rage and anger',
+										'Эмоциональное переживание потери или разочарования': 'An emotional experience of loss or disappointment',
+										'Глубокое отчаяние и чувство безысходности': 'Deep despair and a feeling of hopelessness',
+										'Сложное сочетание грусти и глубокой рефлексии': 'A complex combination of sadness and deep reflection',
+										'Состояние беспокойства и предчувствия': 'A state of anxiety and foreboding',
+										'Состояние животного ужаса и паники': 'A state of sheer terror and panic',
+										'Многоуровневое, противоречивое эмоциональное переживание': 'A multi-layered, contradictory emotional experience',
+										'Одновременное переживание радости и печали': 'Simultaneous experience of joy and sadness',
+										'Тёплые воспоминания, окрашенные лёгкой грустью': 'Warm memories tinged with slight sadness',
+										'Склонность к самоанализу и рефлексии': 'A tendency toward introspection and reflection',
+										'Созерцательное, медитативное состояние': 'A contemplative, meditative state',
+										'Сложная смесь разноплановых чувств': 'A complex mixture of disparate feelings',
+										'Ироничный, слегка насмешливый взгляд': 'An ironic, slightly mocking outlook',
+										'Состояние открытости и ранимости': 'A state of openness and vulnerability',
+										'Внутренняя стойкость и способность справляться': 'Inner resilience and coping ability',
+										'Приглушённое, подавленное настроение': 'A subdued, depressed mood',
+										'Задумчивое, погружённое в размышления состояние': 'A pensive, thought-immersed state',
+										'Смиренное принятие обстоятельств': 'Resigned acceptance of circumstances',
+										'Эйфорический подъём, чувство безграничного счастья': 'Euphoric uplift, a feeling of boundless happiness',
+										'Состояние восторга и приподнятости': 'A state of delight and elation',
+										'Лёгкое удовлетворение и довольство': 'Mild satisfaction and contentment',
+										'Чувство насыщенности и исполненности': 'A feeling of fullness and fulfillment',
+										'Сбалансированное, гармоничное состояние': 'A balanced, harmonious state',
+										'Отстранённое наблюдение со стороны': 'Detached observation from the sidelines',
+										'Богатое эмоциональное переживание': 'Rich emotional experience',
 
 										'высокая': 'high',
 										'умеренная': 'moderate',
@@ -4731,6 +4762,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
