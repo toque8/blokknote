@@ -649,12 +649,15 @@ translateValue(value, lang) {
 							'высокий': 'высокий',
 
 							'chaos': 'хаос',
-							'pulse': 'пульсация',
+							'pulse': 'пульс',
 							'explode': 'взрыв',
 							'swarm': 'рой',
-							'magnetic': 'магнитный',
+							'orbit': 'орбита',
 							'wave': 'волна',
 							'attract': 'притяжение',
+							'attractive': 'притяжение',
+							'connecting': 'соединение',
+							'unifying': 'объединение',
 							'orbital': 'орбитальный',
 							'drift': 'дрейф',
 							'float': 'плавание',
@@ -699,9 +702,6 @@ translateValue(value, lang) {
 							'resonant': 'резонирующий',
 							'synchronized': 'синхронизированный',
 							'harmonious': 'гармоничный',
-							'attractive': 'притягательный',
-							'connecting': 'соединяющий',
-							'unifying': 'объединяющий',
 							'withdrawing': 'отстранение',
 							'reflecting': 'размышление',
 							'isolating': 'изоляция',
@@ -723,21 +723,19 @@ translateValue(value, lang) {
 							'fluid': 'текучий',
 							'water': 'вода',
 							'gradient': 'градиент',
-							'pulse': 'пульс',
 							'glow': 'свечение',
-							'layered': 'слоистый',
 							'textured': 'текстурированный',
 							'patterned': 'узорчатый',
-							'warm': 'тёплый',
-							'radiant': 'лучистый',
-							'cool': 'холодный',
-							'matte': 'матовый',
+							'warm': 'тёплые',
+							'radiant': 'лучистые',
+							'cool': 'холодные',
+							'matte': 'матовые',
 							'expressionist': 'экспрессионизм',
 							'abstract': 'абстракция',
 							'dynamic': 'динамика',
 							'minimalist': 'минимализм',
-							'subtle': 'тонкость',
-							'quiet': 'тишина',
+							'subtle': 'тонкий',
+							'quiet': 'тихий',
 							'cubist': 'кубизм',
 							'surreal': 'сюрреализм',
 							'multi-layered': 'многослойный',
@@ -755,14 +753,12 @@ translateValue(value, lang) {
 							'mixed': 'смешанный',
 							'eclectic': 'эклектика',
 							'celebratory': 'праздничный',
-							'cheerful': 'жизнерадостный',
+							'cheerful': 'жизнерадостное',
 							'ecstatic': 'экстатический',
-							'radiant': 'лучезарный',
 							'pleasant': 'приятный',
 							'satisfied': 'удовлетворённый',
 							'content': 'довольный',
 							'serene': 'безмятежный',
-							'peaceful': 'мирный',
 							'tragic': 'трагический',
 							'melancholic': 'меланхоличный',
 							'grieving': 'скорбящий',
@@ -782,7 +778,9 @@ translateValue(value, lang) {
 							'reflective': 'рефлексивный',
 							'contemplative': 'созерцательный',
 							'ironic': 'ироничный',
-							'ambivalent': 'амбивалентный',
+							'detached': 'отстранённый',
+							'isolated': 'изолированный',
+							'passive': 'пассивный',
 							
 							'limited analysis reliability': 'ограниченная надёжность анализа',
 							'high emotional variability': 'высокая эмоциональная изменчивость',
@@ -2299,15 +2297,24 @@ renderResult(result) {
 	    html += `<div class="emotion-section"><h3>${translations.visualProfile}</h3>`;
 	
 	    if (visual.textures && visual.textures.length) {
-	        html += `<div class="emotion-metric"><span class="label">${translations.textures}:</span> <span class="value" style="text-align:right !important;float:right;">${visual.textures.map(t => this.translateValue(t, currentLang)).join(', ')}</span></div>`;
+	        html += `<div class="emotion-metric">` +
+	            `<span class="label" title="${translations.texturesHint}">${translations.textures}:</span> ` +
+	            `<span class="value" style="text-align:right !important;float:right;">${visual.textures.map(t => this.translateValue(t, currentLang)).join(', ')}</span>` +
+	            `</div>`;
 	    }
 	
 	    if (visual.suggestedStyles && visual.suggestedStyles.length) {
-	        html += `<div class="emotion-metric"><span class="label">${translations.suggestedStyles}:</span> <span class="value" style="text-align:right !important;float:right;">${visual.suggestedStyles.map(s => this.translateValue(s, currentLang)).join(', ')}</span></div>`;
+	        html += `<div class="emotion-metric">` +
+	            `<span class="label" title="${translations.suggestedStylesHint}">${translations.suggestedStyles}:</span> ` +
+	            `<span class="value" style="text-align:right !important;float:right;">${visual.suggestedStyles.map(s => this.translateValue(s, currentLang)).join(', ')}</span>` +
+	            `</div>`;
 	    }
 	
 	    if (visual.mood) {
-	        html += `<div class="emotion-metric"><span class="label">${translations.mood}:</span> <span class="value" style="text-align:right !important;float:right;">${this.translateValue(visual.mood, currentLang)}</span></div>`;
+	        html += `<div class="emotion-metric">` +
+	            `<span class="label" title="${translations.moodHint}">${translations.mood}:</span> ` +
+	            `<span class="value" style="text-align:right !important;float:right;">${this.translateValue(visual.mood, currentLang)}</span>` +
+	            `</div>`;
 	    }
 	
 	    html += `</div>`;
@@ -2318,19 +2325,31 @@ renderResult(result) {
 	    html += `<div class="emotion-section"><h3>${translations.behavioralProfile}</h3>`;
 	
 	    if (behav.behaviors && behav.behaviors.length) {
-	        html += `<div class="emotion-metric"><span class="label">${translations.behaviors}:</span> <span class="value" style="text-align:right !important;float:right;">${behav.behaviors.map(b => this.translateValue(b, currentLang)).join(', ')}</span></div>`;
+	        html += `<div class="emotion-metric">` +
+	            `<span class="label" title="${translations.behaviorsHint}">${translations.behaviors}:</span> ` +
+	            `<span class="value" style="text-align:right !important;float:right;">${behav.behaviors.map(b => this.translateValue(b, currentLang)).join(', ')}</span>` +
+	            `</div>`;
 	    }
 	
 	    if (behav.interactions && behav.interactions.length) {
-	        html += `<div class="emotion-metric"><span class="label">${translations.interactions}:</span> <span class="value" style="text-align:right !important;float:right;">${behav.interactions.map(i => this.translateValue(i, currentLang)).join(', ')}</span></div>`;
+	        html += `<div class="emotion-metric">` +
+	            `<span class="label" title="${translations.interactionsHint}">${translations.interactions}:</span> ` +
+	            `<span class="value" style="text-align:right !important;float:right;">${behav.interactions.map(i => this.translateValue(i, currentLang)).join(', ')}</span>` +
+	            `</div>`;
 	    }
 	
 	    if (behav.tempo) {
-	        html += `<div class="emotion-metric"><span class="label">${translations.tempo}:</span> <span class="value" style="text-align:right !important;float:right;">${this.translateValue(behav.tempo, currentLang)}</span></div>`;
+	        html += `<div class="emotion-metric">` +
+	            `<span class="label" title="${translations.tempoHint}">${translations.tempo}:</span> ` +
+	            `<span class="value" style="text-align:right !important;float:right;">${this.translateValue(behav.tempo, currentLang)}</span>` +
+	            `</div>`;
 	    }
 	
 	    if (behav.fluidity) {
-	        html += `<div class="emotion-metric"><span class="label">${translations.fluidity}:</span> <span class="value" style="text-align:right !important;float:right;">${this.translateValue(behav.fluidity, currentLang)}</span></div>`;
+	        html += `<div class="emotion-metric">` +
+	            `<span class="label" title="${translations.fluidityHint}">${translations.fluidity}:</span> ` +
+	            `<span class="value" style="text-align:right !important;float:right;">${this.translateValue(behav.fluidity, currentLang)}</span>` +
+	            `</div>`;
 	    }
 	
 	    html += `</div>`;
@@ -4393,13 +4412,20 @@ getTranslations(lang) {
 
 										visualProfile: 'Визуальный профиль',
 										textures: 'Текстуры',
-										suggestedStyles: 'Предложенные стили',
+										suggestedStyles: 'Стили',
 										mood: 'Настроение',
 										behavioralProfile: 'Поведенческий профиль',
 										behaviors: 'Поведение',
 										interactions: 'Взаимодействие',
 										tempo: 'Темп',
 										fluidity: 'Текучесть',
+										texturesHint: 'Визуальные текстуры, ассоциируемые с эмоцией',
+										suggestedStylesHint: 'Художественные стили, соответствующие эмоциональному тону',
+										moodHint: 'Общее настроениев тексте',
+										behaviorsHint: 'Метафорические паттерны поведения, отражающие динамику эмоции',
+										interactionsHint: 'Характер взаимодействия с другими (метафорически)',
+										tempoHint: 'Скорость или темп эмоциональных изменений',
+										fluidityHint: 'Степень плавности или изменчивости эмоционального состояния',
 
             emotionalPatterns: 'Эмоциональные паттерны',
             emotionalPatternsDesc: 'Характерные эмоциональные паттерны',
@@ -4798,13 +4824,20 @@ getTranslations(lang) {
 										summaryItemHint: 'Psychological characteristic',
 										visualProfile: 'Visual Profile',
 										textures: 'Textures',
-										suggestedStyles: 'Suggested Styles',
+										suggestedStyles: 'Styles',
 										mood: 'Mood',
 										behavioralProfile: 'Behavioral Profile',
 										behaviors: 'Behaviors',
 										interactions: 'Interactions',
 										tempo: 'Tempo',
 										fluidity: 'Fluidity',
+										texturesHint: 'Visual textures associated with the emotion',
+										suggestedStylesHint: 'Artistic styles matching the emotional tone',
+										moodHint: 'Overall mood conveyed by the text',
+										behaviorsHint: 'Metaphorical behavior patterns reflecting the emotion\'s dynamics',
+										interactionsHint: 'Metaphorical interaction patterns with others',
+										tempoHint: 'Speed or pace of emotional changes',
+										fluidityHint: 'Degree of smoothness or changeability of the emotional state',
             emotionalPatterns: 'Emotional Patterns',
             emotionalPatternsDesc: 'Characteristic emotional patterns',
             cognitiveStyle: 'Cognitive Style',
@@ -5004,6 +5037,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
