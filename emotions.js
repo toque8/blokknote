@@ -9754,165 +9754,199 @@
         }
         
         generateAdvancedVisualProfile(primaryEmotion, intensity, polarity, complexity) {
-            const basePalette = this.generateColorPalette(primaryEmotion, intensity, polarity);
-            
-            let enhancedPalette = [...basePalette];
-            
-            if (complexity > 0.7) {
-                const extraColorsComplex = ['#8A2BE2', '#DA70D6', '#9370DB', '#20B2AA', '#00CED1', '#48D1CC'];
-                for (const color of extraColorsComplex) {
-                    if (!enhancedPalette.includes(color)) {
-                        enhancedPalette.push(color);
+                    const basePalette = this.generateColorPalette(primaryEmotion, intensity, polarity);
+                    let enhancedPalette = [...basePalette];
+
+                    if (complexity > 0.7) {
+                        const extraColorsComplex = ['#8A2BE2', '#DA70D6', '#9370DB', '#20B2AA', '#00CED1', '#48D1CC'];
+                        extraColorsComplex.forEach(color => { if (!enhancedPalette.includes(color)) enhancedPalette.push(color); });
                     }
-                }
-            }
-            
-            if (intensity > 0.7) {
-                const extraColorsIntensity = ['#FF4500', '#FF1493', '#FFD700', '#00FF00', '#00FFFF', '#FF00FF'];
-                for (const color of extraColorsIntensity) {
-                    if (!enhancedPalette.includes(color)) {
-                        enhancedPalette.push(color);
+
+                    if (intensity > 0.7) {
+                        const extraColorsIntensity = ['#FF4500', '#FF1493', '#FFD700', '#00FF00', '#00FFFF', '#FF00FF'];
+                        extraColorsIntensity.forEach(color => { if (!enhancedPalette.includes(color)) enhancedPalette.push(color); });
                     }
-                }
-            }
-            
-            const textures = [];
-            if (intensity > 0.6) textures.push('gradient', 'pulse', 'glow');
-            if (complexity > 0.6) textures.push('layered', 'textured', 'patterned');
-            if (polarity > 0) textures.push('warm', 'radiant');
-            if (polarity < 0) textures.push('cool', 'matte');
-            
-            return {
-                palette: enhancedPalette.slice(0, 4),
-                textures: [...new Set(textures)].slice(0, 5),
-                suggestedStyles: this.suggestVisualStyles(primaryEmotion, intensity, complexity),
-                mood: this.getVisualMood(primaryEmotion, intensity)
-            };
+
+                    const textures = [];
+                    if (intensity > 0.6) textures.push('gradient', 'pulse', 'glow');
+                    if (complexity > 0.6) textures.push('layered', 'textured', 'patterned');
+                    if (polarity > 0) textures.push('warm', 'radiant');
+                    if (polarity < 0) textures.push('cool', 'matte');
+
+                    return {
+                        palette: enhancedPalette.slice(0, 4),
+                        textures: [...new Set(textures)].slice(0, 5),
+                        suggestedStyles: this.suggestVisualStyles(primaryEmotion, intensity, complexity),
+                        mood: this.getVisualMood(primaryEmotion, intensity)
+                    };
         }
-        
+
         suggestVisualStyles(emotion, intensity, complexity) {
-            const styles = [];
-            
-            if (intensity > 0.7) {
-                styles.push('expressionist', 'abstract', 'dynamic');
-            } else if (intensity < 0.3) {
-                styles.push('minimalist', 'subtle', 'quiet');
-            }
-            
-            if (complexity > 0.7) {
-                styles.push('cubist', 'surreal', 'multi-layered');
-            }
-            
-            if (['joyful', 'ecstatic', 'happy'].includes(emotion)) {
-                styles.push('impressionist', 'bright', 'vibrant');
-            } else if (['sad', 'melancholic', 'grief'].includes(emotion)) {
-                styles.push('romantic', 'soft', 'blurred');
-            } else if (['angry', 'tense', 'anxious'].includes(emotion)) {
-                styles.push('expressionist', 'distorted', 'chaotic');
-            }
-            
-            return [...new Set(styles)].slice(0, 5);
+                    const styles = [];
+                    if (intensity > 0.7) styles.push('expressionist', 'abstract', 'dynamic');
+                    else if (intensity < 0.3) styles.push('minimalist', 'subtle', 'quiet');
+
+                    if (complexity > 0.7) styles.push('cubist', 'surreal', 'multi-layered');
+
+                    const emotionGroups = {
+                        positive: ['joyful', 'ecstatic', 'happy', 'euphoric', 'exhilarated', 'pleased', 'satisfied', 'content', 'calm', 'peaceful'],
+                        negative: ['sad', 'melancholic', 'grief', 'despairing', 'angry', 'enraged', 'tense', 'anxious', 'terrified', 'subdued', 'pensive', 'resigned'],
+                        complex: ['complex', 'bittersweet', 'nostalgic', 'reflective', 'contemplative', 'mixed', 'ironic', 'ambivalent']
+                    };
+
+                    if (emotionGroups.positive.includes(emotion)) styles.push('impressionist', 'bright', 'vibrant');
+                    else if (emotionGroups.negative.includes(emotion)) {
+                        if (emotion.includes('angry') || emotion.includes('enraged')) styles.push('expressionist', 'distorted', 'chaotic');
+                        else if (emotion.includes('sad') || emotion.includes('melancholic')) styles.push('romantic', 'soft', 'blurred');
+                        else if (emotion.includes('anxious') || emotion.includes('terrified')) styles.push('surreal', 'distorted', 'fractured');
+                        else styles.push('dark', 'muted', 'gloomy');
+                    } else if (emotionGroups.complex.includes(emotion)) {
+                        styles.push('mixed', 'eclectic', 'surreal');
+                    }
+
+                    return [...new Set(styles)].slice(0, 5);
         }
-        
+
         getVisualMood(emotion, intensity) {
-            const moods = {
-                joyful: intensity > 0.6 ? 'celebratory' : 'cheerful',
-                sad: intensity > 0.6 ? 'tragic' : 'melancholic',
-                angry: intensity > 0.6 ? 'explosive' : 'tense',
-                calm: intensity > 0.6 ? 'serene' : 'peaceful',
-                complex: intensity > 0.6 ? 'profound' : 'thoughtful'
-            };
-            
-            return moods[emotion] || 'expressive';
+                    const moods = {
+                        joyful: intensity > 0.6 ? 'celebratory' : 'cheerful',
+                        ecstatic: 'ecstatic',
+                        happy: intensity > 0.6 ? 'radiant' : 'pleasant',
+                        euphoric: 'euphoric',
+                        exhilarated: 'exhilarating',
+                        pleased: 'pleased',
+                        satisfied: 'satisfied',
+                        content: 'content',
+                        calm: intensity > 0.6 ? 'serene' : 'peaceful',
+                        peaceful: 'peaceful',
+                        sad: intensity > 0.6 ? 'tragic' : 'melancholic',
+                        melancholic: 'melancholic',
+                        grief: 'grieving',
+                        despairing: 'despairing',
+                        angry: intensity > 0.6 ? 'explosive' : 'tense',
+                        enraged: 'enraged',
+                        tense: 'tense',
+                        anxious: 'anxious',
+                        terrified: 'terrified',
+                        subdued: 'subdued',
+                        pensive: 'pensive',
+                        resigned: 'resigned',
+                        complex: intensity > 0.6 ? 'profound' : 'thoughtful',
+                        bittersweet: 'bittersweet',
+                        nostalgic: 'nostalgic',
+                        reflective: 'reflective',
+                        contemplative: 'contemplative',
+                        mixed: 'mixed',
+                        ironic: 'ironic',
+                        ambivalent: 'ambivalent'
+                    };
+                    return moods[emotion] || 'expressive';
         }
-        
-        generateBehaviorProfile(tone, intensity, complexity) {
-            const behaviors = {
-                ecstatic: ['chaos', 'pulse', 'explode', 'swarm', 'magnetic'],
-                joyful: ['swarm', 'orbit', 'wave', 'pulse', 'attract'],
-                pleased: ['orbit', 'wave', 'swarm', 'drift', 'float'],
-                calm: ['orbit', 'drift', 'float', 'gentle', 'slow'],
-                angry: ['chaos', 'repel', 'explode', 'violent', 'scatter'],
-                sad: ['drift', 'sink', 'fall', 'slow', 'gravitate'],
-                melancholy: ['spiral', 'drift', 'sink', 'orbit', 'float'],
-                subdued: ['drift', 'float', 'gentle', 'slow', 'calm'],
-                complex: ['spiral', 'swarm', 'orbit', 'wave', 'chaos'],
-                balanced: ['orbit', 'wave', 'swarm', 'drift', 'pulse']
-            };
-    
-            let baseBehaviors = behaviors[tone] || behaviors.balanced;
-    
-            if (intensity > 0.6) {
-                baseBehaviors = [...baseBehaviors, 'intense', 'fast', 'energetic'];
-            } else if (intensity < 0.3) {
-                baseBehaviors = [...baseBehaviors, 'slow', 'gentle', 'peaceful'];
-            }
-    
-            if (complexity > 0.6) {
-                baseBehaviors = [...baseBehaviors, 'complex', 'layered', 'multidimensional'];
-            }
-    
-            return Array.from(new Set(baseBehaviors)).slice(0, 8); 
+
+        generateBehaviorProfile(emotion, intensity, complexity) {
+                    const baseBehaviors = {
+                        ecstatic: ['chaos', 'pulse', 'explode', 'swarm', 'magnetic'],
+                        joyful: ['swarm', 'orbit', 'wave', 'pulse', 'attract'],
+                        happy: ['orbit', 'wave', 'swarm', 'drift', 'float'],
+                        euphoric: ['explode', 'pulse', 'swarm', 'magnetic', 'attract'],
+                        exhilarated: ['pulse', 'wave', 'orbit', 'fast', 'swarm'],
+                        pleased: ['orbit', 'wave', 'swarm', 'drift', 'float'],
+                        satisfied: ['drift', 'float', 'orbit', 'slow', 'gentle'],
+                        content: ['drift', 'float', 'gentle', 'slow', 'calm'],
+                        calm: ['orbit', 'drift', 'float', 'gentle', 'slow'],
+                        peaceful: ['drift', 'float', 'gentle', 'slow', 'still'],
+                        sad: ['drift', 'sink', 'fall', 'slow', 'gravitate'],
+                        melancholic: ['spiral', 'drift', 'sink', 'orbit', 'float'],
+                        grief: ['sink', 'fall', 'gravitate', 'slow', 'dissolve'],
+                        despairing: ['sink', 'fall', 'dissolve', 'chaos', 'scatter'],
+                        angry: ['chaos', 'repel', 'explode', 'violent', 'scatter'],
+                        enraged: ['chaos', 'explode', 'violent', 'scatter', 'destroy'],
+                        tense: ['vibrate', 'pulse', 'shake', 'contract', 'resist'],
+                        anxious: ['shake', 'vibrate', 'twitch', 'pulse', 'resist'],
+                        terrified: ['scatter', 'flee', 'shake', 'chaos', 'collapse'],
+                        subdued: ['drift', 'float', 'gentle', 'slow', 'calm'],
+                        pensive: ['orbit', 'spiral', 'drift', 'slow', 'reflect'],
+                        resigned: ['sink', 'drift', 'float', 'slow', 'accept'],
+                        complex: ['spiral', 'swarm', 'orbit', 'wave', 'chaos'],
+                        bittersweet: ['spiral', 'wave', 'drift', 'attract', 'repel'],
+                        nostalgic: ['spiral', 'drift', 'float', 'orbit', 'echo'],
+                        reflective: ['orbit', 'spiral', 'drift', 'slow', 'reflect'],
+                        contemplative: ['still', 'orbit', 'drift', 'slow', 'observe'],
+                        mixed: ['chaos', 'swarm', 'spiral', 'attract', 'repel'],
+                        ironic: ['spiral', 'twist', 'reflect', 'drift', 'echo'],
+                        ambivalent: ['attract', 'repel', 'pulse', 'wave', 'chaos'],
+                        balanced: ['orbit', 'wave', 'swarm', 'drift', 'pulse']
+                    };
+
+                    let behaviors = baseBehaviors[emotion] || baseBehaviors.balanced;
+
+                    if (intensity > 0.6) {
+                        behaviors = [...behaviors, 'intense', 'fast', 'energetic'];
+                    } else if (intensity < 0.3) {
+                        behaviors = [...behaviors, 'slow', 'gentle', 'peaceful'];
+                    }
+
+                    if (complexity > 0.6) {
+                        behaviors = [...behaviors, 'complex', 'layered', 'multidimensional'];
+                    }
+
+                    return Array.from(new Set(behaviors)).slice(0, 8);
         }
-        
+
         generateAdvancedBehavioralProfile(primaryEmotion, intensity, complexity) {
-            const baseBehaviors = this.generateBehaviorProfile(primaryEmotion, intensity, complexity);
-            
-            let enhancedBehaviors = [...baseBehaviors];
-            
-            if (complexity > 0.7) {
-                enhancedBehaviors = enhancedBehaviors.concat([
-                    'evolve', 'transform', 'metamorphose', 
-                    'intertwine', 'converge', 'diverge'
-                ]);
-            }
-            
-            if (intensity > 0.7) {
-                enhancedBehaviors = enhancedBehaviors.concat([
-                    'accelerate', 'amplify', 'magnify',
-                    'resonate', 'reverberate', 'echo'
-                ]);
-            }
-            
-            const interactions = this.suggestInteractionPatterns(primaryEmotion, intensity);
-            
-            return {
-                behaviors: [...new Set(enhancedBehaviors)].slice(0, 10),
-                interactions: interactions,
-                tempo: this.getBehavioralTempo(intensity, complexity),
-                fluidity: this.getBehavioralFluidity(complexity)
-            };
+                    const baseBehaviors = this.generateBehaviorProfile(primaryEmotion, intensity, complexity);
+                    let enhancedBehaviors = [...baseBehaviors];
+
+                    if (complexity > 0.7) {
+                        enhancedBehaviors = enhancedBehaviors.concat(['evolve', 'transform', 'metamorphose', 'intertwine', 'converge', 'diverge']);
+                    }
+
+                    if (intensity > 0.7) {
+                        enhancedBehaviors = enhancedBehaviors.concat(['accelerate', 'amplify', 'magnify', 'resonate', 'reverberate', 'echo']);
+                    }
+
+                    const interactions = this.suggestInteractionPatterns(primaryEmotion, intensity);
+
+                    return {
+                        behaviors: [...new Set(enhancedBehaviors)].slice(0, 10),
+                        interactions: interactions,
+                        tempo: this.getBehavioralTempo(intensity, complexity),
+                        fluidity: this.getBehavioralFluidity(complexity)
+                    };
         }
-        
+
         suggestInteractionPatterns(emotion, intensity) {
-            const patterns = [];
-            
-            if (intensity > 0.6) {
-                patterns.push('resonant', 'synchronized', 'harmonious');
-            }
-            
-            if (['joyful', 'ecstatic', 'happy'].includes(emotion)) {
-                patterns.push('attractive', 'connecting', 'unifying');
-            } else if (['sad', 'melancholic'].includes(emotion)) {
-                patterns.push('withdrawing', 'reflecting', 'isolating');
-            } else if (['angry', 'tense'].includes(emotion)) {
-                patterns.push('repelling', 'conflicting', 'resisting');
-            }
-            
-            return [...new Set(patterns)].slice(0, 4);
+                    const patterns = [];
+
+                    if (intensity > 0.6) patterns.push('resonant', 'synchronized', 'harmonious');
+                    else if (intensity < 0.3) patterns.push('detached', 'isolated', 'passive');
+
+                    const positive = ['joyful', 'ecstatic', 'happy', 'euphoric', 'exhilarated', 'pleased', 'satisfied', 'content', 'calm', 'peaceful'];
+                    const negative = ['sad', 'melancholic', 'grief', 'despairing', 'angry', 'enraged', 'tense', 'anxious', 'terrified', 'subdued', 'pensive', 'resigned'];
+                    const complex = ['complex', 'bittersweet', 'nostalgic', 'reflective', 'contemplative', 'mixed', 'ironic', 'ambivalent'];
+
+                    if (positive.includes(emotion)) patterns.push('attractive', 'connecting', 'unifying');
+                    else if (negative.includes(emotion)) {
+                        if (emotion.includes('angry') || emotion.includes('enraged')) patterns.push('repelling', 'conflicting', 'resisting');
+                        else if (emotion.includes('sad') || emotion.includes('melancholic')) patterns.push('withdrawing', 'reflecting', 'isolating');
+                        else if (emotion.includes('anxious') || emotion.includes('terrified')) patterns.push('avoiding', 'fleeing', 'guarding');
+                        else patterns.push('withdrawn', 'closed', 'resisting');
+                    } else if (complex.includes(emotion)) patterns.push('ambivalent', 'paradoxical', 'shifting');
+
+                    return [...new Set(patterns)].slice(0, 4);
         }
-        
+
         getBehavioralTempo(intensity, complexity) {
-            if (intensity > 0.7) return 'allegro';
-            if (intensity < 0.3) return 'lento';
-            if (complexity > 0.7) return 'rubato';
-            return 'andante';
+                    if (intensity > 0.7) return 'allegro';
+                    if (intensity < 0.3) return 'lento';
+                    if (complexity > 0.7) return 'rubato';
+                    return 'andante';
         }
-        
+
         getBehavioralFluidity(complexity) {
-            if (complexity > 0.7) return 'viscous';
-            if (complexity > 0.4) return 'fluid';
-            return 'water';
+                    if (complexity > 0.7) return 'viscous';
+                    if (complexity > 0.4) return 'fluid';
+                    return 'water';
         }
         
         integratePsychologicalInsights(integratedResult) {
@@ -10048,61 +10082,74 @@
         }
         
         determineNarrativeArchetype(integratedResult) {
-            const { emotion } = integratedResult.dominantEmotion;
-            const intensity = integratedResult.emotionalRange;
-            const progression = integratedResult.dimensionScores.semantic;
-            
-            const archetypes = {
-                heroic: emotion === 'joyful' && intensity > 0.6,
-                tragic: emotion === 'sad' && intensity > 0.6,
-                romantic: emotion === 'love' && intensity > 0.5,
-                comic: emotion === 'joyful' && intensity < 0.4,
-                ironic: integratedResult.ironyLevel > 0.5,
-                epic: integratedResult.complexityScore > 0.7 && intensity > 0.6,
-                lyrical: integratedResult.emotionalDepth > 0.7
-            };
-            
-            for (const [archetype, condition] of Object.entries(archetypes)) {
-                if (condition) return archetype;
-            }
-            
-            return 'realistic';
+                    const emotion = integratedResult.dominantEmotion?.emotion || 'neutral';
+                    const intensity = integratedResult.emotionalRange || 0;
+                    const complexity = integratedResult.complexityScore || 0;
+                    const irony = integratedResult.ironyLevel || 0;
+                    const depth = integratedResult.emotionalDepth || 0;
+                    const volatility = integratedResult.details?.lexical?.temporal?.metrics?.volatility || 0;
+                    const range = integratedResult.emotionalRange || 0.3;
+
+                    const archetypes = {
+                        heroic: (['ecstatic', 'joyful', 'euphoric', 'triumphant'].includes(emotion) || emotion === 'pride') && intensity > 0.5,
+                        tragic: (['sad', 'grief', 'despairing', 'melancholic'].includes(emotion) || emotion === 'sorrow') && intensity > 0.5,
+                        romantic: (['love', 'affection', 'tenderness', 'passion'].includes(emotion) || emotion === 'romantic') && intensity > 0.4,
+                        comic: (['joyful', 'happy', 'amused'].includes(emotion) || emotion === 'humor') && intensity > 0.3 && intensity < 0.5,
+                        ironic: irony > 0.4,
+                        epic: complexity > 0.6 && intensity > 0.5 && volatility > 0.4,
+                        lyrical: depth > 0.6,
+                        melancholic: (['sad', 'melancholic', 'pensive', 'nostalgic'].includes(emotion) || emotion === 'longing') && intensity > 0.3 && intensity < 0.6,
+                        dramatic: volatility > 0.5 && range > 0.4,
+                        philosophical: (['reflective', 'contemplative', 'thoughtful'].includes(emotion) || emotion === 'philosophical') && depth > 0.5,
+                        absurd: irony > 0.6 && complexity > 0.6,
+                        spiritual: (['awe', 'wonder', 'mystical'].includes(emotion) || emotion === 'transcendence') && depth > 0.5,
+                        horrific: (['fear', 'terror', 'dread'].includes(emotion) || emotion === 'horror') && intensity > 0.6,
+                        suspenseful: (['anxiety', 'anticipation', 'unease'].includes(emotion) || emotion === 'suspense') && volatility > 0.5
+                    };
+
+                    for (const [archetype, condition] of Object.entries(archetypes)) {
+                        if (condition) return archetype;
+                    }
+
+                    return 'realistic';
         }
         
         getAdvancedDisplayName(primaryEmotion, polarity, intensity, complexity) {
-                              const names = {
-                                        ecstatic: polarity > 0.8 ? 'Божественный экстаз' : 'Всепоглощающая радость',
-                                        joyful: intensity > 0.7 ? 'Лучистая радость' : 'Тихий восторг',
-                                        happy: 'Счастливая гармония',
-                                        content: 'Умиротворённое удовлетворение',
-                                        calm: intensity < 0.2 ? 'Абсолютное спокойствие' : 'Гармоничное равновесие',
-                                        angry: intensity > 0.8 ? 'Яростный шторм' : 'Сдерживаемая буря',
-                                        sad: intensity > 0.6 ? 'Бездонная печаль' : 'Нежная грусть',
-                                        melancholic: 'Философская меланхолия',
-                                        anxious: 'Тревожное ожидание',
-                                        complex: complexity > 0.7 ? 'Многогранная сложность' : 'Сложное переплетение',
-                                        bittersweet: 'Горько-сладкая симфония',
-                                        nostalgic: 'Ностальгическое эхо',
-                                        reflective: 'Глубокое размышление',
-                                        contemplative: 'Созерцательное спокойствие',
-                                        mixed: 'Смешанные чувства',
-                                        ironic: 'Ироничный взгляд',
-                                        vulnerable: 'Уязвимая нежность',
-                                        resilient: 'Стойкая уверенность',
-                                        enraged: 'Неистовая ярость',
-                                        despairing: 'Всепоглощающее отчаяние',
-                                        terrified: 'Леденящий ужас',
-                                        subdued: 'Приглушённая тоска',
-                                        pensive: 'Задумчивая печаль',
-                                        resigned: 'Смиренное принятие',
-                                        euphoric: 'Эйфорический восторг',
-                                        exhilarated: 'Ошеломляющая радость',
-                                        pleased: 'Тихая радость',
-                                        satisfied: 'Довольное спокойствие',
-                                        balanced: 'Сбалансированное состояние',
-                                        detached: 'Отстранённое наблюдение'
-                              };
-                              return names[primaryEmotion] || 'Эмоциональная гамма';
+                    const names = {
+                        ecstatic: polarity > 0.8 ? 'Божественный экстаз' : 'Всепоглощающая радость',
+                        joyful: intensity > 0.7 ? 'Лучистая радость' : 'Тихий восторг',
+                        happy: 'Счастливая гармония',
+                        content: 'Умиротворённое удовлетворение',
+                        calm: intensity < 0.2 ? 'Абсолютное спокойствие' : 'Гармоничное равновесие',
+                        angry: intensity > 0.8 ? 'Яростный шторм' : 'Сдерживаемая буря',
+                        sad: intensity > 0.6 ? 'Бездонная печаль' : 'Нежная грусть',
+                        melancholic: 'Философская меланхолия',
+                        anxious: 'Тревожное ожидание',
+                        complex: complexity > 0.7 ? 'Многогранная сложность' : 'Сложное переплетение',
+                        bittersweet: 'Горько-сладкая симфония',
+                        nostalgic: 'Ностальгическое эхо',
+                        reflective: 'Глубокое размышление',
+                        contemplative: 'Созерцательное спокойствие',
+                        mixed: 'Смешанные чувства',
+                        ironic: 'Ироничный взгляд',
+                        vulnerable: 'Уязвимая нежность',
+                        resilient: 'Стойкая уверенность',
+                        enraged: 'Неистовая ярость',
+                        despairing: 'Всепоглощающее отчаяние',
+                        terrified: 'Леденящий ужас',
+                        subdued: 'Приглушённая тоска',
+                        pensive: 'Задумчивая печаль',
+                        resigned: 'Смиренное принятие',
+                        euphoric: 'Эйфорический восторг',
+                        exhilarated: 'Ошеломляющая радость',
+                        pleased: 'Тихая радость',
+                        satisfied: 'Довольное спокойствие',
+                        ambivalent: 'Двойственные чувства',
+                        balanced: 'Сбалансированное состояние',
+                        detached: 'Отстранённое наблюдение',
+                        neutral: 'Нейтральное состояние'
+                    };
+                    return names[primaryEmotion] || 'Эмоциональная гамма';
         }
         
         getAdvancedDescription(primaryEmotion, polarity, intensity, complexity) {
@@ -11101,6 +11148,7 @@
     
 
 })();
+
 
 
 
