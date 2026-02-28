@@ -2611,41 +2611,65 @@
                 if (typeof sentence !== 'string' || sentence.length === 0) {
                     return 0;
                 }
-                
+            
                 const normalizedSentence = sentence
                     .toLowerCase()
                     .normalize('NFKC')
                     .replace(/[^\p{L}\p{M}\p{N}\s\-']/gu, ' ');
-                
-                const words = normalizedSentence
+            
+                let words = normalizedSentence
                     .split(/\s+/)
                     .filter(w => {
                         const trimmed = w.replace(/^[-']+|[-']+$/g, '');
                         return trimmed.length >= this.metricsConfig.wordThreshold;
                     });
-                
+            
+                if (this.language === 'ru') {
+                    words = words.map(w => {
+                        if (!w || w.length < 3) return w;
+                        let stem = w;
+                        if (w.length > 6) {
+                            if (w.endsWith('ого') || w.endsWith('его') || w.endsWith('ому') || w.endsWith('ему')) stem = w.slice(0, -3);
+                            else if (w.endsWith('ыми') || w.endsWith('ими')) stem = w.slice(0, -3);
+                        }
+                        if (stem === w && w.length > 5) {
+                            if (w.endsWith('ая') || w.endsWith('яя') || w.endsWith('ое') || w.endsWith('ее') || w.endsWith('ые') || w.endsWith('ие')) stem = w.slice(0, -2);
+                            else if (w.endsWith('ой') || w.endsWith('ий') || w.endsWith('ый')) stem = w.slice(0, -2);
+                            else if (w.endsWith('ом') || w.endsWith('ем') || w.endsWith('ам') || w.endsWith('ям')) stem = w.slice(0, -2);
+                            else if (w.endsWith('ов') || w.endsWith('ев') || w.endsWith('ин') || w.endsWith('ын')) stem = w.slice(0, -2);
+                            else if (w.endsWith('ах') || w.endsWith('ях')) stem = w.slice(0, -2);
+                        }
+                        if (stem === w && w.length > 4) {
+                            if (w.endsWith('ка') || w.endsWith('га') || w.endsWith('ха')) stem = w.slice(0, -1);
+                            else if (w.endsWith('ть') || w.endsWith('ти')) stem = w.slice(0, -2);
+                            else if (w.endsWith('ла') || w.endsWith('ло') || w.endsWith('ли')) stem = w.slice(0, -2);
+                        }
+                        return stem;
+                    });
+                }
+            
                 if (words.length === 0) {
                     return 0;
                 }
-                
+            
                 const dict = this.dictionaries[this.language];
                 let totalCount = 0;
                 const foundWords = new Set();
-                
+            
                 for (const [category, categoryWords] of Object.entries(dict)) {
                     if (!Array.isArray(categoryWords)) {
                         continue;
                     }
-                    
+            
                     for (const emotionalWord of categoryWords) {
                         if (words.includes(emotionalWord)) {
                             totalCount++;
                             foundWords.add(emotionalWord);
                         }
                     }
-                    
+            
                     const categoryVariants = this.generateWordVariants(categoryWords);
-                    
+            
                     for (const variant of categoryVariants) {
                         if (words.includes(variant) && !foundWords.has(variant)) {
                             totalCount++;
@@ -2653,10 +2677,10 @@
                         }
                     }
                 }
-                
+            
                 const partialMatches = this.countPartialMatches(words, dict);
                 const contextualMatches = this.countContextualEmotions(sentence, dict);
-                
+            
                 return totalCount + partialMatches + contextualMatches;
         }
           
@@ -7211,31 +7235,52 @@
         }
         
         calculateSentenceEmotionScore(sentence) {
-            const words = this.enhancedTokenization(sentence.toLowerCase());
-            let score = 0;
-            let weightSum = 0;
-            const foundCategories = new Set();
-            
-            for (const [category, wordList] of Object.entries(this.dictionaries[this.language])) {
-                const categoryWeight = this.categoryWeights[category] || 1.0;
-                
-                for (const word of wordList) {
-                    if (words.includes(word)) {
-                        if (!foundCategories.has(category)) {
-                            const polarity = this.getCategoryPolarity(category);
-                            score += polarity * categoryWeight;
-                            foundCategories.add(category);
-                            weightSum += categoryWeight;
+                    const words = this.enhancedTokenization(sentence.toLowerCase());
+                    let processedWords = words;
+                    if (this.language === 'ru') {
+                        processedWords = words.map(w => {
+                            if (!w || w.length < 3) return w;
+                            let stem = w;
+                            if (w.length > 6) {
+                                if (w.endsWith('ого') || w.endsWith('его') || w.endsWith('ому') || w.endsWith('ему')) stem = w.slice(0, -3);
+                                else if (w.endsWith('ыми') || w.endsWith('ими')) stem = w.slice(0, -3);
+                            }
+                            if (stem === w && w.length > 5) {
+                                if (w.endsWith('ая') || w.endsWith('яя') || w.endsWith('ое') || w.endsWith('ее') || w.endsWith('ые') || w.endsWith('ие')) stem = w.slice(0, -2);
+                                else if (w.endsWith('ой') || w.endsWith('ий') || w.endsWith('ый')) stem = w.slice(0, -2);
+                                else if (w.endsWith('ом') || w.endsWith('ем') || w.endsWith('ам') || w.endsWith('ям')) stem = w.slice(0, -2);
+                                else if (w.endsWith('ов') || w.endsWith('ев') || w.endsWith('ин') || w.endsWith('ын')) stem = w.slice(0, -2);
+                                else if (w.endsWith('ах') || w.endsWith('ях')) stem = w.slice(0, -2);
+                            }
+                            if (stem === w && w.length > 4) {
+                                if (w.endsWith('ка') || w.endsWith('га') || w.endsWith('ха')) stem = w.slice(0, -1);
+                                else if (w.endsWith('ть') || w.endsWith('ти')) stem = w.slice(0, -2);
+                                else if (w.endsWith('ла') || w.endsWith('ло') || w.endsWith('ли')) stem = w.slice(0, -2);
+                            }
+                            return stem;
+                        });
+                    }
+
+                    let score = 0;
+                    let weightSum = 0;
+                    const foundCategories = new Set();
+
+                    for (const [category, wordList] of Object.entries(this.dictionaries[this.language])) {
+                        const categoryWeight = this.categoryWeights[category] || 1.0;
+                        for (const word of wordList) {
+                            if (processedWords.includes(word)) {
+                                if (!foundCategories.has(category)) {
+                                    const polarity = this.getCategoryPolarity(category);
+                                    score += polarity * categoryWeight;
+                                    foundCategories.add(category);
+                                    weightSum += categoryWeight;
+                                }
+                            }
                         }
                     }
-                }
-            }
-            
-            const intensityBonus = Math.min(0.3, foundCategories.size * 0.1);
-            
-            return weightSum > 0 ? 
-                (score / weightSum) * (1 + intensityBonus) * Math.min(1, foundCategories.size / 3) : 
-                0;
+
+                    const intensityBonus = Math.min(0.3, foundCategories.size * 0.1);
+                    return weightSum > 0 ? (score / weightSum) * (1 + intensityBonus) * Math.min(1, foundCategories.size / 3) : 0;
         }
         
         getCategoryPolarity(category) {
@@ -9234,7 +9279,7 @@
             const normalizedCategories = Math.min(1, categoryCount / 15);
             rangeFactors.push({ value: normalizedCategories, weight: 0.30 });
             
-            const lexicalDistribution = analyses.lexical?.metrics?.distribution || 0;
+            const lexicalDistribution = analyses.lexical?.metrics?.distribution?.coverage || 0;
             rangeFactors.push({ value: lexicalDistribution, weight: 0.25 });
             
             const complexEmotions = ['ambivalence', 'bittersweet', 'nostalgiaMixed', 'irony', 'nostalgia'];
@@ -11148,6 +11193,7 @@
     
 
 })();
+
 
 
 
