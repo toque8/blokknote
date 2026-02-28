@@ -647,6 +647,142 @@ translateValue(value, lang) {
 							'ограниченный': 'ограниченный',
 							'умеренный': 'умеренный',
 							'высокий': 'высокий',
+
+							'chaos': 'хаос',
+							'pulse': 'пульсация',
+							'explode': 'взрыв',
+							'swarm': 'рой',
+							'magnetic': 'магнитный',
+							'wave': 'волна',
+							'attract': 'притяжение',
+							'orbital': 'орбитальный',
+							'drift': 'дрейф',
+							'float': 'плавание',
+							'slow': 'медленный',
+							'fast': 'быстрый',
+							'energetic': 'энергичный',
+							'gentle': 'мягкий',
+							'peaceful': 'мирный',
+							'complex': 'сложный',
+							'layered': 'многослойный',
+							'multidimensional': 'многомерный',
+							'spiral': 'спираль',
+							'sink': 'погружение',
+							'fall': 'падение',
+							'gravitate': 'притяжение',
+							'repel': 'отталкивание',
+							'violent': 'яростный',
+							'scatter': 'рассеивание',
+							'twitch': 'подергивание',
+							'vibrate': 'вибрация',
+							'shake': 'тряска',
+							'contract': 'сжатие',
+							'resist': 'сопротивление',
+							'flee': 'бегство',
+							'collapse': 'коллапс',
+							'dissolve': 'растворение',
+							'reflect': 'отражение',
+							'accept': 'принятие',
+							'echo': 'эхо',
+							'twist': 'изгиб',
+							'evolve': 'эволюция',
+							'transform': 'трансформация',
+							'metamorphose': 'метаморфоза',
+							'intertwine': 'переплетение',
+							'converge': 'схождение',
+							'diverge': 'расхождение',
+							'accelerate': 'ускорение',
+							'amplify': 'усиление',
+							'magnify': 'увеличение',
+							'resonate': 'резонанс',
+							'reverberate': 'отзвук',
+							'resonant': 'резонирующий',
+							'synchronized': 'синхронизированный',
+							'harmonious': 'гармоничный',
+							'attractive': 'притягательный',
+							'connecting': 'соединяющий',
+							'unifying': 'объединяющий',
+							'withdrawing': 'отстранение',
+							'reflecting': 'размышление',
+							'isolating': 'изоляция',
+							'repelling': 'отталкивание',
+							'conflicting': 'конфликт',
+							'resisting': 'сопротивление',
+							'avoiding': 'избегание',
+							'guarding': 'защита',
+							'withdrawn': 'замкнутый',
+							'closed': 'закрытый',
+							'ambivalent': 'амбивалентный',
+							'paradoxical': 'парадоксальный',
+							'shifting': 'изменчивый',
+							'allegro': 'аллегро',
+							'lento': 'ленто',
+							'rubato': 'рубато',
+							'andante': 'анданте',
+							'viscous': 'вязкий',
+							'fluid': 'текучий',
+							'water': 'вода',
+							'gradient': 'градиент',
+							'pulse': 'пульс',
+							'glow': 'свечение',
+							'layered': 'слоистый',
+							'textured': 'текстурированный',
+							'patterned': 'узорчатый',
+							'warm': 'тёплый',
+							'radiant': 'лучистый',
+							'cool': 'холодный',
+							'matte': 'матовый',
+							'expressionist': 'экспрессионизм',
+							'abstract': 'абстракция',
+							'dynamic': 'динамика',
+							'minimalist': 'минимализм',
+							'subtle': 'тонкость',
+							'quiet': 'тишина',
+							'cubist': 'кубизм',
+							'surreal': 'сюрреализм',
+							'multi-layered': 'многослойный',
+							'impressionist': 'импрессионизм',
+							'bright': 'яркий',
+							'vibrant': 'живой',
+							'romantic': 'романтизм',
+							'soft': 'мягкий',
+							'blurred': 'размытый',
+							'distorted': 'искажённый',
+							'chaotic': 'хаотичный',
+							'dark': 'тёмный',
+							'muted': 'приглушённый',
+							'gloomy': 'мрачный',
+							'mixed': 'смешанный',
+							'eclectic': 'эклектика',
+							'celebratory': 'праздничный',
+							'cheerful': 'жизнерадостный',
+							'ecstatic': 'экстатический',
+							'radiant': 'лучезарный',
+							'pleasant': 'приятный',
+							'satisfied': 'удовлетворённый',
+							'content': 'довольный',
+							'serene': 'безмятежный',
+							'peaceful': 'мирный',
+							'tragic': 'трагический',
+							'melancholic': 'меланхоличный',
+							'grieving': 'скорбящий',
+							'despairing': 'отчаявшийся',
+							'explosive': 'взрывной',
+							'tense': 'напряжённый',
+							'enraged': 'разъярённый',
+							'anxious': 'тревожный',
+							'terrified': 'испуганный',
+							'subdued': 'подавленный',
+							'pensive': 'задумчивый',
+							'resigned': 'смирившийся',
+							'profound': 'глубокий',
+							'thoughtful': 'задумчивый',
+							'bittersweet': 'горько-сладкий',
+							'nostalgic': 'ностальгический',
+							'reflective': 'рефлексивный',
+							'contemplative': 'созерцательный',
+							'ironic': 'ироничный',
+							'ambivalent': 'амбивалентный',
 							
 							'limited analysis reliability': 'ограниченная надёжность анализа',
 							'high emotional variability': 'высокая эмоциональная изменчивость',
@@ -737,6 +873,46 @@ translateValue(value, lang) {
                                         'Довольное спокойствие': 'Content Calm',
                                         'Сбалансированное состояние': 'Balanced State',
                                         'Отстранённое наблюдение': 'Detached Observation',
+
+										'Божественный экстаз': 'Divine Ecstasy',
+										'Всепоглощающая радость': 'All-Encompassing Joy',
+										'Лучистая радость': 'Radiant Joy',
+										'Тихий восторг': 'Quiet Delight',
+										'Счастливая гармония': 'Happy Harmony',
+										'Умиротворённое удовлетворение': 'Peaceful Satisfaction',
+										'Абсолютное спокойствие': 'Absolute Calm',
+										'Гармоничное равновесие': 'Harmonious Balance',
+										'Яростный шторм': 'Furious Storm',
+										'Сдерживаемая буря': 'Contained Storm',
+										'Бездонная печаль': 'Bottomless Sadness',
+										'Нежная грусть': 'Gentle Sadness',
+										'Философская меланхолия': 'Philosophical Melancholy',
+										'Тревожное ожидание': 'Anxious Anticipation',
+										'Многогранная сложность': 'Multifaceted Complexity',
+										'Сложное переплетение': 'Complex Intertwining',
+										'Горько-сладкая симфония': 'Bittersweet Symphony',
+										'Ностальгическое эхо': 'Nostalgic Echo',
+										'Глубокое размышление': 'Deep Reflection',
+										'Созерцательное спокойствие': 'Contemplative Calm',
+										'Смешанные чувства': 'Mixed Feelings',
+										'Ироничный взгляд': 'Ironic Gaze',
+										'Уязвимая нежность': 'Vulnerable Tenderness',
+										'Стойкая уверенность': 'Resilient Confidence',
+										'Неистовая ярость': 'Raging Fury',
+										'Всепоглощающее отчаяние': 'All-consuming Despair',
+										'Леденящий ужас': 'Chilling Horror',
+										'Приглушённая тоска': 'Muffled Longing',
+										'Задумчивая печаль': 'Thoughtful Sadness',
+										'Смиренное принятие': 'Humble Acceptance',
+										'Эйфорический восторг': 'Euphoric Delight',
+										'Ошеломляющая радость': 'Stunning Joy',
+										'Тихая радость': 'Quiet Joy',
+										'Довольное спокойствие': 'Content Calm',
+										'Двойственные чувства': 'Ambivalent Feelings',
+										'Сбалансированное состояние': 'Balanced State',
+										'Отстранённое наблюдение': 'Detached Observation',
+										'Нейтральное состояние': 'Neutral State',
+										'Эмоциональная гамма': 'Emotional Spectrum',
 
 										'высокая': 'high',
 										'умеренная': 'moderate',
@@ -2116,6 +2292,48 @@ renderResult(result) {
 		html += `
 			</div>
 		`;
+	}
+
+	if (result.profile.visual) {
+	    const visual = result.profile.visual;
+	    html += `<div class="emotion-section"><h3>${translations.visualProfile}</h3>`;
+	
+	    if (visual.textures && visual.textures.length) {
+	        html += `<div class="emotion-metric"><span class="label">${translations.textures}:</span> <span class="value" style="text-align:right !important;float:right;">${visual.textures.map(t => this.translateValue(t, currentLang)).join(', ')}</span></div>`;
+	    }
+	
+	    if (visual.suggestedStyles && visual.suggestedStyles.length) {
+	        html += `<div class="emotion-metric"><span class="label">${translations.suggestedStyles}:</span> <span class="value" style="text-align:right !important;float:right;">${visual.suggestedStyles.map(s => this.translateValue(s, currentLang)).join(', ')}</span></div>`;
+	    }
+	
+	    if (visual.mood) {
+	        html += `<div class="emotion-metric"><span class="label">${translations.mood}:</span> <span class="value" style="text-align:right !important;float:right;">${this.translateValue(visual.mood, currentLang)}</span></div>`;
+	    }
+	
+	    html += `</div>`;
+	}
+	
+	if (result.profile.behavioral) {
+	    const behav = result.profile.behavioral;
+	    html += `<div class="emotion-section"><h3>${translations.behavioralProfile}</h3>`;
+	
+	    if (behav.behaviors && behav.behaviors.length) {
+	        html += `<div class="emotion-metric"><span class="label">${translations.behaviors}:</span> <span class="value" style="text-align:right !important;float:right;">${behav.behaviors.map(b => this.translateValue(b, currentLang)).join(', ')}</span></div>`;
+	    }
+	
+	    if (behav.interactions && behav.interactions.length) {
+	        html += `<div class="emotion-metric"><span class="label">${translations.interactions}:</span> <span class="value" style="text-align:right !important;float:right;">${behav.interactions.map(i => this.translateValue(i, currentLang)).join(', ')}</span></div>`;
+	    }
+	
+	    if (behav.tempo) {
+	        html += `<div class="emotion-metric"><span class="label">${translations.tempo}:</span> <span class="value" style="text-align:right !important;float:right;">${this.translateValue(behav.tempo, currentLang)}</span></div>`;
+	    }
+	
+	    if (behav.fluidity) {
+	        html += `<div class="emotion-metric"><span class="label">${translations.fluidity}:</span> <span class="value" style="text-align:right !important;float:right;">${this.translateValue(behav.fluidity, currentLang)}</span></div>`;
+	    }
+	
+	    html += `</div>`;
 	}
     
     const writer = result.metrics?.writer || {};
@@ -3742,7 +3960,12 @@ translateNarrative(narrative, lang) {
         'philosophical': 'философский',
          'balanced': 'сбалансированный',
         'complex': 'сложный',
-        'realistic': 'реалистичный'
+        'realistic': 'реалистичный',
+		'melancholic': 'меланхоличный',
+        'absurd': 'абсурдный',
+        'spiritual': 'духовный',
+        'horrific': 'ужасающий',
+        'suspenseful': 'напряжённый'
     };
     return translations[narrative] || narrative;
 }
@@ -3946,7 +4169,7 @@ getCurrentLanguage() {
 getTranslations(lang) {
     const translations = {
         ru: {
-            primaryProfile: 'Основной профиль',
+            primaryProfile: 'Эмоциональный профиль',
             primaryTone: 'Эмоциональная гамма',
             primaryToneDesc: 'Основная эмоциональная окраска текста',
             description: 'Описание',
@@ -4168,6 +4391,16 @@ getTranslations(lang) {
 										psychologicalSummaryHint: 'Сводка основных психологических характеристик текста',
 										summaryItemHint: 'Психологическая характеристика',
 
+										visualProfile: 'Визуальный профиль',
+										textures: 'Текстуры',
+										suggestedStyles: 'Предложенные стили',
+										mood: 'Настроение',
+										behavioralProfile: 'Поведенческий профиль',
+										behaviors: 'Поведение',
+										interactions: 'Взаимодействие',
+										tempo: 'Темп',
+										fluidity: 'Текучесть',
+
             emotionalPatterns: 'Эмоциональные паттерны',
             emotionalPatternsDesc: 'Характерные эмоциональные паттерны',
              cognitiveStyle: 'Когнитивный стиль',
@@ -4340,7 +4573,7 @@ getTranslations(lang) {
 				        readingLevelVeryDifficult: 'очень сложно'
         },
         en: {
-            primaryProfile: 'Primary Profile',
+            primaryProfile: 'Emotional Profile',
             primaryTone: 'Emotional Spectrum',
             primaryToneDesc: 'Main emotional tone of the text',
             description: 'Description',
@@ -4563,6 +4796,15 @@ getTranslations(lang) {
 										limitationItemHint: 'Limitation',
 										psychologicalSummaryHint: 'Summary of the main psychological characteristics of the text',
 										summaryItemHint: 'Psychological characteristic',
+										visualProfile: 'Visual Profile',
+										textures: 'Textures',
+										suggestedStyles: 'Suggested Styles',
+										mood: 'Mood',
+										behavioralProfile: 'Behavioral Profile',
+										behaviors: 'Behaviors',
+										interactions: 'Interactions',
+										tempo: 'Tempo',
+										fluidity: 'Fluidity',
             emotionalPatterns: 'Emotional Patterns',
             emotionalPatternsDesc: 'Characteristic emotional patterns',
             cognitiveStyle: 'Cognitive Style',
@@ -4762,6 +5004,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
