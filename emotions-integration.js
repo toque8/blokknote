@@ -777,7 +777,7 @@ translateValue(value, lang) {
 							'nostalgic': 'ностальгический',
 							'reflective': 'рефлексивный',
 							'contemplative': 'созерцательный',
-							'ironic': 'ироничный',
+							'ironic': 'ироничное',
 							'detached': 'отстранённый',
 							'isolated': 'изолированный',
 							'passive': 'пассивный',
@@ -787,6 +787,7 @@ translateValue(value, lang) {
 							'избегание': 'избегание',
 							'fleeing': 'бегство',
 							'защита': 'защита',
+							'pleased': 'довольный',
 							
 							'limited analysis reliability': 'ограниченная надёжность анализа',
 							'high emotional variability': 'высокая эмоциональная изменчивость',
@@ -5043,3 +5044,4 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
