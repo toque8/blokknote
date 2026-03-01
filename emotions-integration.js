@@ -781,6 +781,12 @@ translateValue(value, lang) {
 							'detached': 'отстранённый',
 							'isolated': 'изолированный',
 							'passive': 'пассивный',
+							'сюрреализм': 'сюрреализм',
+							'искажённый': 'искажённый',
+							'fractured': 'раздробленный',
+							'избегание': 'избегание',
+							'fleeing': 'бегство',
+							'защита': 'защита',
 							
 							'limited analysis reliability': 'ограниченная надёжность анализа',
 							'high emotional variability': 'высокая эмоциональная изменчивость',
@@ -5037,6 +5043,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
