@@ -104,7 +104,7 @@
                     sadness: [
                         'грусть', 'печаль', 'тоска', 'уныние', 'меланхолия', 'хандра', 'сплин',
                         'скорбь', 'горе', 'печаль', 'траур', 'плач', 'слёзы', 'рыдание', 'вопль',
-                        'стенание', 'причитание', 'жалоба', 'ропот', 'брюзжание', 'ворчание', 'воркотня'
+                        'стенание', 'причитание', 'жалоба', 'ропот', 'брюзжание', 'ворчание'
                     ],
                     grief: [
                         'горе', 'скорбь', 'траур', 'потеря', 'утрата', 'лишение', 'бедствие',
@@ -2711,25 +2711,50 @@
         }
 
         stemRussian(word) {
-            if (!word || word.length < 3) return word;
-            let stem = word;
-            if (word.length > 6) {
-                if (word.endsWith('ого') || word.endsWith('его') || word.endsWith('ому') || word.endsWith('ему')) stem = word.slice(0, -3);
-                else if (word.endsWith('ыми') || word.endsWith('ими')) stem = word.slice(0, -3);
-            }
-            if (stem === word && word.length > 5) {
-                if (word.endsWith('ая') || word.endsWith('яя') || word.endsWith('ое') || word.endsWith('ее') || word.endsWith('ые') || word.endsWith('ие')) stem = word.slice(0, -2);
-                else if (word.endsWith('ой') || word.endsWith('ий') || word.endsWith('ый')) stem = word.slice(0, -2);
-                else if (word.endsWith('ом') || word.endsWith('ем') || word.endsWith('ам') || word.endsWith('ям')) stem = word.slice(0, -2);
-                else if (word.endsWith('ов') || word.endsWith('ев') || word.endsWith('ин') || word.endsWith('ын')) stem = word.slice(0, -2);
-                else if (word.endsWith('ах') || word.endsWith('ях')) stem = word.slice(0, -2);
-            }
-            if (stem === word && word.length > 4) {
-                if (word.endsWith('ка') || word.endsWith('га') || word.endsWith('ха')) stem = word.slice(0, -1);
-                else if (word.endsWith('ть') || word.endsWith('ти')) stem = word.slice(0, -2);
-                else if (word.endsWith('ла') || word.endsWith('ло') || word.endsWith('ли')) stem = word.slice(0, -2);
-            }
-            return stem;
+                if (!word || word.length < 3) return word;
+                let stem = word;
+            
+                if (word.length > 6) {
+                    if (word.endsWith('ого') || word.endsWith('его') || word.endsWith('ому') || word.endsWith('ему')) stem = word.slice(0, -3);
+                    else if (word.endsWith('ыми') || word.endsWith('ими')) stem = word.slice(0, -3);
+                }
+                if (stem === word && word.length > 5) {
+                    if (word.endsWith('ая') || word.endsWith('яя') || word.endsWith('ое') || word.endsWith('ее') || word.endsWith('ые') || word.endsWith('ие')) stem = word.slice(0, -2);
+                    else if (word.endsWith('ой') || word.endsWith('ий') || word.endsWith('ый')) stem = word.slice(0, -2);
+                    else if (word.endsWith('ом') || word.endsWith('ем') || word.endsWith('ам') || word.endsWith('ям')) stem = word.slice(0, -2);
+                    else if (word.endsWith('ов') || word.endsWith('ев') || word.endsWith('ин') || word.endsWith('ын')) stem = word.slice(0, -2);
+                    else if (word.endsWith('ах') || word.endsWith('ях')) stem = word.slice(0, -2);
+                }
+                if (stem === word && word.length > 4) {
+                    if (word.endsWith('ка') || word.endsWith('га') || word.endsWith('ха')) stem = word.slice(0, -1);
+                    else if (word.endsWith('ть') || word.endsWith('ти')) stem = word.slice(0, -2);
+                    else if (word.endsWith('ла') || word.endsWith('ло') || word.endsWith('ли')) stem = word.slice(0, -2);
+                }
+            
+                if (stem.length > 5) {
+                    if (stem.endsWith('ость')) stem = stem.slice(0, -4);
+                    else if (stem.endsWith('есть')) stem = stem.slice(0, -4);
+                    else if (stem.endsWith('ность')) stem = stem.slice(0, -5);
+                    else if (stem.endsWith('ение')) stem = stem.slice(0, -4);
+                    else if (stem.endsWith('ание')) stem = stem.slice(0, -4);
+                    else if (stem.endsWith('ство')) stem = stem.slice(0, -4);
+                    else if (stem.endsWith('ие')) stem = stem.slice(0, -2);
+                    else if (stem.endsWith('ье')) stem = stem.slice(0, -2);
+                    else if (stem.endsWith('ия')) stem = stem.slice(0, -2);
+                }
+            
+                if (stem.length > 6) {
+                    if (stem.endsWith('вший')) stem = stem.slice(0, -5);
+                    else if (stem.endsWith('вшая')) stem = stem.slice(0, -5);
+                    else if (stem.endsWith('вшее')) stem = stem.slice(0, -5);
+                    else if (stem.endsWith('вшие')) stem = stem.slice(0, -5);
+                    else if (stem.endsWith('нный')) stem = stem.slice(0, -4);
+                    else if (stem.endsWith('нная')) stem = stem.slice(0, -4);
+                    else if (stem.endsWith('нное')) stem = stem.slice(0, -4);
+                    else if (stem.endsWith('нные')) stem = stem.slice(0, -4);
+                }
+            
+                return stem;
         }
           
         countPartialMatches(words, dict) {
@@ -4167,145 +4192,121 @@
         }
         
         enhancedLexicalAnalysis(data) {
-                              const words = data.words;
-                              const language = this.language;
-                              const dict = this.dictionaries[language];
-                              const results = {};
-
-                              const stemRussian = (word) => {
-                                        if (!word || word.length < 3) return word;
-                                        let w = word.toLowerCase();
-                                        if (w.length > 6) {
-                                                  if (w.endsWith('ого') || w.endsWith('его') || w.endsWith('ому') || w.endsWith('ему')) return w.slice(0, -3);
-                                                  if (w.endsWith('ыми') || w.endsWith('ими')) return w.slice(0, -3);
-                                        }
-                                        if (w.length > 5) {
-                                                  if (w.endsWith('ая') || w.endsWith('яя') || w.endsWith('ое') || w.endsWith('ее') || w.endsWith('ые') || w.endsWith('ие')) return w.slice(0, -2);
-                                                  if (w.endsWith('ой') || w.endsWith('ий') || w.endsWith('ый')) return w.slice(0, -2);
-                                                  if (w.endsWith('ом') || w.endsWith('ем') || w.endsWith('ам') || w.endsWith('ям')) return w.slice(0, -2);
-                                                  if (w.endsWith('ов') || w.endsWith('ев') || w.endsWith('ин') || w.endsWith('ын')) return w.slice(0, -2);
-                                                  if (w.endsWith('ах') || w.endsWith('ях')) return w.slice(0, -2);
-                                        }
-                                        if (w.length > 4) {
-                                                  if (w.endsWith('ка') || w.endsWith('га') || w.endsWith('ха')) return w.slice(0, -1);
-                                                  if (w.endsWith('ть') || w.endsWith('ти')) return w.slice(0, -2);
-                                                  if (w.endsWith('ла') || w.endsWith('ло') || w.endsWith('ли')) return w.slice(0, -2);
-                                        }
-                                        return w;
-                              };
-
-                              for (const [category, wordList] of Object.entries(dict)) {
-                                        let count = 0;
-                                        let positions = [];
-                                        let sentenceOccurrences = {};
-
-                                        wordList.forEach(word => {
-                                                  const normalizedWord = language === 'ru' ? stemRussian(word) : word;
-                                                  const regex = new RegExp(`\\b${this.escapeRegExp(word)}\\b`, 'gi');
-                                                  let match;
-                                                  while ((match = regex.exec(data.cleaned)) !== null) {
-                                                            const context = this.getWordContext(data.cleaned, match.index, word.length, 20);
-                                                            let hasNegation = false;
-                                                            const negations = this.contextRules[this.language]?.negations || ['не', 'ни', 'нет', 'без', 'not', 'no', 'never', 'none', 'don\'t', 'doesn\'t', 'didn\'t', 'won\'t'];
-                                                            const contextStr = (context && typeof context === 'string') ? context : '';
-                                                            const lowerContext = ' ' + contextStr.toLowerCase() + ' ';
-                                                            for (const neg of negations) {
-                                                                      const searchPhrase = ' ' + neg.toLowerCase() + ' ';
-                                                                      if (lowerContext.includes(searchPhrase)) {
-                                                                                hasNegation = true;
-                                                                                break;
-                                                                      }
-                                                            }
-                                                            positions.push({
-                                                                      word: word,
-                                                                      position: match.index,
-                                                                      length: word.length,
-                                                                      context: context,
-                                                                      hasNegation: hasNegation
-                                                            });
-                                                            count += hasNegation ? 0.15 : 1.0;
-                                                            const sentenceIndex = this.findSentenceIndex(data.sentences, match.index);
-                                                            if (sentenceIndex !== -1) {
-                                                                      if (!sentenceOccurrences[sentenceIndex]) {
-                                                                                sentenceOccurrences[sentenceIndex] = [];
-                                                                      }
-                                                                      sentenceOccurrences[sentenceIndex].push(word);
-                                                            }
-                                                  }
-
-                                                  if (language === 'ru' && count === 0) {
-                                                            const stemmedTextWords = data.words.map(w => stemRussian(w));
-                                                            if (stemmedTextWords.includes(normalizedWord)) {
-                                                                      count += 0.5; 
-                                                                      positions.push({
-                                                                                word: word,
-                                                                                position: -1,
-                                                                                length: word.length,
-                                                                                context: '',
-                                                                                hasNegation: false
-                                                                      });
-                                                            }
-                                                  }
-                                        });
-
-                                        if (count > 0) {
-                                                  const weight = this.categoryWeights[category] || 1.0;
-                                                  const frequency = count / words.length;
-                                                  const intensity = this.calculateCategoryIntensity(category, count, frequency, data, { positions: positions });
-
-                                                  results[category] = {
-                                                            count,
-                                                            frequency,
-                                                            weight,
-                                                            intensity,
-                                                            score: count * weight * intensity,
-                                                            positions,
-                                                            sentenceOccurrences,
-                                                            words: wordList.filter(word => 
-                                                                      data.cleaned.toLowerCase().includes(word.toLowerCase()) || 
-                                                                      (language === 'ru' && data.words.some(w => stemRussian(w) === stemRussian(word)))
-                                                            ),
-                                                            dominance: this.calculateCategoryDominance(category, count, words.length)
-                                                  };
-                                        }
-                              }
-
-                              const emotionalWordsCount = Object.values(results)
-                                        .reduce((sum, cat) => sum + cat.count, 0);
-
-                              const lexicalMetrics = {
-                                        density: emotionalWordsCount / words.length,
-                                        diversity: Object.keys(results).length,
-                                        concentration: this.calculateLexicalConcentration(results, words.length),
-                                        distribution: this.calculateLexicalDistribution(results, data.sentences.length),
-                                        richness: this.calculateLexicalRichness(results, words),
-                                        emoticonCount: Object.values(data.emoticons || {}).reduce((a, b) => a + b, 0),
-                                        punctuationCount: Object.values(data.punctuation || {}).reduce((a, b) => a + b, 0),
-                                        emoticonDetails: data.emoticons || {},
-                                        punctuationDetails: data.punctuation || {}
-                              };
-
-                              const emotionalClusters = this.detectEmotionalClusters(results, data);
-
-                              const temporalAnalysis = this.analyzeEmotionalProgression(results, data);
-
-                              return {
-                                        categories: results,
-                                        summary: {
-                                                  totalEmotionalWords: emotionalWordsCount,
-                                                  lexicalDensity: lexicalMetrics.density,
-                                                  categoryCount: lexicalMetrics.diversity,
-                                                  dominantCategory: this.findDominantCategory(results),
-                                                  lexicalConcentration: lexicalMetrics.concentration,
-                                                  lexicalRichness: lexicalMetrics.richness
-                                        },
-                                        metrics: lexicalMetrics,
-                                        clusters: emotionalClusters,
-                                        temporal: temporalAnalysis,
-                                        intensityProfile: this.createIntensityProfile(results),
-                                        emoticons: data.emoticons || {},
-                                        emotionalPunctuation: data.punctuation || {},
-                              };
+            const words = data.words;
+            const language = this.language;
+            const dict = this.dictionaries[language];
+            const results = {};
+        
+            for (const [category, wordList] of Object.entries(dict)) {
+                let count = 0;
+                let positions = [];
+                let sentenceOccurrences = {};
+        
+                wordList.forEach(word => {
+                    const normalizedWord = language === 'ru' ? this.stemRussian(word) : word;
+                    const regex = new RegExp(`\\b${this.escapeRegExp(word)}\\b`, 'gi');
+                    let match;
+                    while ((match = regex.exec(data.cleaned)) !== null) {
+                        const context = this.getWordContext(data.cleaned, match.index, word.length, 20);
+                        let hasNegation = false;
+                        const negations = this.contextRules[this.language]?.negations || ['не', 'ни', 'нет', 'без', 'not', 'no', 'never', 'none', 'don\'t', 'doesn\'t', 'didn\'t', 'won\'t'];
+                        const contextStr = (context && typeof context === 'string') ? context : '';
+                        const lowerContext = ' ' + contextStr.toLowerCase() + ' ';
+                        for (const neg of negations) {
+                            const searchPhrase = ' ' + neg.toLowerCase() + ' ';
+                            if (lowerContext.includes(searchPhrase)) {
+                                hasNegation = true;
+                                break;
+                            }
+                        }
+                        positions.push({
+                            word: word,
+                            position: match.index,
+                            length: word.length,
+                            context: context,
+                            hasNegation: hasNegation
+                        });
+                        count += hasNegation ? 0.15 : 1.0;
+                        const sentenceIndex = this.findSentenceIndex(data.sentences, match.index);
+                        if (sentenceIndex !== -1) {
+                            if (!sentenceOccurrences[sentenceIndex]) {
+                                sentenceOccurrences[sentenceIndex] = [];
+                            }
+                            sentenceOccurrences[sentenceIndex].push(word);
+                        }
+                    }
+        
+                    if (language === 'ru' && count === 0) {
+                        const stemmedTextWords = data.words.map(w => this.stemRussian(w));
+                        if (stemmedTextWords.includes(normalizedWord)) {
+                            count += 0.5;
+                            positions.push({
+                                word: word,
+                                position: -1,
+                                length: word.length,
+                                context: '',
+                                hasNegation: false
+                            });
+                        }
+                    }
+                });
+        
+                if (count > 0) {
+                    const weight = this.categoryWeights[category] || 1.0;
+                    const frequency = count / words.length;
+                    const intensity = this.calculateCategoryIntensity(category, count, frequency, data, { positions: positions });
+        
+                    results[category] = {
+                        count,
+                        frequency,
+                        weight,
+                        intensity,
+                        score: count * weight * intensity,
+                        positions,
+                        sentenceOccurrences,
+                        words: wordList.filter(word => 
+                            data.cleaned.toLowerCase().includes(word.toLowerCase()) || 
+                            (language === 'ru' && data.words.some(w => this.stemRussian(w) === this.stemRussian(word)))
+                        ),
+                        dominance: this.calculateCategoryDominance(category, count, words.length)
+                    };
+                }
+            }
+        
+            const emotionalWordsCount = Object.values(results).reduce((sum, cat) => sum + cat.count, 0);
+        
+            const lexicalMetrics = {
+                density: emotionalWordsCount / words.length,
+                diversity: Object.keys(results).length,
+                concentration: this.calculateLexicalConcentration(results, words.length),
+                distribution: this.calculateLexicalDistribution(results, data.sentences.length),
+                richness: this.calculateLexicalRichness(results, words),
+                emoticonCount: Object.values(data.emoticons || {}).reduce((a, b) => a + b, 0),
+                punctuationCount: Object.values(data.punctuation || {}).reduce((a, b) => a + b, 0),
+                emoticonDetails: data.emoticons || {},
+                punctuationDetails: data.punctuation || {}
+            };
+        
+            const emotionalClusters = this.detectEmotionalClusters(results, data);
+            const temporalAnalysis = this.analyzeEmotionalProgression(results, data);
+        
+            return {
+                categories: results,
+                summary: {
+                    totalEmotionalWords: emotionalWordsCount,
+                    lexicalDensity: lexicalMetrics.density,
+                    categoryCount: lexicalMetrics.diversity,
+                    dominantCategory: this.findDominantCategory(results),
+                    lexicalConcentration: lexicalMetrics.concentration,
+                    lexicalRichness: lexicalMetrics.richness
+                },
+                metrics: lexicalMetrics,
+                clusters: emotionalClusters,
+                temporal: temporalAnalysis,
+                intensityProfile: this.createIntensityProfile(results),
+                emoticons: data.emoticons || {},
+                emotionalPunctuation: data.punctuation || {},
+            };
         }
         
         calculateCategoryIntensity(category, count, frequency, data = null, categoryData = null) {
@@ -11182,6 +11183,7 @@
     
 
 })();
+
 
 
 
