@@ -185,8 +185,12 @@
                     ],
                     irony: [
                         'ирония', 'сарказм', 'насмешка', 'язвительность', 'колкость', 'едкость',
-                        'сатира', 'пародия', 'гротеск', 'абсурд', 'нелепость', 'бессмыслица', 'абсурдизм',
-                        'экзистенциализм', 'абсурдизм', 'нигилизм', 'скептицизм', 'агностицизм', 'атеизм'
+                        'сатира', 'пародия', 'гротеск', 'абсурд', 'нелепость', 'бессмыслица',
+                        'экзистенциализм', 'нигилизм', 'скептицизм', 'агностицизм', 'ироничный', 'иронично', 'иронизировать',
+                        'сарказм', 'саркастичный', 'саркастически',
+                        'насмешливый', 'насмехаться', 'издевка', 'издевательский', 'издеваться',
+                        'глумление', 'глумиться', 'ехидный', 'ехидство',
+                        'пародировать', 'ироническое', 'иронические', 'иронического', 'ага', 'ну-ну', 'конечно-конечно', 'как же', 'прямо-таки', 'так называемый', 'якобы', 'мол', 'дескать', 'ну да', 'ещё бы', 'держи карман шире', 'жду не дождусь', 'счастье-то какое', 'прямо скажем', 'мягко говоря', 'скажем так', 'как бы'
                     ],
                     nostalgiaMixed: [
                         'горькая ностальгия', 'сладкая грусть', 'радостная печаль', 'грустная радость',
@@ -465,7 +469,10 @@
                     irony: [
                         'irony', 'sarcasm', 'mockery', 'cynicism', 'sardonicism', 'satire',
                         'parody', 'caricature', 'grotesque', 'absurdity', 'nonsense', 'meaninglessness',
-                        'absurdism', 'existentialism', 'nihilism', 'skepticism', 'agnosticism', 'atheism'
+                        'existentialism', 'nihilism', 'skepticism', 'agnosticism', 'ironic', 'ironically',
+                        'sarcastic', 'sarcastically', 'mocking', 'mockingly', 'ridicule', 'ridiculous',
+                        'satirical', 'parodic', 'cynicism', 'cynical', 'derision', 'derisive', 'contempt', 'contemptuous', 'sardonic', 'wry', 'dry humor',
+                        'tongue in cheek', 'tongue-in-cheek', 'yeah right', 'as if', 'whatever', 'sure Jan', 'ok boomer', 'sorry not sorry', 'so-called', 'allegedly', 'ostensibly', 'seemingly', 'supposedly', 'funnily enough', 'strangely enough', 'oddly enough', 'coincidentally', 'in related news', 'breaking news', 'big whoop', 'whoop-de-doo', 'big deal', 'fascinating', 'amazing', 'brilliant', 'genius', 'epic', 'tell me about it', 'you don\'t say', 'no kidding', 'big surprise', 'quelle surprise'
                     ],
                     nostalgiaMixed: [
                         'bittersweet nostalgia', 'melancholy joy', 'joyful sadness', 'sad happiness',
@@ -6259,29 +6266,82 @@
         }
         
         checkIronyPattern(sentence) {
-                    const lowerSentence = sentence.toLowerCase();
-                    
-                    const ironyIndicators = this.language === 'ru' ? [
+                const lowerSentence = sentence.toLowerCase();
+                const language = this.language;
+            
+                let ironyScore = 0;
+                let pattern = '';
+            
+                if (language === 'ru') {
+                    const ironyIndicators = [
                         'конечно', 'разумеется', 'естественно', 'безусловно', 'несомненно', 
                         'бесспорно', 'очевидно', 'явно', 'понятно', 'само собой', 
                         'как же', 'что же', 'кто же', 'где же', 'когда же', 'почему же',
-                        'вот именно', 'еще бы', 'ну да', 'как будто', 'словно', 'точно',
-                        'прямо', 'просто', 'особенно', 'именно', 'как раз', 'уж',
-                        'точно-точно', 'само собой разумеется', 'без сомнения', 'без вопросов',
-                        'и вправду', 'неужели', 'разве', 'что за', 'какой', 'так себе',
-                        'ничего себе', 'ничего так', 'ничего подобного', 'еще чего',
-                        'сказал тоже', 'ну и ну', 'вот так вот', 'вот тебе и', 'вот тебе на',
-                        'вот это да', 'ну прямо', 'прямо скажем', 'мягко говоря', 'скажем так',
-                        'так сказать', 'называется', 'так и быть', 'чего уж там', 'куда там',
-                        'где там', 'и не подумал', 'и не подумаю', 'и не собираюсь',
-                        'и не собирался', 'как бы не так', 'как бы не', 'вот еще',
-                        'еще чего не хватало', 'счастье-то какое', 'радость-то какая',
-                        'ну надо же', 'вот так сюрприз', 'вот так новости', 'вот так дела',
-                        'вот так история', 'ну разумеется', 'еще бы нет', 'как же без этого',
-                        'как же иначе', 'еще лучше', 'еще лучше некуда', 'просто замечательно',
-                        'просто прекрасно', 'просто великолепно', 'просто отлично',
-                        'просто шикарно', 'просто сказочно', 'просто волшебно'
-                    ] : [
+                        'вот именно', 'еще бы', 'ну да', 'ага', 'ну конечно', 'конечно-конечно',
+                        'как будто', 'словно', 'точно', 'прямо', 'просто', 'особенно', 
+                        'именно', 'как раз', 'уж', 'точно-точно', 'само собой разумеется',
+                        'без сомнения', 'без вопросов', 'и вправду', 'неужели', 'разве',
+                        'что за', 'какой', 'так себе', 'ничего себе', 'ничего так',
+                        'ничего подобного', 'еще чего', 'сказал тоже', 'ну и ну',
+                        'вот так вот', 'вот тебе и', 'вот тебе на', 'вот это да',
+                        'ну прямо', 'прямо скажем', 'мягко говоря', 'скажем так',
+                        'так сказать', 'называется', 'так и быть', 'чего уж там',
+                        'куда там', 'где там', 'и не подумал', 'и не подумаю',
+                        'и не собираюсь', 'и не собирался', 'как бы не так',
+                        'как бы не', 'вот еще', 'еще чего не хватало',
+                        'счастье-то какое', 'радость-то какая', 'ну надо же',
+                        'вот так сюрприз', 'вот так новости', 'вот так дела',
+                        'вот так история', 'ну разумеется', 'еще бы нет',
+                        'как же без этого', 'как же иначе', 'еще лучше',
+                        'еще лучше некуда', 'просто замечательно', 'просто прекрасно',
+                        'просто великолепно', 'просто отлично', 'просто шикарно',
+                        'просто сказочно', 'просто волшебно', 'иронично', 'сарказм',
+                        'саркастично', 'насмешка', 'издевательство'
+                    ];
+            
+                    const positiveWords = ['отлично', 'прекрасно', 'замечательно', 'восхитительно', 
+                        'идеально', 'потрясающе', 'замечательный', 'прекрасный', 'отличный',
+                        'великолепно', 'чудесно', 'фантастично', 'супер', 'лучший', 'хорошо',
+                        'лучше', 'лучшее', 'радость', 'счастье', 'восторг'];
+            
+                    const negativeWords = ['ужасно', 'кошмарно', 'отвратительно', 'плохо', 'скверно',
+                        'мерзко', 'глупо', 'идиотски', 'дурацки', 'тупо', 'плохой', 'ужасный',
+                        'отвратительный', 'кошмарный', 'хуже', 'худший', 'горе', 'печаль',
+                        'тоска', 'страх', 'гнев'];
+            
+                    ironyIndicators.forEach(indicator => {
+                        if (lowerSentence.includes(indicator)) {
+                            ironyScore += 0.5;
+                            if (!pattern) pattern = 'irony indicator';
+                        }
+                    });
+            
+                    const hasPositive = positiveWords.some(word => lowerSentence.includes(word));
+                    const hasNegative = negativeWords.some(word => lowerSentence.includes(word));
+                    if (hasPositive && hasNegative) {
+                        ironyScore += 1.0;
+                        pattern = 'positive + negative contrast';
+                    }
+            
+                    const contradictionPatterns = [
+                        /но\s+[а-яё]+\s+(хорош|прекрасн|замечательн|отличн)/iu,
+                        /хотя\s+[а-яё]+\s+(плох|ужасн|отвратительн|скучн)/iu,
+                        /конечно.*\?/iu,
+                        /разумеется.*!/iu,
+                        /не то чтобы/iu,
+                        /не сказать чтобы/iu,
+                        /вот тебе и.*радость|счастье|удача|победа/iu
+                    ];
+            
+                    contradictionPatterns.forEach(patternRegex => {
+                        if (patternRegex.test(sentence)) {
+                            ironyScore += 1.0;
+                            if (!pattern) pattern = 'contradiction pattern';
+                        }
+                    });
+            
+                } else { 
+                    const ironyIndicators = [
                         'of course', 'certainly', 'undoubtedly', 'naturally', 'surely',
                         'obviously', 'clearly', 'evidently', 'manifestly', 'indeed',
                         'as if', 'as though', 'just like', 'exactly', 'precisely',
@@ -6303,93 +6363,79 @@
                         'in all honesty', 'in all sincerity', 'to be sincere',
                         'to be frank', 'to be truthful', 'to be candid', 'to be blunt',
                         'to be direct', 'to be straightforward', 'to put it bluntly',
-                        'to put it simply', 'to put it mildly', 'to say the least'
+                        'to put it simply', 'to put it mildly', 'to say the least',
+                        'yeah right', 'as if', 'whatever', 'sure', 'right', 'okay',
+                        'i bet', 'good one', 'nice try', 'tell me about it',
+                        'don\'t you think', 'you don\'t say', 'no kidding',
+                        'big deal', 'who would have thought', 'fancy that',
+                        'well well', 'oh really', 'is that so'
                     ];
-                    
-                    const positiveWords = this.language === 'ru' ? [
-                        'отлично', 'прекрасно', 'замечательно', 'восхитительно', 'идеально', 
-                        'потрясающе', 'замечательный', 'прекрасный', 'отличный', 'великолепно', 
-                        'чудесно', 'фантастично', 'супер', 'лучший', 'хорошо', 'лучше', 'лучшее'
-                    ] : [
-                        'perfect', 'great', 'wonderful', 'amazing', 'fantastic', 'awesome', 
-                        'excellent', 'good', 'better', 'best', 'superb', 'splendid', 'marvelous'
-                    ];
-                    
-                    const negativeWords = this.language === 'ru' ? [
-                        'ужасно', 'кошмарно', 'отвратительно', 'плохо', 'скверно', 'мерзко', 
-                        'глупо', 'идиотски', 'дурацки', 'тупо', 'плохой', 'ужасный', 
-                        'отвратительный', 'кошмарный', 'хуже', 'худший'
-                    ] : [
-                        'terrible', 'horrible', 'awful', 'bad', 'worse', 'worst', 
-                        'stupid', 'idiotic', 'ridiculous', 'dumb', 'awful'
-                    ];
-                    
-                    let ironyScore = 0;
-                    let pattern = '';
-                    
+            
+                    const positiveWords = ['perfect', 'great', 'wonderful', 'amazing', 'fantastic',
+                        'awesome', 'excellent', 'good', 'better', 'best', 'superb',
+                        'splendid', 'marvelous', 'brilliant', 'fabulous', 'terrific',
+                        'outstanding', 'incredible', 'unbelievable', 'lovely', 'delightful'];
+            
+                    const negativeWords = ['terrible', 'horrible', 'awful', 'bad', 'worse', 'worst',
+                        'stupid', 'idiotic', 'ridiculous', 'dumb', 'lame', 'pathetic',
+                        'miserable', 'dreadful', 'atrocious', 'abysmal', 'appalling',
+                        'disgusting', 'revolting', 'hideous', 'ghastly', 'shocking'];
+            
                     ironyIndicators.forEach(indicator => {
-                        const regex = new RegExp(`\\b${this.escapeRegExp(indicator)}\\b`, this.language === 'ru' ? 'iu' : 'i');
-                        if (regex.test(lowerSentence)) {
+                        if (lowerSentence.includes(indicator)) {
                             ironyScore += 0.5;
                             if (!pattern) pattern = 'irony indicator';
                         }
                     });
-                    
-                    const hasPositive = positiveWords.some(word => new RegExp(`\\b${this.escapeRegExp(word)}\\b`, this.language === 'ru' ? 'iu' : 'i').test(lowerSentence));
-                    const hasNegative = negativeWords.some(word => new RegExp(`\\b${this.escapeRegExp(word)}\\b`, this.language === 'ru' ? 'iu' : 'i').test(lowerSentence));
-                    
+            
+                    const hasPositive = positiveWords.some(word => lowerSentence.includes(word));
+                    const hasNegative = negativeWords.some(word => lowerSentence.includes(word));
                     if (hasPositive && hasNegative) {
-                        ironyScore += 1.5;
+                        ironyScore += 1.0;
                         pattern = 'positive + negative contrast';
                     }
-                    
-                    const hasQuestion = sentence.includes('?');
-                    const hasExclamation = sentence.includes('!');
-                    const hasEllipsis = sentence.includes('…') || sentence.includes('...');
-                    
-                    if (hasQuestion && hasExclamation) {
-                        ironyScore += 1.0;
-                        if (!pattern) pattern = 'question + exclamation';
-                    }
-                    
-                    if (hasEllipsis && (hasPositive || hasNegative || ironyScore > 0)) {
-                        ironyScore += 0.5;
-                        if (!pattern) pattern = 'ellipsis + emotional word';
-                    }
-                    
-                    const contradictionPatterns = this.language === 'ru' ? [
-                        /но\s+[а-яё]+\s+(хорош|прекрасн|замечательн|отличн)/iu,
-                        /хотя\s+[а-яё]+\s+(плох|ужасн|отвратительн|скучн)/iu,
-                        /конечно.*\?/iu,
-                        /разумеется.*!/iu,
-                        /^[а-яё]+,\s+[а-яё]+.*!/iu,
-                        /[а-яё]+!\s+[а-яё]+.*\?/iu,
-                        /[а-яё]+\?+\s+[а-яё]+.*!/iu,
-                        /[а-яё]+!+\s+[а-яё]+.*\?/iu,
-                        /не то чтобы/iu,
-                        /не сказать чтобы/iu,
-                        /вот тебе и.*радость|счастье|удача|победа/iu
-                    ] : [
-                        /but\s+[a-z]+\s+(good|great|excellent|wonderful)/iu,
-                        /although\s+[a-z]+\s+(bad|terrible|awful|boring)/iu,
-                        /of course.*\?/iu,
-                        /certainly.*!/iu,
-                        /^[a-z]+,\s+[a-z]+.*!/iu,
-                        /[a-z]+!\s+[a-z]+.*\?/iu,
-                        /[a-z]+\?+\s+[a-z]+.*!/iu,
-                        /not exactly/iu,
-                        /not really/iu
+            
+                    const contradictionPatterns = [
+                        /but\s+[a-z]+\s+(good|great|excellent|wonderful)/i,
+                        /although\s+[a-z]+\s+(bad|terrible|awful|boring)/i,
+                        /of course.*\?/i,
+                        /certainly.*!/i,
+                        /not exactly/i,
+                        /not really/i,
+                        /yeah right/i,
+                        /as if/i
                     ];
-                    
+            
                     contradictionPatterns.forEach(patternRegex => {
                         if (patternRegex.test(sentence)) {
                             ironyScore += 1.0;
                             if (!pattern) pattern = 'contradiction pattern';
                         }
                     });
-                    
-                    const isIrony = ironyScore > 0.7;
-                    return isIrony;
+                }
+            
+                const hasQuestion = sentence.includes('?');
+                const hasExclamation = sentence.includes('!');
+                const hasEllipsis = sentence.includes('…') || sentence.includes('...');
+            
+                if (hasQuestion && hasExclamation) {
+                    ironyScore += 0.8;
+                    if (!pattern) pattern = 'question + exclamation';
+                }
+            
+                if (hasEllipsis && ironyScore > 0) {
+                    ironyScore += 0.5;
+                    if (!pattern) pattern = 'ellipsis';
+                }
+            
+                const quotesPattern = /«[^»]+»|"[^"]+"|„[^“]+“/g;
+                const quotes = sentence.match(quotesPattern);
+                if (quotes && (lowerSentence.includes('so-called') || lowerSentence.includes('so called') ||
+                                lowerSentence.includes('так называемый') || lowerSentence.includes('якобы'))) {
+                    ironyScore += 0.7;
+                }
+            
+                return ironyScore > 0.6;
         }
         
         calculateAdvancedCoherence(sentences) {
@@ -9769,18 +9815,29 @@
                     return 0;
                 }
                 let ironyScore = 0;
+                
                 const ironyIndicators = contextualAnalysis.indicators?.irony || 0;
-                ironyScore += Math.min(0.4, ironyIndicators * 0.15);
+                ironyScore += Math.min(0.5, ironyIndicators * 0.2);
+                
                 const contrastMarkers = contextualAnalysis.indicators?.contrasts || 0;
-                ironyScore += Math.min(0.2, contrastMarkers * 0.05);
+                ironyScore += Math.min(0.3, contrastMarkers * 0.1);
+                
                 const rhetoricalQuestions = contextualAnalysis.indicators?.rhetorical || 0;
-                ironyScore += Math.min(0.2, rhetoricalQuestions * 0.1);
+                ironyScore += Math.min(0.3, rhetoricalQuestions * 0.15);
+                
                 const ironyCategory = lexicalAnalysis.categories?.irony;
                 if (ironyCategory && ironyCategory.frequency > 0) {
-                    ironyScore += Math.min(0.3, ironyCategory.frequency * 5);
+                    ironyScore += Math.min(0.4, ironyCategory.frequency * 8);
                 }
+                
                 const ironyPatterns = contextualAnalysis.patterns?.ironyPatterns?.length || 0;
-                ironyScore += Math.min(0.25, ironyPatterns * 0.15);
+                ironyScore += Math.min(0.35, ironyPatterns * 0.2);
+                
+                const volatility = integratedResult.details?.lexical?.temporal?.metrics?.volatility || 0;
+                if (volatility > 0.5) {
+                    ironyScore += 0.1;
+                }
+                
                 ironyScore = Math.max(0, Math.min(1, ironyScore));
                 return Math.round(ironyScore * 100) / 100;
             } catch (error) {
@@ -11183,12 +11240,3 @@
     
 
 })();
-
-
-
-
-
-
-
-
-
