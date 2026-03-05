@@ -6851,7 +6851,7 @@
 
                               const baseStopWords = this.language === 'ru' ? 
                                         ['и', 'в', 'на', 'с', 'к', 'а', 'у', 'ли', 'но', 'или', 'я', 'ты', 'не', 'то', 'он', 'она', 'оно', 'они', 'это', 'всё', 'тот', 'такой', 'какой', 'свой', 'свою', 'свои', 'себе', 'мой', 'твой', 'его', 'её', 'их', 'мы', 'наш', 'ваш'] :
-                                        ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'by', 'as', 'which', 'no', 'not', 'upon', 'from', 'me', 'at', 'to', 'for', 'of', 'with', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'this', 'that', 'these', 'those', 'it', 'its', 'he', 'she', 'they', 'we', 'you', 'i', 'my', 'your', 'his', 'her', 'our', 'their'];
+                                        ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'by', 'ha', 'as', 'which', 'no', 'not', 'upon', 'from', 'me', 'at', 'to', 'for', 'of', 'with', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'this', 'that', 'these', 'those', 'it', 'its', 'he', 'she', 'they', 'we', 'you', 'i', 'my', 'your', 'his', 'her', 'our', 'their'];
 
                               const punctuationSymbols = [':', '-', ')', '(', '[', ']', '{', '}', '<', '>', '/', '\\', '|', '*', '+', '=', '~', '`', '@', '#', '$', '%', '^', '&', '_', '!', '?', '.', ',', ';', '\'', '"', '»', '«', '—', '…'];
 
@@ -11265,6 +11265,7 @@
     
 
 })();
+
 
 
 
