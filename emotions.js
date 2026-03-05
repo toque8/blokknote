@@ -6,6 +6,7 @@
             this.version = '1.1';
             this.language = language;
             this.metrics = {};
+            this.stemCache = new Map();
             this.initializeExtendedDictionaries();
             this.initializeEnhancedAnalysisMethods();
             this.initializeCulturalContext();
@@ -2718,50 +2719,56 @@
         }
 
         stemRussian(word) {
-                if (!word || word.length < 3) return word;
-                let stem = word;
-            
-                if (word.length > 6) {
-                    if (word.endsWith('ого') || word.endsWith('его') || word.endsWith('ому') || word.endsWith('ему')) stem = word.slice(0, -3);
-                    else if (word.endsWith('ыми') || word.endsWith('ими')) stem = word.slice(0, -3);
-                }
-                if (stem === word && word.length > 5) {
-                    if (word.endsWith('ая') || word.endsWith('яя') || word.endsWith('ое') || word.endsWith('ее') || word.endsWith('ые') || word.endsWith('ие')) stem = word.slice(0, -2);
-                    else if (word.endsWith('ой') || word.endsWith('ий') || word.endsWith('ый')) stem = word.slice(0, -2);
-                    else if (word.endsWith('ом') || word.endsWith('ем') || word.endsWith('ам') || word.endsWith('ям')) stem = word.slice(0, -2);
-                    else if (word.endsWith('ов') || word.endsWith('ев') || word.endsWith('ин') || word.endsWith('ын')) stem = word.slice(0, -2);
-                    else if (word.endsWith('ах') || word.endsWith('ях')) stem = word.slice(0, -2);
-                }
-                if (stem === word && word.length > 4) {
-                    if (word.endsWith('ка') || word.endsWith('га') || word.endsWith('ха')) stem = word.slice(0, -1);
-                    else if (word.endsWith('ть') || word.endsWith('ти')) stem = word.slice(0, -2);
-                    else if (word.endsWith('ла') || word.endsWith('ло') || word.endsWith('ли')) stem = word.slice(0, -2);
-                }
-            
-                if (stem.length > 5) {
-                    if (stem.endsWith('ость')) stem = stem.slice(0, -4);
-                    else if (stem.endsWith('есть')) stem = stem.slice(0, -4);
-                    else if (stem.endsWith('ность')) stem = stem.slice(0, -5);
-                    else if (stem.endsWith('ение')) stem = stem.slice(0, -4);
-                    else if (stem.endsWith('ание')) stem = stem.slice(0, -4);
-                    else if (stem.endsWith('ство')) stem = stem.slice(0, -4);
-                    else if (stem.endsWith('ие')) stem = stem.slice(0, -2);
-                    else if (stem.endsWith('ье')) stem = stem.slice(0, -2);
-                    else if (stem.endsWith('ия')) stem = stem.slice(0, -2);
-                }
-            
-                if (stem.length > 6) {
-                    if (stem.endsWith('вший')) stem = stem.slice(0, -5);
-                    else if (stem.endsWith('вшая')) stem = stem.slice(0, -5);
-                    else if (stem.endsWith('вшее')) stem = stem.slice(0, -5);
-                    else if (stem.endsWith('вшие')) stem = stem.slice(0, -5);
-                    else if (stem.endsWith('нный')) stem = stem.slice(0, -4);
-                    else if (stem.endsWith('нная')) stem = stem.slice(0, -4);
-                    else if (stem.endsWith('нное')) stem = stem.slice(0, -4);
-                    else if (stem.endsWith('нные')) stem = stem.slice(0, -4);
-                }
-            
-                return stem;
+            if (!word || word.length < 3) return word;
+        
+            if (this.stemCache.has(word)) {
+                return this.stemCache.get(word);
+            }
+        
+            let stem = word;
+        
+            if (word.length > 6) {
+                if (word.endsWith('ого') || word.endsWith('его') || word.endsWith('ому') || word.endsWith('ему')) stem = word.slice(0, -3);
+                else if (word.endsWith('ыми') || word.endsWith('ими')) stem = word.slice(0, -3);
+            }
+            if (stem === word && word.length > 5) {
+                if (word.endsWith('ая') || word.endsWith('яя') || word.endsWith('ое') || word.endsWith('ее') || word.endsWith('ые') || word.endsWith('ие')) stem = word.slice(0, -2);
+                else if (word.endsWith('ой') || word.endsWith('ий') || word.endsWith('ый')) stem = word.slice(0, -2);
+                else if (word.endsWith('ом') || word.endsWith('ем') || word.endsWith('ам') || word.endsWith('ям')) stem = word.slice(0, -2);
+                else if (word.endsWith('ов') || word.endsWith('ев') || word.endsWith('ин') || word.endsWith('ын')) stem = word.slice(0, -2);
+                else if (word.endsWith('ах') || word.endsWith('ях')) stem = word.slice(0, -2);
+            }
+            if (stem === word && word.length > 4) {
+                if (word.endsWith('ка') || word.endsWith('га') || word.endsWith('ха')) stem = word.slice(0, -1);
+                else if (word.endsWith('ть') || word.endsWith('ти')) stem = word.slice(0, -2);
+                else if (word.endsWith('ла') || word.endsWith('ло') || word.endsWith('ли')) stem = word.slice(0, -2);
+            }
+        
+            if (stem.length > 5) {
+                if (stem.endsWith('ость')) stem = stem.slice(0, -4);
+                else if (stem.endsWith('есть')) stem = stem.slice(0, -4);
+                else if (stem.endsWith('ность')) stem = stem.slice(0, -5);
+                else if (stem.endsWith('ение')) stem = stem.slice(0, -4);
+                else if (stem.endsWith('ание')) stem = stem.slice(0, -4);
+                else if (stem.endsWith('ство')) stem = stem.slice(0, -4);
+                else if (stem.endsWith('ие')) stem = stem.slice(0, -2);
+                else if (stem.endsWith('ье')) stem = stem.slice(0, -2);
+                else if (stem.endsWith('ия')) stem = stem.slice(0, -2);
+            }
+        
+            if (stem.length > 6) {
+                if (stem.endsWith('вший')) stem = stem.slice(0, -5);
+                else if (stem.endsWith('вшая')) stem = stem.slice(0, -5);
+                else if (stem.endsWith('вшее')) stem = stem.slice(0, -5);
+                else if (stem.endsWith('вшие')) stem = stem.slice(0, -5);
+                else if (stem.endsWith('нный')) stem = stem.slice(0, -4);
+                else if (stem.endsWith('нная')) stem = stem.slice(0, -4);
+                else if (stem.endsWith('нное')) stem = stem.slice(0, -4);
+                else if (stem.endsWith('нные')) stem = stem.slice(0, -4);
+            }
+        
+            this.stemCache.set(word, stem);
+            return stem;
         }
           
         countPartialMatches(words, dict) {
@@ -11240,3 +11247,4 @@
     
 
 })();
+
