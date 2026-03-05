@@ -4211,48 +4211,66 @@
             const dict = this.dictionaries[language];
             const results = {};
         
+            let stemmedTextWords = null;
+            let stemmedTextWordsSet = null;
+            if (language === 'ru') {
+                stemmedTextWords = words.map(w => this.stemRussian(w));
+                stemmedTextWordsSet = new Set(stemmedTextWords);
+            }
+        
             for (const [category, wordList] of Object.entries(dict)) {
                 let count = 0;
                 let positions = [];
                 let sentenceOccurrences = {};
+                const foundWordsSet = new Set(); // слова, найденные прямым regexp (чтобы не дублировать стемминг)
         
-                wordList.forEach(word => {
-                    const normalizedWord = language === 'ru' ? this.stemRussian(word) : word;
-                    const regex = new RegExp(`\\b${this.escapeRegExp(word)}\\b`, 'gi');
-                    let match;
-                    while ((match = regex.exec(data.cleaned)) !== null) {
-                        const context = this.getWordContext(data.cleaned, match.index, word.length, 20);
-                        let hasNegation = false;
-                        const negations = this.contextRules[this.language]?.negations || ['не', 'ни', 'нет', 'без', 'not', 'no', 'never', 'none', 'don\'t', 'doesn\'t', 'didn\'t', 'won\'t'];
-                        const contextStr = (context && typeof context === 'string') ? context : '';
-                        const lowerContext = ' ' + contextStr.toLowerCase() + ' ';
-                        for (const neg of negations) {
-                            const searchPhrase = ' ' + neg.toLowerCase() + ' ';
-                            if (lowerContext.includes(searchPhrase)) {
-                                hasNegation = true;
-                                break;
-                            }
-                        }
-                        positions.push({
-                            word: word,
-                            position: match.index,
-                            length: word.length,
-                            context: context,
-                            hasNegation: hasNegation
-                        });
-                        count += hasNegation ? 0.15 : 1.0;
-                        const sentenceIndex = this.findSentenceIndex(data.sentences, match.index);
-                        if (sentenceIndex !== -1) {
-                            if (!sentenceOccurrences[sentenceIndex]) {
-                                sentenceOccurrences[sentenceIndex] = [];
-                            }
-                            sentenceOccurrences[sentenceIndex].push(word);
+                const pattern = wordList.map(word => this.escapeRegExp(word)).join('|');
+                const categoryRegex = new RegExp(`\\b(${pattern})\\b`, 'gi');
+        
+                let match;
+                while ((match = categoryRegex.exec(data.cleaned)) !== null) {
+                    const matchedWord = match[0];
+                    const index = match.index;
+                    const context = this.getWordContext(data.cleaned, index, matchedWord.length, 20);
+        
+                    let hasNegation = false;
+                    const negations = this.contextRules[this.language]?.negations || ['не','ни','нет','без','not','no','never','none','don\'t','doesn\'t','didn\'t','won\'t'];
+                    const contextStr = (context && typeof context === 'string') ? context : '';
+                    const lowerContext = ' ' + contextStr.toLowerCase() + ' ';
+                    for (const neg of negations) {
+                        const searchPhrase = ' ' + neg.toLowerCase() + ' ';
+                        if (lowerContext.includes(searchPhrase)) {
+                            hasNegation = true;
+                            break;
                         }
                     }
         
-                    if (language === 'ru' && count === 0) {
-                        const stemmedTextWords = data.words.map(w => this.stemRussian(w));
-                        if (stemmedTextWords.includes(normalizedWord)) {
+                    positions.push({
+                        word: matchedWord,
+                        position: index,
+                        length: matchedWord.length,
+                        context: context,
+                        hasNegation: hasNegation
+                    });
+                    count += hasNegation ? 0.15 : 1.0;
+        
+                    const sentenceIndex = this.findSentenceIndex(data.sentences, index);
+                    if (sentenceIndex !== -1) {
+                        if (!sentenceOccurrences[sentenceIndex]) {
+                            sentenceOccurrences[sentenceIndex] = [];
+                        }
+                        sentenceOccurrences[sentenceIndex].push(matchedWord);
+                    }
+        
+                    foundWordsSet.add(matchedWord); // запоминаем, что это слово уже учтено
+                }
+        
+                if (language === 'ru') {
+                    for (const word of wordList) {
+                        if (foundWordsSet.has(word)) continue;
+        
+                        const stemmedWord = this.stemRussian(word);
+                        if (stemmedTextWordsSet.has(stemmedWord)) {
                             count += 0.5;
                             positions.push({
                                 word: word,
@@ -4263,7 +4281,7 @@
                             });
                         }
                     }
-                });
+                }
         
                 if (count > 0) {
                     const weight = this.categoryWeights[category] || 1.0;
@@ -6833,7 +6851,7 @@
 
                               const baseStopWords = this.language === 'ru' ? 
                                         ['и', 'в', 'на', 'с', 'к', 'а', 'у', 'ли', 'но', 'или', 'я', 'ты', 'не', 'то', 'он', 'она', 'оно', 'они', 'это', 'всё', 'тот', 'такой', 'какой', 'свой', 'свою', 'свои', 'себе', 'мой', 'твой', 'его', 'её', 'их', 'мы', 'наш', 'ваш'] :
-                                        ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'this', 'that', 'these', 'those', 'it', 'its', 'he', 'she', 'they', 'we', 'you', 'i', 'my', 'your', 'his', 'her', 'our', 'their'];
+                                        ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'by', 'as', 'which', 'no', 'not', 'upon', 'from', 'me', 'at', 'to', 'for', 'of', 'with', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'this', 'that', 'these', 'those', 'it', 'its', 'he', 'she', 'they', 'we', 'you', 'i', 'my', 'your', 'his', 'her', 'our', 'their'];
 
                               const punctuationSymbols = [':', '-', ')', '(', '[', ']', '{', '}', '<', '>', '/', '\\', '|', '*', '+', '=', '~', '`', '@', '#', '$', '%', '^', '&', '_', '!', '?', '.', ',', ';', '\'', '"', '»', '«', '—', '…'];
 
@@ -11247,4 +11265,5 @@
     
 
 })();
+
 
