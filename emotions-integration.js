@@ -2,7 +2,7 @@
 'use strict';
 class EmotionsUI {
 constructor() {
-this.btn = document.getElementById('emotions-btn');
+this.btn = document.getElementById('emotions-btn'); 
 this.sidebar = document.getElementById('emotions-sidebar');
 this.closeBtn = null;
 this.analyzer = null;
@@ -5044,4 +5044,5 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
