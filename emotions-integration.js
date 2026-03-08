@@ -132,6 +132,7 @@ open() {
         } else {
             this.showError(result.error);
         }
+        this._rendering = false;
     }, 10);
 }
 
@@ -4996,6 +4997,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
