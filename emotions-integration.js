@@ -118,6 +118,14 @@ open() {
             this._rendering = false;
         }
     }, 10);
+
+	console.time('analyze');
+	const result = this.analyzer.analyze(text);
+	console.timeEnd('analyze');
+	
+	console.time('renderResult');
+	this.renderResult(result);
+	console.timeEnd('renderResult');
 }
 
 close() {
@@ -4981,6 +4989,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
