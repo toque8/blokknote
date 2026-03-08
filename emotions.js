@@ -1449,122 +1449,173 @@
         }
         
         analyze(text) {
-                if (!text || typeof text !== 'string' || text.trim().length === 0) {
+            if (!text || typeof text !== 'string' || text.trim().length === 0) {
                 return this.getNeutralResult();
-                }
-                
-                const startTime = performance.now();
-                
+            }
+        
+            const startTime = performance.now();
+        
+            try {
+                const startDetect = performance.now();
+                const detectedLanguage = this.detectLanguageWithConfidence(text);
+                const endDetect = performance.now();
+                console.log(`Detect language: ${((endDetect - startDetect) / 1000).toFixed(1)} s`);
+                this.language = detectedLanguage.language;
+        
+                const startPre = performance.now();
+                const preprocessing = this.enhancedPreprocessText(text);
+                const endPre = performance.now();
+                console.log(`Preprocess: ${((endPre - startPre) / 1000).toFixed(1)} s`);
+        
+                const startLex = performance.now();
+                const lexicalAnalysis = this.enhancedLexicalAnalysis(preprocessing);
+                const endLex = performance.now();
+                console.log(`Lexical: ${((endLex - startLex) / 1000).toFixed(1)} s`);
+        
+                const startSyn = performance.now();
+                const syntacticAnalysis = this.enhancedSyntacticAnalysis(preprocessing);
+                const endSyn = performance.now();
+                console.log(`Syntactic: ${((endSyn - startSyn) / 1000).toFixed(1)} s`);
+        
+                const startCtx = performance.now();
+                const contextualAnalysis = this.enhancedContextualAnalysis(preprocessing);
+                const endCtx = performance.now();
+                console.log(`Contextual: ${((endCtx - startCtx) / 1000).toFixed(1)} s`);
+        
+                const startCul = performance.now();
+                const culturalAnalysis = this.enhancedCulturalAnalysis(preprocessing);
+                const endCul = performance.now();
+                console.log(`Cultural: ${((endCul - startCul) / 1000).toFixed(1)} s`);
+        
+                const startSem = performance.now();
+                const semanticAnalysis = this.enhancedSemanticAnalysis(preprocessing);
+                const endSem = performance.now();
+                console.log(`Semantic: ${((endSem - startSem) / 1000).toFixed(1)} s`);
+        
+                const startPsy = performance.now();
+                const psychologicalAnalysis = this.psychologicalAnalysis(preprocessing);
+                const endPsy = performance.now();
+                console.log(`Psychological: ${((endPsy - startPsy) / 1000).toFixed(1)} s`);
+        
+                const startInt = performance.now();
+                const integratedResult = this.deepIntegration({
+                    lexical: lexicalAnalysis,
+                    syntactic: syntacticAnalysis,
+                    contextual: contextualAnalysis,
+                    cultural: culturalAnalysis,
+                    semantic: semanticAnalysis,
+                    psychological: psychologicalAnalysis,
+                    languageConfidence: detectedLanguage.confidence
+                });
+                const endInt = performance.now();
+                console.log(`Integration: ${((endInt - startInt) / 1000).toFixed(1)} s`);
+        
+                const startProf = performance.now();
+                const emotionProfile = this.calculateAdvancedEmotionProfile(integratedResult);
+                const endProf = performance.now();
+                console.log(`Profile: ${((endProf - startProf) / 1000).toFixed(1)} s`);
+        
+                const startIns = performance.now();
+                const psychologicalInsights = this.generatePsychologicalInsights(integratedResult);
+                const endIns = performance.now();
+                console.log(`Insights: ${((endIns - startIns) / 1000).toFixed(1)} s`);
+        
+                const startWr = performance.now();
+                let writerMetrics = {};
                 try {
-                    const detectedLanguage = this.detectLanguageWithConfidence(text);
-                    this.language = detectedLanguage.language;
-                    
-                    const preprocessing = this.enhancedPreprocessText(text);
-                    
-                    const lexicalAnalysis = this.enhancedLexicalAnalysis(preprocessing);
-                    const syntacticAnalysis = this.enhancedSyntacticAnalysis(preprocessing);
-                    const contextualAnalysis = this.enhancedContextualAnalysis(preprocessing);
-                    const culturalAnalysis = this.enhancedCulturalAnalysis(preprocessing);
-                    const semanticAnalysis = this.enhancedSemanticAnalysis(preprocessing);
-                    const psychologicalAnalysis = this.psychologicalAnalysis(preprocessing);
-                    const readabilityMetrics = this.calculateReadabilityMetrics(preprocessing);
-                    const repetitionAnalysis = this.detectWordRepetitions(preprocessing); 
-                    
-                    const integratedResult = this.deepIntegration({
+                    writerMetrics = this.calculateWriterMetrics(text);
+                } catch (e) {
+                    console.warn('Writer metrics calculation error:', e);
+                }
+                const endWr = performance.now();
+                console.log(`Writer: ${((endWr - startWr) / 1000).toFixed(1)} s`);
+        
+                const startPoet = performance.now();
+                let poetryMetrics = {};
+                try {
+                    poetryMetrics = this.calculatePoetryMetrics(text);
+                } catch (e) {
+                    console.warn('Poetry metrics calculation error:', e);
+                }
+                const endPoet = performance.now();
+                console.log(`Poetry: ${((endPoet - startPoet) / 1000).toFixed(1)} s`);
+        
+                const startJourn = performance.now();
+                let journalistMetrics = {};
+                try {
+                    journalistMetrics = this.calculateJournalistMetrics(text);
+                } catch (e) {
+                    console.warn('Journalist metrics calculation error:', e);
+                }
+                const endJourn = performance.now();
+                console.log(`Journalist: ${((endJourn - startJourn) / 1000).toFixed(1)} s`);
+        
+                const startCopy = performance.now();
+                let copywriterMetrics = {};
+                try {
+                    copywriterMetrics = this.calculateCopywriterMetrics(text);
+                } catch (e) {
+                    console.warn('Copywriter metrics calculation error:', e);
+                }
+                const endCopy = performance.now();
+                console.log(`Copywriter: ${((endCopy - startCopy) / 1000).toFixed(1)} s`);
+        
+                const startFun = performance.now();
+                let funMetrics = {};
+                try {
+                    funMetrics = this.calculateFunMetrics(text);
+                } catch (e) {
+                    console.warn('Fun metrics calculation error:', e);
+                }
+                const endFun = performance.now();
+                console.log(`Fun: ${((endFun - startFun) / 1000).toFixed(1)} s`);
+        
+                const processingTime = performance.now() - startTime;
+                console.log(`Total analyze: ${(processingTime / 1000).toFixed(1)} s`);
+        
+                return {
+                    success: true,
+                    language: detectedLanguage.language,
+                    languageConfidence: detectedLanguage.confidence,
+                    profile: emotionProfile,
+                    psychologicalInsights: psychologicalInsights,
+                    metrics: {
+                        processingTime: Math.round(processingTime),
+                        textLength: text.length,
+                        wordCount: preprocessing.words.length,
+                        sentenceCount: preprocessing.sentences.length,
+                        paragraphCount: preprocessing.paragraphs.length,
+                        readingTime: preprocessing.words.length / 200,
+                        complexityScore: integratedResult.complexityScore,
+                        writer: writerMetrics,
+                        poetry: poetryMetrics,
+                        journalist: journalistMetrics,
+                        copywriter: copywriterMetrics,
+                        fun: funMetrics
+                    },
+                    details: {
                         lexical: lexicalAnalysis,
                         syntactic: syntacticAnalysis,
                         contextual: contextualAnalysis,
                         cultural: culturalAnalysis,
                         semantic: semanticAnalysis,
                         psychological: psychologicalAnalysis,
-                        languageConfidence: detectedLanguage.confidence
-                    });
-                    
-                    const emotionProfile = this.calculateAdvancedEmotionProfile(integratedResult);
-                    
-                    const psychologicalInsights = this.generatePsychologicalInsights(integratedResult);
-                    
-                    const processingTime = performance.now() - startTime;
-
-                    let writerMetrics = {};
-                    try {
-                        writerMetrics = this.calculateWriterMetrics(text);
-                    } catch (e) {
-                        console.warn('Writer metrics calculation error:', e);
-                    }
-
-                    let poetryMetrics = {};
-                    try {
-                        poetryMetrics = this.calculatePoetryMetrics(text);
-                    } catch (e) {
-                        console.warn('Poetry metrics calculation error:', e);
-                    }
-
-                    let journalistMetrics = {};
-                    try {
-                        journalistMetrics = this.calculateJournalistMetrics(text);
-                    } catch (e) {
-                        console.warn('Journalist metrics calculation error:', e);
-                    }
-
-                    let copywriterMetrics = {};
-                    try {
-                        copywriterMetrics = this.calculateCopywriterMetrics(text);
-                    } catch (e) {
-                        console.warn('Copywriter metrics calculation error:', e);
-                    }
-
-                    let funMetrics = {};
-                    try {
-                        funMetrics = this.calculateFunMetrics(text);
-                    } catch (e) {
-                        console.warn('Fun metrics calculation error:', e);
-                    }
-                    
-                    return {
-                        success: true,
-                        language: detectedLanguage.language,
-                        languageConfidence: detectedLanguage.confidence,
-                        profile: emotionProfile,
-                        psychologicalInsights: psychologicalInsights,
-                        metrics: {
-                            processingTime: Math.round(processingTime),
-                            textLength: text.length,
-                            wordCount: preprocessing.words.length,
-                            sentenceCount: preprocessing.sentences.length,
-                            paragraphCount: preprocessing.paragraphs.length,
-                            readingTime: preprocessing.words.length / 200,
-                            complexityScore: integratedResult.complexityScore,
-                            writer: writerMetrics,
-                            poetry: poetryMetrics,
-                            journalist: journalistMetrics,
-                            copywriter: copywriterMetrics,
-                            fun: funMetrics
-                        },
-                        details: {
-                            lexical: lexicalAnalysis,
-                            syntactic: syntacticAnalysis,
-                            contextual: contextualAnalysis,
-                            cultural: culturalAnalysis,
-                            semantic: semanticAnalysis,
-                            psychological: psychologicalAnalysis,
-                            readability: readabilityMetrics
-                        },
-                        writingQuality: { 
-                            repetitions: repetitionAnalysis
-                        },
-                        timestamp: new Date().toISOString(),
-                        analysisVersion: this.version
-                    };
-                    
-                } catch (error) {
-                    console.error('Advanced emotion analysis error:', error);
-                    return {
-                        success: false,
-                        error: error.message,
-                        profile: this.getNeutralResult().profile
-                    };
-                }
+                    },
+                    writingQuality: { 
+                        repetitions: this.detectWordRepetitions ? this.detectWordRepetitions(preprocessing) : {}
+                    },
+                    timestamp: new Date().toISOString(),
+                    analysisVersion: this.version
+                };
+        
+            } catch (error) {
+                console.error('Blokknote emotion analysis error:', error);
+                return {
+                    success: false,
+                    error: error.message,
+                    profile: this.getNeutralResult().profile
+                };
+            }
         }
 
         calculateWriterMetrics(text) {
@@ -1940,13 +1991,11 @@
             metrics.totalLines = totalLines;
         
             const isLikelyPoetry = (
-                (metrics.rhymeCatcher > 0) ||
-                (metrics.anaphoraFreq > 0 || metrics.epiphoraFreq > 0) ||
-                (totalLines > 4 && avgLineLength <= 10) ||
-                (bestPattern !== 'смешанный' && maxCount > 1) ||
-                (totalLines / totalWords > 0.3)
+                (metrics.rhymeCatcher > 3) ||
+                (totalLines > 6 && avgLineLength <= 7 && (metrics.anaphoraFreq > 3 || metrics.epiphoraFreq > 3)) ||
+                (totalLines / totalWords > 0.5 && avgLineLength <= 6)
             );
-        
+            
             if (!isLikelyPoetry) {
                 return {};
             }
@@ -11254,6 +11303,7 @@
     
 
 })();
+
 
 
 
