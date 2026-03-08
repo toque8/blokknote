@@ -66,7 +66,7 @@ toggle() {
 open() {
     if (this.isActive || this._rendering) return;
     const editor = document.getElementById('editor');
-     const text = editor ? editor.innerText.trim() : '';
+    const text = editor ? editor.innerText.trim() : '';
     
     if (!text) {
         const currentLang = this.getCurrentLanguage();
@@ -82,50 +82,41 @@ open() {
     this.sidebar.classList.add('active');
     this._rendering = true;
 
-    setTimeout(() => {
-        try {
-            const result = this.analyzer.analyze(text);
-            if (result.success) {
-                const hasEnoughData = result.details && 
-                                     result.details.syntactic && 
-                                     result.details.syntactic.sentenceStats;
-                
-                if (!hasEnoughData) {
-                    const currentLang = this.getCurrentLanguage();
-                    if (currentLang === 'ru') {
-                        this.showError('Недостаточно данных для анализа');
-                    } else {
-                         this.showError('Not enough data for analysis');
-                    }
-                    return;
-                }
-                
-                this.renderResult(result);
-            } else {
-                this.showError(result.error);
-            }
-        } catch (err) {
-            const currentLang = this.getCurrentLanguage();
-             let message = err.message;
-            if (err.message.includes('avgComplexity') || 
-                err.message.includes('Cannot read properties') || 
-                err.message.includes('undefined') ||
-                err.message.includes('syntactic')) {
-                message = currentLang === 'ru' ? 'Недостаточно данных для анализа' : 'Not enough data for analysis';
-            }
-            this.showError(message);
-        } finally {
-            this._rendering = false;
-        }
-    }, 10);
+    const content = document.getElementById('emotions-content');
+    if (content) {
+        const currentLang = this.getCurrentLanguage();
+        content.innerHTML = '<p style="color:#aaa;text-align:center;padding:40px 0;">' + 
+            (currentLang === 'ru' ? 'Идёт анализ...' : 'Analyzing...') + 
+            '</p>';
+    }
 
-	console.time('analyze');
-	const result = this.analyzer.analyze(text);
-	console.timeEnd('analyze');
-	
-	console.time('renderResult');
-	this.renderResult(result);
-	console.timeEnd('renderResult');
+    setTimeout(() => {
+        console.time('analyze');
+        const result = this.analyzer.analyze(text);
+        console.timeEnd('analyze');
+
+        if (result.success) {
+            const hasEnoughData = result.details && 
+                                 result.details.syntactic && 
+                                 result.details.syntactic.sentenceStats;
+            
+            if (!hasEnoughData) {
+                const currentLang = this.getCurrentLanguage();
+                if (currentLang === 'ru') {
+                    this.showError('Недостаточно данных для анализа');
+                } else {
+                    this.showError('Not enough data for analysis');
+                }
+                return;
+            }
+            
+            console.time('renderResult');
+            this.renderResult(result);
+            console.timeEnd('renderResult');
+        } else {
+            this.showError(result.error);
+        }
+    }, 5); 
 }
 
 close() {
@@ -4989,6 +4980,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
