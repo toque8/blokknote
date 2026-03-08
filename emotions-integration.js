@@ -91,9 +91,10 @@ open() {
     }
 
     setTimeout(() => {
-        console.time('analyze');
+        const startAnalyze = performance.now();
         const result = this.analyzer.analyze(text);
-        console.timeEnd('analyze');
+        const endAnalyze = performance.now();
+        console.log(`Analysis: ${((endAnalyze - startAnalyze) / 1000).toFixed(1)} s`);
 
         if (result.success) {
             const hasEnoughData = result.details && 
@@ -110,13 +111,14 @@ open() {
                 return;
             }
             
-            console.time('renderResult');
+            const startRender = performance.now();
             this.renderResult(result);
-            console.timeEnd('renderResult');
+            const endRender = performance.now();
+            console.log(`Render: ${(endRender - startRender).toFixed(0)} ms`);
         } else {
             this.showError(result.error);
         }
-    }, 5); 
+    }, 5);
 }
 
 close() {
@@ -4980,6 +4982,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
