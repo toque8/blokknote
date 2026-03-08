@@ -64,7 +64,7 @@ toggle() {
 }
 
 open() {
-    if (this.isActive || this._rendering) return;
+    if (this._rendering) return;
     const editor = document.getElementById('editor');
     const text = editor ? editor.innerText.trim() : '';
     
@@ -78,8 +78,19 @@ open() {
         return;
     }
 
-    this.isActive = true;
-    this.sidebar.classList.add('active');
+    if (!this.isActive) {
+        this.sidebar.classList.add('active');
+        this.isActive = true;
+    }
+
+    if (!EmotionsUI._lastText) EmotionsUI._lastText = null;
+    if (!EmotionsUI._lastResult) EmotionsUI._lastResult = null;
+
+    if (EmotionsUI._lastText === text && EmotionsUI._lastResult) {
+        this.renderResult(EmotionsUI._lastResult);
+        return;
+    }
+
     this._rendering = true;
 
     const content = document.getElementById('emotions-content');
@@ -111,6 +122,9 @@ open() {
                 return;
             }
             
+            EmotionsUI._lastText = text;
+            EmotionsUI._lastResult = result;
+            
             const startRender = performance.now();
             this.renderResult(result);
             const endRender = performance.now();
@@ -118,7 +132,7 @@ open() {
         } else {
             this.showError(result.error);
         }
-    }, 5);
+    }, 10);
 }
 
 close() {
@@ -4982,6 +4996,7 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
 
