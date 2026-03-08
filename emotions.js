@@ -1568,735 +1568,724 @@
         }
 
         calculateWriterMetrics(text) {
-                    if (!text || typeof text !== 'string') return {};
-                    
-                    const sentences = text.split(/[.!?]+/).filter(Boolean);
-                    const words = text.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
-                    const chars = text.length;
-                    const totalSentences = sentences.length;
-                    const totalWords = words.length;
-                    
-                    const metrics = {};
-                    
-                    const subordConjRu = ['чтобы','потому','который','что','когда','если','так','как','будто','словно'];
-                    const subordConjEn = ['that','which','because','if','when','as','like','than','while','though'];
-                    let hemingwayCount = 0;
-                    sentences.forEach(s => {
-                              const sentWords = s.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
-                              if (sentWords.length <= 5) {
-                                        const lower = s.toLowerCase();
-                                        const hasSubord = subordConjRu.some(c => lower.includes(c)) || 
-                                                          subordConjEn.some(c => lower.includes(c));
-                                        if (!hasSubord) hemingwayCount++;
-                              }
-                    });
-                    metrics.hemingwayCoefficient = totalSentences ? (hemingwayCount / totalSentences * 100).toFixed(1) : 0;
-                    
-                    const silenceWordsRu = ['тишина','молчание','пауза','безмолвие','покой','тишь','затишье'];
-                    const silenceWordsEn = ['silence','quiet','stillness','pause','hush','calm'];
-                    let silenceCount = 0;
-                    const lowerText = text.toLowerCase();
-                    silenceWordsRu.concat(silenceWordsEn).forEach(w => {
-                              const re = new RegExp(w, 'g');
-                              const matches = lowerText.match(re);
-                              if (matches) silenceCount += matches.length;
-                    });
-                    const ellipsisCount = (text.match(/…|\.{3,}/g) || []).length;
-                    const silenceDensity = (silenceCount + ellipsisCount) / chars * 1000;
-                    metrics.silenceEffect = silenceDensity > 0 ? (10 * Math.log10(silenceDensity + 1)).toFixed(1) : 0;
-                    
-                    const heatRu = ['жар','огонь','солнце','тепл','горяч','зной','пекл','раскал'];
-                    const heatEn = ['hot','fire','sun','warm','heat','burn','scorch'];
-                    const coldRu = ['лед','мороз','холод','снег','стуж','холодн','мерз'];
-                    const coldEn = ['ice','frost','cold','snow','freeze','chill'];
-                    let heatScore = 0, coldScore = 0;
-                    heatRu.concat(heatEn).forEach(w => {
-                              const re = new RegExp(w, 'g');
-                              const m = lowerText.match(re);
-                              if (m) heatScore += m.length;
-                    });
-                    coldRu.concat(coldEn).forEach(w => {
-                              const re = new RegExp(w, 'g');
-                              const m = lowerText.match(re);
-                              if (m) coldScore += m.length;
-                    });
-                    const totalTempMarkers = heatScore + coldScore;
-                    metrics.weatherIndex = totalTempMarkers + 2 ? 
-                        ((heatScore + 1 - (coldScore + 1)) / (totalTempMarkers + 2) * 40).toFixed(0) : 0;
-                    
-                    const quotesRegex = /«[^»]+»|"[^"]+"|„[^“]+“|'[^']+'|‘[^’]+’|“[^”]+”/g;
-                    const quotesMatches = text.match(quotesRegex) || [];
-                    const quotesChars = quotesMatches.join('').length;
-                    metrics.dialogueParadigm = chars ? (quotesChars / chars * 100).toFixed(1) : 0;
-                    
-                    const pastRu = /[а-яё]+(л|ла|ло|ли)/gi;
-                    const pastEnWords = ['went','saw','did','said','came','took','thought','made','felt','got','gave','found','knew','left','meant'];
-                    const pastEnEd = /\b[a-z]+ed\b/gi;
-                    let pastCount = 0;
-                    const pastRuMatches = text.match(pastRu);
-                    if (pastRuMatches) pastCount += pastRuMatches.length;
-                    pastEnWords.forEach(w => {
-                              const re = new RegExp('\\b' + w + '\\b', 'gi');
-                              const m = text.match(re);
-                              if (m) pastCount += m.length;
-                    });
-                    const pastEnEdMatches = text.match(pastEnEd);
-                    if (pastEnEdMatches) pastCount += pastEnEdMatches.length;
-                    
-                    const futureRu = /\b(будет|будут|буду|будешь|будем|будете|станет|станут)\b/gi;
-                    const futureEn = /\b(will|shall|\'ll)\b/gi;
-                    let futureCount = 0;
-                    const futureRuMatches = text.match(futureRu);
-                    if (futureRuMatches) futureCount += futureRuMatches.length;
-                    const futureEnMatches = text.match(futureEn);
-                    if (futureEnMatches) futureCount += futureEnMatches.length;
-                    
-                    metrics.timeVector = ((futureCount - pastCount) / (pastCount + futureCount + 1) * 100).toFixed(1);
-                    
-                    const modalityRu = ['может быть','наверное','возможно','вероятно','кажется','похоже','пожалуй','едва ли','вряд ли'];
-                    const modalityEn = ['probably','maybe','perhaps','possibly','apparently','seemingly','likely'];
-                    let modalityCount = 0;
-                    modalityRu.concat(modalityEn).forEach(w => {
-                              const re = new RegExp(w, 'gi');
-                              const m = lowerText.match(re);
-                              if (m) modalityCount += m.length;
-                    });
-                    metrics.modalityLevel = totalWords ? (modalityCount / totalWords * 1000).toFixed(1) : 0;
-                    
-                    const firstPersonRu = ['я','меня','мне','мной','мною','мы','нас','нам','нами'];
-                    const firstPersonEn = ['i','me','my','mine','we','us','our','ours'];
-                    const allPersonalRu = ['ты','тебя','тебе','тобой','вы','вас','вам','вами','он','его','ему','им','она','её','ей','ею','они','их','им'];
-                    const allPersonalEn = ['you','your','yours','he','him','his','she','her','hers','they','them','their','theirs'];
-                    let firstPersonCount = 0, totalPronounCount = 0;
-                    const wordRegex = /[a-zA-Zа-яА-ЯёЁ]+/g;
-                    const allWords = text.match(wordRegex) || [];
-                    allWords.forEach(w => {
-                              const lw = w.toLowerCase();
-                              if (firstPersonRu.includes(lw) || firstPersonEn.includes(lw)) firstPersonCount++;
-                              if (firstPersonRu.includes(lw) || firstPersonEn.includes(lw) || 
-                                  allPersonalRu.includes(lw) || allPersonalEn.includes(lw)) totalPronounCount++;
-                    });
-                    metrics.egoFactor = totalPronounCount ? ((firstPersonCount / totalPronounCount) * 100).toFixed(1) : 0;
-                    
-                    const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
-                    const paragraphCount = paragraphs.length || 1;
-                    const avgSentPerParagraph = totalSentences / paragraphCount;
-                    metrics.fragmentationDegree = avgSentPerParagraph > 0 ? (10 / avgSentPerParagraph).toFixed(1) : 0;
-                    
-                    const sensoryRu = [
-                        'видеть', 'увидеть', 'взгляд', 'глаз', 'глаза', 'смотреть', 'посмотреть',
-                        'глядеть', 'поглядеть', 'заметить', 'приметить', 'наблюдать', 'лицезреть',
-                        'зоркий', 'зрение', 'видение', 'очертание', 'силуэт', 'краска', 'цвет',
-                        'свет', 'тьма', 'мрак', 'сияние', 'блеск', 'мерцание', 'вспышка',
-                        'облако', 'туман', 'дымка', 'пейзаж', 'ландшафт', 'картина',
-
-                        'слышать', 'услышать', 'слушать', 'прослушать', 'звук', 'звучание',
-                        'шум', 'грохот', 'стук', 'треск', 'скрип', 'шелест', 'шёпот', 'шорох',
-                        'голос', 'крик', 'вопль', 'плач', 'смех', 'хохот', 'кашель', 'вздох',
-                        'тишина', 'беззвучие', 'эхо', 'отзвук', 'аккорд', 'мелодия', 'песня',
-                        'разговор', 'речь', 'беседа', 'звон', 'звонок', 'бряцание',
-
-                        'касаться', 'прикасаться', 'трогать', 'потрогать', 'осязать', 'щупать',
-                        'гладкий', 'шершавый', 'шероховатый', 'мягкий', 'твёрдый', 'упругий',
-                        'колючий', 'острый', 'тупой', 'горячий', 'холодный', 'тёплый', 'прохладный',
-                        'ледяной', 'обжигающий', 'влажный', 'сухой', 'липкий', 'скользкий',
-                        'пушистый', 'ворсистый', 'шёлковый', 'бархатистый', 'жёсткий',
-
-                        'пахнуть', 'запахнуть', 'нюхать', 'понюхать', 'обонять', 'запах', 'аромат',
-                        'благоухание', 'амбре', 'дух', 'вонь', 'смрад', 'чад', 'дым', 'гар',
-                        'цветочный', 'пряный', 'гнилостный', 'свежий', 'душистый', 'пахучий',
-
-                        'вкус', 'вкушать', 'пробовать', 'отведать', 'кушать', 'есть', 'пить',
-                        'сладкий', 'горький', 'кислый', 'солёный', 'пресный', 'пряный', 'терпкий',
-                        'вкусный', 'невкусный', 'аппетитный', 'сочный', 'сухой'
-                    ];
-                    const sensoryEn = [
-                        'see', 'look', 'watch', 'view', 'gaze', 'stare', 'glance', 'peer',
-                        'eye', 'eyes', 'sight', 'vision', 'view', 'scene', 'landscape',
-                        'light', 'dark', 'shadow', 'shine', 'glow', 'flash', 'sparkle',
-                        'color', 'colour', 'bright', 'dim', 'clear', 'foggy', 'mist',
-
-                        'hear', 'listen', 'sound', 'noise', 'voice', 'tone', 'music', 'song',
-                        'silence', 'quiet', 'loud', 'soft', 'faint', 'rustle', 'whisper',
-                        'scream', 'shout', 'cry', 'laugh', 'footstep', 'step', 'ring', 'bang',
-                    
-                        'touch', 'feel', 'hand', 'finger', 'skin', 'soft', 'hard', 'smooth',
-                        'rough', 'warm', 'cold', 'hot', 'cool', 'icy', 'burning', 'wet',
-                        'dry', 'sticky', 'slippery', 'sharp', 'dull', 'furry', 'silky',
-                    
-                        'smell', 'scent', 'odor', 'aroma', 'perfume', 'fragrance', 'stink',
-                        'reek', 'whiff', 'musty', 'fresh', 'foul', 'sweet', 'pungent',
-                    
-                        'taste', 'flavor', 'sweet', 'sour', 'bitter', 'salty', 'savory',
-                        'delicious', 'yummy', 'spicy', 'hot', 'mild', 'juicy', 'dry'
-                    ];
-                    let sensoryCount = 0;
-                    sensoryRu.concat(sensoryEn).forEach(w => {
-                              const re = new RegExp(w, 'gi');
-                              const m = text.match(re);
-                              if (m) sensoryCount += m.length;
-                    });
-                    metrics.immersiveness = totalWords ? (sensoryCount / totalWords * 1000).toFixed(1) : 0;
-                    
-                    const sentLengths = sentences.map(s => (s.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || []).length);
-                    const sentFreq = {};
-                    sentLengths.forEach(len => sentFreq[len] = (sentFreq[len] || 0) + 1);
-                    let sentEntropy = 0;
-                    if (totalSentences > 0) {
-                              Object.values(sentFreq).forEach(f => {
-                                        const p = f / totalSentences;
-                                        sentEntropy -= p * Math.log2(p);
-                              });
+            if (!text || typeof text !== 'string') return {};
+            
+            const sentences = text.split(/[.!?]+/).filter(Boolean);
+            const words = text.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
+            const chars = text.length;
+            const totalSentences = sentences.length;
+            const totalWords = words.length;
+            const lowerText = text.toLowerCase();
+            
+            const metrics = {};
+            
+            const subordConjRu = ['чтобы','потому','который','что','когда','если','так','как','будто','словно'];
+            const subordConjEn = ['that','which','because','if','when','as','like','than','while','though'];
+            const subordAll = subordConjRu.concat(subordConjEn);
+            const subordPattern = subordAll.map(w => '\\b' + this.escapeRegExp(w) + '\\b').join('|');
+            const subordRegex = new RegExp(subordPattern, 'i');
+            let hemingwayCount = 0;
+            sentences.forEach(s => {
+                const sentWords = s.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
+                if (sentWords.length <= 5) {
+                    const hasSubord = subordRegex.test(s);
+                    if (!hasSubord) hemingwayCount++;
+                }
+            });
+            metrics.hemingwayCoefficient = totalSentences ? (hemingwayCount / totalSentences * 100).toFixed(1) : 0;
+            
+            const silenceWordsRu = ['тишина','молчание','пауза','безмолвие','покой','тишь','затишье'];
+            const silenceWordsEn = ['silence','quiet','stillness','pause','hush','calm'];
+            const silenceAll = silenceWordsRu.concat(silenceWordsEn);
+            const silencePattern = silenceAll.map(w => '\\b' + this.escapeRegExp(w) + '\\b').join('|');
+            const silenceRegex = new RegExp(silencePattern, 'g');
+            const silenceMatches = lowerText.match(silenceRegex) || [];
+            const silenceCount = silenceMatches.length;
+            const ellipsisCount = (text.match(/…|\.{3,}/g) || []).length;
+            const silenceDensity = (silenceCount + ellipsisCount) / chars * 1000;
+            metrics.silenceEffect = silenceDensity > 0 ? (10 * Math.log10(silenceDensity + 1)).toFixed(1) : 0;
+            
+            const heatRu = ['жар','огонь','солнце','тепл','горяч','зной','пекл','раскал'];
+            const heatEn = ['hot','fire','sun','warm','heat','burn','scorch'];
+            const coldRu = ['лед','мороз','холод','снег','стуж','холодн','мерз'];
+            const coldEn = ['ice','frost','cold','snow','freeze','chill'];
+            const heatAll = heatRu.concat(heatEn);
+            const coldAll = coldRu.concat(coldEn);
+            const heatPattern = heatAll.map(w => this.escapeRegExp(w)).join('|');
+            const coldPattern = coldAll.map(w => this.escapeRegExp(w)).join('|');
+            const heatRegex = new RegExp(heatPattern, 'g');
+            const coldRegex = new RegExp(coldPattern, 'g');
+            const heatScore = (lowerText.match(heatRegex) || []).length;
+            const coldScore = (lowerText.match(coldRegex) || []).length;
+            const totalTempMarkers = heatScore + coldScore;
+            metrics.weatherIndex = totalTempMarkers + 2 ? 
+                ((heatScore + 1 - (coldScore + 1)) / (totalTempMarkers + 2) * 40).toFixed(0) : 0;
+            
+            const quotesRegex = /«[^»]+»|"[^"]+"|„[^“]+“|'[^']+'|‘[^’]+’|“[^”]+”/g;
+            const quotesMatches = text.match(quotesRegex) || [];
+            const quotesChars = quotesMatches.join('').length;
+            metrics.dialogueParadigm = chars ? (quotesChars / chars * 100).toFixed(1) : 0;
+            
+            const pastRu = /[а-яё]+(л|ла|ло|ли)/gi;
+            const pastEnWords = ['went','saw','did','said','came','took','thought','made','felt','got','gave','found','knew','left','meant'];
+            const pastEnEd = /\b[a-z]+ed\b/gi;
+            let pastCount = 0;
+            const pastRuMatches = text.match(pastRu);
+            if (pastRuMatches) pastCount += pastRuMatches.length;
+            const pastEnPattern = pastEnWords.map(w => `\\b${w}\\b`).join('|');
+            const pastEnRegex = new RegExp(pastEnPattern, 'gi');
+            const pastEnMatches = text.match(pastEnRegex) || [];
+            pastCount += pastEnMatches.length;
+            const pastEnEdMatches = text.match(pastEnEd);
+            if (pastEnEdMatches) pastCount += pastEnEdMatches.length;
+            
+            const futureRu = /\b(будет|будут|буду|будешь|будем|будете|станет|станут)\b/gi;
+            const futureEn = /\b(will|shall|\'ll)\b/gi;
+            let futureCount = 0;
+            const futureRuMatches = text.match(futureRu);
+            if (futureRuMatches) futureCount += futureRuMatches.length;
+            const futureEnMatches = text.match(futureEn);
+            if (futureEnMatches) futureCount += futureEnMatches.length;
+            
+            metrics.timeVector = ((futureCount - pastCount) / (pastCount + futureCount + 1) * 100).toFixed(1);
+            
+            const modalityRu = ['может быть','наверное','возможно','вероятно','кажется','похоже','пожалуй','едва ли','вряд ли'];
+            const modalityEn = ['probably','maybe','perhaps','possibly','apparently','seemingly','likely'];
+            const modalityAll = modalityRu.concat(modalityEn);
+            const modalityPattern = modalityAll.map(w => {
+                const escaped = this.escapeRegExp(w);
+                if (w.includes(' ')) {
+                    const parts = escaped.split(/\\ /);
+                    return '\\b' + parts.join('\\s') + '\\b';
+                } else {
+                    return '\\b' + escaped + '\\b';
+                }
+            }).join('|');
+            const modalityRegex = new RegExp(modalityPattern, 'gi');
+            const modalityMatches = lowerText.match(modalityRegex) || [];
+            metrics.modalityLevel = totalWords ? (modalityMatches.length / totalWords * 1000).toFixed(1) : 0;
+            
+            const firstPersonRu = ['я','меня','мне','мной','мною','мы','нас','нам','нами'];
+            const firstPersonEn = ['i','me','my','mine','we','us','our','ours'];
+            const allPersonalRu = ['ты','тебя','тебе','тобой','вы','вас','вам','вами','он','его','ему','им','она','её','ей','ею','они','их','им'];
+            const allPersonalEn = ['you','your','yours','he','him','his','she','her','hers','they','them','their','theirs'];
+            const firstPersonSet = new Set(firstPersonRu.concat(firstPersonEn).map(w => w.toLowerCase()));
+            const allPersonalSet = new Set(allPersonalRu.concat(allPersonalEn).map(w => w.toLowerCase()));
+            let firstPersonCount = 0, totalPronounCount = 0;
+            const allWords = words.map(w => w.toLowerCase());
+            allWords.forEach(w => {
+                if (firstPersonSet.has(w)) firstPersonCount++;
+                if (firstPersonSet.has(w) || allPersonalSet.has(w)) totalPronounCount++;
+            });
+            metrics.egoFactor = totalPronounCount ? ((firstPersonCount / totalPronounCount) * 100).toFixed(1) : 0;
+            
+            const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+            const paragraphCount = paragraphs.length || 1;
+            const avgSentPerParagraph = totalSentences / paragraphCount;
+            metrics.fragmentationDegree = avgSentPerParagraph > 0 ? (10 / avgSentPerParagraph).toFixed(1) : 0;
+            
+            const sensoryRu = [
+                'видеть', 'увидеть', 'взгляд', 'глаз', 'глаза', 'смотреть', 'посмотреть',
+                'глядеть', 'поглядеть', 'заметить', 'приметить', 'наблюдать', 'лицезреть',
+                'зоркий', 'зрение', 'видение', 'очертание', 'силуэт', 'краска', 'цвет',
+                'свет', 'тьма', 'мрак', 'сияние', 'блеск', 'мерцание', 'вспышка',
+                'облако', 'туман', 'дымка', 'пейзаж', 'ландшафт', 'картина',
+        
+                'слышать', 'услышать', 'слушать', 'прослушать', 'звук', 'звучание',
+                'шум', 'грохот', 'стук', 'треск', 'скрип', 'шелест', 'шёпот', 'шорох',
+                'голос', 'крик', 'вопль', 'плач', 'смех', 'хохот', 'кашель', 'вздох',
+                'тишина', 'беззвучие', 'эхо', 'отзвук', 'аккорд', 'мелодия', 'песня',
+                'разговор', 'речь', 'беседа', 'звон', 'звонок', 'бряцание',
+        
+                'касаться', 'прикасаться', 'трогать', 'потрогать', 'осязать', 'щупать',
+                'гладкий', 'шершавый', 'шероховатый', 'мягкий', 'твёрдый', 'упругий',
+                'колючий', 'острый', 'тупой', 'горячий', 'холодный', 'тёплый', 'прохладный',
+                'ледяной', 'обжигающий', 'влажный', 'сухой', 'липкий', 'скользкий',
+                'пушистый', 'ворсистый', 'шёлковый', 'бархатистый', 'жёсткий',
+        
+                'пахнуть', 'запахнуть', 'нюхать', 'понюхать', 'обонять', 'запах', 'аромат',
+                'благоухание', 'амбре', 'дух', 'вонь', 'смрад', 'чад', 'дым', 'гар',
+                'цветочный', 'пряный', 'гнилостный', 'свежий', 'душистый', 'пахучий',
+        
+                'вкус', 'вкушать', 'пробовать', 'отведать', 'кушать', 'есть', 'пить',
+                'сладкий', 'горький', 'кислый', 'солёный', 'пресный', 'пряный', 'терпкий',
+                'вкусный', 'невкусный', 'аппетитный', 'сочный', 'сухой'
+            ];
+            const sensoryEn = [
+                'see', 'look', 'watch', 'view', 'gaze', 'stare', 'glance', 'peer',
+                'eye', 'eyes', 'sight', 'vision', 'view', 'scene', 'landscape',
+                'light', 'dark', 'shadow', 'shine', 'glow', 'flash', 'sparkle',
+                'color', 'colour', 'bright', 'dim', 'clear', 'foggy', 'mist',
+        
+                'hear', 'listen', 'sound', 'noise', 'voice', 'tone', 'music', 'song',
+                'silence', 'quiet', 'loud', 'soft', 'faint', 'rustle', 'whisper',
+                'scream', 'shout', 'cry', 'laugh', 'footstep', 'step', 'ring', 'bang',
+            
+                'touch', 'feel', 'hand', 'finger', 'skin', 'soft', 'hard', 'smooth',
+                'rough', 'warm', 'cold', 'hot', 'cool', 'icy', 'burning', 'wet',
+                'dry', 'sticky', 'slippery', 'sharp', 'dull', 'furry', 'silky',
+            
+                'smell', 'scent', 'odor', 'aroma', 'perfume', 'fragrance', 'stink',
+                'reek', 'whiff', 'musty', 'fresh', 'foul', 'sweet', 'pungent',
+            
+                'taste', 'flavor', 'sweet', 'sour', 'bitter', 'salty', 'savory',
+                'delicious', 'yummy', 'spicy', 'hot', 'mild', 'juicy', 'dry'
+            ];
+            const sensoryAll = sensoryRu.concat(sensoryEn);
+            const sensoryPattern = sensoryAll.map(w => '\\b' + this.escapeRegExp(w) + '\\b').join('|');
+            const sensoryRegex = new RegExp(sensoryPattern, 'gi');
+            const sensoryMatches = text.match(sensoryRegex) || [];
+            metrics.immersiveness = totalWords ? (sensoryMatches.length / totalWords * 1000).toFixed(1) : 0;
+            
+            const sentLengths = sentences.map(s => (s.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || []).length);
+            const sentFreq = {};
+            sentLengths.forEach(len => sentFreq[len] = (sentFreq[len] || 0) + 1);
+            let sentEntropy = 0;
+            if (totalSentences > 0) {
+                Object.values(sentFreq).forEach(f => {
+                    const p = f / totalSentences;
+                    sentEntropy -= p * Math.log2(p);
+                });
+            }
+            const uniqueSentLengths = Object.keys(sentFreq).length;
+            const maxSentEntropy = uniqueSentLengths > 1 ? Math.log2(uniqueSentLengths) : 0;
+            const normSentEntropy = maxSentEntropy > 0 ? sentEntropy / maxSentEntropy : 0;
+            
+            const paraLengths = paragraphs.map(p => {
+                const s = p.split(/[.!?]+/).filter(Boolean);
+                return s.length;
+            });
+            if (paraLengths.length === 0) paraLengths.push(totalSentences);
+            const paraFreq = {};
+            paraLengths.forEach(len => paraFreq[len] = (paraFreq[len] || 0) + 1);
+            let paraEntropy = 0;
+            const totalParas = paraLengths.length;
+            if (totalParas > 0) {
+                Object.values(paraFreq).forEach(f => {
+                    const p = f / totalParas;
+                    paraEntropy -= p * Math.log2(p);
+                });
+            }
+            const uniqueParaLengths = Object.keys(paraFreq).length;
+            const maxParaEntropy = uniqueParaLengths > 1 ? Math.log2(uniqueParaLengths) : 0;
+            const normParaEntropy = maxParaEntropy > 0 ? paraEntropy / maxParaEntropy : 0;
+            
+            const punctuationMarks = [
+                '.', ',', '!', '?', ';', ':', '—', '…',
+                '(', ')', '[', ']', '{', '}', '"', "'", '«', '»'
+            ];
+            const punctCounts = {};
+            punctuationMarks.forEach(mark => punctCounts[mark] = 0);
+            for (let i = 0; i < chars; i++) {
+                const ch = text[i];
+                if (punctCounts.hasOwnProperty(ch)) punctCounts[ch]++;
+            }
+            const totalPunct = Object.values(punctCounts).reduce((a, b) => a + b, 0);
+            let punctEntropy = 0;
+            if (totalPunct > 0) {
+                Object.values(punctCounts).forEach(c => {
+                    if (c > 0) {
+                        const p = c / totalPunct;
+                        punctEntropy -= p * Math.log2(p);
                     }
-                    const uniqueSentLengths = Object.keys(sentFreq).length;
-                    const maxSentEntropy = uniqueSentLengths > 1 ? Math.log2(uniqueSentLengths) : 0;
-                    const normSentEntropy = maxSentEntropy > 0 ? sentEntropy / maxSentEntropy : 0;
-                    
-                    const paraLengths = paragraphs.map(p => {
-                              const s = p.split(/[.!?]+/).filter(Boolean);
-                              return s.length;
-                    });
-                    if (paraLengths.length === 0) paraLengths.push(totalSentences);
-                    const paraFreq = {};
-                    paraLengths.forEach(len => paraFreq[len] = (paraFreq[len] || 0) + 1);
-                    let paraEntropy = 0;
-                    const totalParas = paraLengths.length;
-                    if (totalParas > 0) {
-                              Object.values(paraFreq).forEach(f => {
-                                        const p = f / totalParas;
-                                        paraEntropy -= p * Math.log2(p);
-                              });
-                    }
-                    const uniqueParaLengths = Object.keys(paraFreq).length;
-                    const maxParaEntropy = uniqueParaLengths > 1 ? Math.log2(uniqueParaLengths) : 0;
-                    const normParaEntropy = maxParaEntropy > 0 ? paraEntropy / maxParaEntropy : 0;
-                    
-                    const punctuationMarks = [
-                              '.', ',', '!', '?', ';', ':', '—', '…',
-                              '(', ')', '[', ']', '{', '}', '"', "'", '«', '»'
-                    ];
-                    const punctCounts = {};
-                    punctuationMarks.forEach(mark => punctCounts[mark] = 0);
-                    for (let i = 0; i < chars; i++) {
-                              const ch = text[i];
-                              if (punctCounts.hasOwnProperty(ch)) punctCounts[ch]++;
-                    }
-                    const totalPunct = Object.values(punctCounts).reduce((a, b) => a + b, 0);
-                    let punctEntropy = 0;
-                    if (totalPunct > 0) {
-                              Object.values(punctCounts).forEach(c => {
-                                        if (c > 0) {
-                                                  const p = c / totalPunct;
-                                                  punctEntropy -= p * Math.log2(p);
-                                        }
-                              });
-                    }
-                    const usedPunct = Object.keys(punctCounts).filter(m => punctCounts[m] > 0).length;
-                    const maxPunctEntropy = usedPunct > 1 ? Math.log2(usedPunct) : 0;
-                    const normPunctEntropy = maxPunctEntropy > 0 ? punctEntropy / maxPunctEntropy : 0;
-                    
-                    const chaosPercent = ((normSentEntropy + normParaEntropy + normPunctEntropy) / 3 * 100).toFixed(1);
-                    metrics.chaosEntropyPercent = chaosPercent;
-                    
-                    return metrics;
+                });
+            }
+            const usedPunct = Object.keys(punctCounts).filter(m => punctCounts[m] > 0).length;
+            const maxPunctEntropy = usedPunct > 1 ? Math.log2(usedPunct) : 0;
+            const normPunctEntropy = maxPunctEntropy > 0 ? punctEntropy / maxPunctEntropy : 0;
+            
+            const chaosPercent = ((normSentEntropy + normParaEntropy + normPunctEntropy) / 3 * 100).toFixed(1);
+            metrics.chaosEntropyPercent = chaosPercent;
+            
+            return metrics;
         }
 
         calculatePoetryMetrics(text) {
-                            if (!text || typeof text !== 'string') return {};
-                  
-                            const lines = text.split('\n').filter(line => line.trim().length > 0);
-                            const totalLines = lines.length;
-                            if (totalLines === 0) return {};
-                  
-                            const allWords = text.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
-                            const totalWords = allWords.length;
-                            if (totalWords === 0) return {};
-                  
-                            const vowelsRu = 'аеёиоуыэюя';
-                            const vowelsEn = 'aeiouy';
-                            const allVowels = vowelsRu + vowelsEn + vowelsRu.toUpperCase() + vowelsEn.toUpperCase();
-                  
-                            const metrics = {};
-                  
-                            let anaphoraCount = 0;
-                            for (let i = 1; i < totalLines; i++) {
-                                      const prevFirst = lines[i-1].match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu)?.[0]?.toLowerCase();
-                                      const currFirst = lines[i].match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu)?.[0]?.toLowerCase();
-                                      if (prevFirst && currFirst && prevFirst === currFirst) {
-                                                anaphoraCount++;
-                                      }
-                            }
-                            metrics.anaphoraFreq = totalLines ? ((anaphoraCount / totalLines) * 100).toFixed(1) : 0;
-                  
-                            let epiphoraCount = 0;
-                            for (let i = 1; i < totalLines; i++) {
-                                      const prevWords = lines[i-1].match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu);
-                                      const currWords = lines[i].match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu);
-                                      if (prevWords && currWords && prevWords.length > 0 && currWords.length > 0) {
-                                                const prevLast = prevWords[prevWords.length-1].toLowerCase();
-                                                const currLast = currWords[currWords.length-1].toLowerCase();
-                                                if (prevLast === currLast) {
-                                                          epiphoraCount++;
-                                                }
-                                      }
-                            }
-                            metrics.epiphoraFreq = totalLines ? ((epiphoraCount / totalLines) * 100).toFixed(1) : 0;
-                  
-                            const consonantsRu = 'бвгджзйклмнпрстфхцчшщ';
-                            const consonantsEn = 'bcdfghjklmnpqrstvwxz';
-                            const allConsonants = consonantsRu + consonantsEn + consonantsRu.toUpperCase() + consonantsEn.toUpperCase();
-                            let consRepetitions = 0;
-                            const consCounts = {};
-                            for (let char of text) {
-                                      if (allConsonants.includes(char)) {
-                                                consCounts[char] = (consCounts[char] || 0) + 1;
-                                      }
-                            }
-                            for (let count of Object.values(consCounts)) {
-                                      if (count > 1) consRepetitions += (count - 1);
-                            }
-                            metrics.consonantWhisper = totalWords ? ((consRepetitions / totalWords) * 100).toFixed(1) : 0;
-                  
-                            let vowelRepetitions = 0;
-                            const vowelCounts = {};
-                            for (let char of text) {
-                                      if (allVowels.includes(char)) {
-                                                vowelCounts[char] = (vowelCounts[char] || 0) + 1;
-                                      }
-                            }
-                            for (let count of Object.values(vowelCounts)) {
-                                      if (count > 1) vowelRepetitions += (count - 1);
-                            }
-                            metrics.vowelCaress = totalWords ? ((vowelRepetitions / totalWords) * 100).toFixed(1) : 0;
-                  
-                            let syllableCount = 0;
-                            for (let char of text) {
-                                      if (allVowels.includes(char)) syllableCount++;
-                            }
-                            metrics.syllableScore = totalWords ? ((syllableCount / totalWords) * 100).toFixed(1) : 0;
-                  
-                            let syllablesPerLine = [];
-                            for (let line of lines) {
-                                      let lineSyllables = 0;
-                                      for (let char of line) {
-                                                if (allVowels.includes(char)) lineSyllables++;
-                                      }
-                                      syllablesPerLine.push(lineSyllables);
-                            }
-                            const avgSyllablesPerLine = syllablesPerLine.reduce((a,b) => a+b, 0) / totalLines;
-                            metrics.stropheMeter = avgSyllablesPerLine.toFixed(1);
-                  
-                            let lineEndings = [];
-                            for (let line of lines) {
-                                      const words = line.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu);
-                                      if (words && words.length > 0) {
-                                                const lastWord = words[words.length-1].toLowerCase();
-                                                const ending = lastWord.slice(-3);
-                                                lineEndings.push(ending);
-                                      } else {
-                                                lineEndings.push('');
-                                      }
-                            }
-                            let rhymePairs = 0;
-                            const endingCounts = {};
-                            for (let end of lineEndings) {
-                                      if (end) {
-                                                endingCounts[end] = (endingCounts[end] || 0) + 1;
-                                      }
-                            }
-                            for (let count of Object.values(endingCounts)) {
-                                      if (count > 1) {
-                                                rhymePairs += count * (count - 1) / 2;
-                                      }
-                            }
-                            metrics.rhymeCatcher = totalLines ? ((rhymePairs / totalLines) * 100).toFixed(1) : 0;
-                  
-                            let patterns = {};
-                            for (let i = 0; i + 3 < totalLines; i += 4) {
-                                      const pattern = [];
-                                      for (let j = 0; j < 4; j++) {
-                                                const lineWords = lines[i+j].match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
-                                                pattern.push(lineWords.length);
-                                      }
-                                      const key = pattern.join('-');
-                                      patterns[key] = (patterns[key] || 0) + 1;
-                            }
-                            let bestPattern = 'смешанный';
-                            let maxCount = 0;
-                            for (let [pattern, count] of Object.entries(patterns)) {
-                                      if (count > maxCount) {
-                                                maxCount = count;
-                                                bestPattern = pattern;
-                                      }
-                            }
-                            metrics.suitableMeter = bestPattern;
-                  
-                            const lineLengths = lines.map(line => (line.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || []).length);
-                            const avgLineLength = lineLengths.reduce((a,b) => a+b, 0) / totalLines;
-                            metrics.lineLength = avgLineLength.toFixed(1);
-                  
-                            const uniqueLengths = new Set(lineLengths).size;
-                            metrics.freedomWaves = totalLines ? ((uniqueLengths / totalLines) * 100).toFixed(1) : 0;
-
-                            metrics.totalLines = totalLines;
-                  
-                            return metrics;
+            if (!text || typeof text !== 'string') return {};
+        
+            const lines = text.split('\n').filter(line => line.trim().length > 0);
+            const totalLines = lines.length;
+            if (totalLines === 0) return {};
+        
+            const allWords = text.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
+            const totalWords = allWords.length;
+            if (totalWords === 0) return {};
+        
+            const vowelsRu = 'аеёиоуыэюя';
+            const vowelsEn = 'aeiouy';
+            const consonantsRu = 'бвгджзйклмнпрстфхцчшщ';
+            const consonantsEn = 'bcdfghjklmnpqrstvwxz';
+        
+            const allVowels = vowelsRu + vowelsEn + vowelsRu.toUpperCase() + vowelsEn.toUpperCase();
+            const allConsonants = consonantsRu + consonantsEn + consonantsRu.toUpperCase() + consonantsEn.toUpperCase();
+        
+            const metrics = {};
+        
+            let anaphoraCount = 0;
+            for (let i = 1; i < totalLines; i++) {
+                const prevFirst = lines[i-1].match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu)?.[0]?.toLowerCase();
+                const currFirst = lines[i].match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu)?.[0]?.toLowerCase();
+                if (prevFirst && currFirst && prevFirst === currFirst) {
+                    anaphoraCount++;
+                }
+            }
+            metrics.anaphoraFreq = totalLines ? ((anaphoraCount / totalLines) * 100).toFixed(1) : 0;
+        
+            let epiphoraCount = 0;
+            for (let i = 1; i < totalLines; i++) {
+                const prevWords = lines[i-1].match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu);
+                const currWords = lines[i].match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu);
+                if (prevWords && currWords && prevWords.length > 0 && currWords.length > 0) {
+                    const prevLast = prevWords[prevWords.length-1].toLowerCase();
+                    const currLast = currWords[currWords.length-1].toLowerCase();
+                    if (prevLast === currLast) {
+                        epiphoraCount++;
+                    }
+                }
+            }
+            metrics.epiphoraFreq = totalLines ? ((epiphoraCount / totalLines) * 100).toFixed(1) : 0;
+        
+            const consCounts = {};
+            const vowelCounts = {};
+            let totalVowels = 0;
+            for (let char of text) {
+                if (allConsonants.includes(char)) {
+                    consCounts[char] = (consCounts[char] || 0) + 1;
+                }
+                if (allVowels.includes(char)) {
+                    vowelCounts[char] = (vowelCounts[char] || 0) + 1;
+                    totalVowels++;
+                }
+            }
+            let consRepetitions = 0;
+            for (let count of Object.values(consCounts)) {
+                if (count > 1) consRepetitions += (count - 1);
+            }
+            metrics.consonantWhisper = totalWords ? ((consRepetitions / totalWords) * 100).toFixed(1) : 0;
+        
+            let vowelRepetitions = 0;
+            for (let count of Object.values(vowelCounts)) {
+                if (count > 1) vowelRepetitions += (count - 1);
+            }
+            metrics.vowelCaress = totalWords ? ((vowelRepetitions / totalWords) * 100).toFixed(1) : 0;
+        
+            metrics.syllableScore = totalWords ? ((totalVowels / totalWords) * 100).toFixed(1) : 0;
+        
+            let syllablesPerLine = [];
+            for (let line of lines) {
+                let lineSyllables = 0;
+                for (let char of line) {
+                    if (allVowels.includes(char)) lineSyllables++;
+                }
+                syllablesPerLine.push(lineSyllables);
+            }
+            const avgSyllablesPerLine = syllablesPerLine.reduce((a, b) => a + b, 0) / totalLines;
+            metrics.stropheMeter = avgSyllablesPerLine.toFixed(1);
+        
+            let rhymePairs = 0;
+            const lineEndings = [];
+            for (let line of lines) {
+                const words = line.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu);
+                if (words && words.length > 0) {
+                    const lastWord = words[words.length-1].toLowerCase();
+                    let endingLength = 4;
+                    if (lastWord.length < 4) endingLength = lastWord.length;
+                    else if (lastWord.length < 5) endingLength = 3;
+                    const ending = lastWord.slice(-endingLength);
+                    lineEndings.push(ending);
+                } else {
+                    lineEndings.push('');
+                }
+            }
+            const endingCounts = {};
+            for (let end of lineEndings) {
+                if (end) {
+                    endingCounts[end] = (endingCounts[end] || 0) + 1;
+                }
+            }
+            for (let count of Object.values(endingCounts)) {
+                if (count > 1) {
+                    rhymePairs += count * (count - 1) / 2;
+                }
+            }
+            metrics.rhymeCatcher = totalLines ? ((rhymePairs / totalLines) * 100).toFixed(1) : 0;
+        
+            let patterns = {};
+            for (let i = 0; i + 3 < totalLines; i += 4) {
+                const pattern = [];
+                for (let j = 0; j < 4; j++) {
+                    const lineWords = lines[i+j].match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
+                    pattern.push(lineWords.length);
+                }
+                const key = pattern.join('-');
+                patterns[key] = (patterns[key] || 0) + 1;
+            }
+            let bestPattern = 'смешанный';
+            let maxCount = 0;
+            for (let [pattern, count] of Object.entries(patterns)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    bestPattern = pattern;
+                }
+            }
+            metrics.suitableMeter = bestPattern;
+        
+            const lineLengths = lines.map(line => (line.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || []).length);
+            const avgLineLength = lineLengths.reduce((a, b) => a + b, 0) / totalLines;
+            metrics.lineLength = avgLineLength.toFixed(1);
+        
+            const uniqueLengths = new Set(lineLengths).size;
+            metrics.freedomWaves = totalLines ? ((uniqueLengths / totalLines) * 100).toFixed(1) : 0;
+        
+            metrics.totalLines = totalLines;
+        
+            const isLikelyPoetry = (
+                (metrics.rhymeCatcher > 0) ||
+                (metrics.anaphoraFreq > 0 || metrics.epiphoraFreq > 0) ||
+                (totalLines > 4 && avgLineLength <= 10) ||
+                (bestPattern !== 'смешанный' && maxCount > 1) ||
+                (totalLines / totalWords > 0.3)
+            );
+        
+            if (!isLikelyPoetry) {
+                return {};
+            }
+        
+            return metrics;
         }
 
         calculateJournalistMetrics(text) {
-                    if (!text || typeof text !== 'string') return {};
-                    
-                    const words = text.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
-                    const totalWords = words.length;
-                    const lowerText = text.toLowerCase();
-                    
-                    const metrics = {};
-                    
-                    const numberRegex = /\b\d+([.,]\d+)?\b/g;
-                    const numbers = text.match(numberRegex) || [];
-                    const dateWordsRu = ['год','года','лет','месяц','месяца','месяцев','день','дня','дней','неделя','недели','недель'];
-                    const dateWordsEn = ['year','years','month','months','day','days','week','weeks'];
-                    let dateWordCount = 0;
-                    dateWordsRu.concat(dateWordsEn).forEach(w => {
-                              const re = new RegExp(w, 'gi');
-                              const m = text.match(re);
-                              if (m) dateWordCount += m.length;
-                    });
-                    metrics.digitalFootprint = totalWords ? ((numbers.length + dateWordCount) / totalWords * 1000).toFixed(1) : 0;
-                    
-                    const sentences = text.split(/[.!?]+/).filter(Boolean);
-                    let nameCount = 0;
-                    sentences.forEach(s => {
-                              const trimmed = s.trim();
-                              if (!trimmed) return;
-                              const firstWordEnd = trimmed.search(/\s/);
-                              const firstWord = firstWordEnd === -1 ? trimmed : trimmed.substring(0, firstWordEnd);
-                              const rest = firstWordEnd === -1 ? '' : trimmed.substring(firstWordEnd);
-                              const candidates = rest.match(/\b[A-ZА-Я][a-zа-яё]*\b/g) || [];
-                              nameCount += candidates.length;
-                    });
-                    metrics.nameIndex = totalWords ? (nameCount / totalWords * 1000).toFixed(1) : 0;
-                    
-                    const subjectiveRu = ['я думаю','я считаю','мне кажется','на мой взгляд','по моему мнению','полагаю','уверен','сомневаюсь'];
-                    const subjectiveEn = ['i think','i believe','in my opinion','it seems to me','i suppose','i guess'];
-                    let subjectiveCount = 0;
-                    subjectiveRu.concat(subjectiveEn).forEach(phrase => {
-                              const re = new RegExp(phrase, 'gi');
-                              const m = lowerText.match(re);
-                              if (m) subjectiveCount += m.length;
-                    });
-                    const subjectiveScore = totalWords ? (subjectiveCount / totalWords * 1000) : 0;
-                    metrics.factMirror = Math.max(0, 100 - subjectiveScore * 10).toFixed(1);
-                    
-                    const freshnessRu = ['сегодня','вчера','сейчас','только что','этой ночью','час назад','утром','в понедельник','на этой неделе'];
-                    const freshnessEn = ['today','yesterday','tonight','this morning','just in','breaking','hours ago'];
-                    let freshnessCount = 0;
-                    freshnessRu.concat(freshnessEn).forEach(phrase => {
-                              const re = new RegExp(phrase, 'gi');
-                              const m = lowerText.match(re);
-                              if (m) freshnessCount += m.length;
-                    });
-                    metrics.freshnessGauge = totalWords ? (freshnessCount / totalWords * 1000).toFixed(1) : 0;
-                    
-                    const clickbaitRu = ['шокирует','сенсация','сенсацией','сенсаций','секрет','тайна','невероятно','вы не поверите','скандал','ужас','кошмар','немедленно','сенсационный','шокирующий','потрясающий','невероятный','фантастический','эксклюзив','срочно','только что','секретный','тайный','скандальный','ужасный','кошмарный','безумный','сумасшедший','эпичный','детали','подробности','шок','сенсационно','шокирующие','сенсационные','потрясающе','нереально','очевидец','видео','фото','расследование','разоблачение','инсайд','утечка','шокирующее','сенсационное','скандальное','громкое','резонансное','неожиданное','внезапное','экстренное','важное','спецвыпуск'];
-                    const clickbaitEn = ['shocking','unbelievable','you won\'t believe','secret','scandal','what happened next','viral','sensation','sensational','astonishing','incredible','mind-blowing','epic','crazy','jaw-dropping','dramatic','unexpected','exclusive','warning','urgent','must see','will shock you','what happens next'];
-                    let clickbaitCount = 0;
-                    clickbaitRu.concat(clickbaitEn).forEach(phrase => {
-                              const re = new RegExp(phrase, 'gi');
-                              const m = lowerText.match(re);
-                              if (m) clickbaitCount += m.length;
-                    });
-                    const clickbaitScore = totalWords ? (clickbaitCount / totalWords * 1000) : 0;
-                    metrics.antiYellow = Math.max(0, 100 - clickbaitScore * 20).toFixed(1);
-                    
-                    const contrastRu = ['однако','но','тем не менее','несмотря на','с другой стороны','вопреки'];
-                    const contrastEn = ['nevertheless','however','but','although','despite','on the other hand','whereas'];
-                    let contrastCount = 0;
-                    contrastRu.concat(contrastEn).forEach(phrase => {
-                              const re = new RegExp(phrase, 'gi');
-                              const m = lowerText.match(re);
-                              if (m) contrastCount += m.length;
-                    });
-                    metrics.opinionPalette = totalWords ? (contrastCount / totalWords * 1000).toFixed(1) : 0;
-                    
-                    const bureaucratRu = [
-                              'осуществление','мероприятие','взаимодействие','обеспечение','реализация','находится','является',
-                              'производится','за счёт','в целях','в рамках','на сегодняшний день','в настоящее время','с учётом',
-                              'в соответствии','во исполнение','а также','данный','вышеуказанный'
-                    ];
-                    const bureaucratEn = [
-                              'implementation','provision','interaction','within the framework','in accordance','currently',
-                              'this','these','aforementioned'
-                    ];
-                    let bureaucratCount = 0;
-                    bureaucratRu.concat(bureaucratEn).forEach(phrase => {
-                              const re = new RegExp(phrase, 'gi');
-                              const m = lowerText.match(re);
-                              if (m) bureaucratCount += m.length;
-                    });
-                    metrics.bureaucraticNoise = totalWords ? (bureaucratCount / totalWords * 1000).toFixed(1) : 0;
-                    
-                    const wordsList = words.map(w => w.toLowerCase());
-                    let tautologyPairs = 0;
-                    for (let i = 0; i < wordsList.length - 1; i++) {
-                              for (let j = i + 1; j < Math.min(i + 50, wordsList.length); j++) {
-                                        if (wordsList[i].length > 3 && wordsList[j].length > 3 &&
-                                            wordsList[i] !== wordsList[j] &&
-                                            (wordsList[i].startsWith(wordsList[j].substring(0, 4)) ||
-                                             wordsList[j].startsWith(wordsList[i].substring(0, 4)))) {
-                                                  tautologyPairs++;
-                                        }
-                              }
+            if (!text || typeof text !== 'string') return {};
+            
+            const words = text.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
+            const totalWords = words.length;
+            const lowerText = text.toLowerCase();
+            
+            const metrics = {};
+            
+            const numberRegex = /\b\d+([.,]\d+)?\b/g;
+            const numbers = text.match(numberRegex) || [];
+            const dateWordsRu = ['год','года','лет','месяц','месяца','месяцев','день','дня','дней','неделя','недели','недель'];
+            const dateWordsEn = ['year','years','month','months','day','days','week','weeks'];
+            const dateAll = dateWordsRu.concat(dateWordsEn).map(w => this.escapeRegExp(w));
+            const datePattern = '\\b(' + dateAll.join('|') + ')\\b';
+            const dateRegex = new RegExp(datePattern, 'gi');
+            const dateMatches = text.match(dateRegex) || [];
+            const dateWordCount = dateMatches.length;
+            metrics.digitalFootprint = totalWords ? ((numbers.length + dateWordCount) / totalWords * 1000).toFixed(1) : 0;
+            
+            const sentences = text.split(/[.!?]+/).filter(Boolean);
+            let nameCount = 0;
+            sentences.forEach(s => {
+                const trimmed = s.trim();
+                if (!trimmed) return;
+                const firstWordEnd = trimmed.search(/\s/);
+                const firstWord = firstWordEnd === -1 ? trimmed : trimmed.substring(0, firstWordEnd);
+                const rest = firstWordEnd === -1 ? '' : trimmed.substring(firstWordEnd);
+                const candidates = rest.match(/\b[A-ZА-Я][a-zа-яё]*\b/g) || [];
+                nameCount += candidates.length;
+            });
+            metrics.nameIndex = totalWords ? (nameCount / totalWords * 1000).toFixed(1) : 0;
+            
+            const subjectiveRu = ['я думаю','я считаю','мне кажется','на мой взгляд','по моему мнению','полагаю','уверен','сомневаюсь'];
+            const subjectiveEn = ['i think','i believe','in my opinion','it seems to me','i suppose','i guess'];
+            const subjectiveAll = subjectiveRu.concat(subjectiveEn).map(w => this.escapeRegExp(w));
+            const subjectivePattern = '\\b(' + subjectiveAll.join('|') + ')\\b';
+            const subjectiveRegex = new RegExp(subjectivePattern, 'gi');
+            const subjectiveMatches = lowerText.match(subjectiveRegex) || [];
+            const subjectiveCount = subjectiveMatches.length;
+            const subjectiveScore = totalWords ? (subjectiveCount / totalWords * 1000) : 0;
+            metrics.factMirror = Math.max(0, 100 - subjectiveScore * 10).toFixed(1);
+            
+            const freshnessRu = ['сегодня','вчера','сейчас','только что','этой ночью','час назад','утром','в понедельник','на этой неделе'];
+            const freshnessEn = ['today','yesterday','tonight','this morning','just in','breaking','hours ago'];
+            const freshnessAll = freshnessRu.concat(freshnessEn).map(w => this.escapeRegExp(w));
+            const freshnessPattern = '\\b(' + freshnessAll.join('|') + ')\\b';
+            const freshnessRegex = new RegExp(freshnessPattern, 'gi');
+            const freshnessMatches = lowerText.match(freshnessRegex) || [];
+            const freshnessCount = freshnessMatches.length;
+            metrics.freshnessGauge = totalWords ? (freshnessCount / totalWords * 1000).toFixed(1) : 0;
+            
+            const clickbaitRu = ['шокирует','сенсация','сенсацией','сенсаций','секрет','тайна','невероятно','вы не поверите','скандал','ужас','кошмар','немедленно','сенсационный','шокирующий','потрясающий','невероятный','фантастический','эксклюзив','срочно','только что','секретный','тайный','скандальный','ужасный','кошмарный','безумный','сумасшедший','эпичный','детали','подробности','шок','сенсационно','шокирующие','сенсационные','потрясающе','нереально','очевидец','видео','фото','расследование','разоблачение','инсайд','утечка','шокирующее','сенсационное','скандальное','громкое','резонансное','неожиданное','внезапное','экстренное','важное','спецвыпуск'];
+            const clickbaitEn = ['shocking','unbelievable','you won\'t believe','secret','scandal','what happened next','viral','sensation','sensational','astonishing','incredible','mind-blowing','epic','crazy','jaw-dropping','dramatic','unexpected','exclusive','warning','urgent','must see','will shock you','what happens next'];
+            const clickbaitAll = clickbaitRu.concat(clickbaitEn).map(w => this.escapeRegExp(w));
+            const clickbaitPattern = '\\b(' + clickbaitAll.join('|') + ')\\b';
+            const clickbaitRegex = new RegExp(clickbaitPattern, 'gi');
+            const clickbaitMatches = lowerText.match(clickbaitRegex) || [];
+            const clickbaitCount = clickbaitMatches.length;
+            const clickbaitScore = totalWords ? (clickbaitCount / totalWords * 1000) : 0;
+            metrics.antiYellow = Math.max(0, 100 - clickbaitScore * 20).toFixed(1);
+            
+            const contrastRu = ['однако','но','тем не менее','несмотря на','с другой стороны','вопреки'];
+            const contrastEn = ['nevertheless','however','but','although','despite','on the other hand','whereas'];
+            const contrastAll = contrastRu.concat(contrastEn).map(w => this.escapeRegExp(w));
+            const contrastPattern = '\\b(' + contrastAll.join('|') + ')\\b';
+            const contrastRegex = new RegExp(contrastPattern, 'gi');
+            const contrastMatches = lowerText.match(contrastRegex) || [];
+            const contrastCount = contrastMatches.length;
+            metrics.opinionPalette = totalWords ? (contrastCount / totalWords * 1000).toFixed(1) : 0;
+            
+            const bureaucratRu = [
+                'осуществление','мероприятие','взаимодействие','обеспечение','реализация','находится','является',
+                'производится','за счёт','в целях','в рамках','на сегодняшний день','в настоящее время','с учётом',
+                'в соответствии','во исполнение','а также','данный','вышеуказанный'
+            ];
+            const bureaucratEn = [
+                'implementation','provision','interaction','within the framework','in accordance','currently',
+                'this','these','aforementioned'
+            ];
+            const bureaucratAll = bureaucratRu.concat(bureaucratEn).map(w => this.escapeRegExp(w));
+            const bureaucratPattern = '\\b(' + bureaucratAll.join('|') + ')\\b';
+            const bureaucratRegex = new RegExp(bureaucratPattern, 'gi');
+            const bureaucratMatches = lowerText.match(bureaucratRegex) || [];
+            const bureaucratCount = bureaucratMatches.length;
+            metrics.bureaucraticNoise = totalWords ? (bureaucratCount / totalWords * 1000).toFixed(1) : 0;
+            
+            const wordsList = words.map(w => w.toLowerCase());
+            let tautologyPairs = 0;
+            for (let i = 0; i < wordsList.length - 1; i++) {
+                for (let j = i + 1; j < Math.min(i + 50, wordsList.length); j++) {
+                    if (wordsList[i].length > 3 && wordsList[j].length > 3 &&
+                        wordsList[i] !== wordsList[j] &&
+                        (wordsList[i].startsWith(wordsList[j].substring(0, 4)) ||
+                         wordsList[j].startsWith(wordsList[i].substring(0, 4)))) {
+                        tautologyPairs++;
                     }
-                    metrics.verbalEcho = totalWords ? (tautologyPairs / totalWords * 1000).toFixed(1) : 0;
-                    
-                    const vagueRu = ['около','примерно','почти','где-то','несколько','некоторый','некий','какой-то'];
-                    const vagueEn = ['certain','some','several','around','approximately','almost','nearly','kind of','sort of'];
-                    let vagueCount = 0;
-                    vagueRu.concat(vagueEn).forEach(phrase => {
-                              const re = new RegExp(phrase, 'gi');
-                              const m = lowerText.match(re);
-                              if (m) vagueCount += m.length;
-                    });
-                    metrics.fogZone = totalWords ? (vagueCount / totalWords * 1000).toFixed(1) : 0;
-                    
-                    const absoluteRu = ['всегда','никогда','каждый','любой','никто','ничто','весь','абсолютно','совершенно','полностью'];
-                    const absoluteEn = ['always','never','every','anybody','nobody','nothing','all','absolutely','completely','entirely'];
-                    let absoluteCount = 0;
-                    absoluteRu.concat(absoluteEn).forEach(phrase => {
-                              const re = new RegExp(phrase, 'gi');
-                              const m = lowerText.match(re);
-                              if (m) absoluteCount += m.length;
-                    });
-                    metrics.categoricalTone = totalWords ? (absoluteCount / totalWords * 1000).toFixed(1) : 0;
-                    
-                    return metrics;
+                }
+            }
+            metrics.verbalEcho = totalWords ? (tautologyPairs / totalWords * 1000).toFixed(1) : 0;
+            
+            const vagueRu = ['около','примерно','почти','где-то','несколько','некоторый','некий','какой-то'];
+            const vagueEn = ['certain','some','several','around','approximately','almost','nearly','kind of','sort of'];
+            const vagueAll = vagueRu.concat(vagueEn).map(w => this.escapeRegExp(w));
+            const vaguePattern = '\\b(' + vagueAll.join('|') + ')\\b';
+            const vagueRegex = new RegExp(vaguePattern, 'gi');
+            const vagueMatches = lowerText.match(vagueRegex) || [];
+            const vagueCount = vagueMatches.length;
+            metrics.fogZone = totalWords ? (vagueCount / totalWords * 1000).toFixed(1) : 0;
+            
+            const absoluteRu = ['всегда','никогда','каждый','любой','никто','ничто','весь','абсолютно','совершенно','полностью'];
+            const absoluteEn = ['always','never','every','anybody','nobody','nothing','all','absolutely','completely','entirely'];
+            const absoluteAll = absoluteRu.concat(absoluteEn).map(w => this.escapeRegExp(w));
+            const absolutePattern = '\\b(' + absoluteAll.join('|') + ')\\b';
+            const absoluteRegex = new RegExp(absolutePattern, 'gi');
+            const absoluteMatches = lowerText.match(absoluteRegex) || [];
+            const absoluteCount = absoluteMatches.length;
+            metrics.categoricalTone = totalWords ? (absoluteCount / totalWords * 1000).toFixed(1) : 0;
+            
+            return metrics;
         }
 
         calculateCopywriterMetrics(text) {
-                            if (!text || typeof text !== 'string') return {};
-                  
-                            const sentences = text.split(/[.!?]+/).filter(Boolean);
-                            const words = text.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
-                            const totalWords = words.length;
-                            const lowerText = text.toLowerCase();
-                  
-                            const metrics = {};
-                  
-                            const stopWordsRu = ['и','в','во','не','что','он','на','я','с','со','как','а','то','все','она','так','его','но','да','ты','к','у','же','вы','за','бы','по','только','ее','мне','было','вот','от','меня','еще','нет','о','из','ему','теперь','когда','даже','ну','вдруг','ли','если','уже','или','ни','быть','был','него','до','вас','нибудь','опять','уж','вам','ведь','там','потом','себя','ничего','ей','может','они','тут','где','есть','надо','ней','для','мы','тем','кто','меня','сейчас','без','под','над','об','при','про','через','после','вокруг','около','мимо','среди','между','ради','благодаря','ввиду','вследствие','вроде','насчет','вместо','несмотря','спустя'];
-                            const stopWordsEn = ['i','me','my','myself','we','our','ours','ourselves','you','your','yours','yourself','yourselves','he','him','his','himself','she','her','hers','herself','it','its','itself','they','them','their','theirs','themselves','what','which','who','whom','this','that','these','those','am','is','are','was','were','be','been','being','have','has','had','having','do','does','did','doing','a','an','the','and','but','if','or','because','as','until','while','of','at','by','for','with','about','against','between','into','through','during','before','after','above','below','to','from','up','down','in','out','on','off','over','under','again','further','then','once','here','there','when','where','why','how','all','any','both','each','few','more','most','other','some','such','no','nor','not','only','own','same','so','than','too','very','s','t','can','will','just','don','should','now'];
-                  
-                            const ctaRu = ['купи','подпишись','жми','скачай','попробуй','закажи','оформи','введи','перейди','начни','получи','сэкономь','забронируй','запишись','кликни','позвони'];
-                            const ctaEn = ['buy','subscribe','click','download','try','order','enter','start','get','save','book','register','join','call','shop'];
-                  
-                            const clicheRu = ['инновационный','уникальный','качественный','профессиональный','оптимальный','эффективный','надёжный','доступный','выгодный','современный'];
-                            const clicheEn = ['innovative','unique','quality','professional','optimal','effective','reliable','affordable','beneficial','modern'];
-                  
-                            const superlativeRu = ['лучший','величайший','идеальный','совершенный','безупречный','первоклассный','топовый','ультимативный','превосходный'];
-                            const superlativeEn = ['best','greatest','perfect','ideal','ultimate','superior','top','prime','supreme','finest'];
-                  
-                            const fillerRu = ['ну','вообще','типа','как бы','короче','это самое','в общем','значит','так сказать','в принципе','в некотором роде'];
-                            const fillerEn = ['well','like','you know','actually','basically','literally','sort of','kind of','in a way','i mean'];
-                  
-                            const firstPersonRu = ['я','меня','мне','мной','мною','мы','нас','нам','нами'];
-                            const firstPersonEn = ['i','me','my','mine','we','us','our','ours'];
-                  
-                            const wordFreq = {};
-                            words.forEach(w => {
-                                      const lw = w.toLowerCase();
-                                      if ((this.language === 'ru' && !stopWordsRu.includes(lw)) || (this.language === 'en' && !stopWordsEn.includes(lw))) {
-                                                wordFreq[lw] = (wordFreq[lw] || 0) + 1;
-                                      }
-                            });
-                            const sorted = Object.entries(wordFreq).sort((a,b) => b[1] - a[1]);
-                            const top5 = sorted.slice(0,5);
-                            const top5Sum = top5.reduce((acc, [_, freq]) => acc + freq, 0);
-                            metrics.seoDensity = totalWords ? ((top5Sum / totalWords) * 100).toFixed(1) : 0;
-                  
-                            let ctaCount = 0;
-                            ctaRu.concat(ctaEn).forEach(phrase => {
-                                      const re = new RegExp(phrase, 'gi');
-                                      const m = lowerText.match(re);
-                                      if (m) ctaCount += m.length;
-                            });
-                            metrics.callToAction = totalWords ? Math.round((ctaCount / totalWords) * 1000) : 0;
-                  
-                            let clicheCount = 0;
-                            clicheRu.concat(clicheEn).forEach(phrase => {
-                                      const re = new RegExp(phrase, 'gi');
-                                      const m = lowerText.match(re);
-                                      if (m) clicheCount += m.length;
-                            });
-                            metrics.clicheMeter = totalWords ? Math.round((clicheCount / totalWords) * 1000) : 0;
-                  
-                            let superlativeCount = 0;
-                            superlativeRu.concat(superlativeEn).forEach(phrase => {
-                                      const re = new RegExp(phrase, 'gi');
-                                      const m = lowerText.match(re);
-                                      if (m) superlativeCount += m.length;
-                            });
-                            metrics.superlativeDegree = totalWords ? Math.round((superlativeCount / totalWords) * 1000) : 0;
-                  
-                            let firstPersonCount = 0;
-                            words.forEach(w => {
-                                      const lw = w.toLowerCase();
-                                      if (firstPersonRu.includes(lw) || firstPersonEn.includes(lw)) firstPersonCount++;
-                            });
-
-                            const pastRu = /[а-яё]+(л|ла|ло|ли)/gi;
-                            const pastEnWords = ['went','saw','did','said','came','took','thought','made','felt','got','gave','found','knew','left','meant','bought','told','became','began','broke','brought','built','bought','caught','chose','drank','drove','ate','fell','flew','forgot','froze','gave','grew','hung','hid','kept','led','left','let','lost','made','met','paid','put','ran','said','saw','sold','sent','sang','sat','slept','spoke','spent','stood','stole','swam','took','taught','thought','threw','understood','woke','won','wrote'];
-                            const pastEnEd = /\b[a-z]+ed\b/gi;
-                            let pastCount = 0;
-                            const pastRuMatches = text.match(pastRu);
-                            if (pastRuMatches) pastCount += pastRuMatches.length;
-                            pastEnWords.forEach(w => {
-                                      const re = new RegExp('\\b' + w + '\\b', 'gi');
-                                      const m = text.match(re);
-                                      if (m) pastCount += m.length;
-                            });
-                            const pastEnEdMatches = text.match(pastEnEd);
-                            if (pastEnEdMatches) pastCount += pastEnEdMatches.length;
-                            const properCandidates = text.match(/\b[A-ZА-Я][a-zа-яё]*\b/g) || [];
-                            const firstWords = sentences.map(s => {
-                                      const first = s.trim().split(/\s+/)[0];
-                                      return first ? first.replace(/[^a-zA-Zа-яА-ЯёЁ]/g, '') : '';
-                            }).filter(w => w.length > 0);
-                            const properNames = properCandidates.filter(word => !firstWords.includes(word));
-                            const properCount = properNames.length;
-                  
-                            const storytellingMarkers = firstPersonCount + pastCount + properCount;
-                            metrics.storytelling = totalWords ? Math.round((storytellingMarkers / totalWords) * 1000) : 0;
-                  
-                            let fillerCount = 0;
-                            fillerRu.concat(fillerEn).forEach(phrase => {
-                                      const re = new RegExp(phrase, 'gi');
-                                      const m = lowerText.match(re);
-                                      if (m) fillerCount += m.length;
-                            });
-                            metrics.fillerWords = totalWords ? Math.round((fillerCount / totalWords) * 1000) : 0;
-                  
-                            let stopWordsCount = 0;
-                            words.forEach(w => {
-                                      const lw = w.toLowerCase();
-                                      if ((this.language === 'ru' && stopWordsRu.includes(lw)) || (this.language === 'en' && stopWordsEn.includes(lw))) {
-                                                stopWordsCount++;
-                                      }
-                            });
-                            metrics.waterContent = totalWords ? ((stopWordsCount / totalWords) * 100).toFixed(1) : 0;
-                  
-                            const topFreq = sorted.length > 0 ? sorted[0][1] : 0;
-                            metrics.spamIndex = totalWords ? ((topFreq / totalWords) * 100).toFixed(1) : 0;
-                  
-                            // 9. Наличие списков
-                            const lines = text.split('\n');
-                            let listItems = 0;
-                            lines.forEach(line => {
-                                      const trimmed = line.trim();
-                                      if (/^[\*\-•]/.test(trimmed) || /^\d+\./.test(trimmed)) {
-                                                listItems++;
-                                      }
-                            });
-                            metrics.listDensity = totalWords ? Math.round((listItems / totalWords) * 1000) : 0;
-                  
-                            const allWordsFreq = {};
-                            words.forEach(w => {
-                                      const lw = w.toLowerCase();
-                                      allWordsFreq[lw] = (allWordsFreq[lw] || 0) + 1;
-                            });
-                            const uniqueOnce = Object.values(allWordsFreq).filter(f => f === 1).length;
-                            metrics.noveltyCoefficient = totalWords ? ((uniqueOnce / totalWords) * 100).toFixed(1) : 0;
-                  
-                            return metrics;
+            if (!text || typeof text !== 'string') return {};
+            
+            const sentences = text.split(/[.!?]+/).filter(Boolean);
+            const words = text.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
+            const totalWords = words.length;
+            const lowerText = text.toLowerCase();
+            
+            const metrics = {};
+            
+            const stopWordsRu = ['и','в','во','не','что','он','на','я','с','со','как','а','то','все','она','так','его','но','да','ты','к','у','же','вы','за','бы','по','только','ее','мне','было','вот','от','меня','еще','нет','о','из','ему','теперь','когда','даже','ну','вдруг','ли','если','уже','или','ни','быть','был','него','до','вас','нибудь','опять','уж','вам','ведь','там','потом','себя','ничего','ей','может','они','тут','где','есть','надо','ней','для','мы','тем','кто','меня','сейчас','без','под','над','об','при','про','через','после','вокруг','около','мимо','среди','между','ради','благодаря','ввиду','вследствие','вроде','насчет','вместо','несмотря','спустя'];
+            const stopWordsEn = ['i','me','my','myself','we','our','ours','ourselves','you','your','yours','yourself','yourselves','he','him','his','himself','she','her','hers','herself','it','its','itself','they','them','their','theirs','themselves','what','which','who','whom','this','that','these','those','am','is','are','was','were','be','been','being','have','has','had','having','do','does','did','doing','a','an','the','and','but','if','or','because','as','until','while','of','at','by','for','with','about','against','between','into','through','during','before','after','above','below','to','from','up','down','in','out','on','off','over','under','again','further','then','once','here','there','when','where','why','how','all','any','both','each','few','more','most','other','some','such','no','nor','not','only','own','same','so','than','too','very','s','t','can','will','just','don','should','now'];
+            
+            const ctaRu = ['купи','подпишись','жми','скачай','попробуй','закажи','оформи','введи','перейди','начни','получи','сэкономь','забронируй','запишись','кликни','позвони'];
+            const ctaEn = ['buy','subscribe','click','download','try','order','enter','start','get','save','book','register','join','call','shop'];
+            
+            const clicheRu = ['инновационный','уникальный','качественный','профессиональный','оптимальный','эффективный','надёжный','доступный','выгодный','современный'];
+            const clicheEn = ['innovative','unique','quality','professional','optimal','effective','reliable','affordable','beneficial','modern'];
+            
+            const superlativeRu = ['лучший','величайший','идеальный','совершенный','безупречный','первоклассный','топовый','ультимативный','превосходный'];
+            const superlativeEn = ['best','greatest','perfect','ideal','ultimate','superior','top','prime','supreme','finest'];
+            
+            const fillerRu = ['ну','вообще','типа','как бы','короче','это самое','в общем','значит','так сказать','в принципе','в некотором роде'];
+            const fillerEn = ['well','like','you know','actually','basically','literally','sort of','kind of','in a way','i mean'];
+            
+            const firstPersonRu = ['я','меня','мне','мной','мною','мы','нас','нам','нами'];
+            const firstPersonEn = ['i','me','my','mine','we','us','our','ours'];
+            
+            const wordFreq = {};
+            words.forEach(w => {
+                const lw = w.toLowerCase();
+                if ((this.language === 'ru' && !stopWordsRu.includes(lw)) || (this.language === 'en' && !stopWordsEn.includes(lw))) {
+                    wordFreq[lw] = (wordFreq[lw] || 0) + 1;
+                }
+            });
+            const sorted = Object.entries(wordFreq).sort((a,b) => b[1] - a[1]);
+            const top5 = sorted.slice(0,5);
+            const top5Sum = top5.reduce((acc, [_, freq]) => acc + freq, 0);
+            metrics.seoDensity = totalWords ? ((top5Sum / totalWords) * 100).toFixed(1) : 0;
+            
+            const ctaAll = ctaRu.concat(ctaEn).map(w => this.escapeRegExp(w)).join('|');
+            const ctaRegex = new RegExp('\\b(' + ctaAll + ')\\b', 'gi');
+            const ctaMatches = lowerText.match(ctaRegex) || [];
+            metrics.callToAction = totalWords ? Math.round((ctaMatches.length / totalWords) * 1000) : 0;
+            
+            const clicheAll = clicheRu.concat(clicheEn).map(w => this.escapeRegExp(w)).join('|');
+            const clicheRegex = new RegExp('\\b(' + clicheAll + ')\\b', 'gi');
+            const clicheMatches = lowerText.match(clicheRegex) || [];
+            metrics.clicheMeter = totalWords ? Math.round((clicheMatches.length / totalWords) * 1000) : 0;
+            
+            const superlativeAll = superlativeRu.concat(superlativeEn).map(w => this.escapeRegExp(w)).join('|');
+            const superlativeRegex = new RegExp('\\b(' + superlativeAll + ')\\b', 'gi');
+            const superlativeMatches = lowerText.match(superlativeRegex) || [];
+            metrics.superlativeDegree = totalWords ? Math.round((superlativeMatches.length / totalWords) * 1000) : 0;
+            
+            let firstPersonCount = 0;
+            words.forEach(w => {
+                const lw = w.toLowerCase();
+                if (firstPersonRu.includes(lw) || firstPersonEn.includes(lw)) firstPersonCount++;
+            });
+            
+            const pastRu = /[а-яё]+(л|ла|ло|ли)/gi;
+            const pastEnWords = ['went','saw','did','said','came','took','thought','made','felt','got','gave','found','knew','left','meant','bought','told','became','began','broke','brought','built','bought','caught','chose','drank','drove','ate','fell','flew','forgot','froze','gave','grew','hung','hid','kept','led','left','let','lost','made','met','paid','put','ran','said','saw','sold','sent','sang','sat','slept','spoke','spent','stood','stole','swam','took','taught','thought','threw','understood','woke','won','wrote'];
+            const pastEnEd = /\b[a-z]+ed\b/gi;
+            let pastCount = 0;
+            const pastRuMatches = text.match(pastRu);
+            if (pastRuMatches) pastCount += pastRuMatches.length;
+            
+            const pastEnPattern = pastEnWords.map(w => '\\b' + this.escapeRegExp(w) + '\\b').join('|');
+            const pastEnRegex = new RegExp(pastEnPattern, 'gi');
+            const pastEnMatches = text.match(pastEnRegex) || [];
+            pastCount += pastEnMatches.length;
+            
+            const pastEnEdMatches = text.match(pastEnEd);
+            if (pastEnEdMatches) pastCount += pastEnEdMatches.length;
+            
+            const properCandidates = text.match(/\b[A-ZА-Я][a-zа-яё]*\b/g) || [];
+            const firstWords = sentences.map(s => {
+                const first = s.trim().split(/\s+/)[0];
+                return first ? first.replace(/[^a-zA-Zа-яА-ЯёЁ]/g, '') : '';
+            }).filter(w => w.length > 0);
+            const properNames = properCandidates.filter(word => !firstWords.includes(word));
+            const properCount = properNames.length;
+            
+            const storytellingMarkers = firstPersonCount + pastCount + properCount;
+            metrics.storytelling = totalWords ? Math.round((storytellingMarkers / totalWords) * 1000) : 0;
+            
+            let fillerCount = 0;
+            fillerRu.concat(fillerEn).forEach(phrase => {
+                const re = new RegExp(phrase, 'gi');
+                const m = lowerText.match(re);
+                if (m) fillerCount += m.length;
+            });
+            metrics.fillerWords = totalWords ? Math.round((fillerCount / totalWords) * 1000) : 0;
+            
+            let stopWordsCount = 0;
+            words.forEach(w => {
+                const lw = w.toLowerCase();
+                if ((this.language === 'ru' && stopWordsRu.includes(lw)) || (this.language === 'en' && stopWordsEn.includes(lw))) {
+                    stopWordsCount++;
+                }
+            });
+            metrics.waterContent = totalWords ? ((stopWordsCount / totalWords) * 100).toFixed(1) : 0;
+            
+            const topFreq = sorted.length > 0 ? sorted[0][1] : 0;
+            metrics.spamIndex = totalWords ? ((topFreq / totalWords) * 100).toFixed(1) : 0;
+            
+            const lines = text.split('\n');
+            let listItems = 0;
+            lines.forEach(line => {
+                const trimmed = line.trim();
+                if (/^[\*\-•]/.test(trimmed) || /^\d+\./.test(trimmed)) {
+                    listItems++;
+                }
+            });
+            metrics.listDensity = totalWords ? Math.round((listItems / totalWords) * 1000) : 0;
+            
+            const allWordsFreq = {};
+            words.forEach(w => {
+                const lw = w.toLowerCase();
+                allWordsFreq[lw] = (allWordsFreq[lw] || 0) + 1;
+            });
+            const uniqueOnce = Object.values(allWordsFreq).filter(f => f === 1).length;
+            metrics.noveltyCoefficient = totalWords ? ((uniqueOnce / totalWords) * 100).toFixed(1) : 0;
+            
+            return metrics;
         }
 
         calculateFunMetrics(text) {
-                    if (!text || typeof text !== 'string') return {};
-                    
-                    const words = text.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
-                    const totalWords = words.length;
-                    const lowerText = text.toLowerCase();
-                    const sentences = text.split(/[.!?]+/).filter(Boolean);
-                    const totalSentences = sentences.length;
-                    
-                    const metrics = {};
-                    
-                    const coffeeWords = ['кофе','эспрессо','капучино','латте','американо','coffee','espresso','cappuccino','latte','americano'];
-                    let coffeeCount = 0;
-                    coffeeWords.forEach(w => {
-                              const re = new RegExp(w, 'gi');
-                              const m = lowerText.match(re);
-                              if (m) coffeeCount += m.length;
-                    });
-                    metrics.moreCoffee = totalWords ? Math.min(10, Math.round((coffeeCount / totalWords * 1000))) : 0;
-                    
-                    const longWords = words.filter(w => w.length >= 10).length;
-                    metrics.lostTime = totalWords ? Math.min(10, Math.round((longWords / totalWords * 1000))) : 0;
-                    
-                    const sentLengths = sentences.map(s => (s.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || []).length);
-                    const avgSentLength = sentLengths.length > 0 ? sentLengths.reduce((a,b)=>a+b,0) / sentLengths.length : 0;
-                    const longSentCount = sentLengths.filter(l => l > avgSentLength * 1.5).length;
-                    metrics.rabbitHole = totalWords ? Math.min(10, Math.round((longSentCount / totalWords * 1000))) : 0;
-                    
-                    const crimeWords = ['тюрьма','вор','мент','бандит','разборка','киллер','мафия','оружие','криминал','преступление','пушка','ограбление','prison','thief','cop','gangster','murder','weapon','crime','robbery','criminal','mob'];
-                    let crimeCount = 0;
-                    crimeWords.forEach(w => {
-                              const re = new RegExp(w, 'gi');
-                              const m = lowerText.match(re);
-                              if (m) crimeCount += m.length;
-                    });
-                    metrics.pulpFiction = totalWords ? Math.min(10, Math.round((crimeCount / totalWords * 1000))) : 0;
-                    
-                    const angerWords = ['бесит','злит','ненавижу','достало','надоело','ужасно','раздражает','терпеть','hate','annoying','frustrating','sick of','terrible','awful','irritating','cannot stand','fed up'];
-                    let angerCount = 0;
-                    angerWords.forEach(w => {
-                              const re = new RegExp(w, 'gi');
-                              const m = lowerText.match(re);
-                              if (m) angerCount += m.length;
-                    });
-                    metrics.copyOfCopy = totalWords ? Math.min(10, Math.round((angerCount / totalWords * 1000))) : 0;
-                    
-                    const officeWords = ['офис','кулер','бумага','принтер','переговорка','дедлайн','отчёт','договор','совещание','планёрка','менеджер','скрентон','босс','office','printer','paper','scranton','meeting','deadline','report','copier','cubicle','boss','manager'];
-                    let officeCount = 0;
-                    officeWords.forEach(w => {
-                              const re = new RegExp(w, 'gi');
-                              const m = lowerText.match(re);
-                              if (m) officeCount += m.length;
-                    });
-                    metrics.scranton = totalWords ? Math.min(10, Math.round((officeCount / totalWords * 1000))) : 0;
-                    
-                    const magicWords = ['магия','волшебство','чудо','эликсир','заклинание','волшебник','колдун','фея','дракон','Гарри','Поттер','Дамблдор','волшебная палочка','Хогсмит','Гермиона','Рон','Гриффиндор','magic','wizard','witch','spell','elixir','miracle','fairy','dragon','Harry','Potter','Gryffindor','Dumbledore'];
-                    let magicCount = 0;
-                    magicWords.forEach(w => {
-                              const re = new RegExp(w, 'gi');
-                              const m = lowerText.match(re);
-                              if (m) magicCount += m.length;
-                    });
-                    metrics.hogwarts = totalWords ? Math.min(10, Math.round((magicCount / totalWords * 1000))) : 0;
-                    
-                    const spaceWords = ['космос','звезда','планета','луч','галактика','вселенная','спутник','орбита','ракета','пришелец','джедай','инопланетянин','space','star','planet','ray','galaxy','universe','satellite','orbit','rocket','alien','jedi'];
-                    let spaceCount = 0;
-                    spaceWords.forEach(w => {
-                              const re = new RegExp(w, 'gi');
-                              const m = lowerText.match(re);
-                              if (m) spaceCount += m.length;
-                    });
-                    metrics.unknownPlanets = totalWords ? Math.min(10, Math.round((spaceCount / totalWords * 1000))) : 0;
-                    
-                    const doubleLetterWords = words.filter(w => /(.)\1/.test(w)).length;
-                    metrics.mordor = totalWords ? Math.min(10, Math.round((doubleLetterWords / totalWords * 1000))) : 0;
-                    
-                    const allLetters = text.match(/[a-zA-Zа-яА-ЯёЁ]/g) || [];
-                    const totalLetters = allLetters.length;
-                    const vowels = /[аеёиоуыэюяaeiouy]/gi;
-                    const consonantCount = allLetters.filter(ch => !ch.match(vowels)).length;
-                    const consonantRatio = totalLetters ? consonantCount / totalLetters : 0;
-                    metrics.garageRock = totalLetters ? Math.min(10, Math.round(consonantRatio * 10)) : 0;
-                    
-                    const lovePattern = /я тебя люблю|i love you/gi;
-                    const loveMatches = text.match(lovePattern) || [];
-                    metrics.iceMelts = loveMatches.length > 0 ? Math.min(10, loveMatches.length) : 0;
-                    
-                    return metrics;
+            if (!text || typeof text !== 'string') return {};
+            
+            const words = text.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
+            const totalWords = words.length;
+            const lowerText = text.toLowerCase();
+            const sentences = text.split(/[.!?]+/).filter(Boolean);
+            const totalSentences = sentences.length;
+            
+            const metrics = {};
+            
+            const coffeeWords = ['кофе','эспрессо','капучино','латте','американо','coffee','espresso','cappuccino','latte','americano'];
+            const coffeePattern = coffeeWords.map(w => this.escapeRegExp(w)).join('|');
+            const coffeeRegex = new RegExp('\\b(' + coffeePattern + ')\\b', 'gi');
+            const coffeeMatches = lowerText.match(coffeeRegex) || [];
+            metrics.moreCoffee = totalWords ? Math.min(10, Math.round((coffeeMatches.length / totalWords * 1000))) : 0;
+            
+            const longWords = words.filter(w => w.length >= 10).length;
+            metrics.lostTime = totalWords ? Math.min(10, Math.round((longWords / totalWords * 1000))) : 0;
+            
+            const sentLengths = sentences.map(s => (s.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || []).length);
+            const avgSentLength = sentLengths.length > 0 ? sentLengths.reduce((a,b)=>a+b,0) / sentLengths.length : 0;
+            const longSentCount = sentLengths.filter(l => l > avgSentLength * 1.5).length;
+            metrics.rabbitHole = totalWords ? Math.min(10, Math.round((longSentCount / totalWords * 1000))) : 0;
+            
+            const crimeWords = ['тюрьма','вор','мент','бандит','разборка','киллер','мафия','оружие','криминал','преступление','пушка','ограбление','prison','thief','cop','gangster','murder','weapon','crime','robbery','criminal','mob'];
+            const crimePattern = crimeWords.map(w => this.escapeRegExp(w)).join('|');
+            const crimeRegex = new RegExp('\\b(' + crimePattern + ')\\b', 'gi');
+            const crimeMatches = lowerText.match(crimeRegex) || [];
+            metrics.pulpFiction = totalWords ? Math.min(10, Math.round((crimeMatches.length / totalWords * 1000))) : 0;
+            
+            const angerWords = ['бесит','злит','ненавижу','достало','надоело','ужасно','раздражает','терпеть','hate','annoying','frustrating','sick of','terrible','awful','irritating','cannot stand','fed up'];
+            const angerPattern = angerWords.map(w => {
+                const escaped = this.escapeRegExp(w);
+                if (w.includes(' ')) {
+                    return '(?:' + escaped.replace(/\\ /g, '\\s+') + ')';
+                }
+                return escaped;
+            }).join('|');
+            const angerRegex = new RegExp('\\b(' + angerPattern + ')\\b', 'gi');
+            const angerMatches = lowerText.match(angerRegex) || [];
+            metrics.copyOfCopy = totalWords ? Math.min(10, Math.round((angerMatches.length / totalWords * 1000))) : 0;
+            
+            const officeWords = ['офис','кулер','бумага','принтер','переговорка','дедлайн','отчёт','договор','совещание','планёрка','менеджер','скрентон','босс','office','printer','paper','scranton','meeting','deadline','report','copier','cubicle','boss','manager'];
+            const officePattern = officeWords.map(w => this.escapeRegExp(w)).join('|');
+            const officeRegex = new RegExp('\\b(' + officePattern + ')\\b', 'gi');
+            const officeMatches = lowerText.match(officeRegex) || [];
+            metrics.scranton = totalWords ? Math.min(10, Math.round((officeMatches.length / totalWords * 1000))) : 0;
+            
+            const magicWords = ['магия','волшебство','чудо','эликсир','заклинание','волшебник','колдун','фея','дракон','Гарри','Поттер','Дамблдор','волшебная палочка','Хогсмит','Гермиона','Рон','Гриффиндор','magic','wizard','witch','spell','elixir','miracle','fairy','dragon','Harry','Potter','Gryffindor','Dumbledore'];
+            const magicPattern = magicWords.map(w => {
+                const escaped = this.escapeRegExp(w);
+                if (w.includes(' ')) {
+                    return '(?:' + escaped.replace(/\\ /g, '\\s+') + ')';
+                }
+                return escaped;
+            }).join('|');
+            const magicRegex = new RegExp('\\b(' + magicPattern + ')\\b', 'gi');
+            const magicMatches = lowerText.match(magicRegex) || [];
+            metrics.hogwarts = totalWords ? Math.min(10, Math.round((magicMatches.length / totalWords * 1000))) : 0;
+            
+            const spaceWords = ['космос','звезда','планета','луч','галактика','вселенная','спутник','орбита','ракета','пришелец','джедай','инопланетянин','space','star','planet','ray','galaxy','universe','satellite','orbit','rocket','alien','jedi'];
+            const spacePattern = spaceWords.map(w => this.escapeRegExp(w)).join('|');
+            const spaceRegex = new RegExp('\\b(' + spacePattern + ')\\b', 'gi');
+            const spaceMatches = lowerText.match(spaceRegex) || [];
+            metrics.unknownPlanets = totalWords ? Math.min(10, Math.round((spaceMatches.length / totalWords * 1000))) : 0;
+            
+            const doubleLetterWords = words.filter(w => /(.)\1/.test(w)).length;
+            metrics.mordor = totalWords ? Math.min(10, Math.round((doubleLetterWords / totalWords * 1000))) : 0;
+            
+            const allLetters = text.match(/[a-zA-Zа-яА-ЯёЁ]/g) || [];
+            const totalLetters = allLetters.length;
+            const vowels = /[аеёиоуыэюяaeiouy]/gi;
+            const consonantCount = allLetters.filter(ch => !ch.match(vowels)).length;
+            const consonantRatio = totalLetters ? consonantCount / totalLetters : 0;
+            metrics.garageRock = totalLetters ? Math.min(10, Math.round(consonantRatio * 10)) : 0;
+            
+            const lovePattern = /я тебя люблю|i love you/gi;
+            const loveMatches = text.match(lovePattern) || [];
+            metrics.iceMelts = loveMatches.length > 0 ? Math.min(10, loveMatches.length) : 0;
+            
+            return metrics;
         }
         
         detectLanguageWithConfidence(text) {
@@ -11265,6 +11254,7 @@
     
 
 })();
+
 
 
 
