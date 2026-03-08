@@ -1632,14 +1632,12 @@
             
             const subordConjRu = ['чтобы','потому','который','что','когда','если','так','как','будто','словно'];
             const subordConjEn = ['that','which','because','if','when','as','like','than','while','though'];
-            const subordAll = subordConjRu.concat(subordConjEn);
-            const subordPattern = subordAll.map(w => '\\b' + this.escapeRegExp(w) + '\\b').join('|');
-            const subordRegex = new RegExp(subordPattern, 'i');
             let hemingwayCount = 0;
             sentences.forEach(s => {
                 const sentWords = s.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
                 if (sentWords.length <= 5) {
-                    const hasSubord = subordRegex.test(s);
+                    const lower = s.toLowerCase();
+                    const hasSubord = subordConjRu.some(c => lower.includes(c)) || subordConjEn.some(c => lower.includes(c));
                     if (!hasSubord) hemingwayCount++;
                 }
             });
@@ -1648,7 +1646,7 @@
             const silenceWordsRu = ['тишина','молчание','пауза','безмолвие','покой','тишь','затишье'];
             const silenceWordsEn = ['silence','quiet','stillness','pause','hush','calm'];
             const silenceAll = silenceWordsRu.concat(silenceWordsEn);
-            const silencePattern = silenceAll.map(w => '\\b' + this.escapeRegExp(w) + '\\b').join('|');
+            const silencePattern = silenceAll.map(w => this.escapeRegExp(w)).join('|');
             const silenceRegex = new RegExp(silencePattern, 'g');
             const silenceMatches = lowerText.match(silenceRegex) || [];
             const silenceCount = silenceMatches.length;
@@ -1683,7 +1681,7 @@
             let pastCount = 0;
             const pastRuMatches = text.match(pastRu);
             if (pastRuMatches) pastCount += pastRuMatches.length;
-            const pastEnPattern = pastEnWords.map(w => `\\b${w}\\b`).join('|');
+            const pastEnPattern = pastEnWords.map(w => this.escapeRegExp(w)).join('|');
             const pastEnRegex = new RegExp(pastEnPattern, 'gi');
             const pastEnMatches = text.match(pastEnRegex) || [];
             pastCount += pastEnMatches.length;
@@ -1702,19 +1700,13 @@
             
             const modalityRu = ['может быть','наверное','возможно','вероятно','кажется','похоже','пожалуй','едва ли','вряд ли'];
             const modalityEn = ['probably','maybe','perhaps','possibly','apparently','seemingly','likely'];
-            const modalityAll = modalityRu.concat(modalityEn);
-            const modalityPattern = modalityAll.map(w => {
-                const escaped = this.escapeRegExp(w);
-                if (w.includes(' ')) {
-                    const parts = escaped.split(/\\ /);
-                    return '\\b' + parts.join('\\s') + '\\b';
-                } else {
-                    return '\\b' + escaped + '\\b';
-                }
-            }).join('|');
-            const modalityRegex = new RegExp(modalityPattern, 'gi');
-            const modalityMatches = lowerText.match(modalityRegex) || [];
-            metrics.modalityLevel = totalWords ? (modalityMatches.length / totalWords * 1000).toFixed(1) : 0;
+            let modalityCount = 0;
+            modalityRu.concat(modalityEn).forEach(phrase => {
+                const re = new RegExp(phrase, 'gi');
+                const m = lowerText.match(re);
+                if (m) modalityCount += m.length;
+            });
+            metrics.modalityLevel = totalWords ? (modalityCount / totalWords * 1000).toFixed(1) : 0;
             
             const firstPersonRu = ['я','меня','мне','мной','мною','мы','нас','нам','нами'];
             const firstPersonEn = ['i','me','my','mine','we','us','our','ours'];
@@ -1736,54 +1728,28 @@
             metrics.fragmentationDegree = avgSentPerParagraph > 0 ? (10 / avgSentPerParagraph).toFixed(1) : 0;
             
             const sensoryRu = [
-                'видеть', 'увидеть', 'взгляд', 'глаз', 'глаза', 'смотреть', 'посмотреть',
-                'глядеть', 'поглядеть', 'заметить', 'приметить', 'наблюдать', 'лицезреть',
-                'зоркий', 'зрение', 'видение', 'очертание', 'силуэт', 'краска', 'цвет',
-                'свет', 'тьма', 'мрак', 'сияние', 'блеск', 'мерцание', 'вспышка',
-                'облако', 'туман', 'дымка', 'пейзаж', 'ландшафт', 'картина',
-        
-                'слышать', 'услышать', 'слушать', 'прослушать', 'звук', 'звучание',
-                'шум', 'грохот', 'стук', 'треск', 'скрип', 'шелест', 'шёпот', 'шорох',
-                'голос', 'крик', 'вопль', 'плач', 'смех', 'хохот', 'кашель', 'вздох',
-                'тишина', 'беззвучие', 'эхо', 'отзвук', 'аккорд', 'мелодия', 'песня',
-                'разговор', 'речь', 'беседа', 'звон', 'звонок', 'бряцание',
-        
-                'касаться', 'прикасаться', 'трогать', 'потрогать', 'осязать', 'щупать',
-                'гладкий', 'шершавый', 'шероховатый', 'мягкий', 'твёрдый', 'упругий',
-                'колючий', 'острый', 'тупой', 'горячий', 'холодный', 'тёплый', 'прохладный',
-                'ледяной', 'обжигающий', 'влажный', 'сухой', 'липкий', 'скользкий',
-                'пушистый', 'ворсистый', 'шёлковый', 'бархатистый', 'жёсткий',
-        
-                'пахнуть', 'запахнуть', 'нюхать', 'понюхать', 'обонять', 'запах', 'аромат',
-                'благоухание', 'амбре', 'дух', 'вонь', 'смрад', 'чад', 'дым', 'гар',
-                'цветочный', 'пряный', 'гнилостный', 'свежий', 'душистый', 'пахучий',
-        
-                'вкус', 'вкушать', 'пробовать', 'отведать', 'кушать', 'есть', 'пить',
-                'сладкий', 'горький', 'кислый', 'солёный', 'пресный', 'пряный', 'терпкий',
-                'вкусный', 'невкусный', 'аппетитный', 'сочный', 'сухой'
+                'видеть','увидеть','взгляд','глаз','глаза','смотреть','посмотреть','глядеть','поглядеть','заметить','приметить','наблюдать','лицезреть',
+                'зоркий','зрение','видение','очертание','силуэт','краска','цвет','свет','тьма','мрак','сияние','блеск','мерцание','вспышка',
+                'облако','туман','дымка','пейзаж','ландшафт','картина','слышать','услышать','слушать','прослушать','звук','звучание','шум','грохот','стук','треск','скрип','шелест','шёпот','шорох',
+                'голос','крик','вопль','плач','смех','хохот','кашель','вздох','тишина','беззвучие','эхо','отзвук','аккорд','мелодия','песня',
+                'разговор','речь','беседа','звон','звонок','бряцание','касаться','прикасаться','трогать','потрогать','осязать','щупать',
+                'гладкий','шершавый','шероховатый','мягкий','твёрдый','упругий','колючий','острый','тупой','горячий','холодный','тёплый','прохладный',
+                'ледяной','обжигающий','влажный','сухой','липкий','скользкий','пушистый','ворсистый','шёлковый','бархатистый','жёсткий',
+                'пахнуть','запахнуть','нюхать','понюхать','обонять','запах','аромат','благоухание','амбре','дух','вонь','смрад','чад','дым','гар',
+                'цветочный','пряный','гнилостный','свежий','душистый','пахучий','вкус','вкушать','пробовать','отведать','кушать','есть','пить',
+                'сладкий','горький','кислый','солёный','пресный','пряный','терпкий','вкусный','невкусный','аппетитный','сочный','сухой'
             ];
             const sensoryEn = [
-                'see', 'look', 'watch', 'view', 'gaze', 'stare', 'glance', 'peer',
-                'eye', 'eyes', 'sight', 'vision', 'view', 'scene', 'landscape',
-                'light', 'dark', 'shadow', 'shine', 'glow', 'flash', 'sparkle',
-                'color', 'colour', 'bright', 'dim', 'clear', 'foggy', 'mist',
-        
-                'hear', 'listen', 'sound', 'noise', 'voice', 'tone', 'music', 'song',
-                'silence', 'quiet', 'loud', 'soft', 'faint', 'rustle', 'whisper',
-                'scream', 'shout', 'cry', 'laugh', 'footstep', 'step', 'ring', 'bang',
-            
-                'touch', 'feel', 'hand', 'finger', 'skin', 'soft', 'hard', 'smooth',
-                'rough', 'warm', 'cold', 'hot', 'cool', 'icy', 'burning', 'wet',
-                'dry', 'sticky', 'slippery', 'sharp', 'dull', 'furry', 'silky',
-            
-                'smell', 'scent', 'odor', 'aroma', 'perfume', 'fragrance', 'stink',
-                'reek', 'whiff', 'musty', 'fresh', 'foul', 'sweet', 'pungent',
-            
-                'taste', 'flavor', 'sweet', 'sour', 'bitter', 'salty', 'savory',
-                'delicious', 'yummy', 'spicy', 'hot', 'mild', 'juicy', 'dry'
+                'see','look','watch','view','gaze','stare','glance','peer','eye','eyes','sight','vision','view','scene','landscape',
+                'light','dark','shadow','shine','glow','flash','sparkle','color','colour','bright','dim','clear','foggy','mist',
+                'hear','listen','sound','noise','voice','tone','music','song','silence','quiet','loud','soft','faint','rustle','whisper',
+                'scream','shout','cry','laugh','footstep','step','ring','bang','touch','feel','hand','finger','skin','soft','hard','smooth',
+                'rough','warm','cold','hot','cool','icy','burning','wet','dry','sticky','slippery','sharp','dull','furry','silky',
+                'smell','scent','odor','aroma','perfume','fragrance','stink','reek','whiff','musty','fresh','foul','sweet','pungent',
+                'taste','flavor','sweet','sour','bitter','salty','savory','delicious','yummy','spicy','hot','mild','juicy','dry'
             ];
             const sensoryAll = sensoryRu.concat(sensoryEn);
-            const sensoryPattern = sensoryAll.map(w => '\\b' + this.escapeRegExp(w) + '\\b').join('|');
+            const sensoryPattern = sensoryAll.map(w => this.escapeRegExp(w)).join('|');
             const sensoryRegex = new RegExp(sensoryPattern, 'gi');
             const sensoryMatches = text.match(sensoryRegex) || [];
             metrics.immersiveness = totalWords ? (sensoryMatches.length / totalWords * 1000).toFixed(1) : 0;
@@ -1821,10 +1787,7 @@
             const maxParaEntropy = uniqueParaLengths > 1 ? Math.log2(uniqueParaLengths) : 0;
             const normParaEntropy = maxParaEntropy > 0 ? paraEntropy / maxParaEntropy : 0;
             
-            const punctuationMarks = [
-                '.', ',', '!', '?', ';', ':', '—', '…',
-                '(', ')', '[', ']', '{', '}', '"', "'", '«', '»'
-            ];
+            const punctuationMarks = ['.',',','!','?',';',':','—','…','(',')','[',']','{','}','"',"'",'«','»'];
             const punctCounts = {};
             punctuationMarks.forEach(mark => punctCounts[mark] = 0);
             for (let i = 0; i < chars; i++) {
@@ -1853,25 +1816,24 @@
 
         calculatePoetryMetrics(text) {
             if (!text || typeof text !== 'string') return {};
-        
+            
             const lines = text.split('\n').filter(line => line.trim().length > 0);
             const totalLines = lines.length;
             if (totalLines === 0) return {};
-        
+            
             const allWords = text.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || [];
             const totalWords = allWords.length;
             if (totalWords === 0) return {};
-        
+            
             const vowelsRu = 'аеёиоуыэюя';
             const vowelsEn = 'aeiouy';
             const consonantsRu = 'бвгджзйклмнпрстфхцчшщ';
             const consonantsEn = 'bcdfghjklmnpqrstvwxz';
-        
             const allVowels = vowelsRu + vowelsEn + vowelsRu.toUpperCase() + vowelsEn.toUpperCase();
             const allConsonants = consonantsRu + consonantsEn + consonantsRu.toUpperCase() + consonantsEn.toUpperCase();
-        
+            
             const metrics = {};
-        
+            
             let anaphoraCount = 0;
             for (let i = 1; i < totalLines; i++) {
                 const prevFirst = lines[i-1].match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu)?.[0]?.toLowerCase();
@@ -1881,7 +1843,7 @@
                 }
             }
             metrics.anaphoraFreq = totalLines ? ((anaphoraCount / totalLines) * 100).toFixed(1) : 0;
-        
+            
             let epiphoraCount = 0;
             for (let i = 1; i < totalLines; i++) {
                 const prevWords = lines[i-1].match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu);
@@ -1895,7 +1857,7 @@
                 }
             }
             metrics.epiphoraFreq = totalLines ? ((epiphoraCount / totalLines) * 100).toFixed(1) : 0;
-        
+            
             const consCounts = {};
             const vowelCounts = {};
             let totalVowels = 0;
@@ -1913,15 +1875,15 @@
                 if (count > 1) consRepetitions += (count - 1);
             }
             metrics.consonantWhisper = totalWords ? ((consRepetitions / totalWords) * 100).toFixed(1) : 0;
-        
+            
             let vowelRepetitions = 0;
             for (let count of Object.values(vowelCounts)) {
                 if (count > 1) vowelRepetitions += (count - 1);
             }
             metrics.vowelCaress = totalWords ? ((vowelRepetitions / totalWords) * 100).toFixed(1) : 0;
-        
+            
             metrics.syllableScore = totalWords ? ((totalVowels / totalWords) * 100).toFixed(1) : 0;
-        
+            
             let syllablesPerLine = [];
             for (let line of lines) {
                 let lineSyllables = 0;
@@ -1932,22 +1894,19 @@
             }
             const avgSyllablesPerLine = syllablesPerLine.reduce((a, b) => a + b, 0) / totalLines;
             metrics.stropheMeter = avgSyllablesPerLine.toFixed(1);
-        
-            let rhymePairs = 0;
-            const lineEndings = [];
+            
+            let lineEndings = [];
             for (let line of lines) {
                 const words = line.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu);
                 if (words && words.length > 0) {
                     const lastWord = words[words.length-1].toLowerCase();
-                    let endingLength = 4;
-                    if (lastWord.length < 4) endingLength = lastWord.length;
-                    else if (lastWord.length < 5) endingLength = 3;
-                    const ending = lastWord.slice(-endingLength);
+                    const ending = lastWord.slice(-3);
                     lineEndings.push(ending);
                 } else {
                     lineEndings.push('');
                 }
             }
+            let rhymePairs = 0;
             const endingCounts = {};
             for (let end of lineEndings) {
                 if (end) {
@@ -1960,7 +1919,7 @@
                 }
             }
             metrics.rhymeCatcher = totalLines ? ((rhymePairs / totalLines) * 100).toFixed(1) : 0;
-        
+            
             let patterns = {};
             for (let i = 0; i + 3 < totalLines; i += 4) {
                 const pattern = [];
@@ -1980,26 +1939,28 @@
                 }
             }
             metrics.suitableMeter = bestPattern;
-        
+            
             const lineLengths = lines.map(line => (line.match(/[a-zA-Zа-яА-ЯёЁ0-9]+/gu) || []).length);
             const avgLineLength = lineLengths.reduce((a, b) => a + b, 0) / totalLines;
             metrics.lineLength = avgLineLength.toFixed(1);
-        
+            
             const uniqueLengths = new Set(lineLengths).size;
             metrics.freedomWaves = totalLines ? ((uniqueLengths / totalLines) * 100).toFixed(1) : 0;
-        
+            
             metrics.totalLines = totalLines;
-        
+            
             const isLikelyPoetry = (
-                (metrics.rhymeCatcher > 3) ||
-                (totalLines > 6 && avgLineLength <= 7 && (metrics.anaphoraFreq > 3 || metrics.epiphoraFreq > 3)) ||
-                (totalLines / totalWords > 0.5 && avgLineLength <= 6)
+                (metrics.rhymeCatcher > 0) ||
+                (metrics.anaphoraFreq > 0 || metrics.epiphoraFreq > 0) ||
+                (totalLines > 4 && avgLineLength <= 10) ||
+                (bestPattern !== 'смешанный' && maxCount > 1) ||
+                (totalLines / totalWords > 0.3)
             );
             
             if (!isLikelyPoetry) {
                 return {};
             }
-        
+            
             return metrics;
         }
 
@@ -2016,8 +1977,8 @@
             const numbers = text.match(numberRegex) || [];
             const dateWordsRu = ['год','года','лет','месяц','месяца','месяцев','день','дня','дней','неделя','недели','недель'];
             const dateWordsEn = ['year','years','month','months','day','days','week','weeks'];
-            const dateAll = dateWordsRu.concat(dateWordsEn).map(w => this.escapeRegExp(w));
-            const datePattern = '\\b(' + dateAll.join('|') + ')\\b';
+            const dateAll = dateWordsRu.concat(dateWordsEn);
+            const datePattern = dateAll.map(w => this.escapeRegExp(w)).join('|');
             const dateRegex = new RegExp(datePattern, 'gi');
             const dateMatches = text.match(dateRegex) || [];
             const dateWordCount = dateMatches.length;
@@ -2038,8 +1999,8 @@
             
             const subjectiveRu = ['я думаю','я считаю','мне кажется','на мой взгляд','по моему мнению','полагаю','уверен','сомневаюсь'];
             const subjectiveEn = ['i think','i believe','in my opinion','it seems to me','i suppose','i guess'];
-            const subjectiveAll = subjectiveRu.concat(subjectiveEn).map(w => this.escapeRegExp(w));
-            const subjectivePattern = '\\b(' + subjectiveAll.join('|') + ')\\b';
+            const subjectiveAll = subjectiveRu.concat(subjectiveEn);
+            const subjectivePattern = subjectiveAll.map(w => this.escapeRegExp(w)).join('|');
             const subjectiveRegex = new RegExp(subjectivePattern, 'gi');
             const subjectiveMatches = lowerText.match(subjectiveRegex) || [];
             const subjectiveCount = subjectiveMatches.length;
@@ -2048,8 +2009,8 @@
             
             const freshnessRu = ['сегодня','вчера','сейчас','только что','этой ночью','час назад','утром','в понедельник','на этой неделе'];
             const freshnessEn = ['today','yesterday','tonight','this morning','just in','breaking','hours ago'];
-            const freshnessAll = freshnessRu.concat(freshnessEn).map(w => this.escapeRegExp(w));
-            const freshnessPattern = '\\b(' + freshnessAll.join('|') + ')\\b';
+            const freshnessAll = freshnessRu.concat(freshnessEn);
+            const freshnessPattern = freshnessAll.map(w => this.escapeRegExp(w)).join('|');
             const freshnessRegex = new RegExp(freshnessPattern, 'gi');
             const freshnessMatches = lowerText.match(freshnessRegex) || [];
             const freshnessCount = freshnessMatches.length;
@@ -2057,8 +2018,8 @@
             
             const clickbaitRu = ['шокирует','сенсация','сенсацией','сенсаций','секрет','тайна','невероятно','вы не поверите','скандал','ужас','кошмар','немедленно','сенсационный','шокирующий','потрясающий','невероятный','фантастический','эксклюзив','срочно','только что','секретный','тайный','скандальный','ужасный','кошмарный','безумный','сумасшедший','эпичный','детали','подробности','шок','сенсационно','шокирующие','сенсационные','потрясающе','нереально','очевидец','видео','фото','расследование','разоблачение','инсайд','утечка','шокирующее','сенсационное','скандальное','громкое','резонансное','неожиданное','внезапное','экстренное','важное','спецвыпуск'];
             const clickbaitEn = ['shocking','unbelievable','you won\'t believe','secret','scandal','what happened next','viral','sensation','sensational','astonishing','incredible','mind-blowing','epic','crazy','jaw-dropping','dramatic','unexpected','exclusive','warning','urgent','must see','will shock you','what happens next'];
-            const clickbaitAll = clickbaitRu.concat(clickbaitEn).map(w => this.escapeRegExp(w));
-            const clickbaitPattern = '\\b(' + clickbaitAll.join('|') + ')\\b';
+            const clickbaitAll = clickbaitRu.concat(clickbaitEn);
+            const clickbaitPattern = clickbaitAll.map(w => this.escapeRegExp(w)).join('|');
             const clickbaitRegex = new RegExp(clickbaitPattern, 'gi');
             const clickbaitMatches = lowerText.match(clickbaitRegex) || [];
             const clickbaitCount = clickbaitMatches.length;
@@ -2067,8 +2028,8 @@
             
             const contrastRu = ['однако','но','тем не менее','несмотря на','с другой стороны','вопреки'];
             const contrastEn = ['nevertheless','however','but','although','despite','on the other hand','whereas'];
-            const contrastAll = contrastRu.concat(contrastEn).map(w => this.escapeRegExp(w));
-            const contrastPattern = '\\b(' + contrastAll.join('|') + ')\\b';
+            const contrastAll = contrastRu.concat(contrastEn);
+            const contrastPattern = contrastAll.map(w => this.escapeRegExp(w)).join('|');
             const contrastRegex = new RegExp(contrastPattern, 'gi');
             const contrastMatches = lowerText.match(contrastRegex) || [];
             const contrastCount = contrastMatches.length;
@@ -2083,8 +2044,8 @@
                 'implementation','provision','interaction','within the framework','in accordance','currently',
                 'this','these','aforementioned'
             ];
-            const bureaucratAll = bureaucratRu.concat(bureaucratEn).map(w => this.escapeRegExp(w));
-            const bureaucratPattern = '\\b(' + bureaucratAll.join('|') + ')\\b';
+            const bureaucratAll = bureaucratRu.concat(bureaucratEn);
+            const bureaucratPattern = bureaucratAll.map(w => this.escapeRegExp(w)).join('|');
             const bureaucratRegex = new RegExp(bureaucratPattern, 'gi');
             const bureaucratMatches = lowerText.match(bureaucratRegex) || [];
             const bureaucratCount = bureaucratMatches.length;
@@ -2106,8 +2067,8 @@
             
             const vagueRu = ['около','примерно','почти','где-то','несколько','некоторый','некий','какой-то'];
             const vagueEn = ['certain','some','several','around','approximately','almost','nearly','kind of','sort of'];
-            const vagueAll = vagueRu.concat(vagueEn).map(w => this.escapeRegExp(w));
-            const vaguePattern = '\\b(' + vagueAll.join('|') + ')\\b';
+            const vagueAll = vagueRu.concat(vagueEn);
+            const vaguePattern = vagueAll.map(w => this.escapeRegExp(w)).join('|');
             const vagueRegex = new RegExp(vaguePattern, 'gi');
             const vagueMatches = lowerText.match(vagueRegex) || [];
             const vagueCount = vagueMatches.length;
@@ -2115,8 +2076,8 @@
             
             const absoluteRu = ['всегда','никогда','каждый','любой','никто','ничто','весь','абсолютно','совершенно','полностью'];
             const absoluteEn = ['always','never','every','anybody','nobody','nothing','all','absolutely','completely','entirely'];
-            const absoluteAll = absoluteRu.concat(absoluteEn).map(w => this.escapeRegExp(w));
-            const absolutePattern = '\\b(' + absoluteAll.join('|') + ')\\b';
+            const absoluteAll = absoluteRu.concat(absoluteEn);
+            const absolutePattern = absoluteAll.map(w => this.escapeRegExp(w)).join('|');
             const absoluteRegex = new RegExp(absolutePattern, 'gi');
             const absoluteMatches = lowerText.match(absoluteRegex) || [];
             const absoluteCount = absoluteMatches.length;
@@ -2165,18 +2126,21 @@
             const top5Sum = top5.reduce((acc, [_, freq]) => acc + freq, 0);
             metrics.seoDensity = totalWords ? ((top5Sum / totalWords) * 100).toFixed(1) : 0;
             
-            const ctaAll = ctaRu.concat(ctaEn).map(w => this.escapeRegExp(w)).join('|');
-            const ctaRegex = new RegExp('\\b(' + ctaAll + ')\\b', 'gi');
+            const ctaAll = ctaRu.concat(ctaEn);
+            const ctaPattern = ctaAll.map(w => this.escapeRegExp(w)).join('|');
+            const ctaRegex = new RegExp(ctaPattern, 'gi');
             const ctaMatches = lowerText.match(ctaRegex) || [];
             metrics.callToAction = totalWords ? Math.round((ctaMatches.length / totalWords) * 1000) : 0;
             
-            const clicheAll = clicheRu.concat(clicheEn).map(w => this.escapeRegExp(w)).join('|');
-            const clicheRegex = new RegExp('\\b(' + clicheAll + ')\\b', 'gi');
+            const clicheAll = clicheRu.concat(clicheEn);
+            const clichePattern = clicheAll.map(w => this.escapeRegExp(w)).join('|');
+            const clicheRegex = new RegExp(clichePattern, 'gi');
             const clicheMatches = lowerText.match(clicheRegex) || [];
             metrics.clicheMeter = totalWords ? Math.round((clicheMatches.length / totalWords) * 1000) : 0;
             
-            const superlativeAll = superlativeRu.concat(superlativeEn).map(w => this.escapeRegExp(w)).join('|');
-            const superlativeRegex = new RegExp('\\b(' + superlativeAll + ')\\b', 'gi');
+            const superlativeAll = superlativeRu.concat(superlativeEn);
+            const superlativePattern = superlativeAll.map(w => this.escapeRegExp(w)).join('|');
+            const superlativeRegex = new RegExp(superlativePattern, 'gi');
             const superlativeMatches = lowerText.match(superlativeRegex) || [];
             metrics.superlativeDegree = totalWords ? Math.round((superlativeMatches.length / totalWords) * 1000) : 0;
             
@@ -2192,12 +2156,10 @@
             let pastCount = 0;
             const pastRuMatches = text.match(pastRu);
             if (pastRuMatches) pastCount += pastRuMatches.length;
-            
-            const pastEnPattern = pastEnWords.map(w => '\\b' + this.escapeRegExp(w) + '\\b').join('|');
+            const pastEnPattern = pastEnWords.map(w => this.escapeRegExp(w)).join('|');
             const pastEnRegex = new RegExp(pastEnPattern, 'gi');
             const pastEnMatches = text.match(pastEnRegex) || [];
             pastCount += pastEnMatches.length;
-            
             const pastEnEdMatches = text.match(pastEnEd);
             if (pastEnEdMatches) pastCount += pastEnEdMatches.length;
             
@@ -2212,13 +2174,11 @@
             const storytellingMarkers = firstPersonCount + pastCount + properCount;
             metrics.storytelling = totalWords ? Math.round((storytellingMarkers / totalWords) * 1000) : 0;
             
-            let fillerCount = 0;
-            fillerRu.concat(fillerEn).forEach(phrase => {
-                const re = new RegExp(phrase, 'gi');
-                const m = lowerText.match(re);
-                if (m) fillerCount += m.length;
-            });
-            metrics.fillerWords = totalWords ? Math.round((fillerCount / totalWords) * 1000) : 0;
+            const fillerAll = fillerRu.concat(fillerEn);
+            const fillerPattern = fillerAll.map(w => this.escapeRegExp(w)).join('|');
+            const fillerRegex = new RegExp(fillerPattern, 'gi');
+            const fillerMatches = lowerText.match(fillerRegex) || [];
+            metrics.fillerWords = totalWords ? Math.round((fillerMatches.length / totalWords) * 1000) : 0;
             
             let stopWordsCount = 0;
             words.forEach(w => {
@@ -2266,7 +2226,7 @@
             
             const coffeeWords = ['кофе','эспрессо','капучино','латте','американо','coffee','espresso','cappuccino','latte','americano'];
             const coffeePattern = coffeeWords.map(w => this.escapeRegExp(w)).join('|');
-            const coffeeRegex = new RegExp('\\b(' + coffeePattern + ')\\b', 'gi');
+            const coffeeRegex = new RegExp(coffeePattern, 'gi');
             const coffeeMatches = lowerText.match(coffeeRegex) || [];
             metrics.moreCoffee = totalWords ? Math.min(10, Math.round((coffeeMatches.length / totalWords * 1000))) : 0;
             
@@ -2280,43 +2240,31 @@
             
             const crimeWords = ['тюрьма','вор','мент','бандит','разборка','киллер','мафия','оружие','криминал','преступление','пушка','ограбление','prison','thief','cop','gangster','murder','weapon','crime','robbery','criminal','mob'];
             const crimePattern = crimeWords.map(w => this.escapeRegExp(w)).join('|');
-            const crimeRegex = new RegExp('\\b(' + crimePattern + ')\\b', 'gi');
+            const crimeRegex = new RegExp(crimePattern, 'gi');
             const crimeMatches = lowerText.match(crimeRegex) || [];
             metrics.pulpFiction = totalWords ? Math.min(10, Math.round((crimeMatches.length / totalWords * 1000))) : 0;
             
             const angerWords = ['бесит','злит','ненавижу','достало','надоело','ужасно','раздражает','терпеть','hate','annoying','frustrating','sick of','terrible','awful','irritating','cannot stand','fed up'];
-            const angerPattern = angerWords.map(w => {
-                const escaped = this.escapeRegExp(w);
-                if (w.includes(' ')) {
-                    return '(?:' + escaped.replace(/\\ /g, '\\s+') + ')';
-                }
-                return escaped;
-            }).join('|');
-            const angerRegex = new RegExp('\\b(' + angerPattern + ')\\b', 'gi');
+            const angerPattern = angerWords.map(w => this.escapeRegExp(w)).join('|');
+            const angerRegex = new RegExp(angerPattern, 'gi');
             const angerMatches = lowerText.match(angerRegex) || [];
             metrics.copyOfCopy = totalWords ? Math.min(10, Math.round((angerMatches.length / totalWords * 1000))) : 0;
             
             const officeWords = ['офис','кулер','бумага','принтер','переговорка','дедлайн','отчёт','договор','совещание','планёрка','менеджер','скрентон','босс','office','printer','paper','scranton','meeting','deadline','report','copier','cubicle','boss','manager'];
             const officePattern = officeWords.map(w => this.escapeRegExp(w)).join('|');
-            const officeRegex = new RegExp('\\b(' + officePattern + ')\\b', 'gi');
+            const officeRegex = new RegExp(officePattern, 'gi');
             const officeMatches = lowerText.match(officeRegex) || [];
             metrics.scranton = totalWords ? Math.min(10, Math.round((officeMatches.length / totalWords * 1000))) : 0;
             
             const magicWords = ['магия','волшебство','чудо','эликсир','заклинание','волшебник','колдун','фея','дракон','Гарри','Поттер','Дамблдор','волшебная палочка','Хогсмит','Гермиона','Рон','Гриффиндор','magic','wizard','witch','spell','elixir','miracle','fairy','dragon','Harry','Potter','Gryffindor','Dumbledore'];
-            const magicPattern = magicWords.map(w => {
-                const escaped = this.escapeRegExp(w);
-                if (w.includes(' ')) {
-                    return '(?:' + escaped.replace(/\\ /g, '\\s+') + ')';
-                }
-                return escaped;
-            }).join('|');
-            const magicRegex = new RegExp('\\b(' + magicPattern + ')\\b', 'gi');
+            const magicPattern = magicWords.map(w => this.escapeRegExp(w)).join('|');
+            const magicRegex = new RegExp(magicPattern, 'gi');
             const magicMatches = lowerText.match(magicRegex) || [];
             metrics.hogwarts = totalWords ? Math.min(10, Math.round((magicMatches.length / totalWords * 1000))) : 0;
             
             const spaceWords = ['космос','звезда','планета','луч','галактика','вселенная','спутник','орбита','ракета','пришелец','джедай','инопланетянин','space','star','planet','ray','galaxy','universe','satellite','orbit','rocket','alien','jedi'];
             const spacePattern = spaceWords.map(w => this.escapeRegExp(w)).join('|');
-            const spaceRegex = new RegExp('\\b(' + spacePattern + ')\\b', 'gi');
+            const spaceRegex = new RegExp(spacePattern, 'gi');
             const spaceMatches = lowerText.match(spaceRegex) || [];
             metrics.unknownPlanets = totalWords ? Math.min(10, Math.round((spaceMatches.length / totalWords * 1000))) : 0;
             
@@ -2336,12 +2284,12 @@
             
             return metrics;
         }
-        
-        detectLanguageWithConfidence(text) {
-            if (!text || typeof text !== 'string') {
-                return { language: 'en', confidence: 0.5 };
-            }
-            if (this.language !== 'auto') {
+                
+                detectLanguageWithConfidence(text) {
+                    if (!text || typeof text !== 'string') {
+                        return { language: 'en', confidence: 0.5 };
+                    }
+                    if (this.language !== 'auto') {
                 return { language: this.language, confidence: 1.0 };
             }
             if (/[ёЁ]/.test(text)) {
@@ -6198,111 +6146,116 @@
                 }
             };
         
-            const negationsPattern = rules.negations.map(n => '\\b' + this.escapeRegExp(n.toLowerCase()) + '\\b').join('|');
-            const negationsRegex = new RegExp(negationsPattern, 'gi');
-            const negMatches = text.match(negationsRegex) || [];
-            analysis.indicators.negations = negMatches.length;
-            negMatches.forEach(match => {
-                const lowerMatch = match.toLowerCase();
-                const weight = lowerMatch.includes('отнюдь') || lowerMatch.includes('вовсе') || lowerMatch.includes('ни') ? 1.5 : 1.0;
-                analysis.scores.negationImpact -= 0.3 * weight;
+            rules.negations.forEach(negation => {
+                const lowerNeg = negation.toLowerCase();
+                const regex = new RegExp(this.escapeRegExp(lowerNeg), 'gi');
+                const matches = text.match(regex);
+                if (matches) {
+                    analysis.indicators.negations += matches.length;
+                    const weight = lowerNeg.includes('отнюдь') || lowerNeg.includes('вовсе') || lowerNeg.includes('ни') ? 1.5 : 1.0;
+                    analysis.scores.negationImpact -= matches.length * 0.3 * weight;
+                }
             });
         
-            const intensifiersPattern = rules.intensifiers.map(i => '\\b' + this.escapeRegExp(i.toLowerCase()) + '\\b').join('|');
-            const intensifiersRegex = new RegExp(intensifiersPattern, 'gi');
-            const intMatches = text.match(intensifiersRegex) || [];
-            analysis.indicators.intensifiers = intMatches.length;
-            intMatches.forEach(match => {
-                const lowerMatch = match.toLowerCase();
-                let weight = 1.2;
-                if (lowerMatch.includes('чрезвычайно') || lowerMatch.includes('невероятно') || lowerMatch.includes('абсолютно')) weight = 1.5;
-                else if (lowerMatch.includes('очень') || lowerMatch.includes('сильно') || lowerMatch.includes('крайне')) weight = 1.0;
-                analysis.scores.intensification += 0.2 * weight;
+            rules.intensifiers.forEach(intensifier => {
+                const lowerInt = intensifier.toLowerCase();
+                const regex = new RegExp(this.escapeRegExp(lowerInt), 'gi');
+                const matches = text.match(regex);
+                if (matches) {
+                    analysis.indicators.intensifiers += matches.length;
+                    const weight = lowerInt.includes('чрезвычайно') || lowerInt.includes('невероятно') || lowerInt.includes('абсолютно') ? 1.5 : 
+                                  lowerInt.includes('очень') || lowerInt.includes('сильно') || lowerInt.includes('крайне') ? 1.0 : 1.2;
+                    analysis.scores.intensification += matches.length * 0.2 * weight;
+                }
             });
         
             if (this.language === 'ru') {
-                const diminutivesPattern = rules.diminutives
-                    .map(s => this.escapeRegExp(s.replace(/^-+|-+$/g, '')))
-                    .filter(s => s)
-                    .map(s => '[а-яё]+' + s + '[а-яё]*')
-                    .join('|');
-                if (diminutivesPattern) {
-                    const diminutivesRegex = new RegExp(diminutivesPattern, 'gi');
-                    const dimMatches = text.match(diminutivesRegex) || [];
-                    analysis.indicators.diminutives = dimMatches.length;
-                    analysis.scores.emotionalModulation += dimMatches.length * 0.1;
-                }
+                rules.diminutives.forEach(suffix => {
+                    const cleanSuffix = suffix.replace(/^-+|-+$/g, '');
+                    if (!cleanSuffix) return;
+                    const regex = new RegExp(`[а-яё]+${this.escapeRegExp(cleanSuffix)}[а-яё]*`, 'gi');
+                    const matches = text.match(regex);
+                    if (matches) {
+                        analysis.indicators.diminutives += matches.length;
+                        analysis.scores.emotionalModulation += matches.length * 0.1;
+                    }
+                });
         
-                const augmentativesPattern = rules.augmentatives
-                    .map(s => this.escapeRegExp(s.replace(/^-+|-+$/g, '')))
-                    .filter(s => s)
-                    .map(s => '[а-яё]+' + s + '[а-яё]*')
-                    .join('|');
-                if (augmentativesPattern) {
-                    const augmentativesRegex = new RegExp(augmentativesPattern, 'gi');
-                    const augMatches = text.match(augmentativesRegex) || [];
-                    analysis.indicators.augmentatives = augMatches.length;
-                    analysis.scores.emotionalModulation += augMatches.length * 0.15;
-                }
+                rules.augmentatives.forEach(suffix => {
+                    const cleanSuffix = suffix.replace(/^-+|-+$/g, '');
+                    if (!cleanSuffix) return;
+                    const regex = new RegExp(`[а-яё]+${this.escapeRegExp(cleanSuffix)}[а-яё]*`, 'gi');
+                    const matches = text.match(regex);
+                    if (matches) {
+                        analysis.indicators.augmentatives += matches.length;
+                        analysis.scores.emotionalModulation += matches.length * 0.15;
+                    }
+                });
             }
-        
-            const ironyPattern = rules.ironyIndicators.map(i => '\\b' + this.escapeRegExp(i.toLowerCase()) + '\\b').join('|');
-            const ironyRegex = new RegExp(ironyPattern, 'gi');
-            const rhetoricalPattern = rules.rhetoricalQuestions.map(r => '\\b' + this.escapeRegExp(r.toLowerCase()) + '\\b').join('|');
-            const rhetoricalRegex = new RegExp(rhetoricalPattern, 'gi');
-            const contrastPattern = rules.contrastMarkers.map(c => '\\b' + this.escapeRegExp(c.toLowerCase()) + '\\b').join('|');
-            const contrastRegex = new RegExp(contrastPattern, 'gi');
-            const hyperbolePattern = rules.hyperbole.map(h => '\\b' + this.escapeRegExp(h.toLowerCase()) + '\\b').join('|');
-            const hyperboleRegex = new RegExp(hyperbolePattern, 'gi');
-            const understatementPattern = rules.understatement.map(u => '\\b' + this.escapeRegExp(u.toLowerCase()) + '\\b').join('|');
-            const understatementRegex = new RegExp(understatementPattern, 'gi');
         
             sentences.forEach((sentenceObj, index) => {
                 const sentence = typeof sentenceObj === 'object' ? sentenceObj.text : sentenceObj;
                 const lowerSentence = sentence.toLowerCase();
         
-                if (ironyRegex.test(lowerSentence)) {
-                    const isIrony = this.checkIronyPattern(sentence);
-                    if (isIrony) {
-                        analysis.indicators.irony++;
-                        analysis.scores.contextualComplexity += 0.5;
-                        analysis.patterns.ironyPatterns.push({
+                let ironyDetected = false;
+                rules.ironyIndicators.forEach(indicator => {
+                    const lowerIndicator = indicator.toLowerCase();
+                    if (lowerSentence.includes(lowerIndicator)) {
+                        const isIrony = this.checkIronyPattern(sentence);
+                        if (isIrony) {
+                            analysis.indicators.irony++;
+                            analysis.scores.contextualComplexity += 0.5;
+                            ironyDetected = true;
+                            analysis.patterns.ironyPatterns.push({
+                                sentenceIndex: index,
+                                pattern: `irony indicator: ${indicator}`,
+                                text: sentence.substring(0, 100) + '...'
+                            });
+                        }
+                    }
+                });
+        
+                rules.rhetoricalQuestions.forEach(marker => {
+                    const lowerMarker = marker.toLowerCase();
+                    if (lowerSentence.includes(lowerMarker) && sentence.includes('?')) {
+                        analysis.indicators.rhetorical++;
+                        analysis.scores.contextualComplexity += 0.3;
+                        analysis.patterns.rhetoricalPatterns.push({
                             sentenceIndex: index,
-                            pattern: 'irony indicator',
+                            marker: marker,
                             text: sentence.substring(0, 100) + '...'
                         });
                     }
-                }
+                });
         
-                if (rhetoricalRegex.test(lowerSentence) && sentence.includes('?')) {
-                    analysis.indicators.rhetorical++;
-                    analysis.scores.contextualComplexity += 0.3;
-                    analysis.patterns.rhetoricalPatterns.push({
-                        sentenceIndex: index,
-                        marker: 'rhetorical',
-                        text: sentence.substring(0, 100) + '...'
-                    });
-                }
+                rules.contrastMarkers.forEach(marker => {
+                    const lowerMarker = marker.toLowerCase();
+                    if (lowerSentence.includes(lowerMarker)) {
+                        analysis.indicators.contrasts++;
+                        analysis.scores.contextualComplexity += 0.2;
+                        analysis.patterns.contrastPatterns.push({
+                            sentenceIndex: index,
+                            marker: marker,
+                            text: sentence.substring(0, 100) + '...'
+                        });
+                    }
+                });
         
-                if (contrastRegex.test(lowerSentence)) {
-                    analysis.indicators.contrasts++;
-                    analysis.scores.contextualComplexity += 0.2;
-                    analysis.patterns.contrastPatterns.push({
-                        sentenceIndex: index,
-                        marker: 'contrast',
-                        text: sentence.substring(0, 100) + '...'
-                    });
-                }
+                rules.hyperbole.forEach(marker => {
+                    const lowerMarker = marker.toLowerCase();
+                    if (lowerSentence.includes(lowerMarker)) {
+                        analysis.indicators.hyperbole++;
+                        analysis.scores.intensification += 0.3;
+                    }
+                });
         
-                if (hyperboleRegex.test(lowerSentence)) {
-                    analysis.indicators.hyperbole++;
-                    analysis.scores.intensification += 0.3;
-                }
-        
-                if (understatementRegex.test(lowerSentence)) {
-                    analysis.indicators.understatement++;
-                    analysis.scores.emotionalModulation += 0.2;
-                }
+                rules.understatement.forEach(marker => {
+                    const lowerMarker = marker.toLowerCase();
+                    if (lowerSentence.includes(lowerMarker)) {
+                        analysis.indicators.understatement++;
+                        analysis.scores.emotionalModulation += 0.2;
+                    }
+                });
             });
         
             analysis.overallScore = 
@@ -11292,6 +11245,7 @@
     
 
 })();
+
 
 
 
