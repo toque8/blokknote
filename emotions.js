@@ -2383,54 +2383,49 @@
         
         enhancedPreprocessText(text) {
             const cleanedText = text
-              .replace(/\r\n/g, '\n')
-              .replace(/\r/g, '\n')
-              .replace(/\t/g, ' ')
-              .replace(/\u00A0/g, ' ')
-              .replace(/\u200B/g, '')
-              .replace(/\u200C/g, '')
-              .replace(/\u200D/g, '')
-              .replace(/\uFEFF/g, '')
-              .replace(/\s+/g, ' ')
-              .trim();
-            
+                .replace(/\r\n/g, '\n')
+                .replace(/\r/g, '\n')
+                .replace(/\t/g, ' ')
+                .replace(/\u00A0/g, ' ')
+                .replace(/\u200B/g, '')
+                .replace(/\u200C/g, '')
+                .replace(/\u200D/g, '')
+                .replace(/\uFEFF/g, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+        
             const sentences = this.enhancedSentenceSplit(cleanedText);
-            
             const paragraphSplit = text.split(/\n\s*\n/);
             const paragraphs = paragraphSplit.filter(p => {
-              const trimmed = p.trim();
-              return trimmed.length > 0 && trimmed !== '\n';
+                const trimmed = p.trim();
+                return trimmed.length > 0 && trimmed !== '\n';
             });
-            
             const words = this.enhancedTokenization(cleanedText);
-            
             const punctuation = this.extractEmotionalPunctuation(cleanedText);
             const emoticons = this.extractEmoticons(text);
             const capitalization = this.analyzeCapitalization(text);
-            
+        
             const stats = {
-              avgWordLength: words.length > 0 ? 
-                words.reduce((sum, w) => sum + w.length, 0) / words.length : 0,
-              uniqueWords: [...new Set(words)].length,
-              longWords: words.filter(w => w.length > 7).length,
-              shortWords: words.filter(w => w.length < 4).length,
-              wordLengthDistribution: this.calculateWordLengthDistribution(words),
-              avgSentenceLength: sentences.length > 0 ? 
-                sentences.reduce((sum, s) => sum + s.wordCount, 0) / sentences.length : 0,
-              punctuationDensity: this.calculatePunctuationDensity(cleanedText),
-              emoticonDensity: this.calculateEmoticonDensity(emoticons, words.length)
+                avgWordLength: words.length > 0 ? words.reduce((sum, w) => sum + w.length, 0) / words.length : 0,
+                uniqueWords: [...new Set(words)].length,
+                longWords: words.filter(w => w.length > 7).length,
+                shortWords: words.filter(w => w.length < 4).length,
+                wordLengthDistribution: this.calculateWordLengthDistribution(words),
+                avgSentenceLength: sentences.length > 0 ? sentences.reduce((sum, s) => sum + s.wordCount, 0) / sentences.length : 0,
+                punctuationDensity: this.calculatePunctuationDensity(cleanedText),
+                emoticonDensity: this.calculateEmoticonDensity(emoticons, words.length)
             };
-            
+        
             return {
-              original: text,
-              cleaned: cleanedText,
-              sentences,
-              paragraphs,
-              words,
-              punctuation,
-              emoticons,
-              capitalization,
-              stats
+                original: text,
+                cleaned: cleanedText,
+                sentences,
+                paragraphs,
+                words,
+                punctuation,
+                emoticons,
+                capitalization,
+                stats
             };
         }
         
@@ -6174,158 +6169,152 @@
         }
         
         enhancedContextualAnalysis(data) {
-                    const text = data.cleaned.toLowerCase();
-                    const sentences = data.sentences;
-                    const rules = this.contextRules[this.language];
-                    
-                    const analysis = {
-                        indicators: {
-                            negations: 0,
-                            intensifiers: 0,
-                            diminutives: 0,
-                            augmentatives: 0,
-                            irony: 0,
-                            contrasts: 0,
-                            rhetorical: 0,
-                            hyperbole: 0,
-                            understatement: 0
-                        },
-                        scores: {
-                            negationImpact: 0,
-                            intensification: 0,
-                            emotionalModulation: 0,
-                            contextualComplexity: 0
-                        },
-                        patterns: {
-                            ironyPatterns: [],
-                            contrastPatterns: [],
-                            rhetoricalPatterns: []
-                        }
-                    };
-                    
-                    rules.negations.forEach(negation => {
-                        const lowerNeg = negation.toLowerCase();
-                        const regex = new RegExp(`${this.escapeRegExp(lowerNeg)}`, 'gi');
-                        const matches = text.match(regex);
-                        if (matches) {
-                            analysis.indicators.negations += matches.length;
-                            const weight = lowerNeg.includes('отнюдь') || lowerNeg.includes('вовсе') || lowerNeg.includes('ни') ? 1.5 : 1.0;
-                            analysis.scores.negationImpact -= matches.length * 0.3 * weight;
-                        }
-                    });
-                    
-                    rules.intensifiers.forEach(intensifier => {
-                        const lowerInt = intensifier.toLowerCase();
-                        const regex = new RegExp(`${this.escapeRegExp(lowerInt)}`, 'gi');
-                        const matches = text.match(regex);
-                        if (matches) {
-                            analysis.indicators.intensifiers += matches.length;
-                            const weight = lowerInt.includes('чрезвычайно') || lowerInt.includes('невероятно') || lowerInt.includes('абсолютно') ? 1.5 : 
-                                          lowerInt.includes('очень') || lowerInt.includes('сильно') || lowerInt.includes('крайне') ? 1.0 : 1.2;
-                            analysis.scores.intensification += matches.length * 0.2 * weight;
-                        }
-                    });
-                    
-                    if (this.language === 'ru') {
-                        rules.diminutives.forEach(suffix => {
-                            const cleanSuffix = suffix.replace(/^-+|-+$/g, '');
-                            if (!cleanSuffix) return;
-                            const regex = new RegExp(`[а-яё]+${this.escapeRegExp(cleanSuffix)}[а-яё]*`, 'gi');
-                            const matches = text.match(regex);
-                            if (matches) {
-                                analysis.indicators.diminutives += matches.length;
-                                analysis.scores.emotionalModulation += matches.length * 0.1;
-                            }
-                        });
-                        
-                        rules.augmentatives.forEach(suffix => {
-                            const cleanSuffix = suffix.replace(/^-+|-+$/g, '');
-                            if (!cleanSuffix) return;
-                            const regex = new RegExp(`[а-яё]+${this.escapeRegExp(cleanSuffix)}[а-яё]*`, 'gi');
-                            const matches = text.match(regex);
-                            if (matches) {
-                                analysis.indicators.augmentatives += matches.length;
-                                analysis.scores.emotionalModulation += matches.length * 0.15;
-                            }
+            const text = data.cleaned.toLowerCase();
+            const sentences = data.sentences;
+            const rules = this.contextRules[this.language];
+        
+            const analysis = {
+                indicators: {
+                    negations: 0,
+                    intensifiers: 0,
+                    diminutives: 0,
+                    augmentatives: 0,
+                    irony: 0,
+                    contrasts: 0,
+                    rhetorical: 0,
+                    hyperbole: 0,
+                    understatement: 0
+                },
+                scores: {
+                    negationImpact: 0,
+                    intensification: 0,
+                    emotionalModulation: 0,
+                    contextualComplexity: 0
+                },
+                patterns: {
+                    ironyPatterns: [],
+                    contrastPatterns: [],
+                    rhetoricalPatterns: []
+                }
+            };
+        
+            const negationsPattern = rules.negations.map(n => '\\b' + this.escapeRegExp(n.toLowerCase()) + '\\b').join('|');
+            const negationsRegex = new RegExp(negationsPattern, 'gi');
+            const negMatches = text.match(negationsRegex) || [];
+            analysis.indicators.negations = negMatches.length;
+            negMatches.forEach(match => {
+                const lowerMatch = match.toLowerCase();
+                const weight = lowerMatch.includes('отнюдь') || lowerMatch.includes('вовсе') || lowerMatch.includes('ни') ? 1.5 : 1.0;
+                analysis.scores.negationImpact -= 0.3 * weight;
+            });
+        
+            const intensifiersPattern = rules.intensifiers.map(i => '\\b' + this.escapeRegExp(i.toLowerCase()) + '\\b').join('|');
+            const intensifiersRegex = new RegExp(intensifiersPattern, 'gi');
+            const intMatches = text.match(intensifiersRegex) || [];
+            analysis.indicators.intensifiers = intMatches.length;
+            intMatches.forEach(match => {
+                const lowerMatch = match.toLowerCase();
+                let weight = 1.2;
+                if (lowerMatch.includes('чрезвычайно') || lowerMatch.includes('невероятно') || lowerMatch.includes('абсолютно')) weight = 1.5;
+                else if (lowerMatch.includes('очень') || lowerMatch.includes('сильно') || lowerMatch.includes('крайне')) weight = 1.0;
+                analysis.scores.intensification += 0.2 * weight;
+            });
+        
+            if (this.language === 'ru') {
+                const diminutivesPattern = rules.diminutives
+                    .map(s => this.escapeRegExp(s.replace(/^-+|-+$/g, '')))
+                    .filter(s => s)
+                    .map(s => '[а-яё]+' + s + '[а-яё]*')
+                    .join('|');
+                if (diminutivesPattern) {
+                    const diminutivesRegex = new RegExp(diminutivesPattern, 'gi');
+                    const dimMatches = text.match(diminutivesRegex) || [];
+                    analysis.indicators.diminutives = dimMatches.length;
+                    analysis.scores.emotionalModulation += dimMatches.length * 0.1;
+                }
+        
+                const augmentativesPattern = rules.augmentatives
+                    .map(s => this.escapeRegExp(s.replace(/^-+|-+$/g, '')))
+                    .filter(s => s)
+                    .map(s => '[а-яё]+' + s + '[а-яё]*')
+                    .join('|');
+                if (augmentativesPattern) {
+                    const augmentativesRegex = new RegExp(augmentativesPattern, 'gi');
+                    const augMatches = text.match(augmentativesRegex) || [];
+                    analysis.indicators.augmentatives = augMatches.length;
+                    analysis.scores.emotionalModulation += augMatches.length * 0.15;
+                }
+            }
+        
+            const ironyPattern = rules.ironyIndicators.map(i => '\\b' + this.escapeRegExp(i.toLowerCase()) + '\\b').join('|');
+            const ironyRegex = new RegExp(ironyPattern, 'gi');
+            const rhetoricalPattern = rules.rhetoricalQuestions.map(r => '\\b' + this.escapeRegExp(r.toLowerCase()) + '\\b').join('|');
+            const rhetoricalRegex = new RegExp(rhetoricalPattern, 'gi');
+            const contrastPattern = rules.contrastMarkers.map(c => '\\b' + this.escapeRegExp(c.toLowerCase()) + '\\b').join('|');
+            const contrastRegex = new RegExp(contrastPattern, 'gi');
+            const hyperbolePattern = rules.hyperbole.map(h => '\\b' + this.escapeRegExp(h.toLowerCase()) + '\\b').join('|');
+            const hyperboleRegex = new RegExp(hyperbolePattern, 'gi');
+            const understatementPattern = rules.understatement.map(u => '\\b' + this.escapeRegExp(u.toLowerCase()) + '\\b').join('|');
+            const understatementRegex = new RegExp(understatementPattern, 'gi');
+        
+            sentences.forEach((sentenceObj, index) => {
+                const sentence = typeof sentenceObj === 'object' ? sentenceObj.text : sentenceObj;
+                const lowerSentence = sentence.toLowerCase();
+        
+                if (ironyRegex.test(lowerSentence)) {
+                    const isIrony = this.checkIronyPattern(sentence);
+                    if (isIrony) {
+                        analysis.indicators.irony++;
+                        analysis.scores.contextualComplexity += 0.5;
+                        analysis.patterns.ironyPatterns.push({
+                            sentenceIndex: index,
+                            pattern: 'irony indicator',
+                            text: sentence.substring(0, 100) + '...'
                         });
                     }
-                    
-                    sentences.forEach((sentenceObj, index) => {
-                        const sentence = typeof sentenceObj === 'object' ? sentenceObj.text : sentenceObj;
-                        const lowerSentence = sentence.toLowerCase();
-                        
-                        let ironyDetected = false;
-                        rules.ironyIndicators.forEach(indicator => {
-                            const lowerIndicator = indicator.toLowerCase();
-                            if (lowerSentence.includes(lowerIndicator)) {
-                                const isIrony = this.checkIronyPattern(sentence);
-                                if (isIrony) {
-                                    analysis.indicators.irony++;
-                                    analysis.scores.contextualComplexity += 0.5;
-                                    ironyDetected = true;
-                                    analysis.patterns.ironyPatterns.push({
-                                        sentenceIndex: index,
-                                        pattern: `irony indicator: ${indicator}`,
-                                        text: sentence.substring(0, 100) + '...'
-                                    });
-                                }
-                            }
-                        });
-                        
-                        rules.rhetoricalQuestions.forEach(marker => {
-                            const lowerMarker = marker.toLowerCase();
-                            if (lowerSentence.includes(lowerMarker) && sentence.includes('?')) {
-                                analysis.indicators.rhetorical++;
-                                analysis.scores.contextualComplexity += 0.3;
-                                analysis.patterns.rhetoricalPatterns.push({
-                                    sentenceIndex: index,
-                                    marker: marker,
-                                    text: sentence.substring(0, 100) + '...'
-                                });
-                            }
-                        });
-                        
-                        rules.contrastMarkers.forEach(marker => {
-                            const lowerMarker = marker.toLowerCase();
-                            if (lowerSentence.includes(lowerMarker)) {
-                                analysis.indicators.contrasts++;
-                                analysis.scores.contextualComplexity += 0.2;
-                                analysis.patterns.contrastPatterns.push({
-                                    sentenceIndex: index,
-                                    marker: marker,
-                                    text: sentence.substring(0, 100) + '...'
-                                });
-                            }
-                        });
-                        
-                        rules.hyperbole.forEach(marker => {
-                            const lowerMarker = marker.toLowerCase();
-                            if (lowerSentence.includes(lowerMarker)) {
-                                analysis.indicators.hyperbole++;
-                                analysis.scores.intensification += 0.3;
-                            }
-                        });
-                        
-                        rules.understatement.forEach(marker => {
-                            const lowerMarker = marker.toLowerCase();
-                            if (lowerSentence.includes(lowerMarker)) {
-                                analysis.indicators.understatement++;
-                                analysis.scores.emotionalModulation += 0.2;
-                            }
-                        });
+                }
+        
+                if (rhetoricalRegex.test(lowerSentence) && sentence.includes('?')) {
+                    analysis.indicators.rhetorical++;
+                    analysis.scores.contextualComplexity += 0.3;
+                    analysis.patterns.rhetoricalPatterns.push({
+                        sentenceIndex: index,
+                        marker: 'rhetorical',
+                        text: sentence.substring(0, 100) + '...'
                     });
-                    
-                    analysis.overallScore = 
-                        analysis.scores.negationImpact +
-                        analysis.scores.intensification +
-                        analysis.scores.emotionalModulation +
-                        analysis.scores.contextualComplexity;
-                    
-                    analysis.coherence = this.calculateAdvancedCoherence ? this.calculateAdvancedCoherence(sentences) : 1;
-                    
-                    analysis.consistency = this.analyzeEmotionalConsistency ? this.analyzeEmotionalConsistency(data) : 1;
-                    
-                    return analysis;
+                }
+        
+                if (contrastRegex.test(lowerSentence)) {
+                    analysis.indicators.contrasts++;
+                    analysis.scores.contextualComplexity += 0.2;
+                    analysis.patterns.contrastPatterns.push({
+                        sentenceIndex: index,
+                        marker: 'contrast',
+                        text: sentence.substring(0, 100) + '...'
+                    });
+                }
+        
+                if (hyperboleRegex.test(lowerSentence)) {
+                    analysis.indicators.hyperbole++;
+                    analysis.scores.intensification += 0.3;
+                }
+        
+                if (understatementRegex.test(lowerSentence)) {
+                    analysis.indicators.understatement++;
+                    analysis.scores.emotionalModulation += 0.2;
+                }
+            });
+        
+            analysis.overallScore = 
+                analysis.scores.negationImpact +
+                analysis.scores.intensification +
+                analysis.scores.emotionalModulation +
+                analysis.scores.contextualComplexity;
+        
+            analysis.coherence = this.calculateAdvancedCoherence ? this.calculateAdvancedCoherence(sentences) : 1;
+            analysis.consistency = this.analyzeEmotionalConsistency ? this.analyzeEmotionalConsistency(data) : 1;
+        
+            return analysis;
         }
         
         checkIronyPattern(sentence) {
@@ -11303,6 +11292,7 @@
     
 
 })();
+
 
 
 
