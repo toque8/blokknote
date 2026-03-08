@@ -2298,69 +2298,6 @@ renderResult(result) {
 			</div>
 		`;
 	}
-
-	if (result.profile.visual) {
-	    const visual = result.profile.visual;
-	    html += `<div class="emotion-section"><h3>${translations.visualProfile}</h3>`;
-	
-	    if (visual.textures && visual.textures.length) {
-	        html += `<div class="emotion-metric">` +
-	            `<span class="label" title="${translations.texturesHint}">${translations.textures}:</span> ` +
-	            `<span class="value" style="text-align:right !important;float:right;">${visual.textures.map(t => this.translateValue(t, currentLang)).join(', ')}</span>` +
-	            `</div>`;
-	    }
-	
-	    if (visual.suggestedStyles && visual.suggestedStyles.length) {
-	        html += `<div class="emotion-metric">` +
-	            `<span class="label" title="${translations.suggestedStylesHint}">${translations.suggestedStyles}:</span> ` +
-	            `<span class="value" style="text-align:right !important;float:right;">${visual.suggestedStyles.map(s => this.translateValue(s, currentLang)).join(', ')}</span>` +
-	            `</div>`;
-	    }
-	
-	    if (visual.mood) {
-	        html += `<div class="emotion-metric">` +
-	            `<span class="label" title="${translations.moodHint}">${translations.mood}:</span> ` +
-	            `<span class="value" style="text-align:right !important;float:right;">${this.translateValue(visual.mood, currentLang)}</span>` +
-	            `</div>`;
-	    }
-	
-	    html += `</div>`;
-	}
-	
-	if (result.profile.behavioral) {
-	    const behav = result.profile.behavioral;
-	    html += `<div class="emotion-section"><h3>${translations.behavioralProfile}</h3>`;
-	
-	    if (behav.behaviors && behav.behaviors.length) {
-	        html += `<div class="emotion-metric">` +
-	            `<span class="label" title="${translations.behaviorsHint}">${translations.behaviors}:</span> ` +
-	            `<span class="value" style="text-align:right !important;float:right;">${behav.behaviors.map(b => this.translateValue(b, currentLang)).join(', ')}</span>` +
-	            `</div>`;
-	    }
-	
-	    if (behav.interactions && behav.interactions.length) {
-	        html += `<div class="emotion-metric">` +
-	            `<span class="label" title="${translations.interactionsHint}">${translations.interactions}:</span> ` +
-	            `<span class="value" style="text-align:right !important;float:right;">${behav.interactions.map(i => this.translateValue(i, currentLang)).join(', ')}</span>` +
-	            `</div>`;
-	    }
-	
-	    if (behav.tempo) {
-	        html += `<div class="emotion-metric">` +
-	            `<span class="label" title="${translations.tempoHint}">${translations.tempo}:</span> ` +
-	            `<span class="value" style="text-align:right !important;float:right;">${this.translateValue(behav.tempo, currentLang)}</span>` +
-	            `</div>`;
-	    }
-	
-	    if (behav.fluidity) {
-	        html += `<div class="emotion-metric">` +
-	            `<span class="label" title="${translations.fluidityHint}">${translations.fluidity}:</span> ` +
-	            `<span class="value" style="text-align:right !important;float:right;">${this.translateValue(behav.fluidity, currentLang)}</span>` +
-	            `</div>`;
-	    }
-	
-	    html += `</div>`;
-	}
     
     const writer = result.metrics?.writer || {};
 	const hasWriterMetrics = Object.keys(writer).length > 0;
@@ -5044,5 +4981,6 @@ window.emotionsUI = new EmotionsUI();
 window.emotionsUI = new EmotionsUI();
 }
 })();
+
 
 
