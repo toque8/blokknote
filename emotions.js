@@ -6584,7 +6584,30 @@
             return sentences.length > 0 ? connectiveCount / sentences.length : 0;
         }
         
-        analyzeEmotionalConsistency(data) {
+       analyzeEmotionalConsistency(data, sentenceTokens) {
+            if (!sentenceTokens || !Array.isArray(sentenceTokens) || sentenceTokens.length === 0) {
+                console.warn('sentenceTokens missing, using fallback');
+                const sentences = data.sentences;
+                const sentenceTones = sentences.map((s, index) => {
+                    const text = typeof s === 'object' ? s.text : s;
+                    return this.calculateSentenceEmotion(text);
+                });
+                let changes = 0;
+                for (let i = 1; i < sentenceTones.length; i++) {
+                    if (Math.abs(sentenceTones[i] - sentenceTones[i-1]) > 0.3) changes++;
+                }
+                const consistency = 1 - (changes / (sentenceTones.length - 1));
+                let pattern = 'stable';
+                if (consistency < 0.3) pattern = 'volatile';
+                else if (consistency < 0.6) pattern = 'moderate';
+                return {
+                    consistency,
+                    pattern,
+                    toneVariation: this.calculateToneVariation(sentenceTones),
+                    emotionalRange: Math.max(...sentenceTones) - Math.min(...sentenceTones)
+                };
+            }
+        
             const sentences = data.sentences;
             if (sentences.length < 2) return { consistency: 1, pattern: 'stable' };
             const sentenceTones = sentenceTokens.map(tokens => this.calculateSentenceEmotionFromTokens(tokens));
@@ -11231,6 +11254,7 @@
     
 
 })();
+
 
 
 
