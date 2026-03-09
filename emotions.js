@@ -3232,7 +3232,7 @@
                 return merged;
         }
         
-        extractEmoticons(text) {
+        extractEmoticons(text) {  
                 if (typeof text !== 'string' || text.length === 0) {
                     return {
                         positive: 0,
@@ -3247,6 +3247,28 @@
                         intensityScore: 0,
                         emojiAnalysis: {},
                         patternAnalysis: {}
+                    };
+                }
+
+                if (!/[:\-;=()\[\]{}<>@#$%^*+~|\\/]/.test(text)) {
+                    return {
+                        positive: 0,
+                        negative: 0,
+                        neutral: 0,
+                        complex: 0,
+                        total: 0,
+                        details: [],
+                        density: 0,
+                        modernEmojis: 0,
+                        combinedEmoticons: 0,
+                        intensityScore: 0,
+                        emojiAnalysis: {},
+                        patternAnalysis: {},
+                        contextual: {},
+                        intensity: {},
+                        clusters: [],
+                        sequentialPatterns: {},
+                        positionAnalysis: {}
                     };
                 }
 
@@ -11254,6 +11276,7 @@
     
 
 })();
+
 
 
 
