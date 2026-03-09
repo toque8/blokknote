@@ -4225,9 +4225,10 @@
                 let count = 0;
                 let positions = [];
                 let sentenceOccurrences = {};
-                const foundWordsSet = new Set(); // слова, найденные прямым regexp (чтобы не дублировать стемминг)
+                const foundWordsSet = new Set(); 
         
-                const pattern = wordList.map(word => this.escapeRegExp(word)).join('|');
+                const sortedWords = wordList.slice().sort((a, b) => b.length - a.length);
+                const pattern = sortedWords.map(word => this.escapeRegExp(word)).join('|');
                 const categoryRegex = new RegExp(`\\b(${pattern})\\b`, 'gi');
         
                 let match;
@@ -11276,6 +11277,7 @@
     
 
 })();
+
 
 
 
