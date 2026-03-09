@@ -6121,6 +6121,11 @@
             const sentences = data.sentences;
             const rules = this.contextRules[this.language];
         
+            const sentenceTokens = sentences.map(s => {
+                const sentenceText = typeof s === 'object' ? s.text : s;
+                return this.enhancedTokenization(sentenceText.toLowerCase());
+            });
+        
             const analysis = {
                 indicators: {
                     negations: 0,
@@ -6227,6 +6232,8 @@
             sentences.forEach((sentenceObj, index) => {
                 const sentence = typeof sentenceObj === 'object' ? sentenceObj.text : sentenceObj;
                 const lowerSentence = sentence.toLowerCase();
+                const tokens = sentenceTokens[index];
+                const wordSet = new Set(tokens);
         
                 if (ironyRegex && ironyRegex.test(lowerSentence)) {
                     for (const indicator of rules.ironyIndicators) {
@@ -6241,7 +6248,7 @@
                                     text: sentence.substring(0, 100) + '...'
                                 });
                             }
-                            break; 
+                            break;
                         }
                     }
                 }
@@ -6283,8 +6290,8 @@
                 analysis.scores.emotionalModulation +
                 analysis.scores.contextualComplexity;
         
-            analysis.coherence = this.calculateAdvancedCoherence ? this.calculateAdvancedCoherence(sentences) : 1;
-            analysis.consistency = this.analyzeEmotionalConsistency ? this.analyzeEmotionalConsistency(data) : 1;
+            analysis.coherence = this.calculateAdvancedCoherence(sentences, sentenceTokens);
+            analysis.consistency = this.analyzeEmotionalConsistency(data, sentenceTokens);
         
             return analysis;
         }
@@ -6462,90 +6469,59 @@
                 return ironyScore > 0.6;
         }
         
-        calculateAdvancedCoherence(sentences) {
+        calculateAdvancedCoherence(sentences, sentenceTokens) {
             if (sentences.length < 2) return 1;
-            
-            let coherence = 0;
             const factors = [];
-            
-            const topics = this.extractTopics(sentences);
-            factors.push(this.calculateTopicContinuity(topics));
-            
-            factors.push(this.calculateReferentialCoherence(sentences));
-            
+            factors.push(this.calculateTopicContinuity(this.extractTopics(sentences, sentenceTokens)));
+            factors.push(this.calculateReferentialCoherence(sentences, sentenceTokens));
             factors.push(this.calculateTemporalCoherence(sentences));
-            
             factors.push(this.calculateStructuralCoherence(sentences));
-            
-            coherence = factors.reduce((a, b) => a + b, 0) / factors.length;
-            
-            return coherence;
+            return factors.reduce((a, b) => a + b, 0) / factors.length;
         }
         
-        extractTopics(sentences) {
+        extractTopics(sentences, sentenceTokens) {
             const topics = [];
             const stopWords = this.language === 'ru' ? 
                 ['это', 'тот', 'такой', 'какой', 'который', 'свой'] :
                 ['the', 'a', 'an', 'this', 'that', 'these', 'those'];
-            
-            sentences.forEach(s => {
-                const text = typeof s === 'object' ? s.text : s;
-                const words = this.enhancedTokenization(text)
-                    .filter(w => w.length > 3 && !stopWords.includes(w));
-                
+            sentences.forEach((s, idx) => {
+                const words = sentenceTokens[idx].filter(w => w.length > 3 && !stopWords.includes(w));
                 const sorted = words.sort((a, b) => b.length - a.length).slice(0, 3);
                 topics.push(sorted);
             });
-            
             return topics;
         }
         
         calculateTopicContinuity(topics) {
             if (topics.length < 2) return 1;
-            
             let continuity = 0;
             for (let i = 0; i < topics.length - 1; i++) {
                 const current = new Set(topics[i]);
                 const next = new Set(topics[i + 1]);
-                
                 let overlap = 0;
-                current.forEach(word => {
-                    if (next.has(word)) overlap++;
-                });
-                
+                current.forEach(word => { if (next.has(word)) overlap++; });
                 const maxSize = Math.max(current.size, next.size);
                 continuity += maxSize > 0 ? overlap / maxSize : 0;
             }
-            
             return continuity / (topics.length - 1);
         }
         
-        calculateReferentialCoherence(sentences) {
-            let coherence = 0;
+        calculateReferentialCoherence(sentences, sentenceTokens) {
             let referenceChains = 0;
-            
+            const pronouns = this.language === 'ru' ? 
+                ['он', 'она', 'оно', 'они', 'его', 'её', 'их', 'этот', 'тот'] :
+                ['he', 'she', 'it', 'they', 'him', 'her', 'them', 'this', 'that'];
             for (let i = 1; i < sentences.length; i++) {
-                const prev = typeof sentences[i-1] === 'object' ? sentences[i-1].text : sentences[i-1];
                 const curr = typeof sentences[i] === 'object' ? sentences[i].text : sentences[i];
-                
-                const pronouns = this.language === 'ru' ? 
-                    ['он', 'она', 'оно', 'они', 'его', 'её', 'их', 'этот', 'тот'] :
-                    ['he', 'she', 'it', 'they', 'him', 'her', 'them', 'this', 'that'];
-                
                 const hasPronoun = pronouns.some(pronoun => 
                     new RegExp(`\\b${pronoun}\\b`, this.language === 'ru' ? 'iu' : 'i').test(curr)
                 );
-                
                 if (hasPronoun) {
-                    const nouns = this.extractNouns(prev);
-                    if (nouns.length > 0) {
-                        referenceChains++;
-                    }
+                    const nouns = sentenceTokens[i-1].filter(w => w.length > 3 && /^[а-яa-z]/i.test(w));
+                    if (nouns.length > 0) referenceChains++;
                 }
             }
-            
-            coherence = sentences.length > 1 ? referenceChains / (sentences.length - 1) : 0;
-            return coherence;
+            return sentences.length > 1 ? referenceChains / (sentences.length - 1) : 0;
         }
         
         extractNouns(text) {
@@ -6554,105 +6530,98 @@
         }
         
         calculateTemporalCoherence(sentences) {
-            const tenses = [];
-            
-            sentences.forEach(s => {
+            const tenses = sentences.map(s => {
                 const text = typeof s === 'object' ? s.text : s;
-                const tense = this.detectTense(text);
-                tenses.push(tense);
+                return this.detectTense(text);
             });
-            
             let changes = 0;
             for (let i = 1; i < tenses.length; i++) {
-                if (tenses[i] !== tenses[i-1] && tenses[i] !== 'mixed' && tenses[i-1] !== 'mixed') {
-                    changes++;
-                }
+                if (tenses[i] !== tenses[i-1] && tenses[i] !== 'mixed' && tenses[i-1] !== 'mixed') changes++;
             }
-            
             const maxChanges = tenses.length - 1;
             return maxChanges > 0 ? 1 - (changes / maxChanges) : 1;
         }
         
         detectTense(text) {
-                    const lower = text.toLowerCase();
-                    
-                    const pastMarkers = this.language === 'ru' ? 
-                        ['был', 'была', 'было', 'были', 'прошл', 'вчера', 'раньше'] :
-                        ['was', 'were', 'had', 'did', 'yesterday', 'ago', 'before'];
-                    
-                    const futureMarkers = this.language === 'ru' ?
-                        ['будет', 'будут', 'завтра', 'потом', 'позже'] :
-                        ['will', 'shall', 'going to', 'tomorrow', 'later'];
-                    
-                    const presentMarkers = this.language === 'ru' ?
-                        ['есть', 'является', 'сейчас', 'теперь', 'в настоящее время'] :
-                        ['is', 'are', 'am', 'do', 'does', 'now', 'currently'];
-                    
-                    const countMarkers = (markers) => {
-                        return markers.filter(m => {
-                            const regex = new RegExp(`\\b${this.escapeRegExp(m)}\\b`, this.language === 'ru' ? 'iu' : 'i');
-                            return regex.test(lower);
-                        }).length;
-                    };
-                    
-                    const pastCount = countMarkers(pastMarkers);
-                    const futureCount = countMarkers(futureMarkers);
-                    const presentCount = countMarkers(presentMarkers);
-                    
-                    const max = Math.max(pastCount, futureCount, presentCount);
-                    
-                    if (max === 0) return 'unknown';
-                    if (pastCount === futureCount && futureCount === presentCount) return 'mixed';
-                    
-                    if (pastCount === max) return 'past';
-                    if (futureCount === max) return 'future';
-                    return 'present';
+            const lower = text.toLowerCase();
+            const pastMarkers = this.language === 'ru' ? 
+                ['был', 'была', 'было', 'были', 'прошл', 'вчера', 'раньше'] :
+                ['was', 'were', 'had', 'did', 'yesterday', 'ago', 'before'];
+            const futureMarkers = this.language === 'ru' ?
+                ['будет', 'будут', 'завтра', 'потом', 'позже'] :
+                ['will', 'shall', 'going to', 'tomorrow', 'later'];
+            const presentMarkers = this.language === 'ru' ?
+                ['есть', 'является', 'сейчас', 'теперь', 'в настоящее время'] :
+                ['is', 'are', 'am', 'do', 'does', 'now', 'currently'];
+            const countMarkers = (markers) => {
+                const pattern = markers.map(m => this.escapeRegExp(m)).join('|');
+                const regex = new RegExp(`\\b(${pattern})\\b`, 'gi');
+                const matches = lower.match(regex);
+                return matches ? matches.length : 0;
+            };
+            const pastCount = countMarkers(pastMarkers);
+            const futureCount = countMarkers(futureMarkers);
+            const presentCount = countMarkers(presentMarkers);
+            const max = Math.max(pastCount, futureCount, presentCount);
+            if (max === 0) return 'unknown';
+            if (pastCount === futureCount && futureCount === presentCount) return 'mixed';
+            if (pastCount === max) return 'past';
+            if (futureCount === max) return 'future';
+            return 'present';
         }
         
         calculateStructuralCoherence(sentences) {
             const connectives = this.language === 'ru' ?
                 ['и', 'а', 'но', 'или', 'однако', 'поэтому', 'следовательно', 'таким образом'] :
                 ['and', 'but', 'or', 'however', 'therefore', 'thus', 'consequently', 'moreover'];
-            
+            const connectivePattern = connectives.map(c => this.escapeRegExp(c)).join('|');
+            const connectiveRegex = new RegExp(`\\b(${connectivePattern})\\b`, 'i');
             let connectiveCount = 0;
             sentences.forEach(s => {
                 const text = typeof s === 'object' ? s.text : s;
-                const hasConnective = connectives.some(connective => 
-                    new RegExp(`\\b${connective}\\b`, 'i').test(text)
-                );
-                if (hasConnective) connectiveCount++;
+                if (connectiveRegex.test(text)) connectiveCount++;
             });
-            
             return sentences.length > 0 ? connectiveCount / sentences.length : 0;
         }
         
         analyzeEmotionalConsistency(data) {
             const sentences = data.sentences;
             if (sentences.length < 2) return { consistency: 1, pattern: 'stable' };
-            
-            const sentenceTones = sentences.map((s, index) => {
-                const text = typeof s === 'object' ? s.text : s;
-                return this.calculateSentenceEmotion(text);
-            });
-            
+            const sentenceTones = sentenceTokens.map(tokens => this.calculateSentenceEmotionFromTokens(tokens));
             let changes = 0;
             for (let i = 1; i < sentenceTones.length; i++) {
-                const diff = Math.abs(sentenceTones[i] - sentenceTones[i-1]);
-                if (diff > 0.3) changes++;
+                if (Math.abs(sentenceTones[i] - sentenceTones[i-1]) > 0.3) changes++;
             }
-            
             const consistency = 1 - (changes / (sentenceTones.length - 1));
-            
             let pattern = 'stable';
             if (consistency < 0.3) pattern = 'volatile';
             else if (consistency < 0.6) pattern = 'moderate';
-            
             return {
                 consistency,
                 pattern,
                 toneVariation: this.calculateToneVariation(sentenceTones),
                 emotionalRange: Math.max(...sentenceTones) - Math.min(...sentenceTones)
             };
+        }
+
+        calculateSentenceEmotionFromTokens(tokens) {
+            const wordSet = new Set(tokens);
+            const dict = this.dictionaries[this.language];
+            let score = 0, count = 0;
+            for (const [category, wordList] of Object.entries(dict)) {
+                const weight = this.categoryWeights[category] || 1.0;
+                for (const word of wordList) {
+                    if (wordSet.has(word.toLowerCase())) {
+                        const isPositive = ['ecstasy','joy','love','peace','hope','gratitude','inspiration','pride'].includes(category);
+                        const isNegative = ['sadness','grief','anger','fear','disgust','shame','guilt','loneliness','envy','despair'].includes(category);
+                        if (isPositive) score += weight;
+                        if (isNegative) score -= weight;
+                        count++;
+                        break;
+                    }
+                }
+            }
+            return count > 0 ? score / count : 0;
         }
         
         calculateSentenceEmotion(text) {
@@ -6685,12 +6654,10 @@
         
         calculateToneVariation(tones) {
             if (tones.length < 2) return 0;
-            
             let variation = 0;
             for (let i = 1; i < tones.length; i++) {
                 variation += Math.abs(tones[i] - tones[i-1]);
             }
-            
             return variation / (tones.length - 1);
         }
         
@@ -11264,6 +11231,7 @@
     
 
 })();
+
 
 
 
