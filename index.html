@@ -790,6 +790,15 @@
         padding-top: 0 !important;
       }
     }
+    #logo { cursor: pointer; transition: transform 0.1s; }
+    .glitch { animation: glitch 0.3s infinite; filter: hue-rotate(90deg); }
+    @keyframes glitch {
+      0% { transform: translate(0) }
+      25% { transform: translate(-3px, 3px) }
+      50% { transform: translate(3px, -3px) }
+      75% { transform: translate(-3px, -3px) }
+      100% { transform: translate(0) }
+    }
   </style>
 </head>
 <body>
@@ -800,7 +809,7 @@
 
   <div class="top-bar">
     <div>
-      <img src="https://blokknote.vercel.app/ui/pencil.png" class="pencil-icon" alt="" onerror="this.style.display='none'">
+      <img src="https://blokknote.vercel.app/ui/pencil.png" class="pencil-icon" alt="" onerror="this.style.display='none'" id="logo" style="cursor: pointer;">
       <div class="fonts-area">
         <img src="https://blokknote.vercel.app/ui/typewriter.png" class="typewriter-icon" id="fonts-trigger" alt="fonts" onerror="this.style.display='none'">
         <div class="font-size-group">
@@ -1412,9 +1421,22 @@ body {
     }
   </script>
 
+  <script>
+  (function() {
+    const logo = document.getElementById('logo');
+    if (!logo) return;
+    
+    logo.addEventListener('click', () => {
+      document.body.classList.add('glitch');
+      setTimeout(() => document.body.classList.remove('glitch'), 2000);
+    });
+  })();
+  </script>
+
   <script src="https://blokknote.vercel.app/chaos.js" defer></script>
   <script src="https://blokknote.vercel.app/noise.js" defer></script>
   <script src="https://blokknote.vercel.app/emotions.js"></script>
   <script src="https://blokknote.vercel.app/emotions-integration.js"></script>
 </body>
 </html>
+
