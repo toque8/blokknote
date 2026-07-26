@@ -21,31 +21,46 @@ module.exports = async (req, res) => {
     return res.status(400).end('Invalid content');
   }
 
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) {
+    return res.status(500).end('GitHub token missing');
+  }
+
   const id = Math.random().toString(36).substring(2, 10);
-  const blobHost = process.env.BLOB_HOST;
-  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  const filename = `${id}.html`;
 
-  if (!blobHost || !token) {
-    console.error('Missing BLOB_HOST or BLOB_READ_WRITE_TOKEN');
-    return res.status(500).end('Server configuration error');
+  try {
+    const gistRes = await fetch('https://api.github.com/gists', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github+json',
+      },
+      body: JSON.stringify({
+        description: `Blokknote share ${id}`,
+        public: true,
+        files: {
+          [filename]: {
+            content: content,
+          },
+        },
+      }),
+    });
+
+    if (!gistRes.ok) {
+      const err = await gistRes.text();
+      console.error('GitHub Gist error:', gistRes.status, err);
+      return res.status(500).end('GitHub API error');
+    }
+
+    const data = await gistRes.json();
+    const gistId = data.id;
+
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ id: gistId }));
+  } catch (err) {
+    console.error('Unexpected error:', err);
+    res.status(500).end('Internal error');
   }
-
-  const blobUrl = `${blobHost}/${id}.html`;
-  const apiRes = await fetch(blobUrl, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'text/html',
-    },
-    body: content,
-  });
-
-  if (!apiRes.ok) {
-    const errText = await apiRes.text();
-    console.error('Blob PUT error:', apiRes.status, errText);
-    return res.status(500).end('Blob upload failed');
-  }
-
-  res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify({ id }));
 };
