@@ -22,19 +22,28 @@ module.exports = async (req, res) => {
   }
 
   const id = Math.random().toString(36).substring(2, 10);
+  const blobHost = process.env.BLOB_HOST;
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
 
-  // Отправляем ТЕКСТ НАПРЯМУЮ, без { value: ... }
-  const apiRes = await fetch(`${process.env.KV_REST_API_URL}/set/${id}`, {
-    method: 'POST',
+  if (!blobHost || !token) {
+    console.error('Missing BLOB_HOST or BLOB_READ_WRITE_TOKEN');
+    return res.status(500).end('Server configuration error');
+  }
+
+  const blobUrl = `${blobHost}/${id}.html`;
+  const apiRes = await fetch(blobUrl, {
+    method: 'PUT',
     headers: {
-      'Authorization': `Bearer ${process.env.KV_REST_API_TOKEN}`,
-      'Content-Type': 'text/plain'
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'text/html',
     },
-    body: content // ← просто строка
+    body: content,
   });
 
   if (!apiRes.ok) {
-    return res.status(500).end('Upstash error');
+    const errText = await apiRes.text();
+    console.error('Blob PUT error:', apiRes.status, errText);
+    return res.status(500).end('Blob upload failed');
   }
 
   res.setHeader('Content-Type', 'application/json');
