@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
       },
       body: JSON.stringify({
         description: `Blokknote share ${id}`,
-        public: true,
+        public: false,
         files: {
           [filename]: {
             content: content,
