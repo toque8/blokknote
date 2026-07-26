@@ -50,7 +50,7 @@ module.exports = async (req, res) => {
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Blokknote</title>
-        <style>body{background:#f9f9f7;color:#000;font-family:system-ui;padding:24px;margin:0;line-height:1.6}@media(max-width:500px){body{padding:16px}}</style>
+        <style>body{background:#f9f9f7;color:#000;font-family:system-ui;padding:24px;margin:0;line-height:1.6}p,div,h1,h2,h3,h4,h5,h6,ul,ol{margin:0}@media(max-width:500px){body{padding:16px}}</style>
       </head>
       <body>${content}</body>
       </html>
