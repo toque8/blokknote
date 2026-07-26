@@ -8,25 +8,31 @@ module.exports = async (req, res) => {
     return res.end('Missing id');
   }
 
-  const apiRes = await fetch(`${process.env.KV_REST_API_URL}/get/${id}`, {
-    headers: {
-      'Authorization': `Bearer ${process.env.KV_REST_API_TOKEN}`
-    }
-  });
+  const blobHost = process.env.BLOB_HOST;
+  if (!blobHost) {
+    res.statusCode = 500;
+    return res.end('Missing blob host');
+  }
 
-  if (!apiRes.ok) {
+  const blobUrl = `${blobHost}/${id}.html`;
+
+  const apiRes = await fetch(blobUrl);
+
+  if (apiRes.status === 404) {
     res.statusCode = 404;
     return res.end('Not found');
   }
 
-  let content = '';
-  try {
-    const data = await apiRes.json();
-    content = data.result || '';
-  } catch (e) {
-    // fallback: если вдруг вернулась чистая строка
-    content = await apiRes.text();
-    if (content === 'null') content = '';
+  if (!apiRes.ok) {
+    res.statusCode = 500;
+    return res.end('Blob fetch error');
+  }
+
+  let content = await apiRes.text();
+
+  // Если содержимое равно "null" или пустое, заменяем на пустую строку
+  if (content === 'null' || content === '') {
+    content = '';
   }
 
   const escapeHtml = (str) => str
